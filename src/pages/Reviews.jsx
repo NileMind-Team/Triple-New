@@ -340,7 +340,11 @@ export default function Reviews() {
               interactive
                 ? "cursor-pointer hover:scale-110 transition-transform"
                 : "cursor-default"
-            } ${star <= rating ? "text-[#FDB913]" : "text-gray-300"}`}
+            } ${
+              star <= rating
+                ? "text-[#FDB913]"
+                : "text-gray-300 dark:text-gray-600"
+            }`}
           >
             <FaStar
               className={`${
@@ -355,14 +359,16 @@ export default function Reviews() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] px-4">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-4">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E41E26]"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] px-3 sm:px-4 md:px-6 py-3 sm:py-6 relative font-sans overflow-hidden">
+    <div
+      className={`min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-3 sm:px-4 md:px-6 py-3 sm:py-6 relative font-sans overflow-hidden transition-colors duration-300`}
+    >
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -left-10 sm:-left-20 -top-10 sm:-top-20 w-40 h-40 sm:w-60 sm:h-60 md:w-80 md:h-80 bg-gradient-to-r from-[#E41E26]/10 to-[#FDB913]/10 rounded-full blur-2xl sm:blur-3xl animate-pulse"></div>
@@ -374,7 +380,7 @@ export default function Reviews() {
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         onClick={() => navigate(-1)}
-        className="fixed top-3 sm:top-4 left-3 sm:left-4 z-50 bg-white/80 backdrop-blur-md hover:bg-[#E41E26] hover:text-white rounded-full p-2 sm:p-3 text-[#E41E26] border border-[#E41E26]/30 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl group"
+        className="fixed top-3 sm:top-4 left-3 sm:left-4 z-50 bg-white/80 backdrop-blur-md hover:bg-[#E41E26] hover:text-white rounded-full p-2 sm:p-3 text-[#E41E26] border border-[#E41E26]/30 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl group dark:bg-gray-800/80 dark:text-gray-200 dark:hover:bg-[#E41E26]"
       >
         <FaArrowLeft
           size={14}
@@ -386,7 +392,7 @@ export default function Reviews() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, type: "spring" }}
-        className="max-w-7xl mx-auto bg-white/90 backdrop-blur-xl shadow-xl sm:shadow-2xl rounded-2xl sm:rounded-3xl border border-white/50 relative overflow-hidden"
+        className="max-w-7xl mx-auto bg-white/90 backdrop-blur-xl shadow-xl sm:shadow-2xl rounded-2xl sm:rounded-3xl border border-white/50 relative overflow-hidden dark:bg-gray-800/90 dark:border-gray-700/50"
       >
         {/* Header Background */}
         <div className="relative h-36 sm:h-40 md:h-44 lg:h-52 bg-gradient-to-r from-[#E41E26] to-[#FDB913] overflow-hidden">
@@ -455,21 +461,21 @@ export default function Reviews() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border-2 border-gray-200/50 transition-all duration-300 hover:shadow-lg"
+                    className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border-2 border-gray-200/50 transition-all duration-300 hover:shadow-lg dark:bg-gray-700/80 dark:border-gray-600/50"
                   >
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                          <div className="p-1 sm:p-2 rounded-lg sm:rounded-xl bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] border border-[#FDB913]/30">
+                          <div className="p-1 sm:p-2 rounded-lg sm:rounded-xl bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] border border-[#FDB913]/30 dark:from-gray-600 dark:to-gray-500">
                             <FaHamburger className="text-[#E41E26] text-xs sm:text-sm" />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <h3 className="font-bold text-gray-800 text-base sm:text-lg md:text-xl truncate">
+                            <h3 className="font-bold text-gray-800 dark:text-gray-200 text-base sm:text-lg md:text-xl truncate">
                               {review.menuItemName}
                             </h3>
                             <div className="flex items-center gap-2 mt-1">
                               {renderStars(review.rating)}
-                              <span className="text-xs sm:text-sm text-gray-600">
+                              <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                                 ({review.rating}/5)
                               </span>
                             </div>
@@ -477,16 +483,16 @@ export default function Reviews() {
                         </div>
 
                         {/* Delivery Rating Display - IMPROVED TO SINGLE LINE */}
-                        <div className="flex items-center justify-between gap-2 mb-3 sm:mb-4 bg-gradient-to-r from-blue-50 to-blue-100/50 p-2 sm:p-3 rounded-lg border border-blue-200/50">
+                        <div className="flex items-center justify-between gap-2 mb-3 sm:mb-4 bg-gradient-to-r from-blue-50 to-blue-100/50 p-2 sm:p-3 rounded-lg border border-blue-200/50 dark:from-blue-900/20 dark:to-blue-800/20 dark:border-blue-700/30">
                           <div className="flex items-center gap-2 flex-shrink-0">
                             <FaShippingFast className="text-blue-600 text-xs sm:text-sm" />
-                            <span className="text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap hidden sm:block">
+                            <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap hidden sm:block">
                               Delivery Speed:
                             </span>
                           </div>
                           <div className="flex items-center gap-2">
                             {renderStars(review.deliveryRating || 0)}
-                            <span className="text-xs sm:text-sm font-semibold text-blue-600 whitespace-nowrap">
+                            <span className="text-xs sm:text-sm font-semibold text-blue-600 dark:text-blue-400 whitespace-nowrap">
                               {getDeliveryRatingText(
                                 review.deliveryRating || 0
                               )}
@@ -494,11 +500,11 @@ export default function Reviews() {
                           </div>
                         </div>
 
-                        <p className="text-gray-700 text-sm sm:text-base mb-3 sm:mb-4 leading-relaxed">
+                        <p className="text-gray-700 dark:text-gray-300 text-sm sm:text-base mb-3 sm:mb-4 leading-relaxed">
                           {review.comment}
                         </p>
 
-                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 text-xs sm:text-sm text-gray-500">
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                           <div className="flex items-center gap-1">
                             <FaCalendar className="text-[#E41E26] text-xs sm:text-sm" />
                             <span>{formatDate(review.createdAt)}</span>
@@ -518,7 +524,7 @@ export default function Reviews() {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => handleEdit(review)}
-                          className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center"
+                          className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50"
                         >
                           <FaEdit className="text-xs sm:text-sm" />
                           <span className="whitespace-nowrap">Edit</span>
@@ -527,7 +533,7 @@ export default function Reviews() {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => handleDelete(review.id)}
-                          className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center"
+                          className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/50"
                         >
                           <FaTrash className="text-xs sm:text-sm" />
                           <span className="whitespace-nowrap">Delete</span>
@@ -542,13 +548,13 @@ export default function Reviews() {
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="text-center py-8 sm:py-10 md:py-12 bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-gray-200/50"
+                  className="text-center py-8 sm:py-10 md:py-12 bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-gray-200/50 dark:bg-gray-700/80 dark:border-gray-600/50"
                 >
-                  <FaStar className="mx-auto text-3xl sm:text-4xl md:text-5xl text-gray-400 mb-3 sm:mb-4" />
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-600 mb-2 sm:mb-3">
+                  <FaStar className="mx-auto text-3xl sm:text-4xl md:text-5xl text-gray-400 dark:text-gray-500 mb-3 sm:mb-4" />
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-600 dark:text-gray-400 mb-2 sm:mb-3">
                     No reviews yet
                   </h3>
-                  <p className="text-gray-500 text-sm sm:text-base mb-4 sm:mb-6 max-w-xs sm:max-w-sm mx-auto">
+                  <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base mb-4 sm:mb-6 max-w-xs sm:max-w-sm mx-auto">
                     Share your experience by reviewing our menu items
                   </p>
                   <motion.button
@@ -574,14 +580,14 @@ export default function Reviews() {
                   exit={{ opacity: 0, x: 20 }}
                   className="xl:col-span-1"
                 >
-                  <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-gray-200/50 shadow-lg sticky top-4 sm:top-6">
+                  <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-gray-200/50 shadow-lg sticky top-4 sm:top-6 dark:bg-gray-700/80 dark:border-gray-600/50">
                     <div className="flex items-center justify-between mb-3 sm:mb-4">
-                      <h3 className="text-base sm:text-lg md:text-xl font-bold text-gray-800 truncate">
+                      <h3 className="text-base sm:text-lg md:text-xl font-bold text-gray-800 dark:text-gray-200 truncate">
                         {editingId ? "Edit Review" : "Write New Review"}
                       </h3>
                       <button
                         onClick={resetForm}
-                        className="text-gray-500 hover:text-[#E41E26] transition-colors duration-200 flex-shrink-0 ml-2"
+                        className="text-gray-500 hover:text-[#E41E26] transition-colors duration-200 flex-shrink-0 ml-2 dark:text-gray-400"
                       >
                         <FaTimes size={16} className="sm:size-5" />
                       </button>
@@ -593,14 +599,14 @@ export default function Reviews() {
                     >
                       {/* Menu Item Dropdown */}
                       <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
                           Menu Item *
                         </label>
                         <div className="relative">
                           <button
                             type="button"
                             onClick={() => toggleDropdown("menuItem")}
-                            className="w-full flex items-center justify-between border border-gray-200 bg-white rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 text-gray-600 hover:border-[#E41E26] transition-all group text-sm sm:text-base"
+                            className="w-full flex items-center justify-between border border-gray-200 bg-white rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 text-gray-600 hover:border-[#E41E26] transition-all group text-sm sm:text-base dark:bg-gray-600 dark:border-gray-500 dark:text-gray-300"
                           >
                             <div className="flex items-center gap-3">
                               <FaHamburger className="text-[#E41E26] text-sm" />
@@ -629,7 +635,7 @@ export default function Reviews() {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -5 }}
                                 transition={{ duration: 0.2 }}
-                                className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-xl rounded-lg sm:rounded-xl overflow-hidden max-h-48 overflow-y-auto"
+                                className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-xl rounded-lg sm:rounded-xl overflow-hidden max-h-48 overflow-y-auto dark:bg-gray-700 dark:border-gray-600"
                               >
                                 {menuItems.map((item) => (
                                   <li
@@ -641,7 +647,7 @@ export default function Reviews() {
                                       });
                                       setOpenDropdown(null);
                                     }}
-                                    className="px-4 py-2.5 sm:py-3 hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] cursor-pointer text-gray-700 transition-all text-sm sm:text-base border-b border-gray-100 last:border-b-0"
+                                    className="px-4 py-2.5 sm:py-3 hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] cursor-pointer text-gray-700 transition-all text-sm sm:text-base border-b border-gray-100 last:border-b-0 dark:hover:from-gray-600 dark:hover:to-gray-500 dark:text-gray-300 dark:border-gray-600"
                                   >
                                     {item.name}
                                   </li>
@@ -654,13 +660,13 @@ export default function Reviews() {
 
                       {/* Food Rating - IMPROVED TO SINGLE LINE */}
                       <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
                           Food Rating *
                         </label>
-                        <div className="flex items-center justify-between gap-2 bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] p-2 sm:p-3 rounded-lg sm:rounded-xl border border-[#FDB913]/30">
+                        <div className="flex items-center justify-between gap-2 bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] p-2 sm:p-3 rounded-lg sm:rounded-xl border border-[#FDB913]/30 dark:from-gray-600 dark:to-gray-500 dark:border-gray-500">
                           <div className="flex items-center gap-2 flex-shrink-0">
                             <FaUtensils className="text-[#E41E26] text-xs sm:text-sm" />
-                            <span className="text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap hidden sm:block">
+                            <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap hidden sm:block">
                               Food Quality:
                             </span>
                           </div>
@@ -680,13 +686,13 @@ export default function Reviews() {
 
                       {/* Delivery Rating - IMPROVED TO SINGLE LINE */}
                       <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
                           Delivery Speed Rating
                         </label>
-                        <div className="flex items-center justify-between gap-2 bg-gradient-to-r from-blue-50 to-blue-100/50 p-2 sm:p-3 rounded-lg sm:rounded-xl border border-blue-200/50">
+                        <div className="flex items-center justify-between gap-2 bg-gradient-to-r from-blue-50 to-blue-100/50 p-2 sm:p-3 rounded-lg sm:rounded-xl border border-blue-200/50 dark:from-blue-900/20 dark:to-blue-800/20 dark:border-blue-700/30">
                           <div className="flex items-center gap-2 flex-shrink-0">
                             <FaShippingFast className="text-blue-600 text-xs sm:text-sm" />
-                            <span className="text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap hidden sm:block">
+                            <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap hidden sm:block">
                               Delivery Speed:
                             </span>
                           </div>
@@ -697,7 +703,7 @@ export default function Reviews() {
                               handleDeliveryRatingChange,
                               "lg"
                             )}
-                            <span className="text-xs sm:text-sm font-semibold text-blue-600 whitespace-nowrap">
+                            <span className="text-xs sm:text-sm font-semibold text-blue-600 dark:text-blue-400 whitespace-nowrap">
                               {getDeliveryRatingText(formData.deliveryRating)}
                             </span>
                           </div>
@@ -706,7 +712,7 @@ export default function Reviews() {
 
                       {/* Comment */}
                       <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
                           Your Review *
                         </label>
                         <textarea
@@ -715,10 +721,10 @@ export default function Reviews() {
                           onChange={handleInputChange}
                           required
                           rows="4"
-                          className="w-full border border-gray-200 bg-white text-black rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base resize-none"
+                          className="w-full border border-gray-200 bg-white text-black rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base resize-none dark:bg-gray-600 dark:border-gray-500 dark:text-white"
                           placeholder="Share your experience with this menu item... (What did you like? How was the taste? Any suggestions?)"
                         />
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                           Share your honest feedback about the taste, quality,
                           and overall experience
                         </p>
@@ -730,7 +736,7 @@ export default function Reviews() {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={resetForm}
-                          className="flex-1 py-2.5 sm:py-3 border-2 border-[#E41E26] text-[#E41E26] rounded-lg sm:rounded-xl font-semibold hover:bg-[#E41E26] hover:text-white transition-all duration-300 text-sm sm:text-base"
+                          className="flex-1 py-2.5 sm:py-3 border-2 border-[#E41E26] text-[#E41E26] rounded-lg sm:rounded-xl font-semibold hover:bg-[#E41E26] hover:text-white transition-all duration-300 text-sm sm:text-base dark:border-[#E41E26] dark:text-[#E41E26] dark:hover:bg-[#E41E26] dark:hover:text-white"
                         >
                           Cancel
                         </motion.button>
@@ -742,7 +748,7 @@ export default function Reviews() {
                           className={`flex-1 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base flex items-center justify-center gap-1 sm:gap-2 ${
                             isFormValid()
                               ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25 cursor-pointer"
-                              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                              : "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400"
                           }`}
                         >
                           <FaCheck className="text-xs sm:text-sm" />

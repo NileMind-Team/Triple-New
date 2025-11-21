@@ -193,15 +193,15 @@ export default function MyOrders() {
   const getStatusColor = (status) => {
     switch (status) {
       case "delivered":
-        return "bg-green-100 text-green-800";
+        return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300";
       case "preparing":
-        return "bg-orange-100 text-orange-800";
+        return "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300";
       case "on_the_way":
-        return "bg-blue-100 text-blue-800";
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300";
       case "cancelled":
-        return "bg-red-100 text-red-800";
+        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
     }
   };
 
@@ -260,7 +260,9 @@ export default function MyOrders() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] px-3 sm:px-4 py-4 sm:py-8">
+    <div
+      className={`min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-3 sm:px-4 py-4 sm:py-8 transition-colors duration-300`}
+    >
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
@@ -273,15 +275,15 @@ export default function MyOrders() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate(-1)}
-              className="bg-white/80 backdrop-blur-md rounded-full p-2 sm:p-3 text-[#E41E26] hover:bg-[#E41E26] hover:text-white transition-all duration-300 shadow-lg"
+              className="bg-white/80 backdrop-blur-md rounded-full p-2 sm:p-3 text-[#E41E26] hover:bg-[#E41E26] hover:text-white transition-all duration-300 shadow-lg dark:bg-gray-800/80 dark:text-gray-200 dark:hover:bg-[#E41E26]"
             >
               <FaArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             </motion.button>
             <div>
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200">
                 My Orders
               </h1>
-              <p className="text-gray-600 text-sm sm:text-base">
+              <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
                 Track and manage your orders
               </p>
             </div>
@@ -290,7 +292,9 @@ export default function MyOrders() {
             <div className="text-lg sm:text-xl md:text-2xl font-bold text-[#E41E26]">
               {orders.length} Orders
             </div>
-            <div className="text-gray-600 text-sm sm:text-base">in total</div>
+            <div className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
+              in total
+            </div>
           </div>
         </motion.div>
 
@@ -299,18 +303,18 @@ export default function MyOrders() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white/90 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl p-4 sm:p-6 mb-6 sm:mb-8 relative z-30"
+          className="bg-white/90 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl p-4 sm:p-6 mb-6 sm:mb-8 relative z-30 dark:bg-gray-800/90"
         >
           <div className="flex flex-col sm:flex-row gap-4">
             {/* Search */}
             <div className="flex-1 relative">
-              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 dark:text-gray-500" />
               <input
                 type="text"
                 placeholder="Search orders or items..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl bg-white text-black focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl bg-white text-black focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
             </div>
 
@@ -322,7 +326,7 @@ export default function MyOrders() {
                   onClick={() =>
                     setOpenDropdown(openDropdown === "orders" ? null : "orders")
                   }
-                  className="w-full flex items-center justify-between border border-gray-200 bg-white rounded-xl px-4 py-3 text-black focus:ring-2 focus:ring-[#E41E26] transition-all duration-200 text-sm sm:text-base"
+                  className="w-full flex items-center justify-between border border-gray-200 bg-white rounded-xl px-4 py-3 text-black focus:ring-2 focus:ring-[#E41E26] transition-all duration-200 text-sm sm:text-base dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 >
                   <span className="flex items-center gap-2">
                     <FaFilter className="text-[#E41E26]" />
@@ -352,7 +356,7 @@ export default function MyOrders() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -5 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute z-50 mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto"
+                      className="absolute z-50 mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto dark:bg-gray-700 dark:border-gray-600"
                     >
                       {[
                         { value: "all", label: "All Orders" },
@@ -367,7 +371,7 @@ export default function MyOrders() {
                             setFilter(item.value);
                             setOpenDropdown(null);
                           }}
-                          className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] cursor-pointer text-gray-700 transition-all text-sm sm:text-base border-b border-gray-100 last:border-b-0"
+                          className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] cursor-pointer text-gray-700 transition-all text-sm sm:text-base border-b border-gray-100 last:border-b-0 dark:hover:from-gray-600 dark:hover:to-gray-500 dark:text-gray-300 dark:border-gray-600"
                         >
                           {item.label}
                         </li>
@@ -390,7 +394,7 @@ export default function MyOrders() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white/90 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl p-4 sm:p-6 cursor-pointer hover:shadow-2xl transition-all duration-300"
+                className="bg-white/90 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl p-4 sm:p-6 cursor-pointer hover:shadow-2xl transition-all duration-300 dark:bg-gray-800/90"
                 onClick={() => handleOrderClick(order)}
               >
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -398,10 +402,10 @@ export default function MyOrders() {
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-col xs:flex-row xs:items-center gap-2 xs:gap-3 sm:gap-6 mb-3">
                       <div className="min-w-0">
-                        <h3 className="text-lg sm:text-xl font-bold text-gray-800 truncate">
+                        <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-200 truncate">
                           Order #{order.orderNumber}
                         </h3>
-                        <p className="text-gray-600 text-sm">
+                        <p className="text-gray-600 dark:text-gray-400 text-sm">
                           {new Date(order.date).toLocaleDateString("en-US", {
                             weekday: "long",
                             year: "numeric",
@@ -425,23 +429,23 @@ export default function MyOrders() {
                     <div className="space-y-2 mb-3">
                       {order.items.slice(0, 2).map((item, idx) => (
                         <div key={idx} className="flex justify-between text-sm">
-                          <span className="text-gray-700 truncate pr-2">
+                          <span className="text-gray-700 dark:text-gray-300 truncate pr-2">
                             {item.name} × {item.quantity}
                           </span>
-                          <span className="font-semibold text-gray-800 whitespace-nowrap">
+                          <span className="font-semibold text-gray-800 dark:text-gray-200 whitespace-nowrap">
                             EGP {(item.price * item.quantity).toFixed(2)}
                           </span>
                         </div>
                       ))}
                       {order.items.length > 2 && (
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-gray-500 dark:text-gray-400">
                           +{order.items.length - 2} more items
                         </div>
                       )}
                     </div>
 
                     {/* Delivery Info */}
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                       <FaShoppingBag className="text-[#E41E26] flex-shrink-0 w-3 h-3" />
                       <span className="truncate">
                         {order.customerInfo.address}
@@ -450,12 +454,12 @@ export default function MyOrders() {
                   </div>
 
                   {/* Total and Action */}
-                  <div className="flex flex-row sm:flex-col items-center justify-between sm:items-end lg:items-start gap-3 sm:gap-2 lg:gap-3 pt-3 sm:pt-0 border-t sm:border-t-0 border-gray-100">
+                  <div className="flex flex-row sm:flex-col items-center justify-between sm:items-end lg:items-start gap-3 sm:gap-2 lg:gap-3 pt-3 sm:pt-0 border-t sm:border-t-0 border-gray-100 dark:border-gray-700">
                     <div className="text-left sm:text-right lg:text-left">
                       <div className="text-lg sm:text-xl font-bold text-[#E41E26]">
                         EGP {order.total.toFixed(2)}
                       </div>
-                      <div className="text-sm text-gray-600 hidden sm:block">
+                      <div className="text-sm text-gray-600 dark:text-gray-400 hidden sm:block">
                         Total Amount
                       </div>
                     </div>
@@ -481,13 +485,13 @@ export default function MyOrders() {
               animate={{ opacity: 1, y: 0 }}
               className="text-center py-8 sm:py-12"
             >
-              <div className="w-16 h-16 sm:w-24 sm:h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <FaShoppingBag className="text-gray-400 text-xl sm:text-3xl" />
+              <div className="w-16 h-16 sm:w-24 sm:h-24 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FaShoppingBag className="text-gray-400 dark:text-gray-500 text-xl sm:text-3xl" />
               </div>
-              <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">
                 No orders found
               </h3>
-              <p className="text-gray-600 mb-6 text-sm sm:text-base px-4">
+              <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm sm:text-base px-4">
                 {searchTerm || filter !== "all"
                   ? "Try adjusting your search or filter criteria"
                   : "You haven't placed any orders yet"}

@@ -112,9 +112,15 @@ export default function Profile() {
       {condition ? (
         <FaCheckCircle className="text-green-500" />
       ) : (
-        <FaTimesCircle className="text-gray-400" />
+        <FaTimesCircle className="text-gray-400 dark:text-gray-500" />
       )}
-      <span className={condition ? "text-green-600" : "text-gray-500"}>
+      <span
+        className={
+          condition
+            ? "text-green-600 dark:text-green-400"
+            : "text-gray-500 dark:text-gray-400"
+        }
+      >
         {label}
       </span>
     </div>
@@ -272,14 +278,14 @@ export default function Profile() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4]">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E41E26]"></div>
       </div>
     );
   }
 
   const fieldClass =
-    "w-full border border-gray-200 bg-white/80 backdrop-blur-sm text-black rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 hover:border-[#E41E26]/50";
+    "w-full border border-gray-200 bg-white/80 backdrop-blur-sm text-black rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 hover:border-[#E41E26]/50 dark:bg-gray-600/80 dark:border-gray-500 dark:text-white";
 
   const tabs = [
     {
@@ -297,7 +303,9 @@ export default function Profile() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] px-4 py-4 sm:py-8 relative font-sans overflow-hidden">
+    <div
+      className={`min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-4 py-4 sm:py-8 relative font-sans overflow-hidden transition-colors duration-300`}
+    >
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -left-20 -top-20 w-60 h-60 sm:w-80 sm:h-80 bg-gradient-to-r from-[#E41E26]/10 to-[#FDB913]/10 rounded-full blur-3xl animate-pulse"></div>
@@ -310,7 +318,7 @@ export default function Profile() {
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         onClick={() => navigate(-1)}
-        className="fixed top-4 left-4 z-50 bg-white/80 backdrop-blur-md hover:bg-[#E41E26] hover:text-white rounded-full p-2 sm:p-3 text-[#E41E26] border border-[#E41E26]/30 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl group"
+        className="fixed top-4 left-4 z-50 bg-white/80 backdrop-blur-md hover:bg-[#E41E26] hover:text-white rounded-full p-2 sm:p-3 text-[#E41E26] border border-[#E41E26]/30 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl group dark:bg-gray-800/80 dark:text-gray-200 dark:hover:bg-[#E41E26]"
       >
         <FaArrowLeft
           size={16}
@@ -322,7 +330,7 @@ export default function Profile() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, type: "spring" }}
-        className="max-w-4xl mx-auto bg-white/90 backdrop-blur-xl shadow-2xl rounded-3xl border border-white/50 relative overflow-hidden"
+        className="max-w-4xl mx-auto bg-white/90 backdrop-blur-xl shadow-2xl rounded-3xl border border-white/50 relative overflow-hidden dark:bg-gray-800/90 dark:border-gray-700/50"
       >
         {/* Header Background */}
         <div className="relative h-24 sm:h-32 bg-gradient-to-r from-[#E41E26] to-[#FDB913] overflow-hidden">
@@ -346,10 +354,10 @@ export default function Profile() {
                 <img
                   src={user.avatar}
                   alt="Avatar"
-                  className="w-20 h-20 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full object-cover border-4 border-white shadow-2xl"
+                  className="w-20 h-20 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full object-cover border-4 border-white shadow-2xl dark:border-gray-800"
                 />
               ) : (
-                <div className="w-20 h-20 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white flex items-center justify-center text-2xl sm:text-3xl lg:text-4xl font-bold border-4 border-white shadow-2xl">
+                <div className="w-20 h-20 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white flex items-center justify-center text-2xl sm:text-3xl lg:text-4xl font-bold border-4 border-white shadow-2xl dark:border-gray-800">
                   {user.firstName?.charAt(0).toUpperCase() || "U"}
                 </div>
               )}
@@ -373,7 +381,7 @@ export default function Profile() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800 mb-1 sm:mb-2"
+                className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-1 sm:mb-2"
               >
                 {user.firstName} {user.lastName}
               </motion.h1>
@@ -381,7 +389,7 @@ export default function Profile() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="text-gray-600 flex items-center justify-center lg:justify-start gap-2 text-sm sm:text-base"
+                className="text-gray-600 dark:text-gray-400 flex items-center justify-center lg:justify-start gap-2 text-sm sm:text-base"
               >
                 <FaEnvelope className="text-[#E41E26] flex-shrink-0" />
                 <span className="truncate block max-w-[200px] sm:max-w-[300px] lg:max-w-[400px]">
@@ -418,7 +426,7 @@ export default function Profile() {
                     className={`flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 text-sm sm:text-base ${
                       hasChanges
                         ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25"
-                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        : "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400"
                     }`}
                   >
                     <FaSave className="flex-shrink-0" />
@@ -436,7 +444,7 @@ export default function Profile() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="w-full flex items-center justify-between bg-gray-100/80 backdrop-blur-sm rounded-2xl p-4 font-semibold transition-all duration-300"
+              className="w-full flex items-center justify-between bg-gray-100/80 backdrop-blur-sm rounded-2xl p-4 font-semibold transition-all duration-300 dark:bg-gray-700/80 dark:text-gray-200"
             >
               <div className="flex items-center gap-3">
                 {tabs.find((tab) => tab.id === activeTab)?.icon &&
@@ -458,7 +466,7 @@ export default function Profile() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="bg-white/95 backdrop-blur-sm rounded-2xl mt-2 overflow-hidden shadow-lg border border-gray-200/50"
+                  className="bg-white/95 backdrop-blur-sm rounded-2xl mt-2 overflow-hidden shadow-lg border border-gray-200/50 dark:bg-gray-700/95 dark:border-gray-600/50"
                 >
                   {tabs.map((tab) => (
                     <motion.button
@@ -473,14 +481,14 @@ export default function Profile() {
                       }}
                       className={`w-full flex items-center gap-3 p-4 text-left transition-all duration-200 ${
                         activeTab === tab.id
-                          ? "bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] text-[#E41E26]"
-                          : "text-gray-600 hover:bg-gray-50"
+                          ? "bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] text-[#E41E26] dark:from-gray-600 dark:to-gray-500"
+                          : "text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-600"
                       }`}
                     >
                       <tab.icon className="text-xl flex-shrink-0" />
                       <div className="flex-1">
                         <div className="font-semibold">{tab.label}</div>
-                        <div className="text-sm text-gray-500 mt-1">
+                        <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                           {tab.description}
                         </div>
                       </div>
@@ -492,7 +500,7 @@ export default function Profile() {
           </div>
 
           {/* Desktop Tabs Navigation */}
-          <div className="hidden lg:flex gap-1 bg-gray-100/80 backdrop-blur-sm rounded-2xl p-1 mb-6 sm:mb-8 w-full">
+          <div className="hidden lg:flex gap-1 bg-gray-100/80 backdrop-blur-sm rounded-2xl p-1 mb-6 sm:mb-8 w-full dark:bg-gray-700/80">
             {tabs.map((tab) => (
               <motion.button
                 key={tab.id}
@@ -506,8 +514,8 @@ export default function Profile() {
                 }}
                 className={`flex items-center gap-3 flex-1 py-4 px-6 rounded-xl font-semibold transition-all duration-300 text-left ${
                   activeTab === tab.id
-                    ? "bg-white text-[#E41E26] shadow-lg"
-                    : "text-gray-600 hover:text-[#E41E26] hover:bg-white/50"
+                    ? "bg-white text-[#E41E26] shadow-lg dark:bg-gray-600 dark:text-[#E41E26]"
+                    : "text-gray-600 hover:text-[#E41E26] hover:bg-white/50 dark:text-gray-300 dark:hover:bg-gray-600/50"
                 }`}
               >
                 <tab.icon className="text-xl flex-shrink-0" />
@@ -516,8 +524,8 @@ export default function Profile() {
                   <div
                     className={`text-sm mt-1 ${
                       activeTab === tab.id
-                        ? "text-[#E41E26]/80"
-                        : "text-gray-500"
+                        ? "text-[#E41E26]/80 dark:text-[#E41E26]/70"
+                        : "text-gray-500 dark:text-gray-400"
                     }`}
                   >
                     {tab.description}
@@ -540,8 +548,8 @@ export default function Profile() {
                   transition={{ duration: 0.3, type: "spring" }}
                   className="w-full"
                 >
-                  <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-gray-200/50 shadow-lg">
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
+                  <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-gray-200/50 shadow-lg dark:bg-gray-700/80 dark:border-gray-600/50">
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-200 mb-3 sm:mb-4 flex items-center gap-2">
                       <FaUser className="text-[#E41E26]" />
                       Personal Information
                     </h3>
@@ -549,7 +557,7 @@ export default function Profile() {
                     <div className="space-y-3 sm:space-y-4">
                       {/* First Name */}
                       <div className="space-y-2">
-                        <label className="block text-sm font-semibold text-gray-700">
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
                           First Name
                         </label>
                         <div className="relative group">
@@ -568,7 +576,7 @@ export default function Profile() {
                               placeholder="Enter your first name"
                             />
                           ) : (
-                            <div className="w-full border border-gray-200 bg-white/50 text-gray-800 text-base sm:text-lg font-medium pl-10 sm:pl-12 py-3 sm:py-3.5 rounded-xl">
+                            <div className="w-full border border-gray-200 bg-white/50 text-gray-800 text-base sm:text-lg font-medium pl-10 sm:pl-12 py-3 sm:py-3.5 rounded-xl dark:bg-gray-600/50 dark:text-gray-200 dark:border-gray-500">
                               {user.firstName}
                             </div>
                           )}
@@ -577,7 +585,7 @@ export default function Profile() {
 
                       {/* Last Name */}
                       <div className="space-y-2">
-                        <label className="block text-sm font-semibold text-gray-700">
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
                           Last Name
                         </label>
                         <div className="relative group">
@@ -596,7 +604,7 @@ export default function Profile() {
                               placeholder="Enter your last name"
                             />
                           ) : (
-                            <div className="w-full border border-gray-200 bg-white/50 text-gray-800 text-base sm:text-lg font-medium pl-10 sm:pl-12 py-3 sm:py-3.5 rounded-xl">
+                            <div className="w-full border border-gray-200 bg-white/50 text-gray-800 text-base sm:text-lg font-medium pl-10 sm:pl-12 py-3 sm:py-3.5 rounded-xl dark:bg-gray-600/50 dark:text-gray-200 dark:border-gray-500">
                               {user.lastName}
                             </div>
                           )}
@@ -605,12 +613,12 @@ export default function Profile() {
 
                       {/* Email */}
                       <div className="space-y-2">
-                        <label className="block text-sm font-semibold text-gray-700">
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
                           Email Address
                         </label>
                         <div className="relative group">
                           <FaEnvelope className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-lg transition-all duration-300 opacity-70" />
-                          <div className="w-full border border-gray-200 bg-gray-100/50 text-gray-800 text-base sm:text-lg font-medium pl-10 sm:pl-12 py-3 sm:py-3.5 rounded-xl truncate">
+                          <div className="w-full border border-gray-200 bg-gray-100/50 text-gray-800 text-base sm:text-lg font-medium pl-10 sm:pl-12 py-3 sm:py-3.5 rounded-xl truncate dark:bg-gray-600/50 dark:text-gray-200 dark:border-gray-500">
                             {user.email}
                           </div>
                         </div>
@@ -618,7 +626,7 @@ export default function Profile() {
 
                       {/* Phone Number */}
                       <div className="space-y-2">
-                        <label className="block text-sm font-semibold text-gray-700">
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
                           Phone Number
                         </label>
                         <div className="relative group">
@@ -637,7 +645,7 @@ export default function Profile() {
                               placeholder="Enter your phone number"
                             />
                           ) : (
-                            <div className="w-full border border-gray-200 bg-white/50 text-gray-800 text-base sm:text-lg font-medium pl-10 sm:pl-12 py-3 sm:py-3.5 rounded-xl">
+                            <div className="w-full border border-gray-200 bg-white/50 text-gray-800 text-base sm:text-lg font-medium pl-10 sm:pl-12 py-3 sm:py-3.5 rounded-xl dark:bg-gray-600/50 dark:text-gray-200 dark:border-gray-500">
                               {user.phoneNumber || "Not provided"}
                             </div>
                           )}
@@ -658,8 +666,8 @@ export default function Profile() {
                   transition={{ duration: 0.3, type: "spring" }}
                   className="w-full"
                 >
-                  <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-gray-200/50 shadow-lg">
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
+                  <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-gray-200/50 shadow-lg dark:bg-gray-700/80 dark:border-gray-600/50">
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-200 mb-3 sm:mb-4 flex items-center gap-2">
                       <FaKey className="text-[#E41E26]" />
                       Change Password
                     </h3>
@@ -667,7 +675,7 @@ export default function Profile() {
                     <div className="space-y-3 sm:space-y-4">
                       {/* Current Password */}
                       <div className="space-y-2">
-                        <label className="block text-sm font-semibold text-gray-700">
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
                           Current Password
                         </label>
                         <div className="relative group">
@@ -689,7 +697,7 @@ export default function Profile() {
                                 old: !showPassword.old,
                               })
                             }
-                            className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[#E41E26] cursor-pointer transition-all duration-200 hover:scale-110"
+                            className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[#E41E26] cursor-pointer transition-all duration-200 hover:scale-110 dark:text-gray-400"
                           >
                             {showPassword.old ? <FaEyeSlash /> : <FaEye />}
                           </div>
@@ -698,7 +706,7 @@ export default function Profile() {
 
                       {/* New Password */}
                       <div className="space-y-2">
-                        <label className="block text-sm font-semibold text-gray-700">
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
                           New Password
                         </label>
                         <div className="relative group">
@@ -720,7 +728,7 @@ export default function Profile() {
                                 new: !showPassword.new,
                               })
                             }
-                            className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[#E41E26] cursor-pointer transition-all duration-200 hover:scale-110"
+                            className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[#E41E26] cursor-pointer transition-all duration-200 hover:scale-110 dark:text-gray-400"
                           >
                             {showPassword.new ? <FaEyeSlash /> : <FaEye />}
                           </div>
@@ -728,7 +736,7 @@ export default function Profile() {
                       </div>
 
                       {/* Password Requirements */}
-                      <div className="bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] p-3 sm:p-4 rounded-xl border border-[#FDB913]/30 space-y-2">
+                      <div className="bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] p-3 sm:p-4 rounded-xl border border-[#FDB913]/30 space-y-2 dark:from-gray-600 dark:to-gray-500 dark:border-gray-500">
                         <p className="text-sm font-semibold text-[#E41E26] mb-2">
                           Password Requirements:
                         </p>
@@ -762,7 +770,7 @@ export default function Profile() {
                         className={`w-full font-semibold py-3 sm:py-3.5 rounded-xl transition-all duration-300 text-base sm:text-lg ${
                           allPasswordValid && passwordData.oldPassword
                             ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25"
-                            : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                            : "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400"
                         }`}
                       >
                         Update Password

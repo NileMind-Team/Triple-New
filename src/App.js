@@ -1,4 +1,5 @@
 import { Routes, Route, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import ConfirmEmail from "./pages/ConfirmEmail";
@@ -17,6 +18,10 @@ import AdminBranches from "./pages/AdminBranches";
 
 function App() {
   const location = useLocation();
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem("darkMode");
+    return saved ? JSON.parse(saved) : false;
+  });
 
   const hideNavbarFooterPaths = [
     "/login",
@@ -34,13 +39,31 @@ function App() {
     location.pathname
   );
 
+  useEffect(() => {
+    const html = document.documentElement;
+    if (darkMode) {
+      html.classList.add("dark");
+      html.style.colorScheme = "dark";
+    } else {
+      html.classList.remove("dark");
+      html.style.colorScheme = "light";
+    }
+    localStorage.setItem("darkMode", JSON.stringify(darkMode));
+  }, [darkMode]);
+
+  const toggleDarkMode = () => {
+    setDarkMode((prev) => !prev);
+  };
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className={`min-h-screen flex flex-col ${darkMode ? "dark" : ""}`}>
       {/* Navbar */}
-      {shouldShowNavbarFooter && <Navbar />}
+      {shouldShowNavbarFooter && (
+        <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+      )}
 
       {/* Main content */}
-      <main className="flex-grow w-full">
+      <main className="flex-grow w-full bg-white dark:bg-gray-900 transition-colors duration-300">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<AuthPage />} />

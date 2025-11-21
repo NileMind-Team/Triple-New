@@ -86,15 +86,15 @@ export default function ConfirmEmail() {
   }, [searchParams]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 px-4">
-      <div className="bg-white shadow-2xl rounded-3xl p-8 w-full max-w-md text-center transition-all duration-500">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 px-4 transition-colors duration-300">
+      <div className="bg-white dark:bg-gray-800 shadow-2xl rounded-3xl p-8 w-full max-w-md text-center transition-all duration-500">
         {loading ? (
           <div className="flex flex-col items-center space-y-6">
-            <div className="animate-spin rounded-full h-14 w-14 border-t-4 border-b-4 border-blue-500"></div>
-            <h2 className="text-2xl font-bold text-gray-800">
+            <div className="animate-spin rounded-full h-14 w-14 border-t-4 border-b-4 border-blue-500 dark:border-blue-400"></div>
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
               Confirming Your Email...
             </h2>
-            <p className="text-gray-500">
+            <p className="text-gray-500 dark:text-gray-400">
               Please wait a moment while we verify your email.
             </p>
           </div>
@@ -102,12 +102,14 @@ export default function ConfirmEmail() {
           <div className="flex flex-col items-center space-y-6">
             <div
               className={`rounded-full p-4 ${
-                success ? "bg-green-100" : "bg-red-100"
+                success
+                  ? "bg-green-100 dark:bg-green-900/30"
+                  : "bg-red-100 dark:bg-red-900/30"
               }`}
             >
               {success ? (
                 <svg
-                  className="w-12 h-12 text-green-500"
+                  className="w-12 h-12 text-green-500 dark:text-green-400"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
@@ -121,7 +123,7 @@ export default function ConfirmEmail() {
                 </svg>
               ) : (
                 <svg
-                  className="w-12 h-12 text-red-500"
+                  className="w-12 h-12 text-red-500 dark:text-red-400"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
@@ -135,15 +137,15 @@ export default function ConfirmEmail() {
                 </svg>
               )}
             </div>
-            <h2 className="text-2xl font-bold text-gray-800">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
               {success ? "Email Confirmed" : "Confirmation Failed"}
             </h2>
-            <p className="text-gray-500">{message}</p>
+            <p className="text-gray-500 dark:text-gray-400">{message}</p>
 
             {success && (
               <button
                 onClick={() => navigate("/login")}
-                className="mt-4 bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition-all duration-200"
+                className="mt-4 bg-blue-600 dark:bg-blue-500 text-white px-5 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-200"
               >
                 Back to Login
               </button>

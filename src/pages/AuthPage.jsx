@@ -34,7 +34,6 @@ export default function AuthPage() {
     location.pathname === "/register" ? "register" : "login"
   );
   const [forgetMode, setForgetMode] = useState(false);
-
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
@@ -383,17 +382,19 @@ export default function AuthPage() {
   const isLoginDisabled = !email || !password || loginLoading;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] px-4 relative font-sans overflow-hidden">
+    <div
+      className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-4 relative font-sans overflow-hidden transition-colors duration-300`}
+    >
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -left-20 -top-20 w-80 h-80 bg-gradient-to-r from-[#E41E26]/10 to-[#FDB913]/10 rounded-full blur-3xl"></div>
-        <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-gradient-to-r from-[#FDB913]/10 to-[#E41E26]/10 rounded-full blur-3xl"></div>
+        <div className="absolute -left-20 -top-20 w-80 h-80 bg-gradient-to-r from-[#E41E26]/10 to-[#FDB913]/10 dark:from-[#E41E26]/20 dark:to-[#FDB913]/20 rounded-full blur-3xl"></div>
+        <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-gradient-to-r from-[#FDB913]/10 to-[#E41E26]/10 dark:from-[#FDB913]/20 dark:to-[#E41E26]/20 rounded-full blur-3xl"></div>
       </div>
 
       {!showWelcome && (
         <button
           onClick={() => navigate(-1)}
-          className="fixed top-6 left-6 z-50 bg-white/80 backdrop-blur-md hover:bg-[#E41E26] hover:text-white rounded-full p-3 text-[#E41E26] border border-[#E41E26]/30 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl"
+          className="fixed top-6 left-6 z-50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md hover:bg-[#E41E26] hover:text-white rounded-full p-3 text-[#E41E26] dark:text-gray-300 border border-[#E41E26]/30 dark:border-gray-600 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl"
         >
           <FaArrowLeft size={18} />
         </button>
@@ -403,7 +404,7 @@ export default function AuthPage() {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className="w-full max-w-4xl bg-white/90 backdrop-blur-xl shadow-2xl rounded-3xl border border-white/50 relative overflow-hidden"
+        className="w-full max-w-4xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl shadow-2xl rounded-3xl border border-white/50 dark:border-gray-700/50 relative overflow-hidden transition-colors duration-300"
       >
         {/* Form Background Pattern */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#E41E26]/5 to-transparent rounded-bl-3xl"></div>
@@ -415,17 +416,17 @@ export default function AuthPage() {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="lg:col-span-1 bg-gradient-to-br from-[#fff8e7] to-[#ffe5b4] rounded-l-3xl p-8 flex flex-col"
+            className="lg:col-span-1 bg-gradient-to-br from-[#fff8e7] to-[#ffe5b4] dark:from-gray-800 dark:to-gray-700 rounded-l-3xl p-8 flex flex-col transition-colors duration-300"
           >
             {/* Brand Content */}
             <div className="space-y-6 mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 leading-tight">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white leading-tight">
                 Welcome to{" "}
                 <span className="bg-gradient-to-r from-[#E41E26] to-[#FDB913] bg-clip-text text-transparent">
                   Chicken One
                 </span>
               </h1>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                 Join our community and experience the best service with secure
                 authentication.
               </p>
@@ -439,13 +440,15 @@ export default function AuthPage() {
                 onClick={() => handleTabChange("login")}
                 className={`flex items-center gap-4 px-6 py-4 rounded-xl font-semibold text-lg transition-all duration-300 ${
                   activeTab === "login"
-                    ? "bg-white text-[#E41E26] shadow-lg border border-[#E41E26]/20"
-                    : "text-gray-600 hover:text-[#E41E26] hover:bg-white/50 border border-transparent"
+                    ? "bg-white dark:bg-gray-800 text-[#E41E26] dark:text-[#FDB913] shadow-lg border border-[#E41E26]/20 dark:border-[#FDB913]/30"
+                    : "text-gray-600 dark:text-gray-400 hover:text-[#E41E26] dark:hover:text-[#FDB913] hover:bg-white/50 dark:hover:bg-gray-700/50 border border-transparent"
                 }`}
               >
                 <div
                   className={`w-2 h-8 rounded-full ${
-                    activeTab === "login" ? "bg-[#E41E26]" : "bg-gray-300"
+                    activeTab === "login"
+                      ? "bg-[#E41E26] dark:bg-[#FDB913]"
+                      : "bg-gray-300 dark:bg-gray-600"
                   }`}
                 ></div>
                 <span className="flex-1 text-left">Sign In</span>
@@ -457,13 +460,15 @@ export default function AuthPage() {
                 onClick={() => handleTabChange("register")}
                 className={`flex items-center gap-4 px-6 py-4 rounded-xl font-semibold text-lg transition-all duration-300 ${
                   activeTab === "register"
-                    ? "bg-white text-[#E41E26] shadow-lg border border-[#E41E26]/20"
-                    : "text-gray-600 hover:text-[#E41E26] hover:bg-white/50 border border-transparent"
+                    ? "bg-white dark:bg-gray-800 text-[#E41E26] dark:text-[#FDB913] shadow-lg border border-[#E41E26]/20 dark:border-[#FDB913]/30"
+                    : "text-gray-600 dark:text-gray-400 hover:text-[#E41E26] dark:hover:text-[#FDB913] hover:bg-white/50 dark:hover:bg-gray-700/50 border border-transparent"
                 }`}
               >
                 <div
                   className={`w-2 h-8 rounded-full ${
-                    activeTab === "register" ? "bg-[#E41E26]" : "bg-gray-300"
+                    activeTab === "register"
+                      ? "bg-[#E41E26] dark:bg-[#FDB913]"
+                      : "bg-gray-300 dark:bg-gray-600"
                   }`}
                 ></div>
                 <span className="flex-1 text-left">Create Account</span>
@@ -472,13 +477,13 @@ export default function AuthPage() {
 
             {/* Animated Dots */}
             <div className="flex space-x-2 justify-center mt-8">
-              <div className="w-3 h-3 bg-[#E41E26] rounded-full animate-bounce"></div>
+              <div className="w-3 h-3 bg-[#E41E26] dark:bg-[#FDB913] rounded-full animate-bounce"></div>
               <div
-                className="w-3 h-3 bg-[#FDB913] rounded-full animate-bounce"
+                className="w-3 h-3 bg-[#FDB913] dark:bg-[#E41E26] rounded-full animate-bounce"
                 style={{ animationDelay: "0.2s" }}
               ></div>
               <div
-                className="w-3 h-3 bg-[#E41E26] rounded-full animate-bounce"
+                className="w-3 h-3 bg-[#E41E26] dark:bg-[#FDB913] rounded-full animate-bounce"
                 style={{ animationDelay: "0.4s" }}
               ></div>
             </div>
@@ -503,7 +508,7 @@ export default function AuthPage() {
                       <h2 className="text-2xl font-bold bg-gradient-to-r from-[#E41E26] to-[#FDB913] bg-clip-text text-transparent">
                         Welcome Back
                       </h2>
-                      <p className="text-gray-600 mt-2 text-sm">
+                      <p className="text-gray-600 dark:text-gray-400 mt-2 text-sm">
                         Sign in to your Chicken One account
                       </p>
                     </div>
@@ -511,7 +516,7 @@ export default function AuthPage() {
                     <div className="space-y-4">
                       <div className="relative group">
                         <div className="absolute inset-y-0 left-0 flex items-center justify-center pl-4">
-                          <FaEnvelope className="text-[#E41E26] text-lg transition-all duration-300 group-focus-within:scale-110" />
+                          <FaEnvelope className="text-[#E41E26] dark:text-[#FDB913] text-lg transition-all duration-300 group-focus-within:scale-110" />
                         </div>
                         <input
                           type="email"
@@ -519,13 +524,13 @@ export default function AuthPage() {
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="Email Address"
-                          className="w-full border border-gray-200 bg-white text-black rounded-xl pl-12 pr-4 py-3.5 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 group-hover:border-[#E41E26]/50"
+                          className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white rounded-xl pl-12 pr-4 py-3.5 outline-none focus:ring-2 focus:ring-[#E41E26] dark:focus:ring-[#FDB913] focus:border-transparent transition-all duration-200 group-hover:border-[#E41E26]/50 dark:group-hover:border-[#FDB913]/50"
                         />
                       </div>
 
                       <div className="relative group">
                         <div className="absolute inset-y-0 left-0 flex items-center justify-center pl-4">
-                          <FaLock className="text-[#E41E26] text-lg transition-all duration-300 group-focus-within:scale-110" />
+                          <FaLock className="text-[#E41E26] dark:text-[#FDB913] text-lg transition-all duration-300 group-focus-within:scale-110" />
                         </div>
                         <input
                           type={showPassword ? "text" : "password"}
@@ -533,12 +538,12 @@ export default function AuthPage() {
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
                           placeholder="Password"
-                          className="w-full border border-gray-200 bg-white text-black rounded-xl pl-12 pr-12 py-3.5 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 group-hover:border-[#E41E26]/50"
+                          className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white rounded-xl pl-12 pr-12 py-3.5 outline-none focus:ring-2 focus:ring-[#E41E26] dark:focus:ring-[#FDB913] focus:border-transparent transition-all duration-200 group-hover:border-[#E41E26]/50 dark:group-hover:border-[#FDB913]/50"
                         />
                         <div className="absolute inset-y-0 right-0 flex items-center justify-center pr-4">
                           <div
                             onClick={() => setShowPassword(!showPassword)}
-                            className="text-gray-500 hover:text-[#E41E26] cursor-pointer transition-all duration-200 hover:scale-110"
+                            className="text-gray-500 dark:text-gray-400 hover:text-[#E41E26] dark:hover:text-[#FDB913] cursor-pointer transition-all duration-200 hover:scale-110"
                           >
                             {showPassword ? (
                               <FaEyeSlash size={16} />
@@ -554,7 +559,7 @@ export default function AuthPage() {
                       <button
                         type="button"
                         onClick={() => setForgetMode(true)}
-                        className="text-[#E41E26] hover:text-[#FDB913] underline text-sm font-medium transition-all duration-200"
+                        className="text-[#E41E26] dark:text-[#FDB913] hover:text-[#FDB913] dark:hover:text-[#E41E26] underline text-sm font-medium transition-all duration-200"
                       >
                         Forgot Password?
                       </button>
@@ -567,8 +572,8 @@ export default function AuthPage() {
                       disabled={isLoginDisabled}
                       className={`w-full font-semibold py-3.5 rounded-xl transition-all duration-300 text-lg relative overflow-hidden ${
                         !isLoginDisabled
-                          ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25"
-                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25 dark:hover:shadow-[#FDB913]/25"
+                          : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
                       }`}
                     >
                       {loginLoading ? (
@@ -601,7 +606,7 @@ export default function AuthPage() {
                       <h2 className="text-2xl font-bold bg-gradient-to-r from-[#E41E26] to-[#FDB913] bg-clip-text text-transparent">
                         Create Account
                       </h2>
-                      <p className="text-gray-600 mt-2 text-sm">
+                      <p className="text-gray-600 dark:text-gray-400 mt-2 text-sm">
                         Join Chicken One and start your journey
                       </p>
                     </div>
@@ -610,7 +615,7 @@ export default function AuthPage() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div className="relative group">
                           <div className="absolute inset-y-0 left-0 flex items-center justify-center pl-3">
-                            <FaUser className="text-[#E41E26] text-lg transition-all duration-300 group-focus-within:scale-110" />
+                            <FaUser className="text-[#E41E26] dark:text-[#FDB913] text-lg transition-all duration-300 group-focus-within:scale-110" />
                           </div>
                           <input
                             type="text"
@@ -619,13 +624,13 @@ export default function AuthPage() {
                             value={form.firstName}
                             onChange={handleChange}
                             placeholder="First Name"
-                            className="w-full border border-gray-200 bg-white text-black rounded-xl pl-10 pr-3 py-3.5 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 group-hover:border-[#E41E26]/50 text-sm"
+                            className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white rounded-xl pl-10 pr-3 py-3.5 outline-none focus:ring-2 focus:ring-[#E41E26] dark:focus:ring-[#FDB913] focus:border-transparent transition-all duration-200 group-hover:border-[#E41E26]/50 dark:group-hover:border-[#FDB913]/50 text-sm"
                           />
                         </div>
 
                         <div className="relative group">
                           <div className="absolute inset-y-0 left-0 flex items-center justify-center pl-3">
-                            <FaUser className="text-[#E41E26] text-lg transition-all duration-300 group-focus-within:scale-110" />
+                            <FaUser className="text-[#E41E26] dark:text-[#FDB913] text-lg transition-all duration-300 group-focus-within:scale-110" />
                           </div>
                           <input
                             type="text"
@@ -634,14 +639,14 @@ export default function AuthPage() {
                             value={form.lastName}
                             onChange={handleChange}
                             placeholder="Last Name"
-                            className="w-full border border-gray-200 bg-white text-black rounded-xl pl-10 pr-3 py-3.5 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 group-hover:border-[#E41E26]/50 text-sm"
+                            className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white rounded-xl pl-10 pr-3 py-3.5 outline-none focus:ring-2 focus:ring-[#E41E26] dark:focus:ring-[#FDB913] focus:border-transparent transition-all duration-200 group-hover:border-[#E41E26]/50 dark:group-hover:border-[#FDB913]/50 text-sm"
                           />
                         </div>
                       </div>
 
                       <div className="relative group">
                         <div className="absolute inset-y-0 left-0 flex items-center justify-center pl-4">
-                          <FaEnvelope className="text-[#E41E26] text-lg transition-all duration-300 group-focus-within:scale-110" />
+                          <FaEnvelope className="text-[#E41E26] dark:text-[#FDB913] text-lg transition-all duration-300 group-focus-within:scale-110" />
                         </div>
                         <input
                           type="email"
@@ -650,13 +655,13 @@ export default function AuthPage() {
                           value={form.email}
                           onChange={handleChange}
                           placeholder="Email Address"
-                          className="w-full border border-gray-200 bg-white text-black rounded-xl pl-12 pr-4 py-3.5 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 group-hover:border-[#E41E26]/50"
+                          className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white rounded-xl pl-12 pr-4 py-3.5 outline-none focus:ring-2 focus:ring-[#E41E26] dark:focus:ring-[#FDB913] focus:border-transparent transition-all duration-200 group-hover:border-[#E41E26]/50 dark:group-hover:border-[#FDB913]/50"
                         />
                       </div>
 
                       <div className="relative group">
                         <div className="absolute inset-y-0 left-0 flex items-center justify-center pl-4">
-                          <FaPhone className="text-[#E41E26] text-lg transition-all duration-300 group-focus-within:scale-110" />
+                          <FaPhone className="text-[#E41E26] dark:text-[#FDB913] text-lg transition-all duration-300 group-focus-within:scale-110" />
                         </div>
                         <input
                           type="tel"
@@ -665,13 +670,13 @@ export default function AuthPage() {
                           value={form.phoneNumber}
                           onChange={handleChange}
                           placeholder="Phone Number"
-                          className="w-full border border-gray-200 bg-white text-black rounded-xl pl-12 pr-4 py-3.5 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 group-hover:border-[#E41E26]/50"
+                          className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white rounded-xl pl-12 pr-4 py-3.5 outline-none focus:ring-2 focus:ring-[#E41E26] dark:focus:ring-[#FDB913] focus:border-transparent transition-all duration-200 group-hover:border-[#E41E26]/50 dark:group-hover:border-[#FDB913]/50"
                         />
                       </div>
 
                       <div className="relative group">
                         <div className="absolute inset-y-0 left-0 flex items-center justify-center pl-4">
-                          <FaLock className="text-[#E41E26] text-lg transition-all duration-300 group-focus-within:scale-110" />
+                          <FaLock className="text-[#E41E26] dark:text-[#FDB913] text-lg transition-all duration-300 group-focus-within:scale-110" />
                         </div>
                         <input
                           type={showRegisterPassword ? "text" : "password"}
@@ -680,14 +685,14 @@ export default function AuthPage() {
                           value={form.password}
                           onChange={handleChange}
                           placeholder="Password"
-                          className="w-full border border-gray-200 bg-white text-black rounded-xl pl-12 pr-12 py-3.5 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 group-hover:border-[#E41E26]/50"
+                          className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white rounded-xl pl-12 pr-12 py-3.5 outline-none focus:ring-2 focus:ring-[#E41E26] dark:focus:ring-[#FDB913] focus:border-transparent transition-all duration-200 group-hover:border-[#E41E26]/50 dark:group-hover:border-[#FDB913]/50"
                         />
                         <div className="absolute inset-y-0 right-0 flex items-center justify-center pr-4">
                           <div
                             onClick={() =>
                               setShowRegisterPassword(!showRegisterPassword)
                             }
-                            className="text-gray-500 hover:text-[#E41E26] cursor-pointer transition-all duration-200 hover:scale-110"
+                            className="text-gray-500 dark:text-gray-400 hover:text-[#E41E26] dark:hover:text-[#FDB913] cursor-pointer transition-all duration-200 hover:scale-110"
                           >
                             {showRegisterPassword ? (
                               <FaEyeSlash size={16} />
@@ -700,7 +705,7 @@ export default function AuthPage() {
 
                       <div className="relative group">
                         <div className="absolute inset-y-0 left-0 flex items-center justify-center pl-4">
-                          <FaLock className="text-[#E41E26] text-lg transition-all duration-300 group-focus-within:scale-110" />
+                          <FaLock className="text-[#E41E26] dark:text-[#FDB913] text-lg transition-all duration-300 group-focus-within:scale-110" />
                         </div>
                         <input
                           type={showConfirmPassword ? "text" : "password"}
@@ -709,14 +714,14 @@ export default function AuthPage() {
                           value={form.confirmPassword}
                           onChange={handleChange}
                           placeholder="Confirm Password"
-                          className="w-full border border-gray-200 bg-white text-black rounded-xl pl-12 pr-12 py-3.5 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 group-hover:border-[#E41E26]/50"
+                          className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white rounded-xl pl-12 pr-12 py-3.5 outline-none focus:ring-2 focus:ring-[#E41E26] dark:focus:ring-[#FDB913] focus:border-transparent transition-all duration-200 group-hover:border-[#E41E26]/50 dark:group-hover:border-[#FDB913]/50"
                         />
                         <div className="absolute inset-y-0 right-0 flex items-center justify-center pr-4">
                           <div
                             onClick={() =>
                               setShowConfirmPassword(!showConfirmPassword)
                             }
-                            className="text-gray-500 hover:text-[#E41E26] cursor-pointer transition-all duration-200 hover:scale-110"
+                            className="text-gray-500 dark:text-gray-400 hover:text-[#E41E26] dark:hover:text-[#FDB913] cursor-pointer transition-all duration-200 hover:scale-110"
                           >
                             {showConfirmPassword ? (
                               <FaEyeSlash size={16} />
@@ -729,8 +734,8 @@ export default function AuthPage() {
                     </div>
 
                     {/* Password Validation - Responsive */}
-                    <div className="bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] p-3 rounded-xl border border-[#FDB913]/30 space-y-2">
-                      <p className="text-sm font-semibold text-[#E41E26]">
+                    <div className="bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] dark:from-gray-800 dark:to-gray-700 p-3 rounded-xl border border-[#FDB913]/30 dark:border-gray-600 space-y-2 transition-colors duration-300">
+                      <p className="text-sm font-semibold text-[#E41E26] dark:text-[#FDB913]">
                         Password Requirements:
                       </p>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
@@ -764,8 +769,8 @@ export default function AuthPage() {
                       disabled={!isRegisterFormValid || registerLoading}
                       className={`w-full font-semibold py-3.5 rounded-xl transition-all duration-300 text-lg relative overflow-hidden ${
                         isRegisterFormValid
-                          ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25"
-                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25 dark:hover:shadow-[#FDB913]/25"
+                          : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
                       }`}
                     >
                       {registerLoading ? (
@@ -797,7 +802,7 @@ export default function AuthPage() {
                   <h2 className="text-2xl font-bold bg-gradient-to-r from-[#E41E26] to-[#FDB913] bg-clip-text text-transparent">
                     Reset Password
                   </h2>
-                  <p className="text-gray-600 mt-2 text-sm">
+                  <p className="text-gray-600 dark:text-gray-400 mt-2 text-sm">
                     Enter your email to receive a reset code
                   </p>
                 </div>
@@ -805,7 +810,7 @@ export default function AuthPage() {
                 <form onSubmit={handleForgetPassword} className="space-y-6">
                   <div className="relative group">
                     <div className="absolute inset-y-0 left-0 flex items-center justify-center pl-4">
-                      <FaEnvelope className="text-[#E41E26] text-lg transition-all duration-300 group-focus-within:scale-110" />
+                      <FaEnvelope className="text-[#E41E26] dark:text-[#FDB913] text-lg transition-all duration-300 group-focus-within:scale-110" />
                     </div>
                     <input
                       type="email"
@@ -813,7 +818,7 @@ export default function AuthPage() {
                       value={forgetEmail}
                       onChange={(e) => setForgetEmail(e.target.value)}
                       placeholder="Your registered email"
-                      className="w-full border border-gray-200 bg-white text-black rounded-xl pl-12 pr-4 py-3.5 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 group-hover:border-[#E41E26]/50"
+                      className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white rounded-xl pl-12 pr-4 py-3.5 outline-none focus:ring-2 focus:ring-[#E41E26] dark:focus:ring-[#FDB913] focus:border-transparent transition-all duration-200 group-hover:border-[#E41E26]/50 dark:group-hover:border-[#FDB913]/50"
                     />
                   </div>
 
@@ -823,7 +828,7 @@ export default function AuthPage() {
                       whileTap={{ scale: 0.98 }}
                       type="button"
                       onClick={() => setForgetMode(false)}
-                      className="flex-1 py-3.5 border-2 border-[#E41E26] text-[#E41E26] rounded-xl font-semibold hover:bg-[#E41E26] hover:text-white transition-all duration-300"
+                      className="flex-1 py-3.5 border-2 border-[#E41E26] dark:border-[#FDB913] text-[#E41E26] dark:text-[#FDB913] rounded-xl font-semibold hover:bg-[#E41E26] dark:hover:bg-[#FDB913] hover:text-white transition-all duration-300"
                     >
                       Back
                     </motion.button>
@@ -834,8 +839,8 @@ export default function AuthPage() {
                       disabled={!forgetEmail}
                       className={`flex-1 py-3.5 rounded-xl font-semibold transition-all duration-300 relative overflow-hidden ${
                         forgetEmail
-                          ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25"
-                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25 dark:hover:shadow-[#FDB913]/25"
+                          : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
                       }`}
                     >
                       Send Reset Code
@@ -856,15 +861,15 @@ export default function AuthPage() {
                 className="flex flex-col items-center justify-center py-8 space-y-6 max-w-md mx-auto w-full"
               >
                 <div className="relative">
-                  <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E41E26]"></div>
-                  <div className="absolute inset-0 animate-ping rounded-full h-16 w-16 border-t-4 border-b-4 border-[#FDB913] opacity-75"></div>
+                  <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E41E26] dark:border-[#FDB913]"></div>
+                  <div className="absolute inset-0 animate-ping rounded-full h-16 w-16 border-t-4 border-b-4 border-[#FDB913] dark:border-[#E41E26] opacity-75"></div>
                 </div>
-                <h2 className="text-xl font-bold text-gray-800 text-center">
+                <h2 className="text-xl font-bold text-gray-800 dark:text-white text-center">
                   Waiting for Email Confirmation
                 </h2>
-                <p className="text-gray-600 text-center text-sm">
+                <p className="text-gray-600 dark:text-gray-300 text-center text-sm">
                   We've sent a confirmation email to{" "}
-                  <span className="font-semibold text-[#E41E26]">
+                  <span className="font-semibold text-[#E41E26] dark:text-[#FDB913]">
                     {forgetMode ? forgetEmail : form.email}
                   </span>
                   . Please check your inbox and confirm your account.
@@ -877,8 +882,8 @@ export default function AuthPage() {
                   disabled={resendDisabled}
                   className={`w-full font-semibold py-3.5 rounded-xl transition-all duration-300 text-lg relative overflow-hidden ${
                     resendDisabled
-                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      : "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25"
+                      ? "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                      : "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25 dark:hover:shadow-[#FDB913]/25"
                   }`}
                 >
                   {resendDisabled
@@ -894,7 +899,7 @@ export default function AuthPage() {
                     setWaitingForConfirmation(false);
                     setForgetMode(false);
                   }}
-                  className="text-[#E41E26] hover:text-[#FDB913] underline font-medium transition-colors duration-200 text-sm"
+                  className="text-[#E41E26] dark:text-[#FDB913] hover:text-[#FDB913] dark:hover:text-[#E41E26] underline font-medium transition-colors duration-200 text-sm"
                 >
                   Back to Login
                 </button>
@@ -910,7 +915,7 @@ export default function AuthPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-white/90 backdrop-blur-sm flex flex-col justify-center items-center z-50"
+              className="fixed inset-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm flex flex-col justify-center items-center z-50 transition-colors duration-300"
             >
               <Confetti width={window.innerWidth} height={window.innerHeight} />
               <motion.div
@@ -931,7 +936,7 @@ export default function AuthPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5, duration: 1 }}
-                  className="flex items-center justify-center gap-3 text-xl font-semibold text-gray-800"
+                  className="flex items-center justify-center gap-3 text-xl font-semibold text-gray-800 dark:text-white"
                 >
                   <span>Login Successful</span>
                   <motion.div

@@ -31,6 +31,7 @@ export default function Addresses() {
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -79,6 +80,35 @@ export default function Addresses() {
     "Jordan",
     "Lebanon",
   ];
+
+  // Check dark mode from localStorage on component mount
+  useEffect(() => {
+    const savedDarkMode = localStorage.getItem("darkMode");
+    if (savedDarkMode) {
+      setDarkMode(JSON.parse(savedDarkMode));
+    }
+  }, []);
+
+  // Listen for dark mode changes from Navbar
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const savedDarkMode = localStorage.getItem("darkMode");
+      if (savedDarkMode) {
+        setDarkMode(JSON.parse(savedDarkMode));
+      }
+    };
+
+    // Listen for storage changes
+    window.addEventListener("storage", handleStorageChange);
+
+    // Also check periodically (fallback for same-tab changes)
+    const interval = setInterval(handleStorageChange, 1000);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(interval);
+    };
+  }, []);
 
   // Fetch addresses on component mount
   useEffect(() => {
@@ -324,24 +354,36 @@ export default function Addresses() {
   const getAddressTypeColor = (type) => {
     switch (type) {
       case "home":
-        return "from-blue-500/10 to-blue-600/10 border-blue-200";
+        return "from-blue-500/10 to-blue-600/10 border-blue-200 dark:from-blue-500/20 dark:to-blue-600/20 dark:border-blue-700";
       case "work":
-        return "from-purple-500/10 to-purple-600/10 border-purple-200";
+        return "from-purple-500/10 to-purple-600/10 border-purple-200 dark:from-purple-500/20 dark:to-purple-600/20 dark:border-purple-700";
       default:
-        return "from-gray-500/10 to-gray-600/10 border-gray-200";
+        return "from-gray-500/10 to-gray-600/10 border-gray-200 dark:from-gray-500/20 dark:to-gray-600/20 dark:border-gray-700";
     }
   };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] px-4">
+      <div
+        className={`min-h-screen flex items-center justify-center ${
+          darkMode
+            ? "dark bg-gray-900"
+            : "bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4]"
+        } px-4`}
+      >
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E41E26]"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] px-3 sm:px-4 md:px-6 py-3 sm:py-6 relative font-sans overflow-hidden">
+    <div
+      className={`min-h-screen ${
+        darkMode
+          ? "dark bg-gray-900"
+          : "bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4]"
+      } px-3 sm:px-4 md:px-6 py-3 sm:py-6 relative font-sans overflow-hidden transition-colors duration-300`}
+    >
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -left-10 sm:-left-20 -top-10 sm:-top-20 w-40 h-40 sm:w-60 sm:h-60 md:w-80 md:h-80 bg-gradient-to-r from-[#E41E26]/10 to-[#FDB913]/10 rounded-full blur-2xl sm:blur-3xl animate-pulse"></div>
@@ -353,7 +395,11 @@ export default function Addresses() {
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         onClick={() => navigate(-1)}
-        className="fixed top-3 sm:top-4 left-3 sm:left-4 z-50 bg-white/80 backdrop-blur-md hover:bg-[#E41E26] hover:text-white rounded-full p-2 sm:p-3 text-[#E41E26] border border-[#E41E26]/30 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl group"
+        className={`fixed top-3 sm:top-4 left-3 sm:left-4 z-50 ${
+          darkMode
+            ? "bg-gray-800/80 text-white border-gray-600 hover:bg-[#E41E26]"
+            : "bg-white/80 text-[#E41E26] border-[#E41E26]/30 hover:bg-[#E41E26] hover:text-white"
+        } backdrop-blur-md rounded-full p-2 sm:p-3 border shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl group`}
       >
         <FaArrowLeft
           size={14}
@@ -365,7 +411,11 @@ export default function Addresses() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, type: "spring" }}
-        className="max-w-7xl mx-auto bg-white/90 backdrop-blur-xl shadow-xl sm:shadow-2xl rounded-2xl sm:rounded-3xl border border-white/50 relative overflow-hidden"
+        className={`max-w-7xl mx-auto ${
+          darkMode
+            ? "bg-gray-800/90 border-gray-700"
+            : "bg-white/90 border-white/50"
+        } backdrop-blur-xl shadow-xl sm:shadow-2xl rounded-2xl sm:rounded-3xl border relative overflow-hidden transition-colors duration-300`}
       >
         {/* Header Background - Increased height for better spacing */}
         <div className="relative h-36 sm:h-40 md:h-44 lg:h-52 bg-gradient-to-r from-[#E41E26] to-[#FDB913] overflow-hidden">
@@ -434,10 +484,18 @@ export default function Addresses() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className={`bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border-2 transition-all duration-300 hover:shadow-lg ${
+                    className={`${
+                      darkMode
+                        ? "bg-gray-700/80 border-gray-600"
+                        : "bg-white/80 border-gray-200/50"
+                    } backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border-2 transition-all duration-300 hover:shadow-lg ${
                       address.isDefault
-                        ? "border-[#E41E26] bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4]"
-                        : "border-gray-200/50"
+                        ? `border-[#E41E26] ${
+                            darkMode
+                              ? "bg-gradient-to-r from-gray-800 to-gray-700"
+                              : "bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4]"
+                          }`
+                        : ""
                     }`}
                   >
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
@@ -451,7 +509,11 @@ export default function Addresses() {
                             {getAddressTypeIcon(address.addressType)}
                           </div>
                           <div className="min-w-0 flex-1">
-                            <h3 className="font-bold text-gray-800 text-base sm:text-lg md:text-xl truncate">
+                            <h3
+                              className={`font-bold ${
+                                darkMode ? "text-white" : "text-gray-800"
+                              } text-base sm:text-lg md:text-xl truncate`}
+                            >
                               {address.title}
                               {address.isDefault && (
                                 <span className="ml-1 sm:ml-2 bg-[#E41E26] text-white text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full whitespace-nowrap">
@@ -459,13 +521,21 @@ export default function Addresses() {
                                 </span>
                               )}
                             </h3>
-                            <p className="text-gray-600 text-xs sm:text-sm capitalize truncate">
+                            <p
+                              className={`${
+                                darkMode ? "text-gray-300" : "text-gray-600"
+                              } text-xs sm:text-sm capitalize truncate`}
+                            >
                               {address.addressType}
                             </p>
                           </div>
                         </div>
 
-                        <div className="space-y-1 sm:space-y-2 text-gray-700 text-sm sm:text-base">
+                        <div
+                          className={`space-y-1 sm:space-y-2 ${
+                            darkMode ? "text-gray-300" : "text-gray-700"
+                          } text-sm sm:text-base`}
+                        >
                           <p className="font-semibold truncate">
                             {address.firstName} {address.lastName}
                           </p>
@@ -488,7 +558,11 @@ export default function Addresses() {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => handleSetDefault(address.id)}
-                            className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center"
+                            className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 ${
+                              darkMode
+                                ? "bg-green-900/50 text-green-300 hover:bg-green-800"
+                                : "bg-green-50 text-green-700 hover:bg-green-100"
+                            } rounded-lg transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center`}
                           >
                             <FaStar className="text-xs sm:text-sm" />
                             <span className="whitespace-nowrap hidden xs:inline">
@@ -503,7 +577,11 @@ export default function Addresses() {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => handleEdit(address)}
-                          className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center"
+                          className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 ${
+                            darkMode
+                              ? "bg-blue-900/50 text-blue-300 hover:bg-blue-800"
+                              : "bg-blue-50 text-blue-700 hover:bg-blue-100"
+                          } rounded-lg transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center`}
                         >
                           <FaEdit className="text-xs sm:text-sm" />
                           <span className="whitespace-nowrap">Edit</span>
@@ -512,7 +590,11 @@ export default function Addresses() {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => handleDelete(address.id)}
-                          className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center"
+                          className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 ${
+                            darkMode
+                              ? "bg-red-900/50 text-red-300 hover:bg-red-800"
+                              : "bg-red-50 text-red-700 hover:bg-red-100"
+                          } rounded-lg transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center`}
                         >
                           <FaTrash className="text-xs sm:text-sm" />
                           <span className="whitespace-nowrap">Delete</span>
@@ -527,13 +609,29 @@ export default function Addresses() {
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="text-center py-8 sm:py-10 md:py-12 bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-gray-200/50"
+                  className={`text-center py-8 sm:py-10 md:py-12 ${
+                    darkMode
+                      ? "bg-gray-700/80 border-gray-600"
+                      : "bg-white/80 border-gray-200/50"
+                  } backdrop-blur-sm rounded-xl sm:rounded-2xl border`}
                 >
-                  <FaMapMarkerAlt className="mx-auto text-3xl sm:text-4xl md:text-5xl text-gray-400 mb-3 sm:mb-4" />
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-600 mb-2 sm:mb-3">
+                  <FaMapMarkerAlt
+                    className={`mx-auto text-3xl sm:text-4xl md:text-5xl ${
+                      darkMode ? "text-gray-500" : "text-gray-400"
+                    } mb-3 sm:mb-4`}
+                  />
+                  <h3
+                    className={`text-lg sm:text-xl md:text-2xl font-semibold ${
+                      darkMode ? "text-gray-300" : "text-gray-600"
+                    } mb-2 sm:mb-3`}
+                  >
                     No addresses yet
                   </h3>
-                  <p className="text-gray-500 text-sm sm:text-base mb-4 sm:mb-6 max-w-xs sm:max-w-sm mx-auto">
+                  <p
+                    className={`${
+                      darkMode ? "text-gray-400" : "text-gray-500"
+                    } text-sm sm:text-base mb-4 sm:mb-6 max-w-xs sm:max-w-sm mx-auto`}
+                  >
                     Add your first address to get started
                   </p>
                   <motion.button
@@ -559,14 +657,28 @@ export default function Addresses() {
                   exit={{ opacity: 0, x: 20 }}
                   className="xl:col-span-1"
                 >
-                  <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-gray-200/50 shadow-lg sticky top-4 sm:top-6">
+                  <div
+                    className={`${
+                      darkMode
+                        ? "bg-gray-700/80 border-gray-600"
+                        : "bg-white/80 border-gray-200/50"
+                    } backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border shadow-lg sticky top-4 sm:top-6 transition-colors duration-300`}
+                  >
                     <div className="flex items-center justify-between mb-3 sm:mb-4">
-                      <h3 className="text-base sm:text-lg md:text-xl font-bold text-gray-800 truncate">
+                      <h3
+                        className={`text-base sm:text-lg md:text-xl font-bold ${
+                          darkMode ? "text-white" : "text-gray-800"
+                        } truncate`}
+                      >
                         {editingId ? "Edit Address" : "Add New Address"}
                       </h3>
                       <button
                         onClick={resetForm}
-                        className="text-gray-500 hover:text-[#E41E26] transition-colors duration-200 flex-shrink-0 ml-2"
+                        className={`${
+                          darkMode
+                            ? "text-gray-400 hover:text-[#FDB913]"
+                            : "text-gray-500 hover:text-[#E41E26]"
+                        } transition-colors duration-200 flex-shrink-0 ml-2`}
                       >
                         <FaTimes size={16} className="sm:size-5" />
                       </button>
@@ -578,7 +690,11 @@ export default function Addresses() {
                     >
                       {/* Title Input */}
                       <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label
+                          className={`block text-xs sm:text-sm font-semibold ${
+                            darkMode ? "text-gray-300" : "text-gray-700"
+                          } mb-1 sm:mb-2`}
+                        >
                           Address Title *
                         </label>
                         <div className="relative group">
@@ -589,7 +705,11 @@ export default function Addresses() {
                             value={formData.title}
                             onChange={handleInputChange}
                             required
-                            className="w-full border border-gray-200 bg-white text-black rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                            className={`w-full border ${
+                              darkMode
+                                ? "border-gray-600 bg-gray-800 text-white"
+                                : "border-gray-200 bg-white text-black"
+                            } rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
                             placeholder="e.g., Home, Work, Main House"
                           />
                         </div>
@@ -598,7 +718,11 @@ export default function Addresses() {
                       {/* First Name & Last Name */}
                       <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
                         <div>
-                          <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                          <label
+                            className={`block text-xs sm:text-sm font-semibold ${
+                              darkMode ? "text-gray-300" : "text-gray-700"
+                            } mb-1 sm:mb-2`}
+                          >
                             First Name *
                           </label>
                           <div className="relative group">
@@ -609,13 +733,21 @@ export default function Addresses() {
                               value={formData.firstName}
                               onChange={handleInputChange}
                               required
-                              className="w-full border border-gray-200 bg-white text-black rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                              className={`w-full border ${
+                                darkMode
+                                  ? "border-gray-600 bg-gray-800 text-white"
+                                  : "border-gray-200 bg-white text-black"
+                              } rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
                               placeholder="First name"
                             />
                           </div>
                         </div>
                         <div>
-                          <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                          <label
+                            className={`block text-xs sm:text-sm font-semibold ${
+                              darkMode ? "text-gray-300" : "text-gray-700"
+                            } mb-1 sm:mb-2`}
+                          >
                             Last Name *
                           </label>
                           <div className="relative group">
@@ -626,7 +758,11 @@ export default function Addresses() {
                               value={formData.lastName}
                               onChange={handleInputChange}
                               required
-                              className="w-full border border-gray-200 bg-white text-black rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                              className={`w-full border ${
+                                darkMode
+                                  ? "border-gray-600 bg-gray-800 text-white"
+                                  : "border-gray-200 bg-white text-black"
+                              } rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
                               placeholder="Last name"
                             />
                           </div>
@@ -635,7 +771,11 @@ export default function Addresses() {
 
                       {/* Phone Number */}
                       <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label
+                          className={`block text-xs sm:text-sm font-semibold ${
+                            darkMode ? "text-gray-300" : "text-gray-700"
+                          } mb-1 sm:mb-2`}
+                        >
                           Phone Number *
                         </label>
                         <div className="relative group">
@@ -646,7 +786,11 @@ export default function Addresses() {
                             value={formData.phoneNumber}
                             onChange={handleInputChange}
                             required
-                            className="w-full border border-gray-200 bg-white text-black rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                            className={`w-full border ${
+                              darkMode
+                                ? "border-gray-600 bg-gray-800 text-white"
+                                : "border-gray-200 bg-white text-black"
+                            } rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
                             placeholder="Phone Number"
                           />
                         </div>
@@ -654,14 +798,22 @@ export default function Addresses() {
 
                       {/* Country Dropdown */}
                       <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label
+                          className={`block text-xs sm:text-sm font-semibold ${
+                            darkMode ? "text-gray-300" : "text-gray-700"
+                          } mb-1 sm:mb-2`}
+                        >
                           Country *
                         </label>
                         <div className="relative">
                           <button
                             type="button"
                             onClick={() => toggleDropdown("country")}
-                            className="w-full flex items-center justify-between border border-gray-200 bg-white rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 text-gray-600 hover:border-[#E41E26] transition-all group text-sm sm:text-base"
+                            className={`w-full flex items-center justify-between border ${
+                              darkMode
+                                ? "border-gray-600 bg-gray-800 text-gray-300 hover:border-[#E41E26]"
+                                : "border-gray-200 bg-white text-gray-600 hover:border-[#E41E26]"
+                            } rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 transition-all group text-sm sm:text-base`}
                           >
                             <div className="flex items-center gap-3">
                               <FaGlobe className="text-[#E41E26] text-sm" />
@@ -683,7 +835,11 @@ export default function Addresses() {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -5 }}
                                 transition={{ duration: 0.2 }}
-                                className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-xl rounded-lg sm:rounded-xl overflow-hidden max-h-48 overflow-y-auto"
+                                className={`absolute z-10 mt-2 w-full ${
+                                  darkMode
+                                    ? "bg-gray-800 border-gray-600"
+                                    : "bg-white border-gray-200"
+                                } border shadow-xl rounded-lg sm:rounded-xl overflow-hidden max-h-48 overflow-y-auto`}
                               >
                                 {countries.map((country) => (
                                   <li
@@ -692,7 +848,11 @@ export default function Addresses() {
                                       setFormData({ ...formData, country });
                                       setOpenDropdown(null);
                                     }}
-                                    className="px-4 py-2.5 sm:py-3 hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] cursor-pointer text-gray-700 transition-all text-sm sm:text-base border-b border-gray-100 last:border-b-0"
+                                    className={`px-4 py-2.5 sm:py-3 ${
+                                      darkMode
+                                        ? "hover:bg-gray-700 text-gray-300 border-gray-600"
+                                        : "hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] text-gray-700 border-gray-100"
+                                    } cursor-pointer transition-all text-sm sm:text-base border-b last:border-b-0`}
                                   >
                                     {country}
                                   </li>
@@ -705,14 +865,22 @@ export default function Addresses() {
 
                       {/* City Dropdown */}
                       <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label
+                          className={`block text-xs sm:text-sm font-semibold ${
+                            darkMode ? "text-gray-300" : "text-gray-700"
+                          } mb-1 sm:mb-2`}
+                        >
                           City *
                         </label>
                         <div className="relative">
                           <button
                             type="button"
                             onClick={() => toggleDropdown("city")}
-                            className="w-full flex items-center justify-between border border-gray-200 bg-white rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 text-gray-600 hover:border-[#E41E26] transition-all group text-sm sm:text-base"
+                            className={`w-full flex items-center justify-between border ${
+                              darkMode
+                                ? "border-gray-600 bg-gray-800 text-gray-300 hover:border-[#E41E26]"
+                                : "border-gray-200 bg-white text-gray-600 hover:border-[#E41E26]"
+                            } rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 transition-all group text-sm sm:text-base`}
                           >
                             <div className="flex items-center gap-3">
                               <FaCity className="text-[#E41E26] text-sm" />
@@ -734,7 +902,11 @@ export default function Addresses() {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -5 }}
                                 transition={{ duration: 0.2 }}
-                                className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-xl rounded-lg sm:rounded-xl overflow-hidden max-h-48 overflow-y-auto"
+                                className={`absolute z-10 mt-2 w-full ${
+                                  darkMode
+                                    ? "bg-gray-800 border-gray-600"
+                                    : "bg-white border-gray-200"
+                                } border shadow-xl rounded-lg sm:rounded-xl overflow-hidden max-h-48 overflow-y-auto`}
                               >
                                 {cities.map((city) => (
                                   <li
@@ -743,7 +915,11 @@ export default function Addresses() {
                                       setFormData({ ...formData, city });
                                       setOpenDropdown(null);
                                     }}
-                                    className="px-4 py-2.5 sm:py-3 hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] cursor-pointer text-gray-700 transition-all text-sm sm:text-base border-b border-gray-100 last:border-b-0"
+                                    className={`px-4 py-2.5 sm:py-3 ${
+                                      darkMode
+                                        ? "hover:bg-gray-700 text-gray-300 border-gray-600"
+                                        : "hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] text-gray-700 border-gray-100"
+                                    } cursor-pointer transition-all text-sm sm:text-base border-b last:border-b-0`}
                                   >
                                     {city}
                                   </li>
@@ -756,7 +932,11 @@ export default function Addresses() {
 
                       {/* Street */}
                       <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                        <label
+                          className={`block text-xs sm:text-sm font-semibold ${
+                            darkMode ? "text-gray-300" : "text-gray-700"
+                          } mb-1 sm:mb-2`}
+                        >
                           Street *
                         </label>
                         <div className="relative group">
@@ -767,7 +947,11 @@ export default function Addresses() {
                             value={formData.street}
                             onChange={handleInputChange}
                             required
-                            className="w-full border border-gray-200 bg-white text-black rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                            className={`w-full border ${
+                              darkMode
+                                ? "border-gray-600 bg-gray-800 text-white"
+                                : "border-gray-200 bg-white text-black"
+                            } rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
                             placeholder="Street name"
                           />
                         </div>
@@ -776,7 +960,11 @@ export default function Addresses() {
                       {/* Building Number & Floor */}
                       <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
                         <div>
-                          <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                          <label
+                            className={`block text-xs sm:text-sm font-semibold ${
+                              darkMode ? "text-gray-300" : "text-gray-700"
+                            } mb-1 sm:mb-2`}
+                          >
                             Building Number *
                           </label>
                           <div className="relative group">
@@ -787,13 +975,21 @@ export default function Addresses() {
                               value={formData.buildingNumber}
                               onChange={handleInputChange}
                               required
-                              className="w-full border border-gray-200 bg-white text-black rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                              className={`w-full border ${
+                                darkMode
+                                  ? "border-gray-600 bg-gray-800 text-white"
+                                  : "border-gray-200 bg-white text-black"
+                              } rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
                               placeholder="Building no."
                             />
                           </div>
                         </div>
                         <div>
-                          <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+                          <label
+                            className={`block text-xs sm:text-sm font-semibold ${
+                              darkMode ? "text-gray-300" : "text-gray-700"
+                            } mb-1 sm:mb-2`}
+                          >
                             Floor *
                           </label>
                           <div className="relative group">
@@ -804,7 +1000,11 @@ export default function Addresses() {
                               value={formData.floor}
                               onChange={handleInputChange}
                               required
-                              className="w-full border border-gray-200 bg-white text-black rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                              className={`w-full border ${
+                                darkMode
+                                  ? "border-gray-600 bg-gray-800 text-white"
+                                  : "border-gray-200 bg-white text-black"
+                              } rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
                               placeholder="Floor"
                             />
                           </div>
@@ -817,7 +1017,7 @@ export default function Addresses() {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={resetForm}
-                          className="flex-1 py-2.5 sm:py-3 border-2 border-[#E41E26] text-[#E41E26] rounded-lg sm:rounded-xl font-semibold hover:bg-[#E41E26] hover:text-white transition-all duration-300 text-sm sm:text-base"
+                          className={`flex-1 py-2.5 sm:py-3 border-2 border-[#E41E26] text-[#E41E26] rounded-lg sm:rounded-xl font-semibold hover:bg-[#E41E26] hover:text-white transition-all duration-300 text-sm sm:text-base`}
                         >
                           Cancel
                         </motion.button>
