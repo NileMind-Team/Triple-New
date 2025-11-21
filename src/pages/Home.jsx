@@ -36,7 +36,8 @@ const Home = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [cart, setCart] = useState([]);
   const [quantity, setQuantity] = useState(1);
-  const [isAdminOrRestaurant, setIsAdminOrRestaurant] = useState(false);
+  const [isAdminOrRestaurantOrBranch, setIsAdminOrRestaurantOrBranch] =
+    useState(false);
   const [loading, setLoading] = useState(true);
   const [showCategoriesManager, setShowCategoriesManager] = useState(false);
   const [categories, setCategories] = useState([
@@ -69,7 +70,7 @@ const Home = () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
-          setIsAdminOrRestaurant(false);
+          setIsAdminOrRestaurantOrBranch(false);
           setLoading(false);
           return;
         }
@@ -84,13 +85,15 @@ const Home = () => {
         const userData = response.data;
         const userRoles = userData.roles || [];
 
-        const hasAdminOrRestaurantRole =
-          userRoles.includes("Admin") || userRoles.includes("Restaurant");
+        const hasAdminOrRestaurantOrBranchRole =
+          userRoles.includes("Admin") ||
+          userRoles.includes("Restaurant") ||
+          userRoles.includes("Branch");
 
-        setIsAdminOrRestaurant(hasAdminOrRestaurantRole);
+        setIsAdminOrRestaurantOrBranch(hasAdminOrRestaurantOrBranchRole);
       } catch (error) {
         console.error("Error fetching user profile:", error);
-        setIsAdminOrRestaurant(false);
+        setIsAdminOrRestaurantOrBranch(false);
       } finally {
         setLoading(false);
       }
@@ -478,7 +481,7 @@ const Home = () => {
     closeProductModal();
   };
 
-  // Admin/Restaurant Functions - Only for Admin or Restaurant role
+  // Admin/Restaurant/Branch Functions - Only for Admin, Restaurant or Branch role
   const handleEditProduct = (product, e) => {
     e.stopPropagation();
     // Navigate to edit form with product data
@@ -956,8 +959,8 @@ const Home = () => {
                     {product.isActive ? "Active" : "Inactive"}
                   </div>
 
-                  {/* Admin/Restaurant Actions Overlay - Only show for Admin or Restaurant role */}
-                  {isAdminOrRestaurant && (
+                  {/* Admin/Restaurant/Branch Actions Overlay - Only show for Admin, Restaurant or Branch role */}
+                  {isAdminOrRestaurantOrBranch && (
                     <div className="absolute top-2 left-2 z-10 flex gap-1">
                       <motion.button
                         whileHover={{ scale: 1.1 }}
@@ -1058,8 +1061,8 @@ const Home = () => {
         )}
       </div>
 
-      {/* Admin/Restaurant Buttons */}
-      {isAdminOrRestaurant && (
+      {/* Admin/Restaurant/Branch Buttons */}
+      {isAdminOrRestaurantOrBranch && (
         <div className="fixed bottom-4 left-4 flex flex-col gap-3 z-40">
           {/* Add Product Button */}
           <motion.button
@@ -1138,8 +1141,8 @@ const Home = () => {
                       {selectedProduct.isActive ? "Active" : "Inactive"}
                     </div>
 
-                    {/* Admin/Restaurant Actions in Modal - Moved to left */}
-                    {isAdminOrRestaurant && (
+                    {/* Admin/Restaurant/Branch Actions in Modal - Moved to left */}
+                    {isAdminOrRestaurantOrBranch && (
                       <div className="absolute top-4 left-4 flex gap-2">
                         <motion.button
                           whileHover={{ scale: 1.1 }}
