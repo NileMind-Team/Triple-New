@@ -63,7 +63,6 @@ export default function Addresses() {
   const toggleDropdown = (menu) =>
     setOpenDropdown(openDropdown === menu ? null : menu);
 
-  // Check dark mode from localStorage on component mount
   useEffect(() => {
     const savedDarkMode = localStorage.getItem("darkMode");
     if (savedDarkMode) {
@@ -71,7 +70,6 @@ export default function Addresses() {
     }
   }, []);
 
-  // Listen for dark mode changes from Navbar
   useEffect(() => {
     const handleStorageChange = () => {
       const savedDarkMode = localStorage.getItem("darkMode");
@@ -89,7 +87,6 @@ export default function Addresses() {
     };
   }, []);
 
-  // Fetch addresses and cities on component mount
   useEffect(() => {
     fetchAddresses();
     fetchCities();
@@ -193,7 +190,6 @@ export default function Addresses() {
       };
 
       if (editingId) {
-        // Update existing address
         const res = await axiosInstance.put(
           `/api/Locations/Update/${editingId}`,
           formattedData
@@ -213,7 +209,6 @@ export default function Addresses() {
           });
         }
       } else {
-        // Add new address
         const res = await axiosInstance.post(
           "/api/Locations/Add",
           formattedData
@@ -388,7 +383,6 @@ export default function Addresses() {
     setMapLoaded(true);
   };
 
-  // Check if all required fields are filled
   const isFormValid = () => {
     const requiredFields = [
       "cityId",
@@ -432,13 +426,11 @@ export default function Addresses() {
           : "bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4]"
       } px-3 sm:px-4 md:px-6 py-3 sm:py-6 relative font-sans overflow-hidden transition-colors duration-300`}
     >
-      {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -left-10 sm:-left-20 -top-10 sm:-top-20 w-40 h-40 sm:w-60 sm:h-60 md:w-80 md:h-80 bg-gradient-to-r from-[#E41E26]/10 to-[#FDB913]/10 rounded-full blur-2xl sm:blur-3xl animate-pulse"></div>
         <div className="absolute -right-10 sm:-right-20 -bottom-10 sm:-bottom-20 w-40 h-40 sm:w-60 sm:h-60 md:w-80 md:h-80 bg-gradient-to-r from-[#FDB913]/10 to-[#E41E26]/10 rounded-full blur-2xl sm:blur-3xl animate-pulse"></div>
       </div>
 
-      {/* Back Button */}
       <motion.button
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -455,7 +447,6 @@ export default function Addresses() {
         />
       </motion.button>
 
-      {/* Modal للخريطة */}
       <AnimatePresence>
         {showMapModal && (
           <motion.div
@@ -472,7 +463,6 @@ export default function Addresses() {
                 darkMode ? "bg-gray-800" : "bg-white"
               } rounded-2xl sm:rounded-3xl w-full max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col`}
             >
-              {/* Header */}
               <div
                 className={`${
                   darkMode ? "bg-gray-700" : "bg-gray-50"
@@ -502,7 +492,6 @@ export default function Addresses() {
                 </button>
               </div>
 
-              {/* محتوى الـ Modal */}
               <div className="flex-1 overflow-y-auto">
                 <div className="p-4">
                   <div className="mb-4">
@@ -515,7 +504,6 @@ export default function Addresses() {
                     </p>
                   </div>
 
-                  {/* Loading State */}
                   {!mapLoaded && (
                     <div className="flex items-center justify-center h-64 bg-gray-100 dark:bg-gray-700 rounded-lg">
                       <div className="text-center">
@@ -561,7 +549,6 @@ export default function Addresses() {
                     )}
                   </LoadScript>
 
-                  {/* معلومات الموقع المختار */}
                   {selectedLocation && (
                     <div
                       className={`mt-4 p-4 rounded-lg ${
@@ -589,7 +576,6 @@ export default function Addresses() {
                           </p>
                         </div>
 
-                        {/* زر تأكيد الموقع - يظهر فقط عند اختيار موقع */}
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
@@ -619,13 +605,11 @@ export default function Addresses() {
             : "bg-white/90 border-white/50"
         } backdrop-blur-xl shadow-xl sm:shadow-2xl rounded-2xl sm:rounded-3xl border relative overflow-hidden transition-colors duration-300`}
       >
-        {/* Header Background */}
         <div className="relative h-36 sm:h-40 md:h-44 lg:h-52 bg-gradient-to-r from-[#E41E26] to-[#FDB913] overflow-hidden">
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="absolute -top-4 sm:-top-6 -right-4 sm:-right-6 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 bg-white/10 rounded-full"></div>
           <div className="absolute -bottom-4 sm:-bottom-6 -left-4 sm:-left-6 w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-32 lg:h-32 bg-white/10 rounded-full"></div>
 
-          {/* Header Content */}
           <div className="relative z-10 h-full flex flex-col justify-end items-center text-center px-4 sm:px-6 pb-6 sm:pb-8 md:pb-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -652,9 +636,7 @@ export default function Addresses() {
           </div>
         </div>
 
-        {/* Main Content */}
         <div className="relative px-3 sm:px-4 md:px-6 lg:px-8 pb-4 sm:pb-6 md:pb-8">
-          {/* Add Button */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -673,7 +655,6 @@ export default function Addresses() {
           </motion.div>
 
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
-            {/* Address List */}
             <div
               className={`space-y-3 sm:space-y-4 md:space-y-5 ${
                 isAdding ? "xl:col-span-2" : "xl:col-span-3"
@@ -757,7 +738,6 @@ export default function Addresses() {
                           )}
                         </div>
 
-                        {/* خريطة الموقع المصغرة */}
                         {address.locationUrl && (
                           <motion.div
                             initial={{ opacity: 0, height: 0 }}
@@ -875,7 +855,6 @@ export default function Addresses() {
               )}
             </div>
 
-            {/* Add/Edit Address Form */}
             <AnimatePresence>
               {isAdding && (
                 <motion.div
@@ -916,7 +895,6 @@ export default function Addresses() {
                       onSubmit={handleSubmit}
                       className="space-y-3 sm:space-y-4"
                     >
-                      {/* City Dropdown */}
                       <div>
                         <label
                           className={`block text-xs sm:text-sm font-semibold ${
@@ -992,7 +970,6 @@ export default function Addresses() {
                         </div>
                       </div>
 
-                      {/* Phone Number */}
                       <div>
                         <label
                           className={`block text-xs sm:text-sm font-semibold ${
@@ -1019,7 +996,6 @@ export default function Addresses() {
                         </div>
                       </div>
 
-                      {/* Street */}
                       <div>
                         <label
                           className={`block text-xs sm:text-sm font-semibold ${
@@ -1046,7 +1022,6 @@ export default function Addresses() {
                         </div>
                       </div>
 
-                      {/* Building Number, Floor Number, Flat Number */}
                       <div className="grid grid-cols-1 xs:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
                         <div>
                           <label
@@ -1128,7 +1103,6 @@ export default function Addresses() {
                         </div>
                       </div>
 
-                      {/* Detailed Description */}
                       <div>
                         <label
                           className={`block text-xs sm:text-sm font-semibold ${
@@ -1152,7 +1126,6 @@ export default function Addresses() {
                         />
                       </div>
 
-                      {/* Location URL with Map Picker */}
                       <div>
                         <label
                           className={`block text-xs sm:text-sm font-semibold ${
@@ -1162,7 +1135,6 @@ export default function Addresses() {
                           رابط الموقع *
                         </label>
 
-                        {/* زر فتح الخريطة - تصميم متوافق مع الديزاين */}
                         <motion.button
                           type="button"
                           whileHover={{ scale: 1.02 }}

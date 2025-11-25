@@ -16,7 +16,6 @@ import logo from "../assets/logo.png";
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
-  // الروابط السريعة
   const quickLinks = [
     { name: "الرئيسية", path: "/" },
     { name: "عربة التسوق", path: "/cart" },
@@ -70,17 +69,14 @@ const Footer = () => {
       className="bg-gradient-to-br from-gray-900 via-gray-800 to-[#1a1a1a] text-white relative overflow-hidden"
       dir="rtl"
     >
-      {/* عناصر الخلفية المتحركة */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-r from-[#E41E26]/10 to-[#FDB913]/10 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-to-r from-[#FDB913]/10 to-[#E41E26]/10 rounded-full blur-3xl"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-gradient-to-r from-[#E41E26]/5 to-[#FDB913]/5 rounded-full blur-3xl"></div>
       </div>
 
-      {/* المحتوى الرئيسي للفوتر */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-          {/* معلومات الشركة */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -105,7 +101,6 @@ const Footer = () => {
               اللذيذة والنكهات الأصيلة.
             </p>
 
-            {/* معلومات الاتصال */}
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors">
                 <FaPhone className="text-[#FDB913] text-sm" />
@@ -122,7 +117,6 @@ const Footer = () => {
             </div>
           </motion.div>
 
-          {/* الروابط السريعة */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -149,7 +143,6 @@ const Footer = () => {
             </ul>
           </motion.div>
 
-          {/* الفئات */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -176,7 +169,6 @@ const Footer = () => {
             </ul>
           </motion.div>
 
-          {/* الدعم والوسائط الاجتماعية */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -202,7 +194,6 @@ const Footer = () => {
               ))}
             </ul>
 
-            {/* رواقع التواصل الاجتماعي */}
             <div>
               <h4 className="text-lg font-bold mb-4">تابعنا</h4>
               <div className="flex gap-3">
@@ -224,7 +215,6 @@ const Footer = () => {
           </motion.div>
         </div>
 
-        {/* ساعات العمل */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -253,7 +243,6 @@ const Footer = () => {
           </div>
         </motion.div>
 
-        {/* الشريط السفلي */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -287,7 +276,6 @@ const Footer = () => {
         </motion.div>
       </div>
 
-      {/* الشرائط التزيينية */}
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#E41E26] via-[#FDB913] to-[#E41E26]"></div>
     </footer>
   );

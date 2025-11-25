@@ -17,7 +17,7 @@ import {
   FaSun,
   FaMoneyBillWave,
   FaTag,
-  FaCity, // تمت الإضافة للمدن
+  FaCity,
 } from "react-icons/fa";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -149,13 +149,11 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
     navigate("/admin/coupons");
   };
 
-  // جديد: التعامل مع النقر على إدارة المدن
   const handleCitiesClick = () => {
     setIsSidebarOpen(false);
     navigate("/admin/cities");
   };
 
-  // إغلاق القائمة الجانبية والقائمة المنسدلة عند النقر خارجها
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
@@ -171,7 +169,6 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
     };
   }, []);
 
-  // منع التمرير عند فتح القائمة الجانبية
   useEffect(() => {
     if (isSidebarOpen) {
       document.body.style.overflow = "hidden";
@@ -223,7 +220,6 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
 
   const getInitial = (name) => (!name ? "?" : name.charAt(0).toUpperCase());
 
-  // شاشة التحميل - نفس تصميم مكون الصفحة الرئيسية
   if (loading) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700">
@@ -235,14 +231,12 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
   return (
     <>
       <nav className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl shadow-lg py-4 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-50 border-b border-[#E41E26]/20 dark:border-gray-700 transition-colors duration-300">
-        {/* قسم الشعار - قابل للنقر الآن ومستجيب */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
           className="flex items-center gap-2 sm:gap-3"
         >
-          {/* الشعار كرابط */}
           <Link
             to="/"
             className="flex items-center gap-2 sm:gap-3 hover:scale-105 transition-transform duration-200"
@@ -252,16 +246,13 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
               alt="Chicken One logo"
               className="w-14 h-12 object-contain"
             />
-            {/* اسم المطعم - مخفي على الشاشات الصغيرة، مرئي على المتوسطة وما فوق */}
             <h1 className="hidden md:block text-xl lg:text-2xl font-bold bg-gradient-to-r from-[#E41E26] to-[#FDB913] bg-clip-text text-transparent dark:from-[#FDB913] dark:to-[#E41E26]">
               Chicken One
             </h1>
           </Link>
         </motion.div>
 
-        {/* الروابط */}
         <div className="flex items-center gap-4 sm:gap-6 md:gap-8">
-          {/* زر تبديل الوضع الليلي */}
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -280,7 +271,6 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
             )}
           </motion.button>
 
-          {/* قسم المصادقة */}
           {isLoggedIn ? (
             <motion.div
               className="flex items-center gap-2 sm:gap-3 cursor-pointer"
@@ -305,7 +295,6 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
               </div>
             </motion.div>
           ) : (
-            // غير مسجل الدخول - القائمة المنسدلة (مع السهم)
             <div className="relative" ref={dropdownRef}>
               <motion.div
                 className="flex items-center gap-2 sm:gap-3 cursor-pointer"
@@ -378,11 +367,9 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
         </div>
       </nav>
 
-      {/* تراكب القائمة الجانبية - فقط للمستخدمين المسجلين */}
       <AnimatePresence>
         {isLoggedIn && isSidebarOpen && (
           <>
-            {/* الخلفية الضبابية */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -392,7 +379,6 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
               onClick={() => setIsSidebarOpen(false)}
             />
 
-            {/* القائمة الجانبية - عرض مستجيب */}
             <motion.div
               ref={sidebarRef}
               initial={{ x: "100%" }}
@@ -405,7 +391,6 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
               }}
               className="fixed top-0 right-0 h-full w-72 sm:w-80 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl shadow-2xl border-l border-[#E41E26]/20 dark:border-gray-700 z-[70] overflow-y-auto transition-colors duration-300"
             >
-              {/* الرأس */}
               <div className="relative p-6 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] dark:from-gray-800 dark:to-gray-700">
                 <motion.button
                   whileHover={{ scale: 1.1 }}
@@ -448,10 +433,8 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                 </div>
               </div>
 
-              {/* عناصر القائمة */}
               <div className="p-4">
                 <div className="space-y-1">
-                  {/* تمت إضافة رابط الصفحة الرئيسية للقائمة الجانبية */}
                   <motion.div
                     whileHover={{ scale: 1.02, x: 4 }}
                     whileTap={{ scale: 0.98 }}
@@ -467,7 +450,6 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                     </button>
                   </motion.div>
 
-                  {/* قسم لوحة الإدارة - يظهر فقط للمستخدمين المديرين */}
                   {isAdmin && (
                     <>
                       <div className="border-t border-gray-200 dark:border-gray-700 my-4 pt-4">
@@ -475,7 +457,6 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                           لوحة الإدارة
                         </p>
 
-                        {/* إدارة المستخدمين */}
                         <motion.div
                           whileHover={{ scale: 1.02, x: 4 }}
                           whileTap={{ scale: 0.98 }}
@@ -491,7 +472,6 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                           </button>
                         </motion.div>
 
-                        {/* إدارة الفروع */}
                         <motion.div
                           whileHover={{ scale: 1.02, x: 4 }}
                           whileTap={{ scale: 0.98 }}
@@ -507,7 +487,6 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                           </button>
                         </motion.div>
 
-                        {/* إدارة تكاليف التوصيل */}
                         <motion.div
                           whileHover={{ scale: 1.02, x: 4 }}
                           whileTap={{ scale: 0.98 }}
@@ -523,7 +502,6 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                           </button>
                         </motion.div>
 
-                        {/* إدارة الكوبونات */}
                         <motion.div
                           whileHover={{ scale: 1.02, x: 4 }}
                           whileTap={{ scale: 0.98 }}
@@ -539,7 +517,6 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                           </button>
                         </motion.div>
 
-                        {/* جديد: إدارة المدن */}
                         <motion.div
                           whileHover={{ scale: 1.02, x: 4 }}
                           whileTap={{ scale: 0.98 }}

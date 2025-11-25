@@ -16,6 +16,9 @@ import {
   FaCalendarAlt,
   FaList,
   FaSave,
+  FaFire,
+  FaClock,
+  FaTag,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -45,7 +48,6 @@ const Home = () => {
   const [scrollLeft, setScrollLeft] = useState(0);
   const navigate = useNavigate();
 
-  // Check user role from API endpoint using axios
   useEffect(() => {
     const checkUserRole = async () => {
       try {
@@ -83,14 +85,12 @@ const Home = () => {
     checkUserRole();
   }, []);
 
-  // Fetch categories from API
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await axiosInstance.get("/api/Categories/GetAll");
         const categoriesData = response.data;
 
-        // Transform API data to match our component structure
         const transformedCategories = [
           { id: "all", name: "جميع العناصر" },
           ...categoriesData.map((category) => ({
@@ -117,13 +117,11 @@ const Home = () => {
     fetchCategories();
   }, []);
 
-  // Fetch products from API based on selected category
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        setProductsLoading(true); // نبدأ Loading للـ Products فقط
+        setProductsLoading(true);
 
-        // Prepare query parameters
         const params = {};
         if (selectedCategory !== "all") {
           params.categoryId = parseInt(selectedCategory);
@@ -134,7 +132,6 @@ const Home = () => {
         });
         const productsData = response.data;
 
-        // Transform API data to match our component structure
         const transformedProducts = productsData.map((product) => ({
           id: product.id,
           name: product.name,
@@ -147,6 +144,9 @@ const Home = () => {
           ingredients: [],
           description: product.description,
           isActive: product.isActive,
+          calories: product.calories,
+          preparationTimeStart: product.preparationTimeStart,
+          preparationTimeEnd: product.preparationTimeEnd,
           availabilityTime: {
             alwaysAvailable: product.isAllTime,
             startTime:
@@ -161,6 +161,7 @@ const Home = () => {
                 getDayName(schedule.day)
               ) || [],
           },
+          menuItemSchedules: product.menuItemSchedules || [],
         }));
 
         setProducts(transformedProducts);
@@ -175,14 +176,13 @@ const Home = () => {
           showConfirmButton: false,
         });
       } finally {
-        setProductsLoading(false); // ننتهي من Loading الـ Products
+        setProductsLoading(false);
       }
     };
 
     fetchProducts();
   }, [selectedCategory]);
 
-  // Helper function to convert day number to day name
   const getDayName = (dayNumber) => {
     const days = [
       "الأحد",
@@ -196,7 +196,6 @@ const Home = () => {
     return days[dayNumber - 1] || "";
   };
 
-  // Fetch single product details
   const fetchProductDetails = async (productId) => {
     try {
       const response = await axiosInstance.get(
@@ -216,6 +215,9 @@ const Home = () => {
         ingredients: [],
         description: product.description,
         isActive: product.isActive,
+        calories: product.calories,
+        preparationTimeStart: product.preparationTimeStart,
+        preparationTimeEnd: product.preparationTimeEnd,
         availabilityTime: {
           alwaysAvailable: product.isAllTime,
           startTime:
@@ -230,6 +232,7 @@ const Home = () => {
               getDayName(schedule.day)
             ) || [],
         },
+        menuItemSchedules: product.menuItemSchedules || [],
       };
     } catch (error) {
       console.error("Error fetching product details:", error);
@@ -237,7 +240,6 @@ const Home = () => {
     }
   };
 
-  // Filter products based on search term (client-side filtering for search only)
   useEffect(() => {
     if (!searchTerm) {
       setFilteredProducts(products);
@@ -344,7 +346,6 @@ const Home = () => {
     closeProductModal();
   };
 
-  // Admin/Restaurant/Branch Functions
   const handleEditProduct = (product, e) => {
     e.stopPropagation();
     navigate("/products/edit", { state: { productId: product.id } });
@@ -389,7 +390,6 @@ const Home = () => {
     });
   };
 
-  // Toggle product active status
   const handleToggleActive = async (productId, e) => {
     e.stopPropagation();
 
@@ -439,7 +439,6 @@ const Home = () => {
     navigate("/products/new");
   };
 
-  // Categories Management Functions
   const handleEditCategory = (category) => {
     setEditingCategory({ ...category });
     setNewCategory({ name: "", isActive: true });
@@ -568,7 +567,6 @@ const Home = () => {
 
     const category = categories.find((cat) => cat.id === categoryId);
 
-    // Check if there are products in this category
     const productsInCategory = products.filter(
       (product) => product.categoryId === category.originalId
     );
@@ -700,7 +698,6 @@ const Home = () => {
     }
   };
 
-  // Drag to scroll functionality
   const handleMouseDown = (e) => {
     setIsDragging(true);
     setStartX(e.pageX - categoriesContainerRef.current.offsetLeft);
@@ -740,24 +737,14 @@ const Home = () => {
     setIsDragging(false);
   };
 
-  const formatAvailabilityTime = (product) => {
-    if (product.availabilityTime.alwaysAvailable) {
-      return "متاح طوال الوقت";
-    }
-    return `${product.availabilityTime.startTime} - ${product.availabilityTime.endTime}`;
-  };
-
-  const formatAvailabilityDays = (product) => {
-    if (product.availabilityDays.everyday) {
-      return "كل يوم";
-    }
-    return product.availabilityDays.specificDays.join("، ");
-  };
-
-  // Function to detect if text is Arabic
   const isArabic = (text) => {
     const arabicRegex = /[\u0600-\u06FF]/;
     return arabicRegex.test(text);
+  };
+
+  const formatTimeDisplay = (timeString) => {
+    if (!timeString) return "";
+    return timeString.substring(0, 5);
   };
 
   if (loading) {
@@ -770,13 +757,11 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 font-sans relative overflow-x-hidden transition-colors duration-300">
-      {/* Animated Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
         <div className="absolute -left-20 -top-20 w-80 h-80 bg-gradient-to-r from-[#E41E26]/10 to-[#FDB913]/10 dark:from-[#E41E26]/5 dark:to-[#FDB913]/5 rounded-full blur-3xl"></div>
         <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-gradient-to-r from-[#FDB913]/10 to-[#E41E26]/10 dark:from-[#FDB913]/5 dark:to-[#E41E26]/5 rounded-full blur-3xl"></div>
       </div>
 
-      {/* Header */}
       <div className="relative bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white py-8 md:py-16 px-4 text-center w-full">
         <div className="max-w-4xl mx-auto relative z-10 w-full">
           <motion.h1
@@ -797,7 +782,6 @@ const Home = () => {
             طعام لذيذ، يصل إليك طازجاً
           </motion.p>
 
-          {/* Search Bar */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -818,7 +802,6 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Categories Tabs with Swiper */}
       <div className="relative max-w-6xl mx-auto -mt-6 md:-mt-8 px-2 sm:px-4 z-20 w-full">
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-3 md:p-4 relative w-full transition-colors duration-300">
           {/* Left Scroll Button */}
@@ -829,14 +812,13 @@ const Home = () => {
             <FaChevronLeft size={14} className="sm:w-4" />
           </button>
 
-          {/* Categories Container */}
           <div
             ref={categoriesContainerRef}
             className="flex overflow-x-auto scrollbar-hide gap-2 md:gap-4 px-6 sm:px-8 cursor-grab active:cursor-grabbing select-none"
             style={{
               scrollbarWidth: "none",
               msOverflowStyle: "none",
-              direction: "rtl", // جعل الاتجاه من اليمين لليسار
+              direction: "rtl",
             }}
             onMouseDown={handleMouseDown}
             onMouseLeave={handleMouseLeave}
@@ -1106,6 +1088,7 @@ const Home = () => {
             >
               <div
                 className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden w-full max-w-6xl mx-auto my-auto transition-colors duration-300"
+                style={{ height: "90vh" }}
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Close Button */}
@@ -1116,13 +1099,13 @@ const Home = () => {
                   <FaTimes size={16} className="sm:w-5" />
                 </button>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2">
+                <div className="grid grid-cols-1 lg:grid-cols-2 h-full">
                   {/* Product Image */}
                   <div className="relative">
                     <img
                       src={selectedProduct.image}
                       alt={selectedProduct.name}
-                      className="w-full h-[90vh] object-cover"
+                      className="w-full h-full object-cover"
                     />
 
                     {/* Product Status Badge */}
@@ -1188,21 +1171,20 @@ const Home = () => {
                   </div>
 
                   {/* Product Details */}
-                  <div className="p-4 sm:p-6 lg:p-8 overflow-y-auto max-h-[60vh] lg:max-h-none">
-                    <div className="space-y-6 sm:space-y-8 h-full flex flex-col justify-between">
-                      {/* Top Section */}
-                      <div className="space-y-4 sm:space-y-6">
-                        <div>
-                          <h2
-                            className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-3"
-                            dir={isArabic(selectedProduct.name) ? "rtl" : "ltr"}
-                          >
-                            {selectedProduct.name}
-                          </h2>
-                        </div>
+                  <div className="p-4 sm:p-6 overflow-y-auto flex flex-col h-full">
+                    {/* Content Section - يأخذ المساحة المتاحة */}
+                    <div className="overflow-y-auto">
+                      {/* Product Name and Description */}
+                      <div className="space-y-4 mb-6">
+                        <h2
+                          className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-3"
+                          dir={isArabic(selectedProduct.name) ? "rtl" : "ltr"}
+                        >
+                          {selectedProduct.name}
+                        </h2>
 
                         <p
-                          className="text-gray-600 dark:text-gray-400 text-base sm:text-lg leading-relaxed"
+                          className="text-gray-600 dark:text-gray-400 text-base leading-relaxed"
                           dir={
                             isArabic(selectedProduct.description)
                               ? "rtl"
@@ -1213,70 +1195,186 @@ const Home = () => {
                         </p>
                       </div>
 
-                      {/* Middle Section - Availability Only */}
-                      <div className="py-4 sm:py-6">
-                        <div className="text-center bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 p-4 sm:p-6 rounded-xl">
-                          <FaCalendarAlt className="mx-auto text-green-500 text-xl sm:text-2xl mb-3" />
-                          <div className="font-semibold text-gray-700 dark:text-gray-300 text-base sm:text-lg mb-2">
-                            التوفر
+                      {/* Nutrition and Preparation Info */}
+                      <div className="grid grid-cols-2 gap-3 mb-6">
+                        {/* Calories */}
+                        {selectedProduct.calories && (
+                          <div className="bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/30 dark:to-orange-800/30 p-3 rounded-lg text-center">
+                            <div className="flex items-center justify-center gap-2 mb-2">
+                              <FaFire className="text-orange-500 text-sm" />
+                              <span className="font-semibold text-gray-700 dark:text-gray-300 text-sm">
+                                السعرات الحرارية
+                              </span>
+                            </div>
+                            <div className="text-orange-600 dark:text-orange-400 font-bold text-base">
+                              {selectedProduct.calories} كالوري
+                            </div>
                           </div>
-                          <div className="text-green-600 dark:text-green-400 font-bold text-sm sm:text-base leading-tight mb-2">
-                            {formatAvailabilityTime(selectedProduct)}
-                          </div>
-                          <div className="text-green-500 dark:text-green-400 font-semibold text-sm leading-tight">
-                            {formatAvailabilityDays(selectedProduct)}
-                          </div>
-                        </div>
-                      </div>
+                        )}
 
-                      {/* Bottom Section */}
-                      <div className="border-t border-gray-200 dark:border-gray-700 pt-4 sm:pt-6 mt-4 sm:mt-6">
-                        <div className="flex items-center justify-between mb-4 sm:mb-6 gap-3">
-                          <div className="text-2xl sm:text-3xl font-bold text-[#E41E26] whitespace-nowrap">
-                            {selectedProduct.price} ج.م
+                        {/* Preparation Time */}
+                        {(selectedProduct.preparationTimeStart ||
+                          selectedProduct.preparationTimeEnd) && (
+                          <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 p-3 rounded-lg text-center">
+                            <div className="flex items-center justify-center gap-2 mb-2">
+                              <FaClock className="text-blue-500 text-sm" />
+                              <span className="font-semibold text-gray-700 dark:text-gray-300 text-sm">
+                                وقت التحضير
+                              </span>
+                            </div>
+                            <div className="text-blue-600 dark:text-blue-400 font-bold text-sm">
+                              {selectedProduct.preparationTimeStart &&
+                              selectedProduct.preparationTimeEnd
+                                ? `${selectedProduct.preparationTimeStart} - ${selectedProduct.preparationTimeEnd} دقيقة`
+                                : selectedProduct.preparationTimeStart
+                                ? `${selectedProduct.preparationTimeStart} دقيقة`
+                                : `${selectedProduct.preparationTimeEnd} دقيقة`}
+                            </div>
                           </div>
+                        )}
 
-                          {/* Quantity Selector */}
-                          <div className="flex items-center gap-2 sm:gap-3 bg-gray-100 dark:bg-gray-700 rounded-xl p-2 flex-shrink-0">
-                            <button
-                              onClick={decrementQuantity}
-                              className="p-1 sm:p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
-                            >
-                              <FaMinus size={12} className="sm:w-3.5" />
-                            </button>
-                            <span className="font-semibold text-base sm:text-lg min-w-6 sm:min-w-8 text-center dark:text-gray-200">
-                              {quantity}
+                        {/* Category */}
+                        <div className="bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/30 p-3 rounded-lg text-center">
+                          <div className="flex items-center justify-center gap-2 mb-2">
+                            <FaTag className="text-purple-500 text-sm" />
+                            <span className="font-semibold text-gray-700 dark:text-gray-300 text-sm">
+                              التصنيف
                             </span>
-                            <button
-                              onClick={incrementQuantity}
-                              className="p-1 sm:p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
-                            >
-                              <FaPlus size={12} className="sm:w-3.5" />
-                            </button>
+                          </div>
+                          <div className="text-purple-600 dark:text-purple-400 font-bold text-base">
+                            {selectedProduct.category}
                           </div>
                         </div>
 
-                        <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={() =>
-                            handleAddToCartFromModal(selectedProduct)
-                          }
-                          disabled={!selectedProduct.isActive}
-                          className={`w-full py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 ${
-                            selectedProduct.isActive
-                              ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white"
-                              : "bg-gray-400 text-gray-200 cursor-not-allowed"
-                          }`}
-                        >
-                          <FaShoppingCart size={16} className="sm:w-5" />
-                          {selectedProduct.isActive
-                            ? `أضف إلى السلة - ${(
-                                selectedProduct.price * quantity
-                              ).toFixed(2)} ج.م`
-                            : "المنتج غير متوفر"}
-                        </motion.button>
+                        {/* Availability Status */}
+                        <div className="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 p-3 rounded-lg text-center">
+                          <div className="flex items-center justify-center gap-2 mb-2">
+                            <FaCalendarAlt className="text-green-500 text-sm" />
+                            <span className="font-semibold text-gray-700 dark:text-gray-300 text-sm">
+                              الحالة
+                            </span>
+                          </div>
+                          <div
+                            className={`font-bold text-base ${
+                              selectedProduct.isActive
+                                ? "text-green-600 dark:text-green-400"
+                                : "text-red-600 dark:text-red-400"
+                            }`}
+                          >
+                            {selectedProduct.isActive ? "متاح" : "غير متاح"}
+                          </div>
+                        </div>
                       </div>
+
+                      {selectedProduct.menuItemSchedules &&
+                        selectedProduct.menuItemSchedules.length > 0 && (
+                          <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 p-4 rounded-lg mb-6">
+                            <div className="flex items-center justify-center gap-2 mb-4">
+                              <FaCalendarAlt className="text-gray-600 dark:text-gray-300 text-lg" />
+                              <h3 className="font-semibold text-gray-700 dark:text-gray-300 text-lg">
+                                جدول التوفر
+                              </h3>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-40 overflow-y-auto">
+                              {selectedProduct.menuItemSchedules.map(
+                                (schedule, index) => (
+                                  <div
+                                    key={schedule.id || index}
+                                    className={`p-3 rounded-lg border ${
+                                      schedule.isActive
+                                        ? "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800"
+                                        : "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800"
+                                    }`}
+                                  >
+                                    <div className="space-y-2">
+                                      <div className="flex items-center justify-between gap-2">
+                                        <span className="font-semibold text-gray-700 dark:text-gray-300 text-sm flex-1 text-right">
+                                          {schedule.day}
+                                        </span>
+                                        <div className="flex items-center gap-2 flex-wrap justify-end">
+                                          <span
+                                            className={`px-2 py-1 rounded-full text-xs whitespace-nowrap ${
+                                              schedule.isActive
+                                                ? "bg-green-500 text-white"
+                                                : "bg-red-500 text-white"
+                                            }`}
+                                          >
+                                            {schedule.isActive
+                                              ? "نشط"
+                                              : "غير نشط"}
+                                          </span>
+                                          <span className="text-gray-600 dark:text-gray-400 text-xs whitespace-nowrap">
+                                            {formatTimeDisplay(
+                                              schedule.startTime
+                                            )}{" "}
+                                            -{" "}
+                                            {formatTimeDisplay(
+                                              schedule.endTime
+                                            )}
+                                          </span>
+                                        </div>
+                                      </div>
+
+                                      {schedule.notes && (
+                                        <p className="text-gray-500 dark:text-gray-400 text-xs text-center border-t border-gray-200 dark:border-gray-600 pt-2 mt-2">
+                                          {schedule.notes}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          </div>
+                        )}
+                    </div>
+
+                    <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4 flex-shrink-0">
+                      <div className="flex items-center justify-between mb-4 gap-4">
+                        <div className="text-2xl sm:text-3xl font-bold text-[#E41E26] whitespace-nowrap">
+                          {selectedProduct.price} ج.م
+                        </div>
+
+                        <div className="flex items-center gap-3 bg-gray-100 dark:bg-gray-700 rounded-xl p-2 flex-shrink-0">
+                          <button
+                            onClick={decrementQuantity}
+                            className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
+                          >
+                            <FaMinus size={14} />
+                          </button>
+                          <span className="font-semibold text-lg min-w-8 text-center dark:text-gray-200">
+                            {quantity}
+                          </span>
+                          <button
+                            onClick={incrementQuantity}
+                            className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
+                          >
+                            <FaPlus size={14} />
+                          </button>
+                        </div>
+                      </div>
+
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() =>
+                          handleAddToCartFromModal(selectedProduct)
+                        }
+                        disabled={!selectedProduct.isActive}
+                        className={`w-full py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-3 ${
+                          selectedProduct.isActive
+                            ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white"
+                            : "bg-gray-400 text-gray-200 cursor-not-allowed"
+                        }`}
+                      >
+                        <FaShoppingCart size={18} />
+                        {selectedProduct.isActive
+                          ? `أضف إلى السلة - ${(
+                              selectedProduct.price * quantity
+                            ).toFixed(2)} ج.م`
+                          : "المنتج غير متوفر"}
+                      </motion.button>
                     </div>
                   </div>
                 </div>
@@ -1286,7 +1384,6 @@ const Home = () => {
         )}
       </AnimatePresence>
 
-      {/* Categories Manager Modal */}
       <AnimatePresence>
         {showCategoriesManager && (
           <>
@@ -1309,7 +1406,6 @@ const Home = () => {
                 className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden w-full max-w-4xl mx-auto my-auto max-h-[90vh] overflow-y-auto transition-colors duration-300"
                 onClick={(e) => e.stopPropagation()}
               >
-                {/* Header */}
                 <div className="bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white p-4 sm:p-6 relative">
                   <h2 className="text-xl sm:text-2xl font-bold text-center">
                     إدارة التصنيفات
@@ -1322,9 +1418,7 @@ const Home = () => {
                   </button>
                 </div>
 
-                {/* Content */}
                 <div className="p-4 sm:p-6">
-                  {/* Add New Category Form */}
                   <div className="bg-gray-50 dark:bg-gray-700 rounded-2xl p-4 sm:p-6 mb-6 transition-colors duration-300">
                     <h3 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
                       إضافة تصنيف جديد
@@ -1396,7 +1490,6 @@ const Home = () => {
                     </div>
                   </div>
 
-                  {/* Categories List */}
                   <div>
                     <h3 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
                       التصنيفات الحالية
@@ -1409,7 +1502,6 @@ const Home = () => {
                         >
                           {editingCategory &&
                           editingCategory.id === category.id ? (
-                            // Edit Mode
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -1483,7 +1575,6 @@ const Home = () => {
                               </div>
                             </div>
                           ) : (
-                            // View Mode
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-4">
                                 <div>
@@ -1495,9 +1586,6 @@ const Home = () => {
                                   >
                                     {category.name}
                                   </h4>
-                                  <p className="text-gray-500 dark:text-gray-400 text-sm">
-                                    المعرف: {category.id}
-                                  </p>
                                 </div>
                               </div>
                               <div className="flex gap-2">
@@ -1560,7 +1648,6 @@ const Home = () => {
         )}
       </AnimatePresence>
 
-      {/* Cart Indicator */}
       {cart.length > 0 && (
         <motion.div
           initial={{ scale: 0 }}

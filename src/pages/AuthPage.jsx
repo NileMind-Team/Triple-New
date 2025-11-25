@@ -266,7 +266,7 @@ export default function AuthPage() {
       Swal.fire({
         icon: "info",
         title: "Reset Code Sent",
-        text: "We've sent a reset code to your email. Please confirm to continue.",
+        text: "We've sent a reset code to your email. Please check your inbox to reset your password.",
         allowOutsideClick: false,
         showConfirmButton: false,
         timer: 2000,
@@ -301,7 +301,7 @@ export default function AuthPage() {
 
   useEffect(() => {
     let interval;
-    if (waitingForConfirmation && userEmail) {
+    if (waitingForConfirmation && userEmail && activeTab === "register") {
       interval = setInterval(async () => {
         try {
           const res = await axiosInstance.get(
@@ -314,20 +314,13 @@ export default function AuthPage() {
             Swal.fire({
               icon: "success",
               title: "Email Confirmed",
-              text:
-                activeTab === "register"
-                  ? "Your email has been confirmed. You can now login."
-                  : "Your email has been confirmed. You can now reset your password.",
+              text: "Your email has been confirmed. You can now login.",
               timer: 2000,
               showConfirmButton: false,
             });
             setWaitingForConfirmation(false);
             clearInterval(interval);
-            if (activeTab === "register") {
-              setActiveTab("login");
-            } else {
-              setForgetMode(false);
-            }
+            setActiveTab("login");
           }
         } catch (err) {
           console.error("Error checking email confirmation", err);
@@ -865,14 +858,14 @@ export default function AuthPage() {
                   <div className="absolute inset-0 animate-ping rounded-full h-16 w-16 border-t-4 border-b-4 border-[#FDB913] dark:border-[#E41E26] opacity-75"></div>
                 </div>
                 <h2 className="text-xl font-bold text-gray-800 dark:text-white text-center">
-                  Waiting for Email Confirmation
+                  {forgetMode
+                    ? "Reset Code Sent"
+                    : "Waiting for Email Confirmation"}
                 </h2>
                 <p className="text-gray-600 dark:text-gray-300 text-center text-sm">
-                  We've sent a confirmation email to{" "}
-                  <span className="font-semibold text-[#E41E26] dark:text-[#FDB913]">
-                    {forgetMode ? forgetEmail : form.email}
-                  </span>
-                  . Please check your inbox and confirm your account.
+                  {forgetMode
+                    ? `We've sent a reset code to your email ${forgetEmail}. Please check your inbox to reset your password.`
+                    : `We've sent a confirmation email to ${form.email}. Please check your inbox and confirm your account.`}
                 </p>
 
                 <motion.button
@@ -888,7 +881,9 @@ export default function AuthPage() {
                 >
                   {resendDisabled
                     ? `Resend in ${timer}s`
-                    : "Resend Confirmation Email"}
+                    : `Resend ${
+                        forgetMode ? "Reset Code" : "Confirmation Email"
+                      }`}
                   {!resendDisabled && (
                     <div className="absolute inset-0 bg-white/20 -translate-x-full hover:translate-x-full transition-transform duration-700"></div>
                   )}

@@ -8,6 +8,10 @@ import {
   FaUpload,
   FaClock,
   FaCalendarAlt,
+  FaPlus,
+  FaTrash,
+  FaChevronDown,
+  FaFire,
 } from "react-icons/fa";
 import Swal from "sweetalert2";
 import axiosInstance from "../api/axiosInstance";
@@ -22,6 +26,9 @@ const ProductForm = () => {
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   const [isLoadingProduct, setIsLoadingProduct] = useState(isEditing);
   const [hasImageChanged, setHasImageChanged] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const [initialFormData, setInitialFormData] = useState(null);
+  const [hasChanges, setHasChanges] = useState(false);
 
   const [formData, setFormData] = useState({
     Name: "",
@@ -30,30 +37,36 @@ const ProductForm = () => {
     Image: "",
     Description: "",
     IsActive: true,
-    MenuItemSchedules: [],
     availabilityType: "always",
+    Calories: "",
+    PreparationTimeStart: "",
+    PreparationTimeEnd: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState("");
-  const [selectedDays, setSelectedDays] = useState([]);
   const [imageFile, setImageFile] = useState(null);
 
+  const [schedules, setSchedules] = useState([
+    {
+      id: Date.now(),
+      Day: "",
+      startTime: "09:00",
+      endTime: "22:00",
+      isActive: true,
+    },
+  ]);
+  const [initialSchedules, setInitialSchedules] = useState([]);
+
   const daysOfWeek = [
-    { id: 0, name: "الأحد" },
-    { id: 1, name: "الإثنين" },
-    { id: 2, name: "الثلاثاء" },
-    { id: 3, name: "الأربعاء" },
-    { id: 4, name: "الخميس" },
-    { id: 5, name: "الجمعة" },
-    { id: 6, name: "السبت" },
+    { id: "السبت", name: "السبت" },
+    { id: "الأحد", name: "الأحد" },
+    { id: "الإثنين", name: "الإثنين" },
+    { id: "الثلاثاء", name: "الثلاثاء" },
+    { id: "الأربعاء", name: "الأربعاء" },
+    { id: "الخميس", name: "الخميس" },
+    { id: "الجمعة", name: "الجمعة" },
   ];
 
-  const [timeRange, setTimeRange] = useState({
-    startTime: "09:00",
-    endTime: "22:00",
-  });
-
-  // Fetch product data when editing
   useEffect(() => {
     const fetchProductData = async () => {
       if (!isEditing) return;
@@ -65,8 +78,11 @@ const ProductForm = () => {
         );
         const product = response.data;
 
-        // Transform API data to match form structure
-        setFormData({
+        const hasSchedules =
+          product.menuItemSchedules && product.menuItemSchedules.length > 0;
+        const availabilityType = hasSchedules ? "custom" : "always";
+
+        const initialData = {
           Name: product.name || "",
           CategoryId: product.category?.id || 1,
           BasePrice: product.basePrice || "",
@@ -75,31 +91,38 @@ const ProductForm = () => {
             : "",
           Description: product.description || "",
           IsActive: product.isActive !== undefined ? product.isActive : true,
-          MenuItemSchedules: product.menuItemSchedules || [],
-          availabilityType: product.isAllTime ? "always" : "custom",
-        });
+          availabilityType: availabilityType,
+          Calories: product.calories || "",
+          PreparationTimeStart: product.preparationTimeStart || "",
+          PreparationTimeEnd: product.preparationTimeEnd || "",
+        };
 
-        // Set image preview
+        setFormData(initialData);
+        setInitialFormData(initialData);
+
         if (product.imageUrl) {
           const imageUrl = `https://restaurant-template.runasp.net/${product.imageUrl}`;
           setImagePreview(imageUrl);
         }
 
-        // Set availability data if custom schedule
-        if (
-          !product.isAllTime &&
-          product.menuItemSchedules &&
-          product.menuItemSchedules.length > 0
-        ) {
-          const schedule = product.menuItemSchedules[0];
-          setSelectedDays(
-            product.menuItemSchedules.map((s) => parseInt(s.day))
+        let initialSchedulesData = [];
+        if (hasSchedules) {
+          const transformedSchedules = product.menuItemSchedules.map(
+            (schedule, index) => ({
+              id: Date.now() + index,
+              Day: schedule.day || "",
+              startTime: schedule.startTime?.substring(0, 5) || "09:00",
+              endTime: schedule.endTime?.substring(0, 5) || "22:00",
+              isActive:
+                schedule.isActive !== undefined ? schedule.isActive : true,
+            })
           );
-          setTimeRange({
-            startTime: schedule.startTime?.substring(0, 5) || "09:00",
-            endTime: schedule.endTime?.substring(0, 5) || "22:00",
-          });
+          setSchedules(transformedSchedules);
+          initialSchedulesData = [...transformedSchedules];
+        } else {
+          initialSchedulesData = [...schedules];
         }
+        setInitialSchedules(initialSchedulesData);
       } catch (error) {
         console.error("Error fetching product data:", error);
         Swal.fire({
@@ -114,9 +137,42 @@ const ProductForm = () => {
     };
 
     fetchProductData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditing, productId]);
 
-  // Fetch categories from API
+  useEffect(() => {
+    if (!isEditing) {
+      setHasChanges(true);
+      return;
+    }
+
+    if (!initialFormData) return;
+
+    const formDataChanged =
+      formData.Name !== initialFormData.Name ||
+      formData.CategoryId !== initialFormData.CategoryId ||
+      formData.BasePrice !== initialFormData.BasePrice ||
+      formData.Description !== initialFormData.Description ||
+      formData.IsActive !== initialFormData.IsActive ||
+      formData.availabilityType !== initialFormData.availabilityType ||
+      formData.Calories !== initialFormData.Calories ||
+      formData.PreparationTimeStart !== initialFormData.PreparationTimeStart ||
+      formData.PreparationTimeEnd !== initialFormData.PreparationTimeEnd ||
+      hasImageChanged;
+
+    const schedulesChanged =
+      JSON.stringify(schedules) !== JSON.stringify(initialSchedules);
+
+    setHasChanges(formDataChanged || schedulesChanged);
+  }, [
+    formData,
+    schedules,
+    initialFormData,
+    initialSchedules,
+    hasImageChanged,
+    isEditing,
+  ]);
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -146,6 +202,27 @@ const ProductForm = () => {
     });
   };
 
+  const handleNumberInputChange = (e) => {
+    const { name, value } = e.target;
+    if (value === "" || parseFloat(value) >= 0) {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
+  };
+
+  const handlePreparationTimeChange = (e) => {
+    const { name, value } = e.target;
+
+    if (value === "" || parseFloat(value) >= 0) {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
+  };
+
   const handleAvailabilityTypeChange = (type) => {
     setFormData({
       ...formData,
@@ -153,28 +230,43 @@ const ProductForm = () => {
     });
 
     if (type === "always") {
-      setSelectedDays([]);
+      setSchedules([
+        {
+          id: Date.now(),
+          Day: "",
+          startTime: "09:00",
+          endTime: "22:00",
+          isActive: true,
+        },
+      ]);
     }
   };
 
-  const handleDayToggle = (dayId) => {
-    const newSelectedDays = [...selectedDays];
-    const dayIndex = newSelectedDays.indexOf(dayId);
-
-    if (dayIndex > -1) {
-      newSelectedDays.splice(dayIndex, 1);
-    } else {
-      newSelectedDays.push(dayId);
-    }
-
-    setSelectedDays(newSelectedDays);
+  const addSchedule = () => {
+    setSchedules([
+      ...schedules,
+      {
+        id: Date.now(),
+        Day: "",
+        startTime: "09:00",
+        endTime: "22:00",
+        isActive: true,
+      },
+    ]);
   };
 
-  const handleTimeChange = (field, value) => {
-    setTimeRange({
-      ...timeRange,
-      [field]: value,
-    });
+  const removeSchedule = (id) => {
+    if (schedules.length > 1) {
+      setSchedules(schedules.filter((schedule) => schedule.id !== id));
+    }
+  };
+
+  const updateSchedule = (id, field, value) => {
+    setSchedules(
+      schedules.map((schedule) =>
+        schedule.id === id ? { ...schedule, [field]: value } : schedule
+      )
+    );
   };
 
   const handleImageChange = (e) => {
@@ -191,7 +283,6 @@ const ProductForm = () => {
         return;
       }
 
-      // التحقق من نوع الملف
       const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
       if (!allowedTypes.includes(file.type)) {
         Swal.fire({
@@ -233,6 +324,7 @@ const ProductForm = () => {
   const isFormValid = () => {
     return (
       formData.Name &&
+      formData.CategoryId &&
       formData.BasePrice &&
       formData.Description &&
       formData.Image
@@ -245,6 +337,7 @@ const ProductForm = () => {
 
     if (
       !formData.Name ||
+      !formData.CategoryId ||
       !formData.BasePrice ||
       !formData.Description ||
       (!isEditing && !formData.Image)
@@ -259,39 +352,112 @@ const ProductForm = () => {
       return;
     }
 
-    try {
-      let menuItemSchedules = [];
-      if (formData.availabilityType !== "always") {
-        menuItemSchedules = selectedDays.map((day) => ({
-          id: 0,
-          day: day.toString(),
-          startTime: timeRange.startTime,
-          endTime: timeRange.endTime,
-          isActive: true,
-          notes: `متاح يوم ${daysOfWeek.find((d) => d.id === day)?.name}`,
-          branchId: 1,
-        }));
+    if (
+      formData.PreparationTimeStart &&
+      formData.PreparationTimeEnd &&
+      parseInt(formData.PreparationTimeStart) >=
+        parseInt(formData.PreparationTimeEnd)
+    ) {
+      Swal.fire({
+        icon: "error",
+        title: "وقت تحضير غير صحيح",
+        text: "وقت البدء يجب أن يكون أقل من وقت الانتهاء في وقت التحضير",
+        confirmButtonColor: "#E41E26",
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    if (formData.availabilityType === "custom") {
+      const invalidSchedules = schedules.filter(
+        (schedule) => !schedule.Day || !schedule.startTime || !schedule.endTime
+      );
+
+      if (invalidSchedules.length > 0) {
+        Swal.fire({
+          icon: "error",
+          title: "معلومات ناقصة",
+          text: "يرجى ملء جميع الحقول المطلوبة في الجداول الزمنية",
+          confirmButtonColor: "#E41E26",
+        });
+        setIsLoading(false);
+        return;
       }
 
-      const submitData = {
-        Name: formData.Name,
-        Description: formData.Description,
-        BasePrice: parseFloat(formData.BasePrice),
-        CategoryId: parseInt(formData.CategoryId),
-        IsActive: formData.IsActive,
-        MenuItemSchedules: menuItemSchedules,
-      };
+      const invalidTimeSchedules = schedules
+        .map((schedule, index) => ({ ...schedule, index: index + 1 }))
+        .filter((schedule) => schedule.startTime >= schedule.endTime);
 
+      if (invalidTimeSchedules.length > 0) {
+        const scheduleNumbers = invalidTimeSchedules
+          .map((s) => s.index)
+          .join("، ");
+        Swal.fire({
+          icon: "error",
+          title: "وقت غير صحيح",
+          text: `وقت الانتهاء يجب أن يكون بعد وقت البدء في الجدول ${scheduleNumbers}`,
+          confirmButtonColor: "#E41E26",
+        });
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    try {
       const formDataToSend = new FormData();
-      formDataToSend.append("Name", submitData.Name);
-      formDataToSend.append("Description", submitData.Description);
-      formDataToSend.append("BasePrice", submitData.BasePrice.toString());
-      formDataToSend.append("CategoryId", submitData.CategoryId.toString());
-      formDataToSend.append("IsActive", submitData.IsActive.toString());
+      formDataToSend.append("Name", formData.Name);
+      formDataToSend.append("Description", formData.Description);
       formDataToSend.append(
-        "MenuItemSchedules",
-        JSON.stringify(submitData.MenuItemSchedules)
+        "BasePrice",
+        parseFloat(formData.BasePrice).toString()
       );
+      formDataToSend.append("CategoryId", formData.CategoryId.toString());
+      formDataToSend.append("IsActive", formData.IsActive.toString());
+
+      if (formData.Calories) {
+        formDataToSend.append("Calories", formData.Calories.toString());
+      } else {
+        formDataToSend.append("Calories", "0");
+      }
+
+      if (formData.PreparationTimeStart) {
+        formDataToSend.append(
+          "PreparationTimeStart",
+          formData.PreparationTimeStart.toString()
+        );
+      } else {
+        formDataToSend.append("PreparationTimeStart", "0");
+      }
+
+      if (formData.PreparationTimeEnd) {
+        formDataToSend.append(
+          "PreparationTimeEnd",
+          formData.PreparationTimeEnd.toString()
+        );
+      } else {
+        formDataToSend.append("PreparationTimeEnd", "0");
+      }
+
+      if (formData.availabilityType === "custom") {
+        schedules.forEach((schedule, index) => {
+          formDataToSend.append(
+            `MenuItemSchedules[${index}].Day`,
+            schedule.Day
+          );
+          formDataToSend.append(
+            `MenuItemSchedules[${index}].startTime`,
+            schedule.startTime
+          );
+          formDataToSend.append(
+            `MenuItemSchedules[${index}].endTime`,
+            schedule.endTime
+          );
+          formDataToSend.append(
+            `MenuItemSchedules[${index}].isActive`,
+            schedule.isActive.toString()
+          );
+        });
+      }
 
       if (isEditing) {
         if (imageFile) {
@@ -370,7 +536,6 @@ const ProductForm = () => {
       className={`min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-2 xs:px-3 sm:px-4 md:px-6 py-2 xs:py-3 sm:py-6 relative font-sans overflow-hidden transition-colors duration-300`}
       dir="rtl"
     >
-      {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -left-8 xs:-left-10 sm:-left-20 -top-8 xs:-top-10 sm:-top-20 w-32 h-32 xs:w-40 xs:h-40 sm:w-60 sm:h-60 md:w-80 md:h-80 bg-gradient-to-r from-[#E41E26]/10 to-[#FDB913]/10 rounded-full blur-2xl sm:blur-3xl animate-pulse"></div>
         <div className="absolute -right-8 xs:-right-10 sm:-right-20 -bottom-8 xs:-bottom-10 sm:-bottom-20 w-32 h-32 xs:w-40 xs:h-40 sm:w-60 sm:h-60 md:w-80 md:h-80 bg-gradient-to-r from-[#FDB913]/10 to-[#E41E26]/10 rounded-full blur-2xl sm:blur-3xl animate-pulse"></div>
@@ -382,13 +547,11 @@ const ProductForm = () => {
         transition={{ duration: 0.6, type: "spring" }}
         className="max-w-6xl xl:max-w-5xl mx-auto bg-white/90 backdrop-blur-xl shadow-lg xs:shadow-xl sm:shadow-2xl rounded-xl xs:rounded-2xl sm:rounded-3xl border border-white/50 relative overflow-hidden dark:bg-gray-800/90 dark:border-gray-700/50"
       >
-        {/* Header Background */}
         <div className="relative h-28 xs:h-32 sm:h-40 md:h-44 lg:h-52 bg-gradient-to-r from-[#E41E26] to-[#FDB913] overflow-hidden">
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="absolute -top-3 xs:-top-4 sm:-top-6 -right-3 xs:-right-4 sm:-right-6 w-12 h-12 xs:w-16 xs:h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 bg-white/10 rounded-full"></div>
           <div className="absolute -bottom-3 xs:-bottom-4 sm:-bottom-6 -left-3 xs:-left-4 sm:-left-6 w-10 h-10 xs:w-12 xs:h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-32 lg:h-32 bg-white/10 rounded-full"></div>
 
-          {/* Back Button */}
           <motion.button
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -401,7 +564,6 @@ const ProductForm = () => {
             />
           </motion.button>
 
-          {/* Header Content */}
           <div className="relative z-10 h-full flex flex-col justify-end items-center text-center px-3 xs:px-4 sm:px-6 pb-4 xs:pb-5 sm:pb-8 md:pb-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -430,7 +592,6 @@ const ProductForm = () => {
           </div>
         </div>
 
-        {/* Form Content */}
         <div className="relative px-2 xs:px-3 sm:px-4 md:px-6 lg:px-8 pb-3 xs:pb-4 sm:pb-6 md:pb-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -443,11 +604,8 @@ const ProductForm = () => {
                 onSubmit={handleSubmit}
                 className="space-y-4 xs:space-y-5 sm:space-y-6"
               >
-                {/* Basic Information */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 xs:gap-5 sm:gap-6">
-                  {/* Right Column */}
                   <div className="space-y-4 xs:space-y-5 sm:space-y-6">
-                    {/* Product Name */}
                     <div>
                       <label className="block text-xs sm:text-sm lg:text-base font-semibold text-gray-700 dark:text-gray-300 mb-1 xs:mb-1.5 sm:mb-2">
                         اسم المنتج *
@@ -458,12 +616,11 @@ const ProductForm = () => {
                         value={formData.Name}
                         onChange={handleInputChange}
                         className="w-full border border-gray-200 bg-white text-black rounded-lg px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-xs sm:text-sm dark:bg-gray-600 dark:border-gray-500 dark:text-white"
-                        placeholder="أدخل اسم المنتج"
+                        placeholder="اسم المنتج"
                         required
                       />
                     </div>
 
-                    {/* Category */}
                     <div>
                       <label className="block text-xs sm:text-sm lg:text-base font-semibold text-gray-700 dark:text-gray-300 mb-1 xs:mb-1.5 sm:mb-2">
                         الفئة *
@@ -503,7 +660,6 @@ const ProductForm = () => {
                       )}
                     </div>
 
-                    {/* Price */}
                     <div>
                       <label className="block text-xs sm:text-sm lg:text-base font-semibold text-gray-700 dark:text-gray-300 mb-1 xs:mb-1.5 sm:mb-2">
                         السعر (جنيه) *
@@ -512,50 +668,143 @@ const ProductForm = () => {
                         type="number"
                         name="BasePrice"
                         value={formData.BasePrice}
-                        onChange={handleInputChange}
+                        onChange={handleNumberInputChange}
                         step="0.01"
                         min="0"
+                        onWheel={(e) => e.target.blur()}
                         className="w-full border border-gray-200 bg-white text-black rounded-lg px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-xs sm:text-sm dark:bg-gray-600 dark:border-gray-500 dark:text-white"
                         placeholder="0.00"
                         required
                       />
                     </div>
 
-                    {/* Active Status */}
                     <div>
                       <label className="block text-xs sm:text-sm lg:text-base font-semibold text-gray-700 dark:text-gray-300 mb-1 xs:mb-1.5 sm:mb-2">
-                        الحالة
+                        السعرات الحرارية
                       </label>
-                      <div className="flex gap-3">
-                        <label className="flex items-center gap-2 cursor-pointer">
+                      <div className="relative group">
+                        <FaFire className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
+                        <input
+                          type="number"
+                          name="Calories"
+                          value={formData.Calories}
+                          onChange={handleNumberInputChange}
+                          min="0"
+                          onWheel={(e) => e.target.blur()}
+                          className="w-full border border-gray-200 bg-white text-black rounded-lg px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-xs sm:text-sm dark:bg-gray-600 dark:border-gray-500 dark:text-white pr-10"
+                          placeholder="عدد السعرات الحرارية"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs sm:text-sm lg:text-base font-semibold text-gray-700 dark:text-gray-300 mb-1 xs:mb-1.5 sm:mb-2">
+                        وقت التحضير (بالدقائق)
+                      </label>
+                      <div className="grid grid-cols-2 gap-2 xs:gap-3">
+                        <div className="relative group">
+                          <FaClock className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-xs transition-all duration-300 group-focus-within:scale-110" />
                           <input
-                            type="radio"
-                            name="IsActive"
-                            checked={formData.IsActive === true}
-                            onChange={() =>
-                              setFormData({ ...formData, IsActive: true })
-                            }
-                            className="text-[#E41E26] focus:ring-[#E41E26]"
+                            type="number"
+                            name="PreparationTimeStart"
+                            value={formData.PreparationTimeStart}
+                            onChange={handlePreparationTimeChange}
+                            min="0"
+                            onWheel={(e) => e.target.blur()}
+                            className="w-full border border-gray-200 bg-white text-black rounded-lg px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-xs sm:text-sm dark:bg-gray-600 dark:border-gray-500 dark:text-white pr-8"
+                            placeholder="من"
                           />
-                          <span className="text-xs sm:text-sm">نشط</span>
+                        </div>
+                        <div className="relative group">
+                          <FaClock className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-xs transition-all duration-300 group-focus-within:scale-110" />
+                          <input
+                            type="number"
+                            name="PreparationTimeEnd"
+                            value={formData.PreparationTimeEnd}
+                            onChange={handlePreparationTimeChange}
+                            min="0"
+                            onWheel={(e) => e.target.blur()}
+                            className="w-full border border-gray-200 bg-white text-black rounded-lg px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-xs sm:text-sm dark:bg-gray-600 dark:border-gray-500 dark:text-white pr-8"
+                            placeholder="إلى"
+                          />
+                        </div>
+                      </div>
+                      {formData.PreparationTimeStart &&
+                        formData.PreparationTimeEnd &&
+                        parseInt(formData.PreparationTimeStart) >=
+                          parseInt(formData.PreparationTimeEnd) && (
+                          <p className="text-red-500 text-xs mt-1">
+                            وقت البدء يجب أن يكون أقل من وقت الانتهاء في وقت
+                            التحضير
+                          </p>
+                        )}
+                    </div>
+
+                    <div>
+                      <label className="block text-xs sm:text-sm lg:text-base font-semibold text-gray-700 dark:text-gray-300 mb-1 xs:mb-1.5 sm:mb-2">
+                        الحالة *
+                      </label>
+                      <div className="flex gap-3 bg-gray-50/80 dark:bg-gray-600/80 rounded-lg p-2 xs:p-3 border border-gray-200 dark:border-gray-500">
+                        <label className="flex-1 flex items-center justify-center gap-2 cursor-pointer p-2 xs:p-3 rounded-lg transition-all duration-200 border-2 border-transparent hover:border-[#E41E26]/30">
+                          <div className="relative">
+                            <input
+                              type="radio"
+                              name="IsActive"
+                              checked={formData.IsActive === true}
+                              onChange={() =>
+                                setFormData({ ...formData, IsActive: true })
+                              }
+                              className="sr-only"
+                              required
+                            />
+                            <div
+                              className={`w-4 h-4 xs:w-5 xs:h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                                formData.IsActive === true
+                                  ? "border-[#E41E26] bg-[#E41E26]"
+                                  : "border-gray-400 bg-white dark:bg-gray-500"
+                              }`}
+                            >
+                              {formData.IsActive === true && (
+                                <div className="w-1.5 h-1.5 xs:w-2 xs:h-2 bg-white rounded-full"></div>
+                              )}
+                            </div>
+                          </div>
+                          <span className="text-xs xs:text-sm font-medium text-gray-700 dark:text-gray-300">
+                            نشط
+                          </span>
                         </label>
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input
-                            type="radio"
-                            name="IsActive"
-                            checked={formData.IsActive === false}
-                            onChange={() =>
-                              setFormData({ ...formData, IsActive: false })
-                            }
-                            className="text-[#E41E26] focus:ring-[#E41E26]"
-                          />
-                          <span className="text-xs sm:text-sm">غير نشط</span>
+                        <label className="flex-1 flex items-center justify-center gap-2 cursor-pointer p-2 xs:p-3 rounded-lg transition-all duration-200 border-2 border-transparent hover:border-[#E41E26]/30">
+                          <div className="relative">
+                            <input
+                              type="radio"
+                              name="IsActive"
+                              checked={formData.IsActive === false}
+                              onChange={() =>
+                                setFormData({ ...formData, IsActive: false })
+                              }
+                              className="sr-only"
+                              required
+                            />
+                            <div
+                              className={`w-4 h-4 xs:w-5 xs:h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                                formData.IsActive === false
+                                  ? "border-[#E41E26] bg-[#E41E26]"
+                                  : "border-gray-400 bg-white dark:bg-gray-500"
+                              }`}
+                            >
+                              {formData.IsActive === false && (
+                                <div className="w-1.5 h-1.5 xs:w-2 xs:h-2 bg-white rounded-full"></div>
+                              )}
+                            </div>
+                          </div>
+                          <span className="text-xs xs:text-sm font-medium text-gray-700 dark:text-gray-300">
+                            غير نشط
+                          </span>
                         </label>
                       </div>
                     </div>
                   </div>
 
-                  {/* Left Column */}
                   <div className="space-y-4 xs:space-y-5 sm:space-y-6">
                     <div>
                       <label className="block text-xs sm:text-sm lg:text-base font-semibold text-gray-700 dark:text-gray-300 mb-1 xs:mb-1.5 sm:mb-2">
@@ -597,11 +846,11 @@ const ProductForm = () => {
                           accept="image/*"
                           onChange={handleImageChange}
                           className="hidden"
+                          required={!isEditing}
                         />
                       </div>
                     </div>
 
-                    {/* Description */}
                     <div>
                       <label className="block text-xs sm:text-sm lg:text-base font-semibold text-gray-700 dark:text-gray-300 mb-1 xs:mb-1.5 sm:mb-2">
                         الوصف *
@@ -619,16 +868,14 @@ const ProductForm = () => {
                   </div>
                 </div>
 
-                {/* Availability Time */}
                 <div className="bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] rounded-lg xs:rounded-xl sm:rounded-2xl p-3 xs:p-4 sm:p-6 border border-[#FDB913]/30 dark:from-gray-600 dark:to-gray-500 dark:border-gray-500">
                   <div className="flex items-center gap-2 xs:gap-3 mb-3 xs:mb-4">
                     <FaClock className="text-[#E41E26] text-base xs:text-lg sm:text-xl" />
                     <h3 className="text-sm xs:text-base sm:text-lg font-bold text-gray-800 dark:text-gray-200">
-                      وقت التوفر
+                      وقت التوفر *
                     </h3>
                   </div>
 
-                  {/* Availability Type Selection */}
                   <div className="grid grid-cols-2 gap-2 xs:gap-3 mb-4 xs:mb-5">
                     <motion.button
                       type="button"
@@ -665,7 +912,6 @@ const ProductForm = () => {
                     </motion.button>
                   </div>
 
-                  {/* Custom Availability Settings */}
                   {formData.availabilityType === "custom" && (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
@@ -674,87 +920,167 @@ const ProductForm = () => {
                       transition={{ duration: 0.3 }}
                       className="space-y-4 xs:space-y-5"
                     >
-                      {/* Days Selection */}
-                      <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 xs:mb-3">
-                          الأيام المتاحة *
-                        </label>
-                        <div className="grid grid-cols-4 xs:grid-cols-7 gap-1.5 xs:gap-2">
-                          {daysOfWeek.map((day) => (
-                            <motion.button
-                              key={day.id}
-                              type="button"
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                              onClick={() => handleDayToggle(day.id)}
-                              className={`p-1.5 xs:p-2 rounded-lg border transition-all duration-200 text-[10px] xs:text-xs font-medium ${
-                                selectedDays.includes(day.id)
-                                  ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white border-transparent shadow-md"
-                                  : "bg-white border-gray-200 text-gray-600 hover:border-[#E41E26] dark:bg-gray-600 dark:border-gray-500 dark:text-gray-300 dark:hover:border-[#E41E26]"
-                              }`}
-                            >
-                              {day.name}
-                            </motion.button>
-                          ))}
-                        </div>
+                      <div className="space-y-3 xs:space-y-4">
+                        {schedules.map((schedule, index) => (
+                          <div
+                            key={schedule.id}
+                            className="bg-white/80 rounded-lg p-3 xs:p-4 border border-gray-200 dark:bg-gray-600/80 dark:border-gray-500"
+                          >
+                            <div className="flex items-center justify-between mb-3">
+                              <h4 className="text-xs xs:text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                الجدول {index + 1} *
+                              </h4>
+                              {schedules.length > 1 && (
+                                <button
+                                  type="button"
+                                  onClick={() => removeSchedule(schedule.id)}
+                                  className="text-red-500 hover:text-red-700 transition-colors"
+                                >
+                                  <FaTrash size={14} />
+                                </button>
+                              )}
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 xs:gap-4">
+                              <div>
+                                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                                  اليوم *
+                                </label>
+                                <div className="relative">
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setOpenDropdown(
+                                        openDropdown === schedule.id
+                                          ? null
+                                          : schedule.id
+                                      )
+                                    }
+                                    className="w-full flex items-center justify-between border border-gray-200 bg-white rounded-lg px-3 py-2 text-black focus:ring-2 focus:ring-[#E41E26] transition-all duration-200 text-xs dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                                    required
+                                  >
+                                    <span>{schedule.Day || "اختر اليوم"}</span>
+                                    <motion.div
+                                      animate={{
+                                        rotate:
+                                          openDropdown === schedule.id
+                                            ? 180
+                                            : 0,
+                                      }}
+                                      transition={{ duration: 0.3 }}
+                                    >
+                                      <FaChevronDown
+                                        size={12}
+                                        className="text-[#E41E26]"
+                                      />
+                                    </motion.div>
+                                  </button>
+
+                                  {openDropdown === schedule.id && (
+                                    <motion.ul
+                                      initial={{ opacity: 0, y: -5 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      exit={{ opacity: 0, y: -5 }}
+                                      transition={{ duration: 0.2 }}
+                                      className="absolute z-50 mt-1 w-full bg-white border border-gray-200 shadow-2xl rounded-lg overflow-hidden max-h-48 overflow-y-auto dark:bg-gray-600 dark:border-gray-500"
+                                    >
+                                      {daysOfWeek.map((day) => (
+                                        <li
+                                          key={day.id}
+                                          onClick={() => {
+                                            updateSchedule(
+                                              schedule.id,
+                                              "Day",
+                                              day.name
+                                            );
+                                            setOpenDropdown(null);
+                                          }}
+                                          className="px-3 py-2 hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] cursor-pointer text-gray-700 transition-all text-xs border-b border-gray-100 last:border-b-0 dark:hover:from-gray-500 dark:hover:to-gray-400 dark:text-gray-300 dark:border-gray-500"
+                                        >
+                                          {day.name}
+                                        </li>
+                                      ))}
+                                    </motion.ul>
+                                  )}
+                                </div>
+                              </div>
+
+                              <div>
+                                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                                  وقت البدء *
+                                </label>
+                                <input
+                                  type="time"
+                                  value={schedule.startTime}
+                                  onChange={(e) =>
+                                    updateSchedule(
+                                      schedule.id,
+                                      "startTime",
+                                      e.target.value
+                                    )
+                                  }
+                                  className="w-full border border-gray-200 bg-white rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-xs dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                                  required
+                                />
+                              </div>
+
+                              <div>
+                                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                                  وقت الانتهاء *
+                                </label>
+                                <input
+                                  type="time"
+                                  value={schedule.endTime}
+                                  onChange={(e) =>
+                                    updateSchedule(
+                                      schedule.id,
+                                      "endTime",
+                                      e.target.value
+                                    )
+                                  }
+                                  className="w-full border border-gray-200 bg-white rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-xs dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                                  required
+                                />
+                              </div>
+                            </div>
+
+                            <div className="mt-3">
+                              <label className="flex items-center gap-2 cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  checked={schedule.isActive}
+                                  onChange={(e) =>
+                                    updateSchedule(
+                                      schedule.id,
+                                      "isActive",
+                                      e.target.checked
+                                    )
+                                  }
+                                  className="text-[#E41E26] focus:ring-[#E41E26]"
+                                />
+                                <span className="text-xs text-gray-600 dark:text-gray-400">
+                                  نشط
+                                </span>
+                              </label>
+                            </div>
+                          </div>
+                        ))}
                       </div>
 
-                      {/* Time Range */}
-                      <div className="grid grid-cols-2 gap-3 xs:gap-4">
-                        <div>
-                          <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 xs:mb-2">
-                            وقت البدء *
-                          </label>
-                          <input
-                            type="time"
-                            value={timeRange.startTime}
-                            onChange={(e) =>
-                              handleTimeChange("startTime", e.target.value)
-                            }
-                            className="w-full border border-gray-200 bg-white rounded-lg px-3 py-2 xs:py-2.5 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-xs sm:text-sm dark:bg-gray-600 dark:border-gray-500 dark:text-white"
-                            required
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 xs:mb-2">
-                            وقت الانتهاء *
-                          </label>
-                          <input
-                            type="time"
-                            value={timeRange.endTime}
-                            onChange={(e) =>
-                              handleTimeChange("endTime", e.target.value)
-                            }
-                            className="w-full border border-gray-200 bg-white rounded-lg px-3 py-2 xs:py-2.5 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-xs sm:text-sm dark:bg-gray-600 dark:border-gray-500 dark:text-white"
-                            required
-                          />
-                        </div>
-                      </div>
-
-                      {/* Schedule Preview */}
-                      {selectedDays.length > 0 && (
-                        <div className="bg-white/80 rounded-lg p-3 xs:p-4 border border-gray-200 dark:bg-gray-600/80 dark:border-gray-500">
-                          <p className="text-xs xs:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                            معاينة الجدول:
-                          </p>
-                          <p className="text-xs xs:text-sm text-gray-600 dark:text-gray-400">
-                            متاح في{" "}
-                            {selectedDays
-                              .map(
-                                (dayId) =>
-                                  daysOfWeek.find((day) => day.id === dayId)
-                                    ?.name
-                              )
-                              .join("، ")}{" "}
-                            من {timeRange.startTime} إلى {timeRange.endTime}
-                          </p>
-                        </div>
-                      )}
+                      <motion.button
+                        type="button"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={addSchedule}
+                        className="w-full py-2 xs:py-2.5 border-2 border-dashed border-gray-300 text-gray-600 rounded-lg font-semibold hover:border-[#E41E26] hover:text-[#E41E26] transition-all duration-300 text-xs xs:text-sm flex items-center justify-center gap-2 dark:border-gray-500 dark:text-gray-400 dark:hover:border-[#E41E26] dark:hover:text-[#E41E26]"
+                      >
+                        <FaPlus size={12} />
+                        إضافة جدول زمني جديد
+                      </motion.button>
                     </motion.div>
                   )}
                 </div>
 
-                {/* Action Buttons */}
                 <div className="flex gap-2 xs:gap-3 sm:gap-4 pt-3 xs:pt-4 sm:pt-6 border-t border-gray-200 dark:border-gray-600">
                   <motion.button
                     type="button"
@@ -770,9 +1096,11 @@ const ProductForm = () => {
                     type="submit"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    disabled={!isFormValid() || isLoading}
+                    disabled={
+                      !isFormValid() || isLoading || (isEditing && !hasChanges)
+                    }
                     className={`flex-1 py-2 xs:py-2.5 sm:py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-1.5 xs:gap-2 text-xs xs:text-sm sm:text-base ${
-                      isFormValid() && !isLoading
+                      isFormValid() && !isLoading && (!isEditing || hasChanges)
                         ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25 cursor-pointer"
                         : "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400"
                     }`}
