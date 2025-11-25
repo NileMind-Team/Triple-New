@@ -2,17 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FaSearch,
-  FaFilter,
   FaShoppingCart,
-  FaStar,
   FaPlus,
   FaMinus,
   FaTimes,
-  FaUtensils,
-  FaCoffee,
-  FaIceCream,
-  FaHamburger,
-  FaClock,
   FaEye,
   FaChevronLeft,
   FaChevronRight,
@@ -39,30 +32,18 @@ const Home = () => {
   const [isAdminOrRestaurantOrBranch, setIsAdminOrRestaurantOrBranch] =
     useState(false);
   const [loading, setLoading] = useState(true);
+  const [productsLoading, setProductsLoading] = useState(false); // Loading جديد للـ Products فقط
   const [showCategoriesManager, setShowCategoriesManager] = useState(false);
   const [categories, setCategories] = useState([
-    { id: "all", name: "All Items", icon: <FaUtensils /> },
-    { id: "meals", name: "Main Courses", icon: <FaHamburger /> },
-    { id: "drinks", name: "Beverages", icon: <FaCoffee /> },
-    { id: "desserts", name: "Desserts", icon: <FaIceCream /> },
+    { id: "all", name: "جميع العناصر" },
   ]);
   const [editingCategory, setEditingCategory] = useState(null);
-  const [newCategory, setNewCategory] = useState({ name: "", icon: "" });
+  const [newCategory, setNewCategory] = useState({ name: "", isActive: true });
   const categoriesContainerRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const navigate = useNavigate();
-
-  // Icons available for categories
-  const availableIcons = [
-    { name: "Utensils", icon: <FaUtensils /> },
-    { name: "Hamburger", icon: <FaHamburger /> },
-    { name: "Coffee", icon: <FaCoffee /> },
-    { name: "Ice Cream", icon: <FaIceCream /> },
-    { name: "Clock", icon: <FaClock /> },
-    { name: "List", icon: <FaList /> },
-  ];
 
   // Check user role from API endpoint using axios
   useEffect(() => {
@@ -102,302 +83,186 @@ const Home = () => {
     checkUserRole();
   }, []);
 
-  // Mock data with real food images
+  // Fetch categories from API
   useEffect(() => {
-    const mockProducts = [
-      {
-        id: 1,
-        name: "Classic Fried Chicken",
-        category: "meals",
-        price: 45.99,
-        image:
-          "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&h=300&fit=crop",
-        ingredients: [
-          "Chicken Breast",
-          "Secret Spices",
-          "Flour",
-          "Buttermilk",
-          "Garlic",
-          "Pepper",
-        ],
-        description:
-          "Crispy golden fried chicken with our secret blend of 11 herbs and spices. Served with your choice of dipping sauce and fresh fries.",
-        rating: 4.8,
-        prepTime: "15-20 mins",
-        calories: "420 kcal",
-        isActive: true,
-        availabilityTime: {
-          alwaysAvailable: true,
-          startTime: "",
-          endTime: "",
-        },
-        availabilityDays: {
-          everyday: true,
-          specificDays: [],
-        },
-      },
-      {
-        id: 2,
-        name: "Spicy Chicken Wings",
-        category: "meals",
-        price: 35.99,
-        image:
-          "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=400&h=300&fit=crop",
-        ingredients: [
-          "Chicken Wings",
-          "Hot Sauce",
-          "Butter",
-          "Garlic",
-          "Celery",
-        ],
-        description:
-          "Spicy buffalo wings tossed in our signature hot sauce. Perfectly crispy with just the right amount of heat. Served with ranch dressing.",
-        rating: 4.6,
-        prepTime: "10-15 mins",
-        calories: "320 kcal",
-        isActive: true,
-        availabilityTime: {
-          alwaysAvailable: false,
-          startTime: "11:00",
-          endTime: "23:00",
-        },
-        availabilityDays: {
-          everyday: false,
-          specificDays: [
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-          ],
-        },
-      },
-      {
-        id: 3,
-        name: "Chocolate Milkshake",
-        category: "drinks",
-        price: 18.99,
-        image:
-          "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=400&h=300&fit=crop",
-        ingredients: [
-          "Milk",
-          "Chocolate Ice Cream",
-          "Whipped Cream",
-          "Chocolate Syrup",
-          "Cherry",
-        ],
-        description:
-          "Creamy chocolate milkshake topped with whipped cream and chocolate drizzle. The perfect sweet treat for any time of day.",
-        rating: 4.9,
-        prepTime: "5 mins",
-        calories: "280 kcal",
-        isActive: true,
-        availabilityTime: {
-          alwaysAvailable: true,
-          startTime: "",
-          endTime: "",
-        },
-        availabilityDays: {
-          everyday: true,
-          specificDays: [],
-        },
-      },
-      {
-        id: 4,
-        name: "Fresh Orange Juice",
-        category: "drinks",
-        price: 12.99,
-        image:
-          "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=400&h=300&fit=crop",
-        ingredients: ["Fresh Oranges", "Ice", "Mint Leaves"],
-        description:
-          "Freshly squeezed orange juice, packed with vitamin C and natural sweetness. No added sugar, 100% natural.",
-        rating: 4.7,
-        prepTime: "3 mins",
-        calories: "110 kcal",
-        isActive: false,
-        availabilityTime: {
-          alwaysAvailable: false,
-          startTime: "08:00",
-          endTime: "20:00",
-        },
-        availabilityDays: {
-          everyday: false,
-          specificDays: [
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-          ],
-        },
-      },
-      {
-        id: 5,
-        name: "Chocolate Lava Cake",
-        category: "desserts",
-        price: 22.99,
-        image:
-          "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=400&h=300&fit=crop",
-        ingredients: [
-          "Dark Chocolate",
-          "Butter",
-          "Eggs",
-          "Flour",
-          "Sugar",
-          "Vanilla",
-        ],
-        description:
-          "Warm chocolate cake with a molten chocolate center. Served with vanilla ice cream and fresh berries.",
-        rating: 4.9,
-        prepTime: "12-15 mins",
-        calories: "380 kcal",
-        isActive: true,
-        availabilityTime: {
-          alwaysAvailable: false,
-          startTime: "14:00",
-          endTime: "22:00",
-        },
-        availabilityDays: {
-          everyday: false,
-          specificDays: ["Friday", "Saturday", "Sunday"],
-        },
-      },
-      {
-        id: 6,
-        name: "Ice Cream Sundae",
-        category: "desserts",
-        price: 19.99,
-        image:
-          "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop",
-        ingredients: [
-          "Vanilla Ice Cream",
-          "Chocolate Sauce",
-          "Nuts",
-          "Cherry",
-          "Sprinkles",
-        ],
-        description:
-          "Classic ice cream sundae with your choice of toppings. A timeless dessert favorite that never disappoints.",
-        rating: 4.8,
-        prepTime: "5 mins",
-        calories: "250 kcal",
-        isActive: true,
-        availabilityTime: {
-          alwaysAvailable: true,
-          startTime: "",
-          endTime: "",
-        },
-        availabilityDays: {
-          everyday: true,
-          specificDays: [],
-        },
-      },
-      {
-        id: 7,
-        name: "Chicken Burger",
-        category: "meals",
-        price: 32.99,
-        image:
-          "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=300&fit=crop",
-        ingredients: [
-          "Chicken Patty",
-          "Bun",
-          "Lettuce",
-          "Tomato",
-          "Special Sauce",
-          "Pickles",
-        ],
-        description:
-          "Juicy chicken burger with fresh vegetables and our special sauce. Served with crispy golden fries and coleslaw.",
-        rating: 4.5,
-        prepTime: "10-12 mins",
-        calories: "450 kcal",
-        isActive: true,
-        availabilityTime: {
-          alwaysAvailable: false,
-          startTime: "11:00",
-          endTime: "23:00",
-        },
-        availabilityDays: {
-          everyday: false,
-          specificDays: [
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-          ],
-        },
-      },
-      {
-        id: 8,
-        name: "Iced Coffee",
-        category: "drinks",
-        price: 15.99,
-        image:
-          "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&h=300&fit=crop",
-        ingredients: ["Coffee", "Ice", "Milk", "Sugar", "Vanilla"],
-        description:
-          "Refreshing iced coffee perfect for hot days. Customize with your preferred sweetness level and milk options.",
-        rating: 4.6,
-        prepTime: "4 mins",
-        calories: "80 kcal",
-        isActive: false,
-        availabilityTime: {
-          alwaysAvailable: false,
-          startTime: "07:00",
-          endTime: "18:00",
-        },
-        availabilityDays: {
-          everyday: false,
-          specificDays: [
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-          ],
-        },
-      },
-    ];
+    const fetchCategories = async () => {
+      try {
+        const response = await axiosInstance.get("/api/Categories/GetAll");
+        const categoriesData = response.data;
 
-    setProducts(mockProducts);
-    setFilteredProducts(mockProducts);
+        // Transform API data to match our component structure
+        const transformedCategories = [
+          { id: "all", name: "جميع العناصر" },
+          ...categoriesData.map((category) => ({
+            id: category.id.toString(),
+            name: category.name,
+            isActive: category.isActive,
+            originalId: category.id,
+          })),
+        ];
+
+        setCategories(transformedCategories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        Swal.fire({
+          icon: "error",
+          title: "خطأ",
+          text: "فشل في تحميل التصنيفات",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      }
+    };
+
+    fetchCategories();
   }, []);
 
-  // Filter products based on category and search term
+  // Fetch products from API based on selected category
   useEffect(() => {
-    let filtered = products;
+    const fetchProducts = async () => {
+      try {
+        setProductsLoading(true); // نبدأ Loading للـ Products فقط
 
-    if (selectedCategory !== "all") {
-      filtered = filtered.filter(
-        (product) => product.category === selectedCategory
+        // Prepare query parameters
+        const params = {};
+        if (selectedCategory !== "all") {
+          params.categoryId = parseInt(selectedCategory);
+        }
+
+        const response = await axiosInstance.get("/api/MenuItems/GetAll", {
+          params,
+        });
+        const productsData = response.data;
+
+        // Transform API data to match our component structure
+        const transformedProducts = productsData.map((product) => ({
+          id: product.id,
+          name: product.name,
+          category: product.category?.name?.toLowerCase() || "meals",
+          categoryId: product.category?.id,
+          price: product.basePrice,
+          image: product.imageUrl
+            ? `https://restaurant-template.runasp.net/${product.imageUrl}`
+            : "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&h=300&fit=crop",
+          ingredients: [],
+          description: product.description,
+          isActive: product.isActive,
+          availabilityTime: {
+            alwaysAvailable: product.isAllTime,
+            startTime:
+              product.menuItemSchedules?.[0]?.startTime?.substring(0, 5) || "",
+            endTime:
+              product.menuItemSchedules?.[0]?.endTime?.substring(0, 5) || "",
+          },
+          availabilityDays: {
+            everyday: product.isAllTime,
+            specificDays:
+              product.menuItemSchedules?.map((schedule) =>
+                getDayName(schedule.day)
+              ) || [],
+          },
+        }));
+
+        setProducts(transformedProducts);
+        setFilteredProducts(transformedProducts);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        Swal.fire({
+          icon: "error",
+          title: "خطأ",
+          text: "فشل في تحميل المنتجات",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      } finally {
+        setProductsLoading(false); // ننتهي من Loading الـ Products
+      }
+    };
+
+    fetchProducts();
+  }, [selectedCategory]);
+
+  // Helper function to convert day number to day name
+  const getDayName = (dayNumber) => {
+    const days = [
+      "الأحد",
+      "الإثنين",
+      "الثلاثاء",
+      "الأربعاء",
+      "الخميس",
+      "الجمعة",
+      "السبت",
+    ];
+    return days[dayNumber - 1] || "";
+  };
+
+  // Fetch single product details
+  const fetchProductDetails = async (productId) => {
+    try {
+      const response = await axiosInstance.get(
+        `/api/MenuItems/Get/${productId}`
       );
+      const product = response.data;
+
+      return {
+        id: product.id,
+        name: product.name,
+        category: product.category?.name?.toLowerCase() || "meals",
+        categoryId: product.category?.id,
+        price: product.basePrice,
+        image: product.imageUrl
+          ? `https://restaurant-template.runasp.net/${product.imageUrl}`
+          : "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&h=300&fit=crop",
+        ingredients: [],
+        description: product.description,
+        isActive: product.isActive,
+        availabilityTime: {
+          alwaysAvailable: product.isAllTime,
+          startTime:
+            product.menuItemSchedules?.[0]?.startTime?.substring(0, 5) || "",
+          endTime:
+            product.menuItemSchedules?.[0]?.endTime?.substring(0, 5) || "",
+        },
+        availabilityDays: {
+          everyday: product.isAllTime,
+          specificDays:
+            product.menuItemSchedules?.map((schedule) =>
+              getDayName(schedule.day)
+            ) || [],
+        },
+      };
+    } catch (error) {
+      console.error("Error fetching product details:", error);
+      return null;
+    }
+  };
+
+  // Filter products based on search term (client-side filtering for search only)
+  useEffect(() => {
+    if (!searchTerm) {
+      setFilteredProducts(products);
+      return;
     }
 
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (product) =>
-          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.description
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          product.ingredients.some((ingredient) =>
-            ingredient.toLowerCase().includes(searchTerm.toLowerCase())
-          )
-      );
-    }
+    const filtered = products.filter(
+      (product) =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.ingredients.some((ingredient) =>
+          ingredient.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+    );
 
     setFilteredProducts(filtered);
-  }, [selectedCategory, searchTerm, products]);
+  }, [searchTerm, products]);
 
-  const handleProductClick = (product) => {
-    setSelectedProduct(product);
-    setQuantity(1);
-    document.body.style.overflow = "hidden";
+  const handleProductClick = async (product) => {
+    const productDetails = await fetchProductDetails(product.id);
+    if (productDetails) {
+      setSelectedProduct(productDetails);
+      setQuantity(1);
+      document.body.style.overflow = "hidden";
+    }
   };
 
   const closeProductModal = () => {
@@ -406,14 +271,13 @@ const Home = () => {
   };
 
   const handleAddToCart = (product, e) => {
-    e.stopPropagation(); // Prevent opening modal when adding to cart
+    e.stopPropagation();
 
-    // Check if product is active before adding to cart
     if (!product.isActive) {
       Swal.fire({
         icon: "error",
-        title: "Product Not Available",
-        text: `${product.name} is currently not available`,
+        title: "المنتج غير متوفر",
+        text: `${product.name} غير متوفر حالياً`,
         timer: 2000,
         showConfirmButton: false,
       });
@@ -436,20 +300,19 @@ const Home = () => {
 
     Swal.fire({
       icon: "success",
-      title: "Added to Cart!",
-      text: `${product.name} added to your cart`,
+      title: "تم الإضافة إلى السلة!",
+      text: `تم إضافة ${product.name} إلى سلة التسوق`,
       timer: 1500,
       showConfirmButton: false,
     });
   };
 
   const handleAddToCartFromModal = (product) => {
-    // Check if product is active before adding to cart
     if (!product.isActive) {
       Swal.fire({
         icon: "error",
-        title: "Product Not Available",
-        text: `${product.name} is currently not available`,
+        title: "المنتج غير متوفر",
+        text: `${product.name} غير متوفر حالياً`,
         timer: 2000,
         showConfirmButton: false,
       });
@@ -472,8 +335,8 @@ const Home = () => {
 
     Swal.fire({
       icon: "success",
-      title: "Added to Cart!",
-      text: `${quantity} ${product.name} added to your cart`,
+      title: "تم الإضافة إلى السلة!",
+      text: `تم إضافة ${quantity} ${product.name} إلى سلة التسوق`,
       timer: 1500,
       showConfirmButton: false,
     });
@@ -481,61 +344,95 @@ const Home = () => {
     closeProductModal();
   };
 
-  // Admin/Restaurant/Branch Functions - Only for Admin, Restaurant or Branch role
+  // Admin/Restaurant/Branch Functions
   const handleEditProduct = (product, e) => {
     e.stopPropagation();
-    // Navigate to edit form with product data
-    navigate("/products/edit", { state: { product } });
+    navigate("/products/edit", { state: { productId: product.id } });
   };
 
-  const handleDeleteProduct = (productId, e) => {
+  const handleDeleteProduct = async (productId, e) => {
     e.stopPropagation();
 
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: "هل أنت متأكد؟",
+      text: "لن تتمكن من التراجع عن هذا الإجراء!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#E41E26",
       cancelButtonColor: "#6B7280",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
+      confirmButtonText: "نعم، احذفه!",
+      cancelButtonText: "إلغاء",
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        setProducts(products.filter((product) => product.id !== productId));
-        Swal.fire({
-          title: "Deleted!",
-          text: "Product has been deleted.",
-          icon: "success",
-          timer: 2000,
-          showConfirmButton: false,
-        });
+        try {
+          await axiosInstance.delete(`/api/MenuItems/Delete/${productId}`);
+
+          setProducts(products.filter((product) => product.id !== productId));
+          Swal.fire({
+            title: "تم الحذف!",
+            text: "تم حذف المنتج بنجاح",
+            icon: "success",
+            timer: 2000,
+            showConfirmButton: false,
+          });
+        } catch (error) {
+          console.error("Error deleting product:", error);
+          Swal.fire({
+            icon: "error",
+            title: "خطأ",
+            text: "فشل في حذف المنتج",
+            timer: 2000,
+            showConfirmButton: false,
+          });
+        }
       }
     });
   };
 
   // Toggle product active status
-  const handleToggleActive = (productId, e) => {
+  const handleToggleActive = async (productId, e) => {
     e.stopPropagation();
 
-    setProducts(
-      products.map((product) =>
-        product.id === productId
-          ? { ...product, isActive: !product.isActive }
-          : product
-      )
-    );
+    try {
+      await axiosInstance.put(
+        `/api/MenuItems/ChangeMenuItemActiveStatus/${productId}`
+      );
 
-    Swal.fire({
-      icon: "success",
-      title: "Status Updated!",
-      text: `Product ${
-        products.find((p) => p.id === productId).isActive
-          ? "deactivated"
-          : "activated"
-      }`,
-      timer: 1500,
-      showConfirmButton: false,
-    });
+      setProducts(
+        products.map((product) =>
+          product.id === productId
+            ? { ...product, isActive: !product.isActive }
+            : product
+        )
+      );
+
+      setFilteredProducts(
+        filteredProducts.map((product) =>
+          product.id === productId
+            ? { ...product, isActive: !product.isActive }
+            : product
+        )
+      );
+
+      Swal.fire({
+        icon: "success",
+        title: "تم تحديث الحالة!",
+        text: `تم ${
+          products.find((p) => p.id === productId).isActive ? "تعطيل" : "تفعيل"
+        } المنتج`,
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error("Error updating product status:", error);
+      Swal.fire({
+        icon: "error",
+        title: "خطأ",
+        text: "فشل في تحديث حالة المنتج",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    }
   };
 
   const handleAddNewProduct = () => {
@@ -545,15 +442,15 @@ const Home = () => {
   // Categories Management Functions
   const handleEditCategory = (category) => {
     setEditingCategory({ ...category });
-    setNewCategory({ name: "", icon: "" });
+    setNewCategory({ name: "", isActive: true });
   };
 
-  const handleSaveCategory = () => {
+  const handleSaveCategory = async () => {
     if (!editingCategory.name.trim()) {
       Swal.fire({
         icon: "error",
-        title: "Error",
-        text: "Category name is required",
+        title: "خطأ",
+        text: "اسم التصنيف مطلوب",
         timer: 2000,
         showConfirmButton: false,
       });
@@ -563,139 +460,217 @@ const Home = () => {
     if (editingCategory.id === "all") {
       Swal.fire({
         icon: "error",
-        title: "Cannot Edit",
-        text: "The 'All Items' category cannot be edited",
+        title: "لا يمكن التعديل",
+        text: "لا يمكن تعديل تصنيف 'جميع العناصر'",
         timer: 2000,
         showConfirmButton: false,
       });
       return;
     }
 
-    setCategories(
-      categories.map((cat) =>
-        cat.id === editingCategory.id ? { ...editingCategory } : cat
-      )
-    );
+    try {
+      await axiosInstance.put(
+        `/api/Categories/Update/${editingCategory.originalId}`,
+        {
+          name: editingCategory.name,
+          isActive: editingCategory.isActive,
+        }
+      );
 
-    setEditingCategory(null);
-    Swal.fire({
-      icon: "success",
-      title: "Updated!",
-      text: "Category has been updated",
-      timer: 1500,
-      showConfirmButton: false,
-    });
+      setCategories(
+        categories.map((cat) =>
+          cat.id === editingCategory.id ? { ...editingCategory } : cat
+        )
+      );
+
+      setEditingCategory(null);
+      Swal.fire({
+        icon: "success",
+        title: "تم التحديث!",
+        text: "تم تحديث التصنيف بنجاح",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error("Error updating category:", error);
+      Swal.fire({
+        icon: "error",
+        title: "خطأ",
+        text: "فشل في تحديث التصنيف",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    }
   };
 
-  const handleAddCategory = () => {
+  const handleAddCategory = async () => {
     if (!newCategory.name.trim()) {
       Swal.fire({
         icon: "error",
-        title: "Error",
-        text: "Category name is required",
+        title: "خطأ",
+        text: "اسم التصنيف مطلوب",
         timer: 2000,
         showConfirmButton: false,
       });
       return;
     }
 
-    if (!newCategory.icon) {
+    try {
+      const response = await axiosInstance.post("/api/Categories/Add", null, {
+        params: {
+          Name: newCategory.name,
+          IsActive: newCategory.isActive,
+        },
+      });
+
+      const newCategoryData = response.data;
+
+      const newCat = {
+        id: newCategoryData.id.toString(),
+        name: newCategoryData.name,
+        isActive: newCategoryData.isActive,
+        originalId: newCategoryData.id,
+      };
+
+      setCategories([...categories, newCat]);
+      setNewCategory({ name: "", isActive: true });
+
+      Swal.fire({
+        icon: "success",
+        title: "تم الإضافة!",
+        text: "تم إضافة التصنيف الجديد بنجاح",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error("Error adding category:", error);
       Swal.fire({
         icon: "error",
-        title: "Error",
-        text: "Please select an icon for the category",
+        title: "خطأ",
+        text: "فشل في إضافة التصنيف",
         timer: 2000,
         showConfirmButton: false,
       });
-      return;
     }
-
-    const newId = newCategory.name.toLowerCase().replace(/\s+/g, "-");
-
-    // Check if category already exists
-    if (categories.some((cat) => cat.id === newId)) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "A category with this name already exists",
-        timer: 2000,
-        showConfirmButton: false,
-      });
-      return;
-    }
-
-    const newCat = {
-      id: newId,
-      name: newCategory.name,
-      icon: availableIcons.find((icon) => icon.name === newCategory.icon)
-        ?.icon || <FaList />,
-    };
-
-    setCategories([...categories, newCat]);
-    setNewCategory({ name: "", icon: "" });
-
-    Swal.fire({
-      icon: "success",
-      title: "Added!",
-      text: "New category has been added",
-      timer: 1500,
-      showConfirmButton: false,
-    });
   };
 
-  const handleDeleteCategory = (categoryId) => {
+  const handleDeleteCategory = async (categoryId) => {
     if (categoryId === "all") {
       Swal.fire({
         icon: "error",
-        title: "Cannot Delete",
-        text: "The 'All Items' category cannot be deleted",
+        title: "لا يمكن الحذف",
+        text: "لا يمكن حذف تصنيف 'جميع العناصر'",
         timer: 2000,
         showConfirmButton: false,
       });
       return;
     }
 
+    const category = categories.find((cat) => cat.id === categoryId);
+
     // Check if there are products in this category
     const productsInCategory = products.filter(
-      (product) => product.category === categoryId
+      (product) => product.categoryId === category.originalId
     );
 
     if (productsInCategory.length > 0) {
       Swal.fire({
-        title: "Cannot Delete Category",
-        text: `There are ${productsInCategory.length} products in this category. Please reassign or delete these products first.`,
+        title: "لا يمكن حذف التصنيف",
+        text: `يوجد ${productsInCategory.length} منتج في هذا التصنيف. يرجى إعادة تعيين أو حذف هذه المنتجات أولاً.`,
         icon: "warning",
         confirmButtonColor: "#E41E26",
+        confirmButtonText: "حسناً",
       });
       return;
     }
 
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: "هل أنت متأكد؟",
+      text: "لن تتمكن من التراجع عن هذا الإجراء!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#E41E26",
       cancelButtonColor: "#6B7280",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
+      confirmButtonText: "نعم، احذفه!",
+      cancelButtonText: "إلغاء",
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        setCategories(categories.filter((cat) => cat.id !== categoryId));
+        try {
+          await axiosInstance.delete(
+            `/api/Categories/Delete/${category.originalId}`
+          );
 
-        // If the deleted category was selected, switch to "all"
-        if (selectedCategory === categoryId) {
-          setSelectedCategory("all");
+          setCategories(categories.filter((cat) => cat.id !== categoryId));
+
+          if (selectedCategory === categoryId) {
+            setSelectedCategory("all");
+          }
+
+          Swal.fire({
+            title: "تم الحذف!",
+            text: "تم حذف التصنيف بنجاح",
+            icon: "success",
+            timer: 2000,
+            showConfirmButton: false,
+          });
+        } catch (error) {
+          console.error("Error deleting category:", error);
+          Swal.fire({
+            icon: "error",
+            title: "خطأ",
+            text: "فشل في حذف التصنيف",
+            timer: 2000,
+            showConfirmButton: false,
+          });
         }
-
-        Swal.fire({
-          title: "Deleted!",
-          text: "Category has been deleted.",
-          icon: "success",
-          timer: 2000,
-          showConfirmButton: false,
-        });
       }
     });
+  };
+
+  const handleToggleCategoryActive = async (categoryId, e) => {
+    e.stopPropagation();
+
+    if (categoryId === "all") {
+      Swal.fire({
+        icon: "error",
+        title: "لا يمكن التعديل",
+        text: "لا يمكن تعديل تصنيف 'جميع العناصر'",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      return;
+    }
+
+    const category = categories.find((cat) => cat.id === categoryId);
+
+    try {
+      await axiosInstance.put(
+        `/api/Categories/ChangeCategoryActiveStatus/${category.originalId}`
+      );
+
+      setCategories(
+        categories.map((cat) =>
+          cat.id === categoryId ? { ...cat, isActive: !cat.isActive } : cat
+        )
+      );
+
+      Swal.fire({
+        icon: "success",
+        title: "تم تحديث الحالة!",
+        text: `تم ${category.isActive ? "تعطيل" : "تفعيل"} التصنيف`,
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error("Error updating category status:", error);
+      Swal.fire({
+        icon: "error",
+        title: "خطأ",
+        text: "فشل في تحديث حالة التصنيف",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    }
   };
 
   const handleOpenCategoriesManager = () => {
@@ -706,7 +681,7 @@ const Home = () => {
   const handleCloseCategoriesManager = () => {
     setShowCategoriesManager(false);
     setEditingCategory(null);
-    setNewCategory({ name: "", icon: "" });
+    setNewCategory({ name: "", isActive: true });
     document.body.style.overflow = "auto";
   };
 
@@ -765,37 +740,24 @@ const Home = () => {
     setIsDragging(false);
   };
 
-  const renderStars = (rating) => {
-    const numericRating = Number(rating);
-
-    return (
-      <div className="flex items-center gap-1">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <FaStar
-            key={star}
-            className={`text-sm ${
-              star <= numericRating
-                ? "text-[#FDB913]"
-                : "text-gray-300 dark:text-gray-600"
-            }`}
-          />
-        ))}
-      </div>
-    );
-  };
-
   const formatAvailabilityTime = (product) => {
     if (product.availabilityTime.alwaysAvailable) {
-      return "24/7";
+      return "متاح طوال الوقت";
     }
     return `${product.availabilityTime.startTime} - ${product.availabilityTime.endTime}`;
   };
 
   const formatAvailabilityDays = (product) => {
     if (product.availabilityDays.everyday) {
-      return "Every day";
+      return "كل يوم";
     }
-    return product.availabilityDays.specificDays.join(", ");
+    return product.availabilityDays.specificDays.join("، ");
+  };
+
+  // Function to detect if text is Arabic
+  const isArabic = (text) => {
+    const arabicRegex = /[\u0600-\u06FF]/;
+    return arabicRegex.test(text);
   };
 
   if (loading) {
@@ -820,9 +782,10 @@ const Home = () => {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 px-2"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 px-2 text-center"
+            dir="rtl"
           >
-            <span className="block sm:inline">Welcome to</span>{" "}
+            <span className="block sm:inline">مرحباً بكم في</span>{" "}
             <span className="block sm:inline">Chicken One</span>
           </motion.h1>
 
@@ -831,7 +794,7 @@ const Home = () => {
             animate={{ opacity: 1, y: 0 }}
             className="text-lg md:text-xl lg:text-2xl opacity-90 mb-6 md:mb-8 px-2"
           >
-            Delicious Food, Delivered Fresh
+            طعام لذيذ، يصل إليك طازجاً
           </motion.p>
 
           {/* Search Bar */}
@@ -844,12 +807,12 @@ const Home = () => {
               <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
               <input
                 type="text"
-                placeholder="Search for your favorite dishes..."
+                placeholder="ابحث عن أطباقك المفضلة..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 md:py-4 rounded-2xl border-none outline-none text-gray-800 dark:text-gray-200 dark:bg-gray-700 shadow-2xl focus:ring-2 focus:ring-[#E41E26] text-sm md:text-base"
+                className="w-full pl-12 pr-4 py-3 md:py-4 rounded-2xl border-none outline-none text-gray-800 dark:text-gray-200 dark:bg-gray-700 shadow-2xl focus:ring-2 focus:ring-[#E41E26] text-sm md:text-base text-right"
+                dir="rtl"
               />
-              <FaFilter className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
             </div>
           </motion.div>
         </div>
@@ -870,7 +833,11 @@ const Home = () => {
           <div
             ref={categoriesContainerRef}
             className="flex overflow-x-auto scrollbar-hide gap-2 md:gap-4 px-6 sm:px-8 cursor-grab active:cursor-grabbing select-none"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            style={{
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+              direction: "rtl", // جعل الاتجاه من اليمين لليسار
+            }}
             onMouseDown={handleMouseDown}
             onMouseLeave={handleMouseLeave}
             onMouseUp={handleMouseUp}
@@ -889,10 +856,17 @@ const Home = () => {
                   selectedCategory === category.id
                     ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white shadow-lg"
                     : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                } ${
+                  !category.isActive && category.id !== "all"
+                    ? "opacity-60"
+                    : ""
                 }`}
+                style={{ direction: "rtl" }} // جعل اتجاه النص من اليمين لليسار
               >
-                <span className="text-base md:text-lg">{category.icon}</span>
                 <span className="whitespace-nowrap">{category.name}</span>
+                {category.id !== "all" && !category.isActive && (
+                  <span className="text-xs text-red-500">(معطل)</span>
+                )}
               </motion.button>
             ))}
           </div>
@@ -910,15 +884,21 @@ const Home = () => {
       {/* Main Content Area */}
       <div className="relative z-10 w-full">
         {/* Products Grid */}
-        {filteredProducts.length === 0 ? (
+        {productsLoading ? (
+          <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 md:py-6 w-full">
+            <div className="text-center py-12 md:py-16 bg-white dark:bg-gray-800 rounded-2xl shadow-lg mx-2 transition-colors duration-300">
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E41E26] mx-auto mb-4"></div>
+            </div>
+          </div>
+        ) : filteredProducts.length === 0 ? (
           <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 md:py-6 w-full">
             <div className="text-center py-12 md:py-16 bg-white dark:bg-gray-800 rounded-2xl shadow-lg mx-2 transition-colors duration-300">
               <FaSearch className="mx-auto text-4xl md:text-6xl text-gray-400 mb-4" />
               <h3 className="text-xl md:text-2xl font-semibold text-gray-600 dark:text-gray-400 mb-2">
-                No products found
+                لم يتم العثور على منتجات
               </h3>
               <p className="text-gray-500 dark:text-gray-500 mb-4 px-4">
-                Try adjusting your search or filter criteria
+                حاول تعديل معايير البحث أو التصفية
               </p>
               <button
                 onClick={() => {
@@ -927,26 +907,30 @@ const Home = () => {
                 }}
                 className="bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all text-sm md:text-base"
               >
-                Show All Products
+                عرض جميع المنتجات
               </button>
             </div>
           </div>
         ) : (
-          <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 md:py-6 w-full">
+          <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 md:py-6 w-full relative">
+            {/* Products Grid with preserved layout during loading */}
             <motion.div
               layout
-              className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6"
+              className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6 relative"
+              style={{ direction: "rtl" }} // جعل اتجاه الكروت من اليمين لليسار
             >
+              {/* Show existing products while loading new ones */}
               {filteredProducts.map((product, index) => (
                 <motion.div
                   key={product.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
                   transition={{ delay: index * 0.1 }}
                   whileHover={{ y: -5 }}
                   className={`bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 cursor-pointer group w-full relative ${
                     !product.isActive ? "opacity-70" : ""
-                  }`}
+                  } ${productsLoading ? "opacity-50" : ""}`} // تخفيف الشفافية أثناء التحميل
                 >
                   {/* Product Status Badge */}
                   <div
@@ -956,10 +940,10 @@ const Home = () => {
                         : "bg-red-500 text-white"
                     }`}
                   >
-                    {product.isActive ? "Active" : "Inactive"}
+                    {product.isActive ? "نشط" : "غير نشط"}
                   </div>
 
-                  {/* Admin/Restaurant/Branch Actions Overlay - Only show for Admin, Restaurant or Branch role */}
+                  {/* Admin/Restaurant/Branch Actions Overlay */}
                   {isAdminOrRestaurantOrBranch && (
                     <div className="absolute top-2 left-2 z-10 flex gap-1">
                       <motion.button
@@ -1008,20 +992,22 @@ const Home = () => {
 
                   {/* Product Info */}
                   <div className="p-3 sm:p-4">
-                    <h3 className="font-bold text-base sm:text-lg text-gray-800 dark:text-gray-200 mb-2 group-hover:text-[#E41E26] transition-colors line-clamp-1">
+                    <h3
+                      className="font-bold text-base sm:text-lg text-gray-800 dark:text-gray-200 mb-2 group-hover:text-[#E41E26] transition-colors line-clamp-1"
+                      dir={isArabic(product.name) ? "rtl" : "ltr"} // تحديد اتجاه النص حسب اللغة
+                    >
                       {product.name}
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-3 line-clamp-2 leading-relaxed">
+                    <p
+                      className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-3 line-clamp-2 leading-relaxed"
+                      dir={isArabic(product.description) ? "rtl" : "ltr"} // تحديد اتجاه النص حسب اللغة
+                    >
                       {product.description}
                     </p>
 
-                    <div className="flex items-center justify-between mb-3 sm:mb-0">
+                    <div className="flex items-center justify-between mb-3">
                       <div className="text-[#E41E26] font-bold text-lg sm:text-xl">
-                        EGP {product.price}
-                      </div>
-                      <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-xs sm:text-sm bg-gray-100 dark:bg-gray-700 px-2 sm:px-3 py-1 rounded-full">
-                        <FaClock className="hidden xs:block" />
-                        <span>{product.prepTime}</span>
+                        {product.price} ج.م
                       </div>
                     </div>
 
@@ -1030,27 +1016,36 @@ const Home = () => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={(e) => handleAddToCart(product, e)}
-                        disabled={!product.isActive}
+                        disabled={!product.isActive || productsLoading}
                         className={`flex-1 py-2 sm:py-2.5 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm ${
-                          product.isActive
+                          product.isActive && !productsLoading
                             ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white"
                             : "bg-gray-400 text-gray-200 cursor-not-allowed"
                         }`}
                       >
                         <FaShoppingCart className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                         <span className="xs:hidden">
-                          {product.isActive ? "Add to Cart" : "Not Available"}
+                          {product.isActive && !productsLoading
+                            ? "أضف إلى السلة"
+                            : "غير متوفر"}
                         </span>
                       </motion.button>
 
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => handleProductClick(product)}
-                        className="flex-1 bg-gradient-to-r from-gray-600 to-gray-800 text-white py-2 sm:py-2.5 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm"
+                        onClick={() =>
+                          !productsLoading && handleProductClick(product)
+                        }
+                        disabled={productsLoading}
+                        className={`flex-1 py-2 sm:py-2.5 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm ${
+                          !productsLoading
+                            ? "bg-gradient-to-r from-gray-600 to-gray-800 text-white"
+                            : "bg-gray-400 text-gray-200 cursor-not-allowed"
+                        }`}
                       >
                         <FaEye className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                        <span className="xs:hidden">View Details</span>
+                        <span className="xs:hidden">عرض التفاصيل</span>
                       </motion.button>
                     </div>
                   </div>
@@ -1127,10 +1122,10 @@ const Home = () => {
                     <img
                       src={selectedProduct.image}
                       alt={selectedProduct.name}
-                      className="w-full h-64 sm:h-80 lg:h-full object-cover"
+                      className="w-full h-[90vh] object-cover"
                     />
 
-                    {/* Product Status Badge - Moved to right */}
+                    {/* Product Status Badge */}
                     <div
                       className={`absolute top-4 right-4 px-3 py-2 rounded-full text-sm font-semibold ${
                         selectedProduct.isActive
@@ -1138,10 +1133,10 @@ const Home = () => {
                           : "bg-red-500 text-white"
                       }`}
                     >
-                      {selectedProduct.isActive ? "Active" : "Inactive"}
+                      {selectedProduct.isActive ? "نشط" : "غير نشط"}
                     </div>
 
-                    {/* Admin/Restaurant/Branch Actions in Modal - Moved to left */}
+                    {/* Admin/Restaurant/Branch Actions in Modal */}
                     {isAdminOrRestaurantOrBranch && (
                       <div className="absolute top-4 left-4 flex gap-2">
                         <motion.button
@@ -1162,7 +1157,7 @@ const Home = () => {
                           ) : (
                             <FaCheckCircle size={16} />
                           )}
-                          {selectedProduct.isActive ? "Deactivate" : "Activate"}
+                          {selectedProduct.isActive ? "تعطيل" : "تفعيل"}
                         </motion.button>
                         <motion.button
                           whileHover={{ scale: 1.1 }}
@@ -1174,7 +1169,7 @@ const Home = () => {
                           className="bg-blue-500 text-white p-2.5 rounded-lg shadow-lg hover:bg-blue-600 transition-colors flex items-center gap-1 text-sm"
                         >
                           <FaEdit size={16} />
-                          Edit
+                          تعديل
                         </motion.button>
                         <motion.button
                           whileHover={{ scale: 1.1 }}
@@ -1186,7 +1181,7 @@ const Home = () => {
                           className="bg-red-500 text-white p-2.5 rounded-lg shadow-lg hover:bg-red-600 transition-colors flex items-center gap-1 text-sm"
                         >
                           <FaTrash size={16} />
-                          Delete
+                          حذف
                         </motion.button>
                       </div>
                     )}
@@ -1194,88 +1189,51 @@ const Home = () => {
 
                   {/* Product Details */}
                   <div className="p-4 sm:p-6 lg:p-8 overflow-y-auto max-h-[60vh] lg:max-h-none">
-                    <div className="space-y-3 sm:space-y-4">
-                      <div>
-                        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-2">
-                          {selectedProduct.name}
-                        </h2>
-                        <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
-                          {renderStars(selectedProduct.rating)}
-                          <span className="text-gray-500 dark:text-gray-400 hidden sm:inline">
-                            •
-                          </span>
-                          <span className="text-gray-600 dark:text-gray-400 flex items-center gap-1 text-sm sm:text-base">
-                            <FaClock />
-                            {selectedProduct.prepTime}
-                          </span>
+                    <div className="space-y-6 sm:space-y-8 h-full flex flex-col justify-between">
+                      {/* Top Section */}
+                      <div className="space-y-4 sm:space-y-6">
+                        <div>
+                          <h2
+                            className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-3"
+                            dir={isArabic(selectedProduct.name) ? "rtl" : "ltr"}
+                          >
+                            {selectedProduct.name}
+                          </h2>
                         </div>
+
+                        <p
+                          className="text-gray-600 dark:text-gray-400 text-base sm:text-lg leading-relaxed"
+                          dir={
+                            isArabic(selectedProduct.description)
+                              ? "rtl"
+                              : "ltr"
+                          }
+                        >
+                          {selectedProduct.description}
+                        </p>
                       </div>
 
-                      <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg leading-relaxed">
-                        {selectedProduct.description}
-                      </p>
-
-                      {/* Three Info Boxes in One Row */}
-                      <div className="grid grid-cols-3 gap-3 sm:gap-4 py-3 sm:py-4">
-                        {/* Prep Time */}
-                        <div className="text-center bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] dark:from-gray-700 dark:to-gray-600 p-3 sm:p-4 rounded-xl flex flex-col justify-center items-center h-full">
-                          <FaClock className="mx-auto text-[#E41E26] text-lg sm:text-xl mb-2" />
-                          <div className="font-semibold text-gray-700 dark:text-gray-300 text-xs sm:text-sm mb-1">
-                            Prep Time
+                      {/* Middle Section - Availability Only */}
+                      <div className="py-4 sm:py-6">
+                        <div className="text-center bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 p-4 sm:p-6 rounded-xl">
+                          <FaCalendarAlt className="mx-auto text-green-500 text-xl sm:text-2xl mb-3" />
+                          <div className="font-semibold text-gray-700 dark:text-gray-300 text-base sm:text-lg mb-2">
+                            التوفر
                           </div>
-                          <div className="text-[#E41E26] font-bold text-sm sm:text-base">
-                            {selectedProduct.prepTime}
-                          </div>
-                        </div>
-
-                        {/* Calories */}
-                        <div className="text-center bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 p-3 sm:p-4 rounded-xl flex flex-col justify-center items-center h-full">
-                          <FaStar className="mx-auto text-blue-500 text-lg sm:text-xl mb-2" />
-                          <div className="font-semibold text-gray-700 dark:text-gray-300 text-xs sm:text-sm mb-1">
-                            Calories
-                          </div>
-                          <div className="text-blue-600 dark:text-blue-400 font-bold text-sm sm:text-base">
-                            {selectedProduct.calories}
-                          </div>
-                        </div>
-
-                        {/* Availability */}
-                        <div className="text-center bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 p-3 sm:p-4 rounded-xl flex flex-col justify-center items-center h-full">
-                          <FaCalendarAlt className="mx-auto text-green-500 text-lg sm:text-xl mb-2" />
-                          <div className="font-semibold text-gray-700 dark:text-gray-300 text-xs sm:text-sm mb-1">
-                            Availability
-                          </div>
-                          <div className="text-green-600 dark:text-green-400 font-bold text-xs sm:text-sm leading-tight">
+                          <div className="text-green-600 dark:text-green-400 font-bold text-sm sm:text-base leading-tight mb-2">
                             {formatAvailabilityTime(selectedProduct)}
                           </div>
-                          <div className="text-green-500 dark:text-green-400 font-semibold text-xs leading-tight mt-1">
+                          <div className="text-green-500 dark:text-green-400 font-semibold text-sm leading-tight">
                             {formatAvailabilityDays(selectedProduct)}
                           </div>
                         </div>
                       </div>
 
-                      <div>
-                        <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-2 sm:mb-3 text-base sm:text-lg">
-                          Ingredients
-                        </h3>
-                        <div className="flex flex-wrap gap-1 sm:gap-2">
-                          {selectedProduct.ingredients.map(
-                            (ingredient, idx) => (
-                              <span
-                                key={idx}
-                                className="bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] dark:from-gray-700 dark:to-gray-600 text-gray-700 dark:text-gray-300 px-2 sm:px-3 py-1 sm:py-2 rounded-xl text-xs sm:text-sm"
-                              >
-                                {ingredient}
-                              </span>
-                            )
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="border-t border-gray-200 dark:border-gray-700 pt-4 sm:pt-6 mt-3 sm:mt-4">
-                        <div className="flex items-center justify-between mb-3 sm:mb-4 gap-3">
+                      {/* Bottom Section */}
+                      <div className="border-t border-gray-200 dark:border-gray-700 pt-4 sm:pt-6 mt-4 sm:mt-6">
+                        <div className="flex items-center justify-between mb-4 sm:mb-6 gap-3">
                           <div className="text-2xl sm:text-3xl font-bold text-[#E41E26] whitespace-nowrap">
-                            EGP {selectedProduct.price}
+                            {selectedProduct.price} ج.م
                           </div>
 
                           {/* Quantity Selector */}
@@ -1313,10 +1271,10 @@ const Home = () => {
                         >
                           <FaShoppingCart size={16} className="sm:w-5" />
                           {selectedProduct.isActive
-                            ? `Add to Cart - EGP ${(
+                            ? `أضف إلى السلة - ${(
                                 selectedProduct.price * quantity
-                              ).toFixed(2)}`
-                            : "Product Not Available"}
+                              ).toFixed(2)} ج.م`
+                            : "المنتج غير متوفر"}
                         </motion.button>
                       </div>
                     </div>
@@ -1354,7 +1312,7 @@ const Home = () => {
                 {/* Header */}
                 <div className="bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white p-4 sm:p-6 relative">
                   <h2 className="text-xl sm:text-2xl font-bold text-center">
-                    Manage Categories
+                    إدارة التصنيفات
                   </h2>
                   <button
                     onClick={handleCloseCategoriesManager}
@@ -1369,12 +1327,12 @@ const Home = () => {
                   {/* Add New Category Form */}
                   <div className="bg-gray-50 dark:bg-gray-700 rounded-2xl p-4 sm:p-6 mb-6 transition-colors duration-300">
                     <h3 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
-                      Add New Category
+                      إضافة تصنيف جديد
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          Category Name
+                          اسم التصنيف
                         </label>
                         <input
                           type="text"
@@ -1385,31 +1343,44 @@ const Home = () => {
                               name: e.target.value,
                             })
                           }
-                          placeholder="Enter category name"
-                          className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 dark:bg-gray-600 dark:text-white focus:ring-2 focus:ring-[#E41E26] focus:border-transparent outline-none transition-all"
+                          placeholder="أدخل اسم التصنيف"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 dark:bg-gray-600 dark:text-white focus:ring-2 focus:ring-[#E41E26] focus:border-transparent outline-none transition-all text-right"
+                          dir="rtl"
                         />
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          Select Icon
+                      <div className="flex items-center">
+                        <label className="flex items-center cursor-pointer">
+                          <div className="relative">
+                            <input
+                              type="checkbox"
+                              checked={newCategory.isActive}
+                              onChange={(e) =>
+                                setNewCategory({
+                                  ...newCategory,
+                                  isActive: e.target.checked,
+                                })
+                              }
+                              className="sr-only"
+                            />
+                            <div
+                              className={`block w-14 h-8 rounded-full ${
+                                newCategory.isActive
+                                  ? "bg-green-500"
+                                  : "bg-gray-600"
+                              }`}
+                            ></div>
+                            <div
+                              className={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform ${
+                                newCategory.isActive
+                                  ? "transform translate-x-6"
+                                  : ""
+                              }`}
+                            ></div>
+                          </div>
+                          <div className="ml-3 text-gray-700 dark:text-gray-300 font-medium">
+                            {newCategory.isActive ? "مفعل" : "معطل"}
+                          </div>
                         </label>
-                        <select
-                          value={newCategory.icon}
-                          onChange={(e) =>
-                            setNewCategory({
-                              ...newCategory,
-                              icon: e.target.value,
-                            })
-                          }
-                          className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 dark:bg-gray-600 dark:text-white focus:ring-2 focus:ring-[#E41E26] focus:border-transparent outline-none transition-all"
-                        >
-                          <option value="">Choose an icon</option>
-                          {availableIcons.map((iconObj) => (
-                            <option key={iconObj.name} value={iconObj.name}>
-                              {iconObj.name}
-                            </option>
-                          ))}
-                        </select>
                       </div>
                     </div>
                     <div className="flex justify-end mt-4">
@@ -1420,7 +1391,7 @@ const Home = () => {
                         className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all flex items-center gap-2"
                       >
                         <FaPlus />
-                        Add Category
+                        إضافة تصنيف
                       </motion.button>
                     </div>
                   </div>
@@ -1428,7 +1399,7 @@ const Home = () => {
                   {/* Categories List */}
                   <div>
                     <h3 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
-                      Existing Categories
+                      التصنيفات الحالية
                     </h3>
                     <div className="space-y-4">
                       {categories.map((category) => (
@@ -1442,7 +1413,7 @@ const Home = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <div>
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                  Category Name
+                                  اسم التصنيف
                                 </label>
                                 <input
                                   type="text"
@@ -1453,21 +1424,43 @@ const Home = () => {
                                       name: e.target.value,
                                     })
                                   }
-                                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 dark:bg-gray-600 dark:text-white focus:ring-2 focus:ring-[#E41E26] focus:border-transparent outline-none transition-all"
+                                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 dark:bg-gray-600 dark:text-white focus:ring-2 focus:ring-[#E41E26] focus:border-transparent outline-none transition-all text-right"
+                                  dir="rtl"
                                 />
                               </div>
-                              <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                  Icon Preview
+                              <div className="flex items-center">
+                                <label className="flex items-center cursor-pointer">
+                                  <div className="relative">
+                                    <input
+                                      type="checkbox"
+                                      checked={editingCategory.isActive}
+                                      onChange={(e) =>
+                                        setEditingCategory({
+                                          ...editingCategory,
+                                          isActive: e.target.checked,
+                                        })
+                                      }
+                                      className="sr-only"
+                                    />
+                                    <div
+                                      className={`block w-14 h-8 rounded-full ${
+                                        editingCategory.isActive
+                                          ? "bg-green-500"
+                                          : "bg-gray-600"
+                                      }`}
+                                    ></div>
+                                    <div
+                                      className={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform ${
+                                        editingCategory.isActive
+                                          ? "transform translate-x-6"
+                                          : ""
+                                      }`}
+                                    ></div>
+                                  </div>
+                                  <div className="ml-3 text-gray-700 dark:text-gray-300 font-medium">
+                                    {editingCategory.isActive ? "مفعل" : "معطل"}
+                                  </div>
                                 </label>
-                                <div className="flex items-center gap-4">
-                                  <span className="text-2xl">
-                                    {category.icon}
-                                  </span>
-                                  <span className="text-gray-500 dark:text-gray-400 text-sm">
-                                    (Icons cannot be changed)
-                                  </span>
-                                </div>
                               </div>
                               <div className="md:col-span-2 flex justify-end gap-3">
                                 <motion.button
@@ -1476,7 +1469,7 @@ const Home = () => {
                                   onClick={() => setEditingCategory(null)}
                                   className="px-6 py-3 rounded-xl font-semibold border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all"
                                 >
-                                  Cancel
+                                  إلغاء
                                 </motion.button>
                                 <motion.button
                                   whileHover={{ scale: 1.05 }}
@@ -1485,7 +1478,7 @@ const Home = () => {
                                   className="bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all flex items-center gap-2"
                                 >
                                   <FaSave />
-                                  Save Changes
+                                  حفظ التغييرات
                                 </motion.button>
                               </div>
                             </div>
@@ -1493,21 +1486,44 @@ const Home = () => {
                             // View Mode
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-4">
-                                <span className="text-2xl text-[#E41E26]">
-                                  {category.icon}
-                                </span>
                                 <div>
-                                  <h4 className="font-semibold text-gray-800 dark:text-gray-200 text-lg">
+                                  <h4
+                                    className="font-semibold text-gray-800 dark:text-gray-200 text-lg"
+                                    dir={
+                                      isArabic(category.name) ? "rtl" : "ltr"
+                                    }
+                                  >
                                     {category.name}
                                   </h4>
                                   <p className="text-gray-500 dark:text-gray-400 text-sm">
-                                    ID: {category.id}
+                                    المعرف: {category.id}
                                   </p>
                                 </div>
                               </div>
                               <div className="flex gap-2">
                                 {category.id !== "all" && (
                                   <>
+                                    <motion.button
+                                      whileHover={{ scale: 1.1 }}
+                                      whileTap={{ scale: 0.9 }}
+                                      onClick={(e) =>
+                                        handleToggleCategoryActive(
+                                          category.id,
+                                          e
+                                        )
+                                      }
+                                      className={`p-3 rounded-xl transition-colors ${
+                                        category.isActive
+                                          ? "bg-yellow-500 text-white hover:bg-yellow-600"
+                                          : "bg-green-500 text-white hover:bg-green-600"
+                                      }`}
+                                    >
+                                      {category.isActive ? (
+                                        <FaTimesCircle size={16} />
+                                      ) : (
+                                        <FaCheckCircle size={16} />
+                                      )}
+                                    </motion.button>
                                     <motion.button
                                       whileHover={{ scale: 1.1 }}
                                       whileTap={{ scale: 0.9 }}

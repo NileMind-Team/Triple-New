@@ -17,7 +17,7 @@ import {
   FaSun,
   FaMoneyBillWave,
   FaTag,
-  FaCity, // Added for cities
+  FaCity, // تمت الإضافة للمدن
 } from "react-icons/fa";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -40,8 +40,8 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
   const isLoggedIn = !!localStorage.getItem("token");
 
   const authLinks = [
-    { path: "/login", label: "Sign In" },
-    { path: "/register", label: "Create Account" },
+    { path: "/login", label: "تسجيل الدخول" },
+    { path: "/register", label: "إنشاء حساب" },
   ];
 
   const handleLogout = () => {
@@ -56,14 +56,14 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
     setIsDropdownOpen(false);
 
     const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "Are you sure you want to delete your account? This action cannot be undone!",
+      title: "هل أنت متأكد؟",
+      text: "هل أنت متأكد أنك تريد حذف حسابك؟ لا يمكن التراجع عن هذا الإجراء!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#E41E26",
       cancelButtonColor: "#6B7280",
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "Cancel",
+      confirmButtonText: "نعم، احذف الحساب!",
+      cancelButtonText: "إلغاء",
       reverseButtons: true,
     });
 
@@ -72,8 +72,8 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
         await axiosInstance.delete("/api/Account/DeleteAccount");
 
         Swal.fire({
-          title: "Deleted!",
-          text: "Your account has been deleted successfully.",
+          title: "تم الحذف!",
+          text: "تم حذف حسابك بنجاح.",
           icon: "success",
           confirmButtonColor: "#E41E26",
         });
@@ -83,10 +83,10 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
         navigate("/");
         window.location.reload();
       } catch (error) {
-        console.error("Failed to delete account", error);
+        console.error("فشل في حذف الحساب", error);
         Swal.fire({
-          title: "Error!",
-          text: "Failed to delete account. Please try again.",
+          title: "خطأ!",
+          text: "فشل في حذف الحساب. يرجى المحاولة مرة أخرى.",
           icon: "error",
           confirmButtonColor: "#E41E26",
         });
@@ -149,13 +149,13 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
     navigate("/admin/coupons");
   };
 
-  // NEW: Handle Cities Management Click
+  // جديد: التعامل مع النقر على إدارة المدن
   const handleCitiesClick = () => {
     setIsSidebarOpen(false);
     navigate("/admin/cities");
   };
 
-  // Close sidebar and dropdown when clicking outside
+  // إغلاق القائمة الجانبية والقائمة المنسدلة عند النقر خارجها
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
@@ -171,7 +171,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
     };
   }, []);
 
-  // Prevent body scroll when sidebar is open
+  // منع التمرير عند فتح القائمة الجانبية
   useEffect(() => {
     if (isSidebarOpen) {
       document.body.style.overflow = "hidden";
@@ -213,7 +213,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
           );
         }
       } catch (err) {
-        console.error("Failed to fetch profile", err);
+        console.error("فشل في جلب الملف الشخصي", err);
       } finally {
         setLoading(false);
       }
@@ -223,7 +223,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
 
   const getInitial = (name) => (!name ? "?" : name.charAt(0).toUpperCase());
 
-  // Loading Screen - Same design as Home component
+  // شاشة التحميل - نفس تصميم مكون الصفحة الرئيسية
   if (loading) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700">
@@ -235,40 +235,42 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
   return (
     <>
       <nav className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl shadow-lg py-4 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-50 border-b border-[#E41E26]/20 dark:border-gray-700 transition-colors duration-300">
-        {/* Logo Section - Now clickable and responsive */}
+        {/* قسم الشعار - قابل للنقر الآن ومستجيب */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
           className="flex items-center gap-2 sm:gap-3"
         >
-          {/* Logo as Link */}
+          {/* الشعار كرابط */}
           <Link
             to="/"
             className="flex items-center gap-2 sm:gap-3 hover:scale-105 transition-transform duration-200"
           >
             <img
               src={darkMode ? logoDark : logo}
-              alt="Chicken One Logo"
+              alt="Chicken One logo"
               className="w-14 h-12 object-contain"
             />
-            {/* Restaurant Name - Hidden on small screens, visible on medium and up */}
+            {/* اسم المطعم - مخفي على الشاشات الصغيرة، مرئي على المتوسطة وما فوق */}
             <h1 className="hidden md:block text-xl lg:text-2xl font-bold bg-gradient-to-r from-[#E41E26] to-[#FDB913] bg-clip-text text-transparent dark:from-[#FDB913] dark:to-[#E41E26]">
               Chicken One
             </h1>
           </Link>
         </motion.div>
 
-        {/* Links */}
+        {/* الروابط */}
         <div className="flex items-center gap-4 sm:gap-6 md:gap-8">
-          {/* Dark Mode Toggle Button */}
+          {/* زر تبديل الوضع الليلي */}
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={toggleDarkMode}
             className="p-2.5 bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] dark:from-gray-800 dark:to-gray-700 rounded-xl border border-[#FDB913]/30 dark:border-gray-600 hover:shadow-lg transition-all duration-300 flex items-center justify-center"
             aria-label={
-              darkMode ? "Switch to light mode" : "Switch to dark mode"
+              darkMode
+                ? "التبديل إلى الوضع النهاري"
+                : "التبديل إلى الوضع الليلي"
             }
           >
             {darkMode ? (
@@ -278,7 +280,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
             )}
           </motion.button>
 
-          {/* Auth Section */}
+          {/* قسم المصادقة */}
           {isLoggedIn ? (
             <motion.div
               className="flex items-center gap-2 sm:gap-3 cursor-pointer"
@@ -289,7 +291,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                 {userData.avatar ? (
                   <img
                     src={userData.avatar}
-                    alt="User avatar"
+                    alt="صورة المستخدم"
                     className="w-8 h-8 rounded-full object-cover border border-[#FDB913]/50 dark:border-gray-500"
                   />
                 ) : (
@@ -298,12 +300,12 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                   </div>
                 )}
                 <span className="text-gray-700 dark:text-gray-200 font-medium">
-                  {userData.firstName || "User"}
+                  {userData.firstName || "مستخدم"}
                 </span>
               </div>
             </motion.div>
           ) : (
-            // Not Logged In - Dropdown (with arrow)
+            // غير مسجل الدخول - القائمة المنسدلة (مع السهم)
             <div className="relative" ref={dropdownRef}>
               <motion.div
                 className="flex items-center gap-2 sm:gap-3 cursor-pointer"
@@ -311,7 +313,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
                 <div className="flex items-center gap-2 bg-gradient-to-r from-[#E41E26] to-[#FDB913] px-4 sm:px-6 py-2.5 rounded-xl text-white font-semibold shadow-lg hover:shadow-xl hover:shadow-[#E41E26]/25 transition-all duration-300">
-                  <span>Get Started</span>
+                  <span>ابدأ الآن</span>
                   <motion.div
                     animate={{ rotate: isDropdownOpen ? 180 : 0 }}
                     transition={{ duration: 0.2 }}
@@ -321,7 +323,6 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                 </div>
               </motion.div>
 
-              {/* Dropdown for non-logged in users */}
               <AnimatePresence>
                 {isDropdownOpen && (
                   <motion.div
@@ -333,11 +334,20 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                   >
                     <div className="p-2">
                       <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                          Join Chicken One
+                        <p
+                          className="text-sm text-gray-600 dark:text-gray-400 text-right"
+                          dir="rtl"
+                        >
+                          انضم إلى{" "}
+                          <span className="font-semibold text-gray-800 dark:text-gray-200">
+                            Chicken One
+                          </span>
                         </p>
-                        <p className="font-semibold text-gray-800 dark:text-gray-200">
-                          Start your journey
+                        <p
+                          className="font-semibold text-gray-800 dark:text-gray-200 text-right"
+                          dir="rtl"
+                        >
+                          ابدأ رحلتك
                         </p>
                       </div>
 
@@ -368,11 +378,11 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
         </div>
       </nav>
 
-      {/* Sidebar Overlay - Only for logged in users */}
+      {/* تراكب القائمة الجانبية - فقط للمستخدمين المسجلين */}
       <AnimatePresence>
         {isLoggedIn && isSidebarOpen && (
           <>
-            {/* Backdrop Blur */}
+            {/* الخلفية الضبابية */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -382,7 +392,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
               onClick={() => setIsSidebarOpen(false)}
             />
 
-            {/* Sidebar - Responsive width */}
+            {/* القائمة الجانبية - عرض مستجيب */}
             <motion.div
               ref={sidebarRef}
               initial={{ x: "100%" }}
@@ -395,7 +405,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
               }}
               className="fixed top-0 right-0 h-full w-72 sm:w-80 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl shadow-2xl border-l border-[#E41E26]/20 dark:border-gray-700 z-[70] overflow-y-auto transition-colors duration-300"
             >
-              {/* Header */}
+              {/* الرأس */}
               <div className="relative p-6 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] dark:from-gray-800 dark:to-gray-700">
                 <motion.button
                   whileHover={{ scale: 1.1 }}
@@ -410,7 +420,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                     {userData.avatar ? (
                       <img
                         src={userData.avatar}
-                        alt="User avatar"
+                        alt="صورة المستخدم"
                         className="w-12 h-12 rounded-full object-cover border-2 border-[#FDB913] dark:border-[#E41E26]"
                       />
                     ) : (
@@ -429,7 +439,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                         <div className="flex items-center gap-1 mt-1">
                           <FaUserShield className="text-[#E41E26] dark:text-[#FDB913] text-xs" />
                           <span className="text-xs text-[#E41E26] dark:text-[#FDB913] font-semibold">
-                            Admin
+                            مدير
                           </span>
                         </div>
                       )}
@@ -438,10 +448,10 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                 </div>
               </div>
 
-              {/* Menu Items */}
+              {/* عناصر القائمة */}
               <div className="p-4">
                 <div className="space-y-1">
-                  {/* Home Link added to sidebar */}
+                  {/* تمت إضافة رابط الصفحة الرئيسية للقائمة الجانبية */}
                   <motion.div
                     whileHover={{ scale: 1.02, x: 4 }}
                     whileTap={{ scale: 0.98 }}
@@ -453,19 +463,19 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                       <div className="p-2 bg-[#E41E26]/10 dark:bg-[#FDB913]/20 rounded-lg">
                         <FaHome className="text-[#E41E26] dark:text-[#FDB913] text-lg" />
                       </div>
-                      <span className="text-lg">Home</span>
+                      <span className="text-lg">الصفحة الرئيسية</span>
                     </button>
                   </motion.div>
 
-                  {/* Admin Panel Section - Only show for admin users */}
+                  {/* قسم لوحة الإدارة - يظهر فقط للمستخدمين المديرين */}
                   {isAdmin && (
                     <>
                       <div className="border-t border-gray-200 dark:border-gray-700 my-4 pt-4">
                         <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-2 mb-2">
-                          Admin Panel
+                          لوحة الإدارة
                         </p>
 
-                        {/* Admin Users */}
+                        {/* إدارة المستخدمين */}
                         <motion.div
                           whileHover={{ scale: 1.02, x: 4 }}
                           whileTap={{ scale: 0.98 }}
@@ -477,11 +487,11 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                             <div className="p-2 bg-[#E41E26]/10 dark:bg-[#FDB913]/20 rounded-lg">
                               <FaUsers className="text-[#E41E26] dark:text-[#FDB913] text-lg" />
                             </div>
-                            <span className="text-lg">Manage Users</span>
+                            <span className="text-lg">إدارة المستخدمين</span>
                           </button>
                         </motion.div>
 
-                        {/* Admin Branches */}
+                        {/* إدارة الفروع */}
                         <motion.div
                           whileHover={{ scale: 1.02, x: 4 }}
                           whileTap={{ scale: 0.98 }}
@@ -493,11 +503,11 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                             <div className="p-2 bg-[#E41E26]/10 dark:bg-[#FDB913]/20 rounded-lg">
                               <FaBuilding className="text-[#E41E26] dark:text-[#FDB913] text-lg" />
                             </div>
-                            <span className="text-lg">Manage Branches</span>
+                            <span className="text-lg">إدارة الفروع</span>
                           </button>
                         </motion.div>
 
-                        {/* Delivery Cost Management */}
+                        {/* إدارة تكاليف التوصيل */}
                         <motion.div
                           whileHover={{ scale: 1.02, x: 4 }}
                           whileTap={{ scale: 0.98 }}
@@ -509,11 +519,11 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                             <div className="p-2 bg-[#E41E26]/10 dark:bg-[#FDB913]/20 rounded-lg">
                               <FaMoneyBillWave className="text-[#E41E26] dark:text-[#FDB913] text-lg" />
                             </div>
-                            <span className="text-lg">Delivery Costs</span>
+                            <span className="text-lg">تكاليف التوصيل</span>
                           </button>
                         </motion.div>
 
-                        {/* Coupons Management */}
+                        {/* إدارة الكوبونات */}
                         <motion.div
                           whileHover={{ scale: 1.02, x: 4 }}
                           whileTap={{ scale: 0.98 }}
@@ -525,11 +535,11 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                             <div className="p-2 bg-[#E41E26]/10 dark:bg-[#FDB913]/20 rounded-lg">
                               <FaTag className="text-[#E41E26] dark:text-[#FDB913] text-lg" />
                             </div>
-                            <span className="text-lg">Manage Coupons</span>
+                            <span className="text-lg">إدارة الكوبونات</span>
                           </button>
                         </motion.div>
 
-                        {/* NEW: Cities Management */}
+                        {/* جديد: إدارة المدن */}
                         <motion.div
                           whileHover={{ scale: 1.02, x: 4 }}
                           whileTap={{ scale: 0.98 }}
@@ -541,7 +551,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                             <div className="p-2 bg-[#E41E26]/10 dark:bg-[#FDB913]/20 rounded-lg">
                               <FaCity className="text-[#E41E26] dark:text-[#FDB913] text-lg" />
                             </div>
-                            <span className="text-lg">Manage Cities</span>
+                            <span className="text-lg">إدارة المدن</span>
                           </button>
                         </motion.div>
                       </div>
@@ -559,7 +569,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                       <div className="p-2 bg-[#E41E26]/10 dark:bg-[#FDB913]/20 rounded-lg">
                         <FaUser className="text-[#E41E26] dark:text-[#FDB913] text-lg" />
                       </div>
-                      <span className="text-lg">My Profile</span>
+                      <span className="text-lg">ملفي الشخصي</span>
                     </button>
                   </motion.div>
 
@@ -574,7 +584,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                       <div className="p-2 bg-[#E41E26]/10 dark:bg-[#FDB913]/20 rounded-lg">
                         <FaClipboardList className="text-[#E41E26] dark:text-[#FDB913] text-lg" />
                       </div>
-                      <span className="text-lg">My Orders</span>
+                      <span className="text-lg">طلباتي</span>
                     </button>
                   </motion.div>
 
@@ -589,7 +599,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                       <div className="p-2 bg-[#E41E26]/10 dark:bg-[#FDB913]/20 rounded-lg">
                         <FaShoppingCart className="text-[#E41E26] dark:text-[#FDB913] text-lg" />
                       </div>
-                      <span className="text-lg">My Cart</span>
+                      <span className="text-lg">عربة التسوق</span>
                     </button>
                   </motion.div>
 
@@ -604,7 +614,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                       <div className="p-2 bg-[#E41E26]/10 dark:bg-[#FDB913]/20 rounded-lg">
                         <FaMapMarkerAlt className="text-[#E41E26] dark:text-[#FDB913] text-lg" />
                       </div>
-                      <span className="text-lg">My Addresses</span>
+                      <span className="text-lg">عناويني</span>
                     </button>
                   </motion.div>
 
@@ -619,7 +629,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                       <div className="p-2 bg-[#E41E26]/10 dark:bg-[#FDB913]/20 rounded-lg">
                         <FaStar className="text-[#E41E26] dark:text-[#FDB913] text-lg" />
                       </div>
-                      <span className="text-lg">My Reviews</span>
+                      <span className="text-lg">تقييماتي</span>
                     </button>
                   </motion.div>
 
@@ -635,7 +645,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                         <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
                           <FaTrash className="text-red-500 dark:text-red-400 text-lg" />
                         </div>
-                        <span className="text-lg">Delete Account</span>
+                        <span className="text-lg">حذف الحساب</span>
                       </button>
                     </motion.div>
 
@@ -650,7 +660,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                         <div className="p-2 bg-[#E41E26]/10 dark:bg-[#FDB913]/20 rounded-lg">
                           <FaSignOutAlt className="text-[#E41E26] dark:text-[#FDB913] text-lg" />
                         </div>
-                        <span className="text-lg">Sign Out</span>
+                        <span className="text-lg">تسجيل الخروج</span>
                       </button>
                     </motion.div>
                   </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -8,78 +8,60 @@ import {
   FaTrash,
   FaMapMarkerAlt,
   FaStar,
-  FaHome,
-  FaBuilding,
-  FaBriefcase,
   FaCheck,
   FaTimes,
-  FaUser,
   FaPhone,
   FaCity,
-  FaGlobe,
   FaRoad,
   FaBuilding as FaBuildingIcon,
   FaChevronDown,
   FaTag,
+  FaMap,
+  FaExternalLinkAlt,
 } from "react-icons/fa";
 import Swal from "sweetalert2";
 import axiosInstance from "../api/axiosInstance";
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+
+const mapContainerStyle = {
+  width: "100%",
+  height: "390px",
+};
+
+const defaultCenter = {
+  lat: 30.0444,
+  lng: 31.2357,
+};
+
+const libraries = ["places"];
 
 export default function Addresses() {
   const navigate = useNavigate();
   const [addresses, setAddresses] = useState([]);
+  const [cities, setCities] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
+  const [showMapModal, setShowMapModal] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
 
   const [formData, setFormData] = useState({
-    title: "",
-    firstName: "",
-    lastName: "",
+    cityId: "",
+    locationUrl: "",
+    streetName: "",
     phoneNumber: "",
-    country: "Egypt",
-    city: "",
-    street: "",
     buildingNumber: "",
-    floor: "",
+    floorNumber: "",
+    flatNumber: "",
+    detailedDescription: "",
   });
 
   const [openDropdown, setOpenDropdown] = useState(null);
 
   const toggleDropdown = (menu) =>
     setOpenDropdown(openDropdown === menu ? null : menu);
-
-  // Sample data for dropdowns
-  const cities = [
-    "Cairo",
-    "Giza",
-    "Alexandria",
-    "Luxor",
-    "Aswan",
-    "Hurghada",
-    "Sharm El Sheikh",
-    "Port Said",
-    "Suez",
-    "Mansoura",
-    "Tanta",
-    "Ismailia",
-    "Faiyum",
-    "Zagazig",
-    "Damietta",
-  ];
-
-  const countries = [
-    "Egypt",
-    "Saudi Arabia",
-    "United Arab Emirates",
-    "Kuwait",
-    "Qatar",
-    "Oman",
-    "Bahrain",
-    "Jordan",
-    "Lebanon",
-  ];
 
   // Check dark mode from localStorage on component mount
   useEffect(() => {
@@ -98,10 +80,7 @@ export default function Addresses() {
       }
     };
 
-    // Listen for storage changes
     window.addEventListener("storage", handleStorageChange);
-
-    // Also check periodically (fallback for same-tab changes)
     const interval = setInterval(handleStorageChange, 1000);
 
     return () => {
@@ -110,85 +89,125 @@ export default function Addresses() {
     };
   }, []);
 
-  // Fetch addresses on component mount
+  // Fetch addresses and cities on component mount
   useEffect(() => {
     fetchAddresses();
+    fetchCities();
   }, []);
 
   const fetchAddresses = async () => {
     try {
       setIsLoading(true);
-      // Replace with your actual API endpoint
-      const res = await axiosInstance.get("/api/Account/Addresses");
+      const res = await axiosInstance.get("/api/Locations/GetAllForUser");
       if (res.status === 200) {
         setAddresses(res.data);
       }
     } catch (err) {
       console.error("Failed to fetch addresses", err);
-      // For demo purposes, using mock data with new fields
-      setAddresses([
-        {
-          id: 1,
-          title: "Home",
-          firstName: "John",
-          lastName: "Doe",
-          phoneNumber: "+201234567890",
-          street: "123 Main Street",
-          buildingNumber: "15A",
-          floor: "4th Floor",
-          city: "Cairo",
-          country: "Egypt",
-          addressType: "home",
-          isDefault: true,
-        },
-        {
-          id: 2,
-          title: "Work",
-          firstName: "John",
-          lastName: "Doe",
-          phoneNumber: "+201234567891",
-          street: "456 Business District",
-          buildingNumber: "Sky Tower",
-          floor: "8th Floor",
-          city: "Giza",
-          country: "Egypt",
-          addressType: "work",
-          isDefault: false,
-        },
-      ]);
+      Swal.fire({
+        icon: "error",
+        title: "خطأ",
+        text: "فشل في تحميل العناوين",
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
+  const fetchCities = async () => {
+    try {
+      const res = await axiosInstance.get("/api/Cities/GetAll");
+      if (res.status === 200) {
+        setCities(res.data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch cities", err);
+      Swal.fire({
+        icon: "error",
+        title: "خطأ",
+        text: "فشل في تحميل المدن",
+      });
+    }
   };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+
+    if (
+      name === "buildingNumber" ||
+      name === "floorNumber" ||
+      name === "flatNumber"
+    ) {
+      const numValue = parseInt(value);
+      if (value === "" || numValue > 0) {
+        setFormData({
+          ...formData,
+          [name]: value,
+        });
+      }
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
+  };
+
+  const generateEmbedUrl = (lat, lng) => {
+    const apiKey = "AIzaSyC9UUx3lHra53Dbx5rcZdWSBsSxUaPZDa4";
+    return `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${lat},${lng}&zoom=18`;
+  };
+
+  const handleMapClick = useCallback((event) => {
+    const lat = event.latLng.lat();
+    const lng = event.latLng.lng();
+
+    setSelectedLocation({ lat, lng });
+
+    const embedUrl = generateEmbedUrl(lat, lng);
+
+    setFormData((prev) => ({
+      ...prev,
+      locationUrl: embedUrl,
+    }));
+
+    Swal.fire({
+      icon: "success",
+      title: "تم اختيار الموقع",
+      text: "تم إضافة رابط الخريطة تلقائياً",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
+      const formattedData = {
+        ...formData,
+        cityId: parseInt(formData.cityId),
+        buildingNumber: parseInt(formData.buildingNumber) || 0,
+        floorNumber: parseInt(formData.floorNumber) || 0,
+        flatNumber: parseInt(formData.flatNumber) || 0,
+      };
+
       if (editingId) {
         // Update existing address
         const res = await axiosInstance.put(
-          `/api/Account/Addresses/${editingId}`,
-          formData
+          `/api/Locations/Update/${editingId}`,
+          formattedData
         );
         if (res.status === 200) {
           setAddresses(
             addresses.map((addr) =>
-              addr.id === editingId ? { ...addr, ...formData } : addr
+              addr.id === editingId ? { ...addr, ...formattedData } : addr
             )
           );
           Swal.fire({
             icon: "success",
-            title: "Address Updated",
-            text: "Your address has been updated successfully.",
+            title: "تم تحديث العنوان",
+            text: "تم تحديث عنوانك بنجاح",
             timer: 2000,
             showConfirmButton: false,
           });
@@ -196,15 +215,15 @@ export default function Addresses() {
       } else {
         // Add new address
         const res = await axiosInstance.post(
-          "/api/Account/Addresses",
-          formData
+          "/api/Locations/Add",
+          formattedData
         );
-        if (res.status === 201) {
-          setAddresses([...addresses, { ...formData, id: Date.now() }]);
+        if (res.status === 200) {
+          fetchAddresses();
           Swal.fire({
             icon: "success",
-            title: "Address Added",
-            text: "Your new address has been added successfully.",
+            title: "تم إضافة العنوان",
+            text: "تم إضافة عنوانك الجديد بنجاح",
             timer: 2000,
             showConfirmButton: false,
           });
@@ -215,18 +234,28 @@ export default function Addresses() {
     } catch (err) {
       Swal.fire({
         icon: "error",
-        title: "Error",
-        text: err.response?.data?.message || "Failed to save address.",
+        title: "خطأ",
+        text: err.response?.data?.message || "فشل في حفظ العنوان",
       });
     }
   };
 
   const handleEdit = (address) => {
-    setFormData(address);
+    setFormData({
+      cityId: address.city.id.toString(),
+      locationUrl: address.locationUrl || "",
+      streetName: address.streetName || "",
+      phoneNumber: address.phoneNumber || "",
+      buildingNumber: address.buildingNumber?.toString() || "",
+      floorNumber: address.floorNumber?.toString() || "",
+      flatNumber: address.flatNumber?.toString() || "",
+      detailedDescription: address.detailedDescription || "",
+    });
     setEditingId(address.id);
     setIsAdding(true);
+    setShowMapModal(false);
+    setSelectedLocation(null);
 
-    // Scroll to form in mobile view
     setTimeout(() => {
       const formElement = document.getElementById("address-form");
       if (formElement && window.innerWidth < 1280) {
@@ -237,21 +266,22 @@ export default function Addresses() {
 
   const handleDelete = (id) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: "هل أنت متأكد؟",
+      text: "لن تتمكن من التراجع عن هذا!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#E41E26",
       cancelButtonColor: "#6B7280",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: "نعم، احذفه!",
+      cancelButtonText: "إلغاء",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axiosInstance.delete(`/api/Account/Addresses/${id}`);
+          await axiosInstance.delete(`/api/Locations/Delete/${id}`);
           setAddresses(addresses.filter((addr) => addr.id !== id));
           Swal.fire({
-            title: "Deleted!",
-            text: "Your address has been deleted.",
+            title: "تم الحذف!",
+            text: "تم حذف عنوانك",
             icon: "success",
             timer: 2000,
             showConfirmButton: false,
@@ -259,8 +289,8 @@ export default function Addresses() {
         } catch (err) {
           Swal.fire({
             icon: "error",
-            title: "Error",
-            text: "Failed to delete address.",
+            title: "خطأ",
+            text: "فشل في حذف العنوان",
           });
         }
       }
@@ -269,50 +299,52 @@ export default function Addresses() {
 
   const handleSetDefault = async (id) => {
     try {
-      await axiosInstance.put(`/api/Account/Addresses/${id}/set-default`);
+      await axiosInstance.put(`/api/Locations/ChangeDefaultLocation/${id}`);
       setAddresses(
         addresses.map((addr) => ({
           ...addr,
-          isDefault: addr.id === id,
+          isDefaultLocation: addr.id === id,
         }))
       );
       Swal.fire({
         icon: "success",
-        title: "Default Address Updated",
-        text: "Your default address has been changed.",
+        title: "تم تحديث العنوان الافتراضي",
+        text: "تم تغيير عنوانك الافتراضي",
         timer: 2000,
         showConfirmButton: false,
       });
     } catch (err) {
       Swal.fire({
         icon: "error",
-        title: "Error",
-        text: "Failed to set default address.",
+        title: "خطأ",
+        text: "فشل في تعيين العنوان الافتراضي",
       });
     }
   };
 
   const resetForm = () => {
     setFormData({
-      title: "",
-      firstName: "",
-      lastName: "",
+      cityId: "",
+      locationUrl: "",
+      streetName: "",
       phoneNumber: "",
-      country: "Egypt",
-      city: "",
-      street: "",
       buildingNumber: "",
-      floor: "",
+      floorNumber: "",
+      flatNumber: "",
+      detailedDescription: "",
     });
     setEditingId(null);
     setIsAdding(false);
     setOpenDropdown(null);
+    setShowMapModal(false);
+    setSelectedLocation(null);
   };
 
   const handleAddNewAddress = () => {
     setIsAdding(true);
+    setShowMapModal(false);
+    setSelectedLocation(null);
 
-    // Scroll to form in mobile view
     setTimeout(() => {
       const formElement = document.getElementById("address-form");
       if (formElement && window.innerWidth < 1280) {
@@ -321,18 +353,52 @@ export default function Addresses() {
     }, 100);
   };
 
+  const openMapModal = () => {
+    setShowMapModal(true);
+    setMapLoaded(false);
+  };
+
+  const closeMapModal = () => {
+    setShowMapModal(false);
+    setMapLoaded(false);
+  };
+
+  const confirmLocation = () => {
+    if (selectedLocation) {
+      closeMapModal();
+      Swal.fire({
+        icon: "success",
+        title: "تم تأكيد الموقع",
+        text: "تم حفظ موقعك بنجاح",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    } else {
+      Swal.fire({
+        icon: "warning",
+        title: "تحذير",
+        text: "يرجى اختيار موقع من الخريطة أولاً",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    }
+  };
+
+  const handleMapLoad = () => {
+    setMapLoaded(true);
+  };
+
   // Check if all required fields are filled
   const isFormValid = () => {
     const requiredFields = [
-      "title",
-      "firstName",
-      "lastName",
+      "cityId",
+      "locationUrl",
+      "streetName",
       "phoneNumber",
-      "country",
-      "city",
-      "street",
       "buildingNumber",
-      "floor",
+      "floorNumber",
+      "flatNumber",
+      "detailedDescription",
     ];
 
     return requiredFields.every(
@@ -340,26 +406,8 @@ export default function Addresses() {
     );
   };
 
-  const getAddressTypeIcon = (type) => {
-    switch (type) {
-      case "home":
-        return <FaHome className="text-[#E41E26]" />;
-      case "work":
-        return <FaBriefcase className="text-[#E41E26]" />;
-      default:
-        return <FaBuilding className="text-[#E41E26]" />;
-    }
-  };
-
-  const getAddressTypeColor = (type) => {
-    switch (type) {
-      case "home":
-        return "from-blue-500/10 to-blue-600/10 border-blue-200 dark:from-blue-500/20 dark:to-blue-600/20 dark:border-blue-700";
-      case "work":
-        return "from-purple-500/10 to-purple-600/10 border-purple-200 dark:from-purple-500/20 dark:to-purple-600/20 dark:border-purple-700";
-      default:
-        return "from-gray-500/10 to-gray-600/10 border-gray-200 dark:from-gray-500/20 dark:to-gray-600/20 dark:border-gray-700";
-    }
+  const getAddressTypeColor = () => {
+    return "from-gray-500/10 to-gray-600/10 border-gray-200 dark:from-gray-500/20 dark:to-gray-600/20 dark:border-gray-700";
   };
 
   if (isLoading) {
@@ -407,6 +455,160 @@ export default function Addresses() {
         />
       </motion.button>
 
+      {/* Modal للخريطة */}
+      <AnimatePresence>
+        {showMapModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className={`${
+                darkMode ? "bg-gray-800" : "bg-white"
+              } rounded-2xl sm:rounded-3xl w-full max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col`}
+            >
+              {/* Header */}
+              <div
+                className={`${
+                  darkMode ? "bg-gray-700" : "bg-gray-50"
+                } px-6 py-4 border-b ${
+                  darkMode ? "border-gray-600" : "border-gray-200"
+                } flex items-center justify-between flex-shrink-0`}
+              >
+                <div className="flex items-center gap-3">
+                  <FaMap className="text-[#E41E26] text-xl" />
+                  <h3
+                    className={`text-lg font-bold ${
+                      darkMode ? "text-white" : "text-gray-800"
+                    }`}
+                  >
+                    اختر موقعك من الخريطة
+                  </h3>
+                </div>
+                <button
+                  onClick={closeMapModal}
+                  className={`p-2 rounded-full ${
+                    darkMode
+                      ? "hover:bg-gray-600 text-gray-300"
+                      : "hover:bg-gray-200 text-gray-500"
+                  } transition-colors`}
+                >
+                  <FaTimes size={16} />
+                </button>
+              </div>
+
+              {/* محتوى الـ Modal */}
+              <div className="flex-1 overflow-y-auto">
+                <div className="p-4">
+                  <div className="mb-4">
+                    <p
+                      className={`text-sm ${
+                        darkMode ? "text-gray-300" : "text-gray-600"
+                      }`}
+                    >
+                      انقر على الخريطة لتحديد موقعك بدقة
+                    </p>
+                  </div>
+
+                  {/* Loading State */}
+                  {!mapLoaded && (
+                    <div className="flex items-center justify-center h-64 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                      <div className="text-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-[#E41E26] mx-auto mb-4"></div>
+                        <p
+                          className={`text-sm ${
+                            darkMode ? "text-gray-300" : "text-gray-600"
+                          }`}
+                        >
+                          جاري تحميل الخريطة...
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  <LoadScript
+                    googleMapsApiKey="AIzaSyC9UUx3lHra53Dbx5rcZdWSBsSxUaPZDa4"
+                    libraries={libraries}
+                    onLoad={() => setMapLoaded(true)}
+                    onError={() => {
+                      setMapLoaded(false);
+                      Swal.fire({
+                        icon: "error",
+                        title: "خطأ في تحميل الخريطة",
+                        text: "يرجى المحاولة مرة أخرى",
+                        timer: 3000,
+                        showConfirmButton: false,
+                      });
+                    }}
+                  >
+                    {mapLoaded && (
+                      <GoogleMap
+                        mapContainerStyle={mapContainerStyle}
+                        center={defaultCenter}
+                        zoom={12}
+                        onClick={handleMapClick}
+                        onLoad={handleMapLoad}
+                      >
+                        {selectedLocation && (
+                          <Marker position={selectedLocation} />
+                        )}
+                      </GoogleMap>
+                    )}
+                  </LoadScript>
+
+                  {/* معلومات الموقع المختار */}
+                  {selectedLocation && (
+                    <div
+                      className={`mt-4 p-4 rounded-lg ${
+                        darkMode
+                          ? "bg-green-900/20 border border-green-800"
+                          : "bg-green-50 border border-green-200"
+                      }`}
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div className="flex-1">
+                          <p
+                            className={`text-sm font-medium ${
+                              darkMode ? "text-green-300" : "text-green-700"
+                            }`}
+                          >
+                            ✓ الموقع المختار
+                          </p>
+                          <p
+                            className={`text-xs ${
+                              darkMode ? "text-green-400" : "text-green-600"
+                            }`}
+                          >
+                            خط العرض: {selectedLocation.lat.toFixed(6)} | خط
+                            الطول: {selectedLocation.lng.toFixed(6)}
+                          </p>
+                        </div>
+
+                        {/* زر تأكيد الموقع - يظهر فقط عند اختيار موقع */}
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={confirmLocation}
+                          className="bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-6 py-3 rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-200 flex items-center gap-2 whitespace-nowrap flex-shrink-0"
+                        >
+                          <FaCheck className="text-sm" />
+                          تأكيد الموقع
+                        </motion.button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -417,13 +619,13 @@ export default function Addresses() {
             : "bg-white/90 border-white/50"
         } backdrop-blur-xl shadow-xl sm:shadow-2xl rounded-2xl sm:rounded-3xl border relative overflow-hidden transition-colors duration-300`}
       >
-        {/* Header Background - Increased height for better spacing */}
+        {/* Header Background */}
         <div className="relative h-36 sm:h-40 md:h-44 lg:h-52 bg-gradient-to-r from-[#E41E26] to-[#FDB913] overflow-hidden">
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="absolute -top-4 sm:-top-6 -right-4 sm:-right-6 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 bg-white/10 rounded-full"></div>
           <div className="absolute -bottom-4 sm:-bottom-6 -left-4 sm:-left-6 w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-32 lg:h-32 bg-white/10 rounded-full"></div>
 
-          {/* Header Content - More padding at the bottom */}
+          {/* Header Content */}
           <div className="relative z-10 h-full flex flex-col justify-end items-center text-center px-4 sm:px-6 pb-6 sm:pb-8 md:pb-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -435,7 +637,7 @@ export default function Addresses() {
                 <FaMapMarkerAlt className="text-white text-xl sm:text-2xl md:text-3xl" />
               </div>
               <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white">
-                My Addresses
+                عناويني
               </h1>
             </motion.div>
 
@@ -445,14 +647,14 @@ export default function Addresses() {
               transition={{ delay: 0.3 }}
               className="text-white/90 text-sm sm:text-base md:text-lg lg:text-xl max-w-2xl mb-2 sm:mb-3"
             >
-              Manage your delivery addresses
+              إدارة عناوين التوصيل الخاصة بك
             </motion.p>
           </div>
         </div>
 
         {/* Main Content */}
         <div className="relative px-3 sm:px-4 md:px-6 lg:px-8 pb-4 sm:pb-6 md:pb-8">
-          {/* Add Button - Better positioned between sections with more spacing */}
+          {/* Add Button */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -466,7 +668,7 @@ export default function Addresses() {
               className="flex items-center gap-2 bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-4 sm:px-5 md:px-6 py-3 sm:py-3 md:py-4 rounded-xl sm:rounded-2xl font-semibold shadow-2xl sm:shadow-3xl hover:shadow-4xl hover:shadow-[#E41E26]/50 transition-all duration-300 text-sm sm:text-base md:text-lg border-2 border-white whitespace-nowrap transform translate-y-2"
             >
               <FaPlus className="text-sm sm:text-base md:text-lg" />
-              <span>Add New Address</span>
+              <span>إضافة عنوان جديد</span>
             </motion.button>
           </motion.div>
 
@@ -489,7 +691,7 @@ export default function Addresses() {
                         ? "bg-gray-700/80 border-gray-600"
                         : "bg-white/80 border-gray-200/50"
                     } backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border-2 transition-all duration-300 hover:shadow-lg ${
-                      address.isDefault
+                      address.isDefaultLocation
                         ? `border-[#E41E26] ${
                             darkMode
                               ? "bg-gradient-to-r from-gray-800 to-gray-700"
@@ -502,31 +704,32 @@ export default function Addresses() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
                           <div
-                            className={`p-1 sm:p-2 rounded-lg sm:rounded-xl bg-gradient-to-r ${getAddressTypeColor(
-                              address.addressType
-                            )} border`}
+                            className={`p-1 sm:p-2 rounded-lg sm:rounded-xl bg-gradient-to-r ${getAddressTypeColor()} border`}
                           >
-                            {getAddressTypeIcon(address.addressType)}
+                            <FaMapMarkerAlt className="text-[#E41E26]" />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <h3
-                              className={`font-bold ${
-                                darkMode ? "text-white" : "text-gray-800"
-                              } text-base sm:text-lg md:text-xl truncate`}
-                            >
-                              {address.title}
-                              {address.isDefault && (
-                                <span className="ml-1 sm:ml-2 bg-[#E41E26] text-white text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full whitespace-nowrap">
-                                  Default
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                              <h3
+                                className={`font-bold ${
+                                  darkMode ? "text-white" : "text-gray-800"
+                                } text-base sm:text-lg md:text-xl truncate`}
+                              >
+                                {address.city.name}
+                              </h3>
+                              {address.isDefaultLocation && (
+                                <span className="bg-[#E41E26] text-white text-xs px-2 py-1 rounded-full whitespace-nowrap inline-flex items-center gap-1 self-start sm:self-center">
+                                  <FaStar className="text-xs" />
+                                  افتراضي
                                 </span>
                               )}
-                            </h3>
+                            </div>
                             <p
                               className={`${
                                 darkMode ? "text-gray-300" : "text-gray-600"
-                              } text-xs sm:text-sm capitalize truncate`}
+                              } text-xs sm:text-sm capitalize truncate mt-1`}
                             >
-                              {address.addressType}
+                              {address.streetName}
                             </p>
                           </div>
                         </div>
@@ -536,24 +739,49 @@ export default function Addresses() {
                             darkMode ? "text-gray-300" : "text-gray-700"
                           } text-sm sm:text-base`}
                         >
-                          <p className="font-semibold truncate">
-                            {address.firstName} {address.lastName}
-                          </p>
                           <p className="truncate">{address.phoneNumber}</p>
                           <p className="truncate">
-                            {address.street}, Building {address.buildingNumber}
+                            {address.streetName}, مبنى رقم{" "}
+                            {address.buildingNumber}
                           </p>
-                          {address.floor && (
-                            <p className="truncate">{address.floor}</p>
+                          {(address.floorNumber || address.flatNumber) && (
+                            <p className="truncate">
+                              الدور {address.floorNumber}, شقة{" "}
+                              {address.flatNumber}
+                            </p>
                           )}
-                          <p className="truncate">
-                            {address.city}, {address.country}
-                          </p>
+                          {address.detailedDescription && (
+                            <p className="truncate">
+                              {address.detailedDescription}
+                            </p>
+                          )}
                         </div>
+
+                        {/* خريطة الموقع المصغرة */}
+                        {address.locationUrl && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            transition={{ delay: 0.2 }}
+                            className="mt-3 sm:mt-4 rounded-lg sm:rounded-xl overflow-hidden border border-gray-200 dark:border-gray-600"
+                          >
+                            <iframe
+                              src={address.locationUrl}
+                              width="100%"
+                              height="200"
+                              style={{ border: 0 }}
+                              allowFullScreen=""
+                              loading="lazy"
+                              referrerPolicy="no-referrer-when-downgrade"
+                              title={`خريطة موقع ${address.streetName}`}
+                              className="w-full"
+                            />
+                          </motion.div>
+                        )}
                       </div>
 
                       <div className="flex flex-row sm:flex-col lg:flex-row gap-1 sm:gap-2 justify-end sm:justify-start">
-                        {!address.isDefault && (
+                        {!address.isDefaultLocation && (
                           <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
@@ -566,10 +794,10 @@ export default function Addresses() {
                           >
                             <FaStar className="text-xs sm:text-sm" />
                             <span className="whitespace-nowrap hidden xs:inline">
-                              Set Default
+                              تعيين افتراضي
                             </span>
                             <span className="whitespace-nowrap xs:hidden">
-                              Default
+                              افتراضي
                             </span>
                           </motion.button>
                         )}
@@ -584,7 +812,7 @@ export default function Addresses() {
                           } rounded-lg transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center`}
                         >
                           <FaEdit className="text-xs sm:text-sm" />
-                          <span className="whitespace-nowrap">Edit</span>
+                          <span className="whitespace-nowrap">تعديل</span>
                         </motion.button>
                         <motion.button
                           whileHover={{ scale: 1.05 }}
@@ -597,7 +825,7 @@ export default function Addresses() {
                           } rounded-lg transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center`}
                         >
                           <FaTrash className="text-xs sm:text-sm" />
-                          <span className="whitespace-nowrap">Delete</span>
+                          <span className="whitespace-nowrap">حذف</span>
                         </motion.button>
                       </div>
                     </div>
@@ -625,14 +853,14 @@ export default function Addresses() {
                       darkMode ? "text-gray-300" : "text-gray-600"
                     } mb-2 sm:mb-3`}
                   >
-                    No addresses yet
+                    لا توجد عناوين حتى الآن
                   </h3>
                   <p
                     className={`${
                       darkMode ? "text-gray-400" : "text-gray-500"
                     } text-sm sm:text-base mb-4 sm:mb-6 max-w-xs sm:max-w-sm mx-auto`}
                   >
-                    Add your first address to get started
+                    أضف عنوانك الأول للبدء
                   </p>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
@@ -641,7 +869,7 @@ export default function Addresses() {
                     className="flex items-center gap-2 bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base mx-auto"
                   >
                     <FaPlus className="text-xs sm:text-sm" />
-                    <span>Add Your First Address</span>
+                    <span>أضف عنوانك الأول</span>
                   </motion.button>
                 </motion.div>
               )}
@@ -670,7 +898,7 @@ export default function Addresses() {
                           darkMode ? "text-white" : "text-gray-800"
                         } truncate`}
                       >
-                        {editingId ? "Edit Address" : "Add New Address"}
+                        {editingId ? "تعديل العنوان" : "إضافة عنوان جديد"}
                       </h3>
                       <button
                         onClick={resetForm}
@@ -688,181 +916,6 @@ export default function Addresses() {
                       onSubmit={handleSubmit}
                       className="space-y-3 sm:space-y-4"
                     >
-                      {/* Title Input */}
-                      <div>
-                        <label
-                          className={`block text-xs sm:text-sm font-semibold ${
-                            darkMode ? "text-gray-300" : "text-gray-700"
-                          } mb-1 sm:mb-2`}
-                        >
-                          Address Title *
-                        </label>
-                        <div className="relative group">
-                          <FaTag className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
-                          <input
-                            type="text"
-                            name="title"
-                            value={formData.title}
-                            onChange={handleInputChange}
-                            required
-                            className={`w-full border ${
-                              darkMode
-                                ? "border-gray-600 bg-gray-800 text-white"
-                                : "border-gray-200 bg-white text-black"
-                            } rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
-                            placeholder="e.g., Home, Work, Main House"
-                          />
-                        </div>
-                      </div>
-
-                      {/* First Name & Last Name */}
-                      <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
-                        <div>
-                          <label
-                            className={`block text-xs sm:text-sm font-semibold ${
-                              darkMode ? "text-gray-300" : "text-gray-700"
-                            } mb-1 sm:mb-2`}
-                          >
-                            First Name *
-                          </label>
-                          <div className="relative group">
-                            <FaUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
-                            <input
-                              type="text"
-                              name="firstName"
-                              value={formData.firstName}
-                              onChange={handleInputChange}
-                              required
-                              className={`w-full border ${
-                                darkMode
-                                  ? "border-gray-600 bg-gray-800 text-white"
-                                  : "border-gray-200 bg-white text-black"
-                              } rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
-                              placeholder="First name"
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <label
-                            className={`block text-xs sm:text-sm font-semibold ${
-                              darkMode ? "text-gray-300" : "text-gray-700"
-                            } mb-1 sm:mb-2`}
-                          >
-                            Last Name *
-                          </label>
-                          <div className="relative group">
-                            <FaUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
-                            <input
-                              type="text"
-                              name="lastName"
-                              value={formData.lastName}
-                              onChange={handleInputChange}
-                              required
-                              className={`w-full border ${
-                                darkMode
-                                  ? "border-gray-600 bg-gray-800 text-white"
-                                  : "border-gray-200 bg-white text-black"
-                              } rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
-                              placeholder="Last name"
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Phone Number */}
-                      <div>
-                        <label
-                          className={`block text-xs sm:text-sm font-semibold ${
-                            darkMode ? "text-gray-300" : "text-gray-700"
-                          } mb-1 sm:mb-2`}
-                        >
-                          Phone Number *
-                        </label>
-                        <div className="relative group">
-                          <FaPhone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
-                          <input
-                            type="tel"
-                            name="phoneNumber"
-                            value={formData.phoneNumber}
-                            onChange={handleInputChange}
-                            required
-                            className={`w-full border ${
-                              darkMode
-                                ? "border-gray-600 bg-gray-800 text-white"
-                                : "border-gray-200 bg-white text-black"
-                            } rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
-                            placeholder="Phone Number"
-                          />
-                        </div>
-                      </div>
-
-                      {/* Country Dropdown */}
-                      <div>
-                        <label
-                          className={`block text-xs sm:text-sm font-semibold ${
-                            darkMode ? "text-gray-300" : "text-gray-700"
-                          } mb-1 sm:mb-2`}
-                        >
-                          Country *
-                        </label>
-                        <div className="relative">
-                          <button
-                            type="button"
-                            onClick={() => toggleDropdown("country")}
-                            className={`w-full flex items-center justify-between border ${
-                              darkMode
-                                ? "border-gray-600 bg-gray-800 text-gray-300 hover:border-[#E41E26]"
-                                : "border-gray-200 bg-white text-gray-600 hover:border-[#E41E26]"
-                            } rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 transition-all group text-sm sm:text-base`}
-                          >
-                            <div className="flex items-center gap-3">
-                              <FaGlobe className="text-[#E41E26] text-sm" />
-                              <span>{formData.country}</span>
-                            </div>
-                            <motion.div
-                              animate={{
-                                rotate: openDropdown === "country" ? 180 : 0,
-                              }}
-                              transition={{ duration: 0.3 }}
-                            >
-                              <FaChevronDown className="text-[#E41E26]" />
-                            </motion.div>
-                          </button>
-                          <AnimatePresence>
-                            {openDropdown === "country" && (
-                              <motion.ul
-                                initial={{ opacity: 0, y: -5 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -5 }}
-                                transition={{ duration: 0.2 }}
-                                className={`absolute z-10 mt-2 w-full ${
-                                  darkMode
-                                    ? "bg-gray-800 border-gray-600"
-                                    : "bg-white border-gray-200"
-                                } border shadow-xl rounded-lg sm:rounded-xl overflow-hidden max-h-48 overflow-y-auto`}
-                              >
-                                {countries.map((country) => (
-                                  <li
-                                    key={country}
-                                    onClick={() => {
-                                      setFormData({ ...formData, country });
-                                      setOpenDropdown(null);
-                                    }}
-                                    className={`px-4 py-2.5 sm:py-3 ${
-                                      darkMode
-                                        ? "hover:bg-gray-700 text-gray-300 border-gray-600"
-                                        : "hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] text-gray-700 border-gray-100"
-                                    } cursor-pointer transition-all text-sm sm:text-base border-b last:border-b-0`}
-                                  >
-                                    {country}
-                                  </li>
-                                ))}
-                              </motion.ul>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                      </div>
-
                       {/* City Dropdown */}
                       <div>
                         <label
@@ -870,7 +923,7 @@ export default function Addresses() {
                             darkMode ? "text-gray-300" : "text-gray-700"
                           } mb-1 sm:mb-2`}
                         >
-                          City *
+                          المدينة *
                         </label>
                         <div className="relative">
                           <button
@@ -884,7 +937,13 @@ export default function Addresses() {
                           >
                             <div className="flex items-center gap-3">
                               <FaCity className="text-[#E41E26] text-sm" />
-                              <span>{formData.city || "Select City"}</span>
+                              <span>
+                                {formData.cityId
+                                  ? cities.find(
+                                      (c) => c.id.toString() === formData.cityId
+                                    )?.name
+                                  : "اختر المدينة"}
+                              </span>
                             </div>
                             <motion.div
                               animate={{
@@ -910,9 +969,12 @@ export default function Addresses() {
                               >
                                 {cities.map((city) => (
                                   <li
-                                    key={city}
+                                    key={city.id}
                                     onClick={() => {
-                                      setFormData({ ...formData, city });
+                                      setFormData({
+                                        ...formData,
+                                        cityId: city.id.toString(),
+                                      });
                                       setOpenDropdown(null);
                                     }}
                                     className={`px-4 py-2.5 sm:py-3 ${
@@ -921,12 +983,39 @@ export default function Addresses() {
                                         : "hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] text-gray-700 border-gray-100"
                                     } cursor-pointer transition-all text-sm sm:text-base border-b last:border-b-0`}
                                   >
-                                    {city}
+                                    {city.name}
                                   </li>
                                 ))}
                               </motion.ul>
                             )}
                           </AnimatePresence>
+                        </div>
+                      </div>
+
+                      {/* Phone Number */}
+                      <div>
+                        <label
+                          className={`block text-xs sm:text-sm font-semibold ${
+                            darkMode ? "text-gray-300" : "text-gray-700"
+                          } mb-1 sm:mb-2`}
+                        >
+                          رقم الهاتف *
+                        </label>
+                        <div className="relative group">
+                          <FaPhone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
+                          <input
+                            type="tel"
+                            name="phoneNumber"
+                            value={formData.phoneNumber}
+                            onChange={handleInputChange}
+                            required
+                            className={`w-full border ${
+                              darkMode
+                                ? "border-gray-600 bg-gray-800 text-white"
+                                : "border-gray-200 bg-white text-black"
+                            } rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
+                            placeholder="رقم الهاتف"
+                          />
                         </div>
                       </div>
 
@@ -937,14 +1026,14 @@ export default function Addresses() {
                             darkMode ? "text-gray-300" : "text-gray-700"
                           } mb-1 sm:mb-2`}
                         >
-                          Street *
+                          اسم الشارع *
                         </label>
                         <div className="relative group">
                           <FaRoad className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
                           <input
                             type="text"
-                            name="street"
-                            value={formData.street}
+                            name="streetName"
+                            value={formData.streetName}
                             onChange={handleInputChange}
                             required
                             className={`w-full border ${
@@ -952,35 +1041,36 @@ export default function Addresses() {
                                 ? "border-gray-600 bg-gray-800 text-white"
                                 : "border-gray-200 bg-white text-black"
                             } rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
-                            placeholder="Street name"
+                            placeholder="اسم الشارع"
                           />
                         </div>
                       </div>
 
-                      {/* Building Number & Floor */}
-                      <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
+                      {/* Building Number, Floor Number, Flat Number */}
+                      <div className="grid grid-cols-1 xs:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
                         <div>
                           <label
                             className={`block text-xs sm:text-sm font-semibold ${
                               darkMode ? "text-gray-300" : "text-gray-700"
                             } mb-1 sm:mb-2`}
                           >
-                            Building Number *
+                            رقم المبنى *
                           </label>
                           <div className="relative group">
                             <FaBuildingIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
                             <input
-                              type="text"
+                              type="number"
                               name="buildingNumber"
                               value={formData.buildingNumber}
                               onChange={handleInputChange}
                               required
+                              min="1"
                               className={`w-full border ${
                                 darkMode
                                   ? "border-gray-600 bg-gray-800 text-white"
                                   : "border-gray-200 bg-white text-black"
                               } rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
-                              placeholder="Building no."
+                              placeholder="رقم"
                             />
                           </div>
                         </div>
@@ -990,25 +1080,125 @@ export default function Addresses() {
                               darkMode ? "text-gray-300" : "text-gray-700"
                             } mb-1 sm:mb-2`}
                           >
-                            Floor *
+                            رقم الدور *
                           </label>
                           <div className="relative group">
-                            <FaBuildingIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
+                            <FaTag className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
                             <input
-                              type="text"
-                              name="floor"
-                              value={formData.floor}
+                              type="number"
+                              name="floorNumber"
+                              value={formData.floorNumber}
                               onChange={handleInputChange}
                               required
+                              min="1"
                               className={`w-full border ${
                                 darkMode
                                   ? "border-gray-600 bg-gray-800 text-white"
                                   : "border-gray-200 bg-white text-black"
                               } rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
-                              placeholder="Floor"
+                              placeholder="الدور"
                             />
                           </div>
                         </div>
+                        <div>
+                          <label
+                            className={`block text-xs sm:text-sm font-semibold ${
+                              darkMode ? "text-gray-300" : "text-gray-700"
+                            } mb-1 sm:mb-2`}
+                          >
+                            رقم الشقة *
+                          </label>
+                          <div className="relative group">
+                            <FaTag className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
+                            <input
+                              type="number"
+                              name="flatNumber"
+                              value={formData.flatNumber}
+                              onChange={handleInputChange}
+                              required
+                              min="1"
+                              className={`w-full border ${
+                                darkMode
+                                  ? "border-gray-600 bg-gray-800 text-white"
+                                  : "border-gray-200 bg-white text-black"
+                              } rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
+                              placeholder="الشقة"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Detailed Description */}
+                      <div>
+                        <label
+                          className={`block text-xs sm:text-sm font-semibold ${
+                            darkMode ? "text-gray-300" : "text-gray-700"
+                          } mb-1 sm:mb-2`}
+                        >
+                          تفاصيل إضافية *
+                        </label>
+                        <textarea
+                          name="detailedDescription"
+                          value={formData.detailedDescription}
+                          onChange={handleInputChange}
+                          required
+                          rows="3"
+                          className={`w-full border ${
+                            darkMode
+                              ? "border-gray-600 bg-gray-800 text-white"
+                              : "border-gray-200 bg-white text-black"
+                          } rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base resize-none`}
+                          placeholder="أي تفاصيل إضافية عن موقعك..."
+                        />
+                      </div>
+
+                      {/* Location URL with Map Picker */}
+                      <div>
+                        <label
+                          className={`block text-xs sm:text-sm font-semibold ${
+                            darkMode ? "text-gray-300" : "text-gray-700"
+                          } mb-1 sm:mb-2`}
+                        >
+                          رابط الموقع *
+                        </label>
+
+                        {/* زر فتح الخريطة - تصميم متوافق مع الديزاين */}
+                        <motion.button
+                          type="button"
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={openMapModal}
+                          className="flex items-center gap-2 w-full mb-2 px-3 py-2.5 bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white rounded-lg hover:shadow-lg transition-all duration-200 text-sm font-semibold"
+                        >
+                          <FaMap className="text-sm" />
+                          <span>اختيار الموقع من الخريطة</span>
+                          <FaExternalLinkAlt className="text-sm ml-auto" />
+                        </motion.button>
+
+                        <input
+                          type="url"
+                          name="locationUrl"
+                          value={formData.locationUrl}
+                          onChange={handleInputChange}
+                          required
+                          className={`w-full border ${
+                            darkMode
+                              ? "border-gray-600 bg-gray-800 text-white"
+                              : "border-gray-200 bg-white text-black"
+                          } rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
+                          placeholder="سيتم تعبئته تلقائياً عند اختيار موقع من الخريطة"
+                          readOnly={selectedLocation !== null}
+                        />
+
+                        {formData.locationUrl && (
+                          <p
+                            className={`text-xs mt-1 ${
+                              darkMode ? "text-green-400" : "text-green-600"
+                            }`}
+                          >
+                            ✓ تم إضافة رابط الخريطة بنجاح
+                          </p>
+                        )}
                       </div>
 
                       <div className="flex gap-2 sm:gap-3 pt-1 sm:pt-2">
@@ -1019,7 +1209,7 @@ export default function Addresses() {
                           onClick={resetForm}
                           className={`flex-1 py-2.5 sm:py-3 border-2 border-[#E41E26] text-[#E41E26] rounded-lg sm:rounded-xl font-semibold hover:bg-[#E41E26] hover:text-white transition-all duration-300 text-sm sm:text-base`}
                         >
-                          Cancel
+                          إلغاء
                         </motion.button>
                         <motion.button
                           type="submit"
@@ -1033,7 +1223,7 @@ export default function Addresses() {
                           }`}
                         >
                           <FaCheck className="text-xs sm:text-sm" />
-                          {editingId ? "Update" : "Save"}
+                          {editingId ? "تحديث" : "حفظ"}
                         </motion.button>
                       </div>
                     </form>
