@@ -17,6 +17,7 @@ import {
   FaStickyNote,
   FaInfoCircle,
   FaSave,
+  FaStore,
 } from "react-icons/fa";
 import Swal from "sweetalert2";
 import axiosInstance from "../api/axiosInstance";
@@ -28,11 +29,12 @@ export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deliveryOption, setDeliveryOption] = useState("now");
+  const [deliveryType, setDeliveryType] = useState("delivery");
   const [selectedTime, setSelectedTime] = useState("");
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [isCouponApplied, setIsCouponApplied] = useState(false);
-  const [deliveryFee] = useState(15);
+  const [deliveryFee, setDeliveryFee] = useState(15);
   const [hasAddress, setHasAddress] = useState(true);
   const [showProductDetailsModal, setShowProductDetailsModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -63,6 +65,14 @@ export default function Cart() {
     checkUserAddress();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (deliveryType === "pickup") {
+      setDeliveryFee(0);
+    } else {
+      setDeliveryFee(15);
+    }
+  }, [deliveryType]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -549,36 +559,6 @@ export default function Cart() {
   };
 
   const handleCheckout = () => {
-    if (!hasAddress) {
-      Swal.fire({
-        icon: "warning",
-        title: "لا يوجد عنوان توصيل",
-        html: `
-          <div class="text-center">
-            <div class="w-16 h-16 bg-yellow-100 dark:bg-yellow-900 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg class="w-8 h-8 text-yellow-600 dark:text-yellow-400" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
-              </svg>
-            </div>
-            <p class="text-gray-700 dark:text-gray-300 mb-4">لم تقم بإضافة أي عنوان توصيل حتى الآن. الرجاء إضافة عنوان للمتابعة مع طلبك.</p>
-          </div>
-        `,
-        showCancelButton: true,
-        confirmButtonText: "إضافة عنوان",
-        cancelButtonText: "إلغاء",
-        confirmButtonColor: "#E41E26",
-        cancelButtonColor: "#6B7280",
-        customClass: {
-          popup: "rounded-3xl shadow-2xl dark:bg-gray-800 dark:text-white",
-        },
-      }).then((result) => {
-        if (result.isConfirmed) {
-          navigate("/addresses");
-        }
-      });
-      return;
-    }
-
     if (cartItems.length === 0) {
       Swal.fire({
         icon: "warning",
@@ -591,16 +571,48 @@ export default function Cart() {
       return;
     }
 
-    if (deliveryOption === "later" && !selectedTime) {
-      Swal.fire({
-        icon: "warning",
-        title: "اختر وقت التوصيل",
-        text: "الرجاء اختيار وقت التوصيل لطلبك.",
-        customClass: {
-          popup: "rounded-3xl shadow-2xl dark:bg-gray-800 dark:text-white",
-        },
-      });
-      return;
+    if (deliveryType === "delivery") {
+      if (!hasAddress) {
+        Swal.fire({
+          icon: "warning",
+          title: "لا يوجد عنوان توصيل",
+          html: `
+            <div class="text-center">
+              <div class="w-16 h-16 bg-yellow-100 dark:bg-yellow-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-yellow-600 dark:text-yellow-400" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                </svg>
+              </div>
+              <p class="text-gray-700 dark:text-gray-300 mb-4">لم تقم بإضافة أي عنوان توصيل حتى الآن. الرجاء إضافة عنوان للمتابعة مع طلبك.</p>
+            </div>
+          `,
+          showCancelButton: true,
+          confirmButtonText: "إضافة عنوان",
+          cancelButtonText: "إلغاء",
+          confirmButtonColor: "#E41E26",
+          cancelButtonColor: "#6B7280",
+          customClass: {
+            popup: "rounded-3xl shadow-2xl dark:bg-gray-800 dark:text-white",
+          },
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/addresses");
+          }
+        });
+        return;
+      }
+
+      if (deliveryOption === "later" && !selectedTime) {
+        Swal.fire({
+          icon: "warning",
+          title: "اختر وقت التوصيل",
+          text: "الرجاء اختيار وقت التوصيل لطلبك.",
+          customClass: {
+            popup: "rounded-3xl shadow-2xl dark:bg-gray-800 dark:text-white",
+          },
+        });
+        return;
+      }
     }
 
     const orderNumber = Math.random().toString(36).substr(2, 9).toUpperCase();
@@ -612,16 +624,29 @@ export default function Cart() {
       discountAmount: calculateDiscountAmount(),
       deliveryFee: deliveryFee,
       total: calculateTotal(),
-      deliveryOption: deliveryOption,
-      deliveryTime: deliveryOption === "later" ? selectedTime : "ASAP",
+      deliveryType: deliveryType,
+      deliveryOption: deliveryType === "delivery" ? deliveryOption : null,
+      deliveryTime:
+        deliveryType === "delivery"
+          ? deliveryOption === "later"
+            ? selectedTime
+            : "ASAP"
+          : "عند الاستعداد",
       couponCode: isCouponApplied ? couponCode : null,
       status: "preparing",
       estimatedDelivery:
-        deliveryOption === "now" ? "25-35 دقيقة" : selectedTime,
+        deliveryType === "delivery"
+          ? deliveryOption === "now"
+            ? "25-35 دقيقة"
+            : selectedTime
+          : "20-30 دقيقة",
       customerInfo: {
         name: "محمد أحمد",
         phone: "+20 123 456 7890",
-        address: "123 الشارع الرئيسي، القاهرة، مصر",
+        address:
+          deliveryType === "delivery"
+            ? "123 الشارع الرئيسي، القاهرة، مصر"
+            : "فرع المطعم الرئيسي - مدينة نصر، القاهرة",
       },
       createdAt: new Date().toISOString(),
     };
@@ -693,7 +718,9 @@ export default function Cart() {
                   : ""
               }
               <div class="flex justify-between text-sm">
-                <span class="text-gray-600 dark:text-gray-400">رسوم التوصيل:</span>
+                <span class="text-gray-600 dark:text-gray-400">${
+                  deliveryType === "delivery" ? "رسوم التوصيل:" : "رسوم الخدمة:"
+                }</span>
                 <span class="font-semibold text-gray-800 dark:text-white">${deliveryFee.toFixed(
                   2
                 )} ج.م</span>
@@ -707,13 +734,19 @@ export default function Cart() {
             </div>
           </div>
 
-          <!-- معلومات التوصيل -->
+          <!-- معلومات ${
+            deliveryType === "delivery" ? "التوصيل" : "الاستلام"
+          } -->
           <div class="bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] dark:from-gray-700 dark:to-gray-600 rounded-xl p-4 mb-4 border border-[#FDB913]/30 dark:border-gray-600">
             <h3 class="font-bold text-lg text-gray-800 dark:text-white mb-3 flex items-center gap-2">
               <svg class="w-5 h-5 text-[#E41E26] dark:text-[#FDB913]" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                ${
+                  deliveryType === "delivery"
+                    ? '<path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>'
+                    : '<path d="M2.97 1.35A1 1 0 0 1 3.73 1h8.54a1 1 0 0 1 .76.35l2.609 3.044A1.5 1.5 0 0 1 16 5.37v.255a2.375 2.375 0 0 1-4.25 1.458A2.371 2.371 0 0 1 9.875 8 2.37 2.37 0 0 1 8 7.083 2.37 2.37 0 0 1 6.125 8a2.37 2.37 0 0 1-1.875-.917A2.375 2.375 0 0 1 0 5.625V5.37a1.5 1.5 0 0 1 .361-.976l2.61-3.045zm1.78 4.275a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 1 0 2.75 0V5.37a.5.5 0 0 0-.12-.325L12.27 2H3.73L1.12 5.045A.5.5 0 0 0 1 5.37v.255a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0zM1.5 8.5A.5.5 0 0 1 2 9v6h12V9a.5.5 0 0 1 1 0v6h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1V9a.5.5 0 0 1 .5-.5zm2 .5a.5.5 0 0 1 .5.5V13h8V9.5a.5.5 0 0 1 1 0V13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5a.5.5 0 0 1 .5-.5z"/>'
+                }
               </svg>
-              معلومات التوصيل
+              معلومات ${deliveryType === "delivery" ? "التوصيل" : "الاستلام"}
             </h3>
             <div class="space-y-2">
               <div class="flex items-center gap-3">
@@ -741,12 +774,24 @@ export default function Cart() {
               <div class="flex items-center gap-3">
                 <div class="w-8 h-8 bg-[#E41E26] dark:bg-[#FDB913] rounded-full flex items-center justify-center">
                   <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                    ${
+                      deliveryType === "delivery"
+                        ? '<path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>'
+                        : '<path d="M2.97 1.35A1 1 0 0 1 3.73 1h8.54a1 1 0 0 1 .76.35l2.609 3.044A1.5 1.5 0 0 1 16 5.37v.255a2.375 2.375 0 0 1-4.25 1.458A2.371 2.371 0 0 1 9.875 8 2.37 2.37 0 0 1 8 7.083 2.37 2.37 0 0 1 6.125 8a2.37 2.37 0 0 1-1.875-.917A2.375 2.375 0 0 1 0 5.625V5.37a1.5 1.5 0 0 1 .361-.976l2.61-3.045zm1.78 4.275a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 1 0 2.75 0V5.37a.5.5 0 0 0-.12-.325L12.27 2H3.73L1.12 5.045A.5.5 0 0 0 1 5.37v.255a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0zM1.5 8.5A.5.5 0 0 1 2 9v6h12V9a.5.5 0 0 1 1 0v6h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1V9a.5.5 0 0 1 .5-.5zm2 .5a.5.5 0 0 1 .5.5V13h8V9.5a.5.5 0 0 1 1 0V13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5a.5.5 0 0 1 .5-.5z"/>'
+                    }
                   </svg>
                 </div>
                 <div>
-                  <p class="text-xs text-gray-600 dark:text-gray-400">عنوان التوصيل</p>
-                  <p class="font-semibold text-sm text-gray-800 dark:text-white">123 الشارع الرئيسي، القاهرة، مصر</p>
+                  <p class="text-xs text-gray-600 dark:text-gray-400">${
+                    deliveryType === "delivery"
+                      ? "عنوان التوصيل"
+                      : "مكان الاستلام"
+                  }</p>
+                  <p class="font-semibold text-sm text-gray-800 dark:text-white">${
+                    deliveryType === "delivery"
+                      ? "123 الشارع الرئيسي، القاهرة، مصر"
+                      : "فرع المطعم الرئيسي - مدينة نصر، القاهرة"
+                  }</p>
                 </div>
               </div>
               <div class="flex items-center gap-3">
@@ -757,11 +802,15 @@ export default function Cart() {
                   </svg>
                 </div>
                 <div>
-                  <p class="text-xs text-gray-600 dark:text-gray-400">وقت التوصيل</p>
+                  <p class="text-xs text-gray-600 dark:text-gray-400">${
+                    deliveryType === "delivery" ? "وقت التوصيل" : "وقت الاستلام"
+                  }</p>
                   <p class="font-semibold text-sm text-gray-800 dark:text-white">${
-                    deliveryOption === "now"
-                      ? "في أقرب وقت (25-35 دقيقة)"
-                      : selectedTime
+                    deliveryType === "delivery"
+                      ? deliveryOption === "now"
+                        ? "في أقرب وقت (25-35 دقيقة)"
+                        : selectedTime
+                      : "عند الاستعداد (20-30 دقيقة)"
                   }</p>
                 </div>
               </div>
@@ -785,8 +834,16 @@ export default function Cart() {
                 </svg>
               </div>
               <div>
-                <p class="font-semibold text-sm text-gray-800 dark:text-white">الدفع عند الاستلام</p>
-                <p class="text-xs text-gray-600 dark:text-gray-400">ادفع عند استلام طلبك</p>
+                <p class="font-semibold text-sm text-gray-800 dark:text-white">الدفع عند ${
+                  deliveryType === "delivery"
+                    ? "الاستلام"
+                    : "الاستلام من المطعم"
+                }</p>
+                <p class="text-xs text-gray-600 dark:text-gray-400">ادفع عند ${
+                  deliveryType === "delivery"
+                    ? "استلام طلبك"
+                    : "استلام الطلب من المطعم"
+                }</p>
               </div>
             </div>
           </div>
@@ -825,9 +882,15 @@ export default function Cart() {
               <p class="text-lg text-gray-600 dark:text-gray-400 mb-4">تم تقديم طلبك بنجاح!</p>
               <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 rounded-xl p-4 border border-green-200 dark:border-green-800">
                 <p class="font-semibold text-green-800 dark:text-green-300">الطلب رقم #${orderNumber}</p>
-                <p class="text-sm text-green-600 dark:text-green-400 mt-1">الوقت المتوقع للتوصيل: ${
-                  deliveryOption === "now" ? "25-35 دقيقة" : selectedTime
-                }</p>
+                <p class="text-sm text-green-600 dark:text-green-400 mt-1">الوقت المتوقع لل${
+                  deliveryType === "delivery" ? "توصيل" : "استلام"
+                }: ${
+            deliveryType === "delivery"
+              ? deliveryOption === "now"
+                ? "25-35 دقيقة"
+                : selectedTime
+              : "20-30 دقيقة"
+          }</p>
               </div>
             </div>
           `,
@@ -954,8 +1017,10 @@ export default function Cart() {
 
       {showProductDetailsModal && productDetails && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-          <div className="fixed inset-0" onClick={closeProductDetailsModal}>
-          </div>
+          <div
+            className="fixed inset-0"
+            onClick={closeProductDetailsModal}
+          ></div>
           <motion.div
             ref={productDetailsModalRef}
             initial={{ opacity: 0, scale: 0.9 }}
@@ -1447,7 +1512,6 @@ export default function Cart() {
               </div>
             </motion.div>
 
-            {/* Delivery Options */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -1459,93 +1523,186 @@ export default function Cart() {
                   className="text-[#E41E26] dark:text-[#FDB913] sm:w-6 sm:h-6"
                   size={18}
                 />
-                خيارات التوصيل
+                خيارات  {deliveryType === "delivery" ? "التوصيل" : "الاستلام"}
               </h2>
 
-              <div className="space-y-3 sm:space-y-4">
-                {/* Delivery Now */}
-                <div
-                  className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] dark:from-gray-700 dark:to-gray-600 rounded-xl sm:rounded-2xl border border-[#FDB913]/30 dark:border-gray-600 cursor-pointer hover:shadow-lg transition-all duration-300"
-                  onClick={() => setDeliveryOption("now")}
-                >
+              <div className="mb-4 sm:mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
                   <div
-                    className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center ${
-                      deliveryOption === "now"
-                        ? "bg-[#E41E26] dark:bg-[#FDB913] border-[#E41E26] dark:border-[#FDB913]"
-                        : "border-gray-300 dark:border-gray-600"
+                    className={`p-4 bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] dark:from-gray-700 dark:to-gray-600 rounded-xl sm:rounded-2xl border-2 cursor-pointer hover:shadow-lg transition-all duration-300 ${
+                      deliveryType === "delivery"
+                        ? "border-[#E41E26] dark:border-[#FDB913]"
+                        : "border-[#FDB913]/30 dark:border-gray-600"
                     }`}
+                    onClick={() => setDeliveryType("delivery")}
                   >
-                    {deliveryOption === "now" && (
-                      <FaCheck className="text-white text-xs" />
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-bold text-gray-800 dark:text-white text-sm sm:text-base">
-                      التوصيل الآن
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center ${
+                          deliveryType === "delivery"
+                            ? "bg-[#E41E26] dark:bg-[#FDB913] border-[#E41E26] dark:border-[#FDB913]"
+                            : "border-gray-300 dark:border-gray-600"
+                        }`}
+                      >
+                        {deliveryType === "delivery" && (
+                          <FaCheck className="text-white text-xs" />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-bold text-gray-800 dark:text-white text-sm sm:text-base">
+                          التوصيل للمنزل
+                        </div>
+                        <div className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm">
+                          توصيل الطلب إلى عنوانك
+                        </div>
+                      </div>
+                      <FaMapMarkerAlt className="text-[#E41E26] text-lg" />
                     </div>
-                    <div className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm">
-                      احصل على طلبك في أسرع وقت ممكن
-                    </div>
                   </div>
-                  <div className="text-[#E41E26] dark:text-[#FDB913] font-bold text-sm sm:text-base">
-                    في أقرب وقت
+
+                  <div
+                    className={`p-4 bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] dark:from-gray-700 dark:to-gray-600 rounded-xl sm:rounded-2xl border-2 cursor-pointer hover:shadow-lg transition-all duration-300 ${
+                      deliveryType === "pickup"
+                        ? "border-[#E41E26] dark:border-[#FDB913]"
+                        : "border-[#FDB913]/30 dark:border-gray-600"
+                    }`}
+                    onClick={() => setDeliveryType("pickup")}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center ${
+                          deliveryType === "pickup"
+                            ? "bg-[#E41E26] dark:bg-[#FDB913] border-[#E41E26] dark:border-[#FDB913]"
+                            : "border-gray-300 dark:border-gray-600"
+                        }`}
+                      >
+                        {deliveryType === "pickup" && (
+                          <FaCheck className="text-white text-xs" />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-bold text-gray-800 dark:text-white text-sm sm:text-base">
+                          الاستلام من المطعم
+                        </div>
+                        <div className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm">
+                          استلام الطلب من الفرع
+                        </div>
+                      </div>
+                      <FaStore className="text-[#E41E26] text-lg" />
+                    </div>
                   </div>
                 </div>
-
-                {/* Delivery Later */}
-                <div
-                  className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] dark:from-gray-700 dark:to-gray-600 rounded-xl sm:rounded-2xl border border-[#FDB913]/30 dark:border-gray-600 cursor-pointer hover:shadow-lg transition-all duration-300"
-                  onClick={() => setDeliveryOption("later")}
-                >
-                  <div
-                    className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center ${
-                      deliveryOption === "later"
-                        ? "bg-[#E41E26] dark:bg-[#FDB913] border-[#E41E26] dark:border-[#FDB913]"
-                        : "border-gray-300 dark:border-gray-600"
-                    }`}
-                  >
-                    {deliveryOption === "later" && (
-                      <FaCheck className="text-white text-xs" />
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-bold text-gray-800 dark:text-white text-sm sm:text-base">
-                      جدولة التوصيل
-                    </div>
-                    <div className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm">
-                      اختر وقت التوصيل المفضل لديك
-                    </div>
-                  </div>
-                </div>
-
-                {/* Time Selection */}
-                {deliveryOption === "later" && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    className="p-3 sm:p-4 bg-white dark:bg-gray-700 rounded-xl sm:rounded-2xl border border-gray-200 dark:border-gray-600"
-                  >
-                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
-                      اختر وقت التوصيل
-                    </label>
-                    <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
-                      {deliveryTimes.map((time) => (
-                        <button
-                          key={time}
-                          onClick={() => setSelectedTime(time)}
-                          className={`p-2 sm:p-3 rounded-lg sm:rounded-xl border-2 text-xs sm:text-sm font-medium transition-all duration-200 ${
-                            selectedTime === time
-                              ? "border-[#E41E26] dark:border-[#FDB913] bg-[#E41E26] dark:bg-[#FDB913] text-white"
-                              : "border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:border-[#E41E26] dark:hover:border-[#FDB913] hover:bg-[#fff8e7] dark:hover:bg-gray-500"
-                          }`}
-                        >
-                          {time}
-                        </button>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
               </div>
+
+              {deliveryType === "delivery" && (
+                <div className="space-y-3 sm:space-y-4">
+                  <div
+                    className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] dark:from-gray-700 dark:to-gray-600 rounded-xl sm:rounded-2xl border border-[#FDB913]/30 dark:border-gray-600 cursor-pointer hover:shadow-lg transition-all duration-300"
+                    onClick={() => setDeliveryOption("now")}
+                  >
+                    <div
+                      className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center ${
+                        deliveryOption === "now"
+                          ? "bg-[#E41E26] dark:bg-[#FDB913] border-[#E41E26] dark:border-[#FDB913]"
+                          : "border-gray-300 dark:border-gray-600"
+                      }`}
+                    >
+                      {deliveryOption === "now" && (
+                        <FaCheck className="text-white text-xs" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-bold text-gray-800 dark:text-white text-sm sm:text-base">
+                        التوصيل الآن
+                      </div>
+                      <div className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm">
+                        احصل على طلبك في أسرع وقت ممكن
+                      </div>
+                    </div>
+                    <div className="text-[#E41E26] dark:text-[#FDB913] font-bold text-sm sm:text-base">
+                      في أقرب وقت
+                    </div>
+                  </div>
+
+                  <div
+                    className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] dark:from-gray-700 dark:to-gray-600 rounded-xl sm:rounded-2xl border border-[#FDB913]/30 dark:border-gray-600 cursor-pointer hover:shadow-lg transition-all duration-300"
+                    onClick={() => setDeliveryOption("later")}
+                  >
+                    <div
+                      className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center ${
+                        deliveryOption === "later"
+                          ? "bg-[#E41E26] dark:bg-[#FDB913] border-[#E41E26] dark:border-[#FDB913]"
+                          : "border-gray-300 dark:border-gray-600"
+                      }`}
+                    >
+                      {deliveryOption === "later" && (
+                        <FaCheck className="text-white text-xs" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-bold text-gray-800 dark:text-white text-sm sm:text-base">
+                        جدولة التوصيل
+                      </div>
+                      <div className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm">
+                        اختر وقت التوصيل المفضل لديك
+                      </div>
+                    </div>
+                  </div>
+
+                  {deliveryOption === "later" && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      className="p-3 sm:p-4 bg-white dark:bg-gray-700 rounded-xl sm:rounded-2xl border border-gray-200 dark:border-gray-600"
+                    >
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
+                        اختر وقت التوصيل
+                      </label>
+                      <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
+                        {deliveryTimes.map((time) => (
+                          <button
+                            key={time}
+                            onClick={() => setSelectedTime(time)}
+                            className={`p-2 sm:p-3 rounded-lg sm:rounded-xl border-2 text-xs sm:text-sm font-medium transition-all duration-200 ${
+                              selectedTime === time
+                                ? "border-[#E41E26] dark:border-[#FDB913] bg-[#E41E26] dark:bg-[#FDB913] text-white"
+                                : "border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:border-[#E41E26] dark:hover:border-[#FDB913] hover:bg-[#fff8e7] dark:hover:bg-gray-500"
+                            }`}
+                          >
+                            {time}
+                          </button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+              )}
+
+              {deliveryType === "pickup" && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 rounded-xl sm:rounded-2xl border border-green-200 dark:border-green-600"
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center">
+                      <FaStore className="text-green-600 dark:text-green-300" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-green-800 dark:text-green-300 text-sm sm:text-base">
+                        الاستلام من المطعم
+                      </h4>
+                      <p className="text-green-600 dark:text-green-400 text-xs sm:text-sm">
+                        لن تدفع رسوم توصيل
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-green-700 dark:text-green-300 text-sm">
+                    ستستلم طلبك من فرعنا الرئيسي عند استعداد الطلب (20-30
+                    دقيقة). سيتم إشعارك عبر الهاتف عند استعداد الطلب.
+                  </p>
+                </motion.div>
+              )}
             </motion.div>
           </div>
 
@@ -1640,7 +1797,9 @@ export default function Cart() {
 
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
-                    رسوم التوصيل
+                    {deliveryType === "delivery"
+                      ? "رسوم التوصيل"
+                      : "رسوم الخدمة"}
                   </span>
                   <span className="font-semibold text-gray-800 dark:text-white text-sm sm:text-base">
                     {deliveryFee.toFixed(2)} ج.م
