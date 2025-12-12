@@ -13,11 +13,11 @@ import {
 } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { useUsers } from "../hooks/useUsers";
-import Header from "../components/adminUser/Header";
-import SearchBar from "../components/adminUser/SearchBar";
-import UserCard from "../components/adminUser/UserCard";
-import EmptyState from "../components/adminUser/EmptyState";
-import UserForm from "../components/adminUser/UserForm";
+import Header from "../components/adminUsers/Header";
+import SearchBar from "../components/adminUsers/SearchBar";
+import UserCard from "../components/adminUsers/UserCard";
+import EmptyState from "../components/adminUsers/EmptyState";
+import UserForm from "../components/adminUsers/UserForm";
 
 export default function AdminUsers() {
   const navigate = useNavigate();

@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import axiosInstance from "../api/axiosInstance";
 import Swal from "sweetalert2";
-import { translateErrorMessage } from "../utils/ErrorTranslator";
+import { translateErrorMessageAdminUser } from "../utils/ErrorTranslator";
 
 export const useUsers = () => {
   const [users, setUsers] = useState([]);
@@ -231,7 +231,7 @@ export const useUsers = () => {
       }
     } catch (err) {
       if (err.response?.data?.errors) {
-        const translatedErrors = translateErrorMessage(err.response.data);
+        const translatedErrors = translateErrorMessageAdminUser(err.response.data);
 
         let errorMessages = [];
         Object.keys(translatedErrors).forEach((field) => {

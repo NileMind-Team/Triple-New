@@ -1,40 +1,87 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  FaArrowLeft,
-  FaPlus,
-  FaTrash,
-  FaEdit,
-  FaSearch,
-  FaCheck,
-  FaTimes,
-  FaMapMarkerAlt,
-  FaClock,
-  FaBuilding,
-  FaEnvelope,
-  FaCity,
-  FaUser,
-  FaChevronDown,
-  FaGlobe,
-  FaPhone,
-  FaWhatsapp,
-} from "react-icons/fa";
+import { FaArrowLeft, FaPlus, FaBuilding } from "react-icons/fa";
 import Swal from "sweetalert2";
 import axiosInstance from "../api/axiosInstance";
+import { useBranches } from "../hooks/useBranches";
+import Header from "../components/adminUsers/Header";
+import BranchCard from "../components/adminBranchs/BranchCard";
+import SearchBar from "../components/adminUsers/SearchBar";
+import BranchForm from "../components/adminBranchs/BranchForm";
+
+const showErrorAlert = (errorMessages) => {
+  if (!errorMessages || typeof errorMessages !== "object") {
+    Swal.fire({
+      icon: "error",
+      title: "خطأ",
+      html: `<div style="text-align: right; direction: rtl; margin-bottom: 8px; padding-right: 15px; position: relative; font-weight: semibold;">
+              <span style="position: absolute; right: 0; top: 0;">-</span>
+              حدث خطأ غير معروف
+            </div>`,
+      timer: 2500,
+      showConfirmButton: false,
+    });
+    return;
+  }
+
+  const allMessages = [];
+
+  Object.keys(errorMessages).forEach((field) => {
+    const messages = errorMessages[field];
+    if (Array.isArray(messages)) {
+      messages.forEach((msg) => {
+        allMessages.push(msg);
+      });
+    }
+  });
+
+  if (allMessages.length === 0) {
+    Swal.fire({
+      icon: "error",
+      title: "خطأ",
+      html: `<div style="text-align: right; direction: rtl; margin-bottom: 8px; padding-right: 15px; position: relative; font-weight: semibold;">
+              <span style="position: absolute; right: 0; top: 0;">-</span>
+              حدث خطأ غير معروف
+            </div>`,
+      timer: 2500,
+      showConfirmButton: false,
+    });
+    return;
+  }
+
+  const htmlMessages = allMessages.map(
+    (msg) => `
+    <div style="
+      direction: rtl;
+      text-align: right;
+      margin-bottom: 8px;
+      padding-right: 15px;
+      position: relative;
+      font-weight: semibold;
+    ">
+      <span style="position: absolute; right: 0; top: 0;">-</span>
+      ${msg}
+    </div>`
+  );
+
+  Swal.fire({
+    icon: "error",
+    title: "خطأ في البيانات",
+    html: htmlMessages.join(""),
+    timer: 2500,
+    showConfirmButton: false,
+  });
+};
 
 export default function AdminBranches() {
   const navigate = useNavigate();
-  const [branches, setBranches] = useState([]);
-  const [filteredBranches, setFilteredBranches] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [cities, setCities] = useState([]);
-  const [managers, setManagers] = useState([]);
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [isLoadingAuth, setIsLoadingAuth] = useState(true);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -50,23 +97,30 @@ export default function AdminBranches() {
     phoneNumbers: [],
   });
 
-  const [phoneNumber, setPhoneNumber] = useState({
-    phone: "",
-    type: "Mobile",
-    isWhatsapp: false,
-  });
+  const {
+    branches,
+    cities,
+    managers,
+    isLoading: isLoadingData,
+    addBranch,
+    updateBranch,
+    deleteBranch,
+    toggleBranchActive,
+  } = useBranches();
 
-  const isFormValid = () => {
-    return (
-      formData.name.trim() !== "" &&
-      formData.email.trim() !== "" &&
-      formData.address.trim() !== "" &&
-      formData.openingTime.trim() !== "" &&
-      formData.closingTime.trim() !== "" &&
-      formData.cityId !== "" &&
-      formData.managerId !== "" &&
-      formData.phoneNumbers.length > 0
-    );
+  const [filteredBranches, setFilteredBranches] = useState([]);
+
+  const getPhoneTypeArabic = (type) => {
+    switch (type) {
+      case "Mobile":
+        return "موبايل";
+      case "Landline":
+        return "أرضي";
+      case "Other":
+        return "آخر";
+      default:
+        return type;
+    }
   };
 
   useEffect(() => {
@@ -81,6 +135,8 @@ export default function AdminBranches() {
             title: "تم الرفض",
             text: "ليس لديك صلاحية للوصول إلى هذه الصفحة.",
             confirmButtonColor: "#E41E26",
+            timer: 2500,
+            showConfirmButton: false,
           }).then(() => {
             navigate("/");
           });
@@ -88,7 +144,6 @@ export default function AdminBranches() {
         }
 
         setIsAdmin(true);
-        await Promise.all([fetchBranches(), fetchCities(), fetchManagers()]);
       } catch (err) {
         console.error("Failed to verify admin access", err);
         Swal.fire({
@@ -96,68 +151,18 @@ export default function AdminBranches() {
           title: "تم الرفض",
           text: "فشل في التحقق من صلاحياتك.",
           confirmButtonColor: "#E41E26",
+          timer: 2500,
+          showConfirmButton: false,
         }).then(() => {
           navigate("/");
         });
       } finally {
-        setIsLoading(false);
+        setIsLoadingAuth(false);
       }
     };
 
     checkAdminAndFetchData();
   }, [navigate]);
-
-  const fetchBranches = async () => {
-    try {
-      const res = await axiosInstance.get("/api/Branches/GetAll");
-      if (res.status === 200) {
-        setBranches(res.data);
-        setFilteredBranches(res.data);
-      }
-    } catch (err) {
-      console.error("Failed to fetch branches", err);
-      Swal.fire({
-        icon: "error",
-        title: "خطأ",
-        text: "فشل في جلب بيانات الفروع.",
-      });
-    }
-  };
-
-  const fetchCities = async () => {
-    try {
-      const res = await axiosInstance.get("/api/Cities/GetAll");
-      if (res.status === 200) {
-        setCities(res.data);
-      }
-    } catch (err) {
-      console.error("Failed to fetch cities", err);
-      Swal.fire({
-        icon: "error",
-        title: "خطأ",
-        text: "فشل في جلب بيانات المدن.",
-      });
-    }
-  };
-
-  const fetchManagers = async () => {
-    try {
-      const res = await axiosInstance.get("/api/Users/GetAll");
-      if (res.status === 200) {
-        const branchManagers = res.data.filter(
-          (user) => user.roles && user.roles.includes("Branch")
-        );
-        setManagers(branchManagers);
-      }
-    } catch (err) {
-      console.error("Failed to fetch managers", err);
-      Swal.fire({
-        icon: "error",
-        title: "خطأ",
-        text: "فشل في جلب بيانات المديرين.",
-      });
-    }
-  };
 
   useEffect(() => {
     if (!searchTerm.trim()) {
@@ -179,176 +184,30 @@ export default function AdminBranches() {
     setFilteredBranches(filtered);
   }, [searchTerm, branches]);
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  const handleAddNewBranch = () => {
+    setIsAdding(true);
+    setEditingId(null);
     setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
+      name: "",
+      email: "",
+      address: "",
+      locationUrl: "",
+      status: "Open",
+      openingTime: "",
+      closingTime: "",
+      isActive: true,
+      cityId: "",
+      managerId: "",
+      phoneNumbers: [],
     });
-  };
 
-  const handlePhoneInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-
-    if (name === "isWhatsapp") {
-      if (phoneNumber.type !== "Mobile") {
-        setPhoneNumber({
-          ...phoneNumber,
-          isWhatsapp: false,
+    if (window.innerWidth < 1280) {
+      setTimeout(() => {
+        document.getElementById("branch-form")?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
         });
-        return;
-      }
-      setPhoneNumber({
-        ...phoneNumber,
-        [name]: checked,
-      });
-    } else {
-      setPhoneNumber({
-        ...phoneNumber,
-        [name]: type === "checkbox" ? checked : value,
-      });
-    }
-  };
-
-  const handleSelectChange = (name, value) => {
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-    setOpenDropdown(null);
-  };
-
-  const handlePhoneTypeSelect = (type) => {
-    const updatedPhoneNumber = {
-      ...phoneNumber,
-      type: type,
-    };
-
-    if (type !== "Mobile") {
-      updatedPhoneNumber.isWhatsapp = false;
-    }
-
-    setPhoneNumber(updatedPhoneNumber);
-    setOpenDropdown(null);
-  };
-
-  const getPhoneTypeArabic = (type) => {
-    switch (type) {
-      case "Mobile":
-        return "موبايل";
-      case "Landline":
-        return "أرضي";
-      case "Other":
-        return "آخر";
-      default:
-        return type;
-    }
-  };
-
-  const addPhoneNumber = () => {
-    if (!phoneNumber.phone.trim()) {
-      Swal.fire({
-        icon: "warning",
-        title: "رقم غير صالح",
-        text: "يرجى إدخال رقم هاتف صحيح.",
-        confirmButtonColor: "#E41E26",
-      });
-      return;
-    }
-
-    const newPhoneNumber = {
-      phone: phoneNumber.phone,
-      type: phoneNumber.type,
-      isWhatsapp:
-        phoneNumber.type === "Mobile" ? phoneNumber.isWhatsapp : false,
-    };
-
-    setFormData({
-      ...formData,
-      phoneNumbers: [...formData.phoneNumbers, newPhoneNumber],
-    });
-
-    setPhoneNumber({
-      phone: "",
-      type: "Mobile",
-      isWhatsapp: false,
-    });
-  };
-
-  const removePhoneNumber = (index) => {
-    const updatedPhoneNumbers = formData.phoneNumbers.filter(
-      (_, i) => i !== index
-    );
-    setFormData({
-      ...formData,
-      phoneNumbers: updatedPhoneNumbers,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!isFormValid()) {
-      Swal.fire({
-        icon: "warning",
-        title: "نموذج غير مكتمل",
-        text: "يرجى ملء جميع الحقول المطلوبة بما في ذلك إضافة رقم هاتف واحد على الأقل.",
-        confirmButtonColor: "#E41E26",
-      });
-      return;
-    }
-
-    const submitData = {
-      ...formData,
-      phoneNumbers: formData.phoneNumbers.map((phone) => ({
-        phone: phone.phone,
-        type: phone.type,
-        isWhatsapp: phone.type === "Mobile" ? phone.isWhatsapp : false,
-      })),
-    };
-
-    if (!submitData.locationUrl.trim()) {
-      delete submitData.locationUrl;
-    }
-
-    try {
-      if (editingId) {
-        const res = await axiosInstance.put(
-          `/api/Branches/Update/${editingId}`,
-          submitData
-        );
-        if (res.status === 200 || res.status === 204) {
-          await fetchBranches();
-          Swal.fire({
-            icon: "success",
-            title: "تم تحديث الفرع",
-            text: "تم تحديث الفرع بنجاح.",
-            timer: 2000,
-            showConfirmButton: false,
-          });
-          resetForm();
-        }
-      } else {
-        const res = await axiosInstance.post("/api/Branches/Add", submitData);
-        if (res.status === 200 || res.status === 201) {
-          await fetchBranches();
-          Swal.fire({
-            icon: "success",
-            title: "تم إضافة الفرع",
-            text: "تم إضافة الفرع الجديد بنجاح.",
-            timer: 2000,
-            showConfirmButton: false,
-          });
-          resetForm();
-        }
-      }
-    } catch (err) {
-      const errorMsg = err.response?.data?.message || "فشل في حفظ الفرع.";
-      Swal.fire({
-        icon: "error",
-        title: "خطأ",
-        text: errorMsg,
-      });
+      }, 100);
     }
   };
 
@@ -398,8 +257,7 @@ export default function AdminBranches() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axiosInstance.delete(`/api/Branches/Delete/${branchId}`);
-          setBranches(branches.filter((branch) => branch.id !== branchId));
+          await deleteBranch(branchId);
           Swal.fire({
             title: "تم الحذف!",
             text: "تم حذف الفرع بنجاح.",
@@ -407,12 +265,8 @@ export default function AdminBranches() {
             timer: 2000,
             showConfirmButton: false,
           });
-        } catch (err) {
-          Swal.fire({
-            icon: "error",
-            title: "خطأ",
-            text: "فشل في حذف الفرع.",
-          });
+        } catch (errorMessages) {
+          showErrorAlert(errorMessages);
         }
       }
     });
@@ -420,8 +274,7 @@ export default function AdminBranches() {
 
   const handleToggleActive = async (branchId, currentStatus) => {
     try {
-      await axiosInstance.put(`/api/Branches/ChangeActiveStatus/${branchId}`);
-      await fetchBranches();
+      await toggleBranchActive(branchId);
       Swal.fire({
         icon: "success",
         title: "تم تحديث الحالة",
@@ -429,12 +282,48 @@ export default function AdminBranches() {
         timer: 2000,
         showConfirmButton: false,
       });
-    } catch (err) {
-      Swal.fire({
-        icon: "error",
-        title: "خطأ",
-        text: "فشل في تحديث حالة الفرع.",
-      });
+    } catch (errorMessages) {
+      showErrorAlert(errorMessages);
+    }
+  };
+
+  const handleSubmit = async (submitData) => {
+    const processedData = {
+      ...submitData,
+      phoneNumbers: submitData.phoneNumbers.map((phone) => ({
+        phone: phone.phone,
+        type: phone.type,
+        isWhatsapp: phone.type === "Mobile" ? phone.isWhatsapp : false,
+      })),
+    };
+
+    if (!processedData.locationUrl.trim()) {
+      delete processedData.locationUrl;
+    }
+
+    try {
+      if (editingId) {
+        await updateBranch(editingId, processedData);
+        Swal.fire({
+          icon: "success",
+          title: "تم تحديث الفرع",
+          text: "تم تحديث الفرع بنجاح.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      } else {
+        await addBranch(processedData);
+        Swal.fire({
+          icon: "success",
+          title: "تم إضافة الفرع",
+          text: "تم إضافة الفرع الجديد بنجاح.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      }
+      resetForm();
+    } catch (errorMessages) {
+      showErrorAlert(errorMessages);
     }
   };
 
@@ -452,30 +341,11 @@ export default function AdminBranches() {
       managerId: "",
       phoneNumbers: [],
     });
-    setPhoneNumber({
-      phone: "",
-      type: "Mobile",
-      isWhatsapp: false,
-    });
     setEditingId(null);
     setIsAdding(false);
   };
 
-  const handleAddNewBranch = () => {
-    setIsAdding(true);
-    setEditingId(null);
-
-    if (window.innerWidth < 1280) {
-      setTimeout(() => {
-        document.getElementById("branch-form")?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }, 100);
-    }
-  };
-
-  if (isLoading) {
+  if (isLoadingAuth || isLoadingData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-4">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E41E26]"></div>
@@ -488,7 +358,10 @@ export default function AdminBranches() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-3 sm:px-4 md:px-6 py-3 sm:py-6 relative font-sans overflow-hidden">
+    <div
+      className="min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-3 sm:px-4 md:px-6 py-3 sm:py-6 relative font-sans overflow-hidden"
+      dir="rtl"
+    >
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -left-10 sm:-left-20 -top-10 sm:-top-20 w-40 h-40 sm:w-60 sm:h-60 md:w-80 md:h-80 bg-gradient-to-r from-[#E41E26]/10 to-[#FDB913]/10 rounded-full blur-2xl sm:blur-3xl animate-pulse"></div>
         <div className="absolute -right-10 sm:-right-20 -bottom-10 sm:-bottom-20 w-40 h-40 sm:w-60 sm:h-60 md:w-80 md:h-80 bg-gradient-to-r from-[#FDB913]/10 to-[#E41E26]/10 rounded-full blur-2xl sm:blur-3xl animate-pulse"></div>
@@ -512,36 +385,7 @@ export default function AdminBranches() {
         transition={{ duration: 0.6, type: "spring" }}
         className="max-w-7xl mx-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl shadow-xl sm:shadow-2xl rounded-2xl sm:rounded-3xl border border-white/50 dark:border-gray-700/50 relative overflow-hidden"
       >
-        <div className="relative h-36 sm:h-40 md:h-44 lg:h-52 bg-gradient-to-r from-[#E41E26] to-[#FDB913] overflow-hidden">
-          <div className="absolute inset-0 bg-black/10"></div>
-          <div className="absolute -top-4 sm:-top-6 -right-4 sm:-right-6 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 bg-white/10 rounded-full"></div>
-          <div className="absolute -bottom-4 sm:-bottom-6 -left-4 sm:-left-6 w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-32 lg:h-32 bg-white/10 rounded-full"></div>
-
-          <div className="relative z-10 h-full flex flex-col justify-end items-center text-center px-4 sm:px-6 pb-6 sm:pb-8 md:pb-10">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="flex items-center justify-center gap-2 sm:gap-3 mb-2 sm:mb-3"
-            >
-              <div className="p-2 sm:p-3 bg-white/20 backdrop-blur-sm rounded-xl sm:rounded-2xl">
-                <FaBuilding className="text-white text-xl sm:text-2xl md:text-3xl" />
-              </div>
-              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white">
-                لوحة التحكم
-              </h1>
-            </motion.div>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-white/90 text-sm sm:text-base md:text-lg lg:text-xl max-w-2xl mb-2 sm:mb-3"
-            >
-              إدارة فروع المطعم
-            </motion.p>
-          </div>
-        </div>
+        <Header title="لوحة التحكم" subtitle="إدارة فروع المطعم" />
 
         <div className="relative px-3 sm:px-4 md:px-6 lg:px-8 pb-4 sm:pb-6 md:pb-8">
           <motion.div
@@ -567,26 +411,11 @@ export default function AdminBranches() {
             transition={{ delay: 0.5 }}
             className="mb-6 sm:mb-8"
           >
-            <div className="max-w-md mx-auto">
-              <div className="relative group">
-                <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white rounded-xl sm:rounded-2xl pl-10 pr-4 py-3 sm:py-4 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base shadow-lg"
-                  placeholder="البحث بالاسم، العنوان، البريد الإلكتروني، المدينة، أو رقم الهاتف..."
-                />
-                {searchTerm && (
-                  <button
-                    onClick={() => setSearchTerm("")}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-[#E41E26] transition-colors duration-200"
-                  >
-                    <FaTimes size={14} />
-                  </button>
-                )}
-              </div>
-            </div>
+            <SearchBar
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              placeholder="البحث بالاسم، العنوان، البريد الإلكتروني، المدينة، أو رقم الهاتف..."
+            />
           </motion.div>
 
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
@@ -596,129 +425,14 @@ export default function AdminBranches() {
               }`}
             >
               {filteredBranches.map((branch, index) => (
-                <motion.div
+                <BranchCard
                   key={branch.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border-2 border-gray-200/50 dark:border-gray-600/50 hover:shadow-lg transition-all duration-300"
-                >
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
-                    <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
-                      <div className="flex-shrink-0">
-                        <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white flex items-center justify-center font-semibold text-base sm:text-lg md:text-xl border-2 border-[#FDB913]">
-                          <FaBuilding className="text-sm sm:text-base md:text-lg" />
-                        </div>
-                      </div>
-
-                      <div className="flex-1 min-w-0">
-                        <div className="flex flex-col xs:flex-row xs:items-center gap-2 xs:gap-3 mb-2 sm:mb-3">
-                          <h3 className="font-bold text-gray-800 dark:text-white text-base sm:text-lg md:text-xl truncate">
-                            {branch.name}
-                          </h3>
-                          <div className="flex items-center gap-2">
-                            <div
-                              className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                branch.isActive
-                                  ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
-                                  : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
-                              }`}
-                            >
-                              {branch.isActive ? "نشط" : "غير نشط"}
-                            </div>
-                            <div
-                              className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                branch.status === "Open"
-                                  ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-                                  : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300"
-                              }`}
-                            >
-                              {branch.status === "Open" ? "مفتوح" : "مغلق"}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="space-y-1 sm:space-y-2 text-gray-700 dark:text-gray-300 text-sm sm:text-base">
-                          <div className="flex items-center gap-2">
-                            <FaMapMarkerAlt className="text-[#E41E26] flex-shrink-0 text-xs sm:text-sm" />
-                            <span className="truncate">{branch.address}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <FaEnvelope className="text-[#E41E26] flex-shrink-0 text-xs sm:text-sm" />
-                            <span className="truncate">{branch.email}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <FaClock className="text-[#E41E26] flex-shrink-0 text-xs sm:text-sm" />
-                            <span>
-                              {branch.openingTime} - {branch.closingTime}
-                            </span>
-                          </div>
-                          {branch.city && (
-                            <div className="flex items-center gap-2">
-                              <FaCity className="text-[#E41E26] flex-shrink-0 text-xs sm:text-sm" />
-                              <span>{branch.city.name}</span>
-                            </div>
-                          )}
-                          {branch.phoneNumbers &&
-                            branch.phoneNumbers.length > 0 && (
-                              <div className="flex flex-wrap items-center gap-2 mt-2">
-                                <FaPhone className="text-[#E41E26] flex-shrink-0 text-xs sm:text-sm" />
-                                {branch.phoneNumbers.map((phone, idx) => (
-                                  <div
-                                    key={idx}
-                                    className="flex items-center gap-1 bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded-lg text-xs"
-                                  >
-                                    <span>{phone.phone}</span>
-                                    <span className="text-gray-500">
-                                      ({getPhoneTypeArabic(phone.type)})
-                                    </span>
-                                    {phone.isWhatsapp && (
-                                      <FaWhatsapp className="text-green-500 text-xs" />
-                                    )}
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-row sm:flex-col lg:flex-row gap-1 sm:gap-2 justify-end sm:justify-start">
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => handleEdit(branch)}
-                        className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center"
-                      >
-                        <FaEdit className="text-xs sm:text-sm" />
-                        <span className="whitespace-nowrap">تعديل</span>
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() =>
-                          handleToggleActive(branch.id, branch.isActive)
-                        }
-                        className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center ${
-                          branch.isActive
-                            ? "bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 hover:bg-yellow-100 dark:hover:bg-yellow-900/50"
-                            : "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/50"
-                        }`}
-                      >
-                        {branch.isActive ? "تعطيل" : "تفعيل"}
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => handleDelete(branch.id)}
-                        className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center"
-                      >
-                        <FaTrash className="text-xs sm:text-sm" />
-                        <span className="whitespace-nowrap">حذف</span>
-                      </motion.button>
-                    </div>
-                  </div>
-                </motion.div>
+                  branch={branch}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  onToggleActive={handleToggleActive}
+                  getPhoneTypeArabic={getPhoneTypeArabic}
+                />
               ))}
 
               {filteredBranches.length === 0 && !isAdding && (
@@ -755,548 +469,17 @@ export default function AdminBranches() {
 
             <AnimatePresence>
               {isAdding && (
-                <motion.div
-                  id="branch-form"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  className="xl:col-span-1"
-                >
-                  <div className="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-gray-200/50 dark:border-gray-600/50 shadow-lg sticky top-4 sm:top-6">
-                    <div className="flex items-center justify-between mb-3 sm:mb-4">
-                      <h3 className="text-base sm:text-lg md:text-xl font-bold text-gray-800 dark:text-white truncate">
-                        {editingId ? "تعديل الفرع" : "إضافة فرع جديد"}
-                      </h3>
-                      <button
-                        onClick={resetForm}
-                        className="text-gray-500 dark:text-gray-400 hover:text-[#E41E26] transition-colors duration-200 flex-shrink-0 ml-2"
-                      >
-                        <FaTimes size={16} className="sm:size-5" />
-                      </button>
-                    </div>
-
-                    <form
-                      onSubmit={handleSubmit}
-                      className="space-y-3 sm:space-y-4"
-                    >
-                      <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                          اسم الفرع *
-                        </label>
-                        <div className="relative group">
-                          <FaBuilding className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
-                          <input
-                            type="text"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleInputChange}
-                            required
-                            className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-600 text-black dark:text-white rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
-                            placeholder="اسم الفرع"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                          البريد الإلكتروني *
-                        </label>
-                        <div className="relative group">
-                          <FaEnvelope className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
-                          <input
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            required
-                            className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-600 text-black dark:text-white rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
-                            placeholder="البريد الإلكتروني"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                          العنوان *
-                        </label>
-                        <div className="relative group">
-                          <FaMapMarkerAlt className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
-                          <input
-                            type="text"
-                            name="address"
-                            value={formData.address}
-                            onChange={handleInputChange}
-                            required
-                            className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-600 text-black dark:text-white rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
-                            placeholder="العنوان الكامل"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                          رابط الموقع
-                        </label>
-                        <div className="relative group">
-                          <FaGlobe className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
-                          <input
-                            type="url"
-                            name="locationUrl"
-                            value={formData.locationUrl}
-                            onChange={handleInputChange}
-                            className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-600 text-black dark:text-white rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
-                            placeholder="رابط خرائط جوجل (اختياري)"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
-                        <div>
-                          <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                            المدينة *
-                          </label>
-                          <div className="relative">
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setOpenDropdown(
-                                  openDropdown === "city" ? null : "city"
-                                )
-                              }
-                              className="w-full flex items-center justify-between border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-600 text-black dark:text-white rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
-                            >
-                              <span className="flex items-center gap-2">
-                                <FaCity className="text-[#E41E26]" />
-                                {formData.cityId
-                                  ? cities.find((c) => c.id === formData.cityId)
-                                      ?.name
-                                  : "اختر المدينة"}
-                              </span>
-                              <motion.div
-                                animate={{
-                                  rotate: openDropdown === "city" ? 180 : 0,
-                                }}
-                                transition={{ duration: 0.3 }}
-                              >
-                                <FaChevronDown className="text-[#E41E26]" />
-                              </motion.div>
-                            </button>
-
-                            <AnimatePresence>
-                              {openDropdown === "city" && (
-                                <motion.ul
-                                  initial={{ opacity: 0, y: -5 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  exit={{ opacity: 0, y: -5 }}
-                                  transition={{ duration: 0.2 }}
-                                  className="absolute z-50 mt-2 w-full bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto"
-                                >
-                                  {cities.map((city) => (
-                                    <li
-                                      key={city.id}
-                                      onClick={() =>
-                                        handleSelectChange("cityId", city.id)
-                                      }
-                                      className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] dark:hover:from-gray-500 dark:hover:to-gray-400 cursor-pointer text-gray-700 dark:text-gray-300 transition-all text-sm sm:text-base border-b border-gray-100 dark:border-gray-500 last:border-b-0"
-                                    >
-                                      {city.name}
-                                    </li>
-                                  ))}
-                                </motion.ul>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                        </div>
-                        <div>
-                          <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                            المدير *
-                          </label>
-                          <div className="relative">
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setOpenDropdown(
-                                  openDropdown === "manager" ? null : "manager"
-                                )
-                              }
-                              className="w-full flex items-center justify-between border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-600 text-black dark:text-white rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
-                            >
-                              <span className="flex items-center gap-2">
-                                <FaUser className="text-[#E41E26]" />
-                                {formData.managerId
-                                  ? managers.find(
-                                      (m) => m.id === formData.managerId
-                                    )?.firstName +
-                                    " " +
-                                    managers.find(
-                                      (m) => m.id === formData.managerId
-                                    )?.lastName
-                                  : "اختر المدير"}
-                              </span>
-                              <motion.div
-                                animate={{
-                                  rotate: openDropdown === "manager" ? 180 : 0,
-                                }}
-                                transition={{ duration: 0.3 }}
-                              >
-                                <FaChevronDown className="text-[#E41E26]" />
-                              </motion.div>
-                            </button>
-
-                            <AnimatePresence>
-                              {openDropdown === "manager" && (
-                                <motion.ul
-                                  initial={{ opacity: 0, y: -5 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  exit={{ opacity: 0, y: -5 }}
-                                  transition={{ duration: 0.2 }}
-                                  className="absolute z-50 mt-2 w-full bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto"
-                                >
-                                  {managers.map((manager) => (
-                                    <li
-                                      key={manager.id}
-                                      onClick={() =>
-                                        handleSelectChange(
-                                          "managerId",
-                                          manager.id
-                                        )
-                                      }
-                                      className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] dark:hover:from-gray-500 dark:hover:to-gray-400 cursor-pointer text-gray-700 dark:text-gray-300 transition-all text-sm sm:text-base border-b border-gray-100 dark:border-gray-500 last:border-b-0"
-                                    >
-                                      {manager.firstName} {manager.lastName} (
-                                      {manager.email})
-                                    </li>
-                                  ))}
-                                </motion.ul>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                          الحالة *
-                        </label>
-                        <div className="relative">
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setOpenDropdown(
-                                openDropdown === "status" ? null : "status"
-                              )
-                            }
-                            className="w-full flex items-center justify-between border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-600 text-black dark:text-white rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
-                          >
-                            <span>
-                              {formData.status === "Open" ? "مفتوح" : "مغلق"}
-                            </span>
-                            <motion.div
-                              animate={{
-                                rotate: openDropdown === "status" ? 180 : 0,
-                              }}
-                              transition={{ duration: 0.3 }}
-                            >
-                              <FaChevronDown className="text-[#E41E26]" />
-                            </motion.div>
-                          </button>
-
-                          <AnimatePresence>
-                            {openDropdown === "status" && (
-                              <motion.ul
-                                initial={{ opacity: 0, y: -5 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -5 }}
-                                transition={{ duration: 0.2 }}
-                                className="absolute z-50 mt-2 w-full bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto"
-                              >
-                                {["Open", "Closed"].map((status) => (
-                                  <li
-                                    key={status}
-                                    onClick={() =>
-                                      handleSelectChange("status", status)
-                                    }
-                                    className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] dark:hover:from-gray-500 dark:hover:to-gray-400 cursor-pointer text-gray-700 dark:text-gray-300 transition-all text-sm sm:text-base border-b border-gray-100 dark:border-gray-500 last:border-b-0"
-                                  >
-                                    {status === "Open" ? "مفتوح" : "مغلق"}
-                                  </li>
-                                ))}
-                              </motion.ul>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
-                        <div>
-                          <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                            وقت الفتح *
-                          </label>
-                          <div className="relative group">
-                            <FaClock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
-                            <input
-                              type="time"
-                              name="openingTime"
-                              value={formData.openingTime}
-                              onChange={handleInputChange}
-                              required
-                              className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-600 text-black dark:text-white rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                            وقت الإغلاق *
-                          </label>
-                          <div className="relative group">
-                            <FaClock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
-                            <input
-                              type="time"
-                              name="closingTime"
-                              value={formData.closingTime}
-                              onChange={handleInputChange}
-                              required
-                              className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-600 text-black dark:text-white rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Phone Numbers Section */}
-                      <div className="pt-2 sm:pt-3">
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
-                          أرقام الهاتف *
-                        </label>
-
-                        {/* Add Phone Number Form */}
-                        <div className="bg-gray-50 dark:bg-gray-600/50 rounded-lg sm:rounded-xl p-3 sm:p-4 mb-3 sm:mb-4">
-                          <div className="grid grid-cols-1 gap-2 sm:gap-3">
-                            <div>
-                              <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">
-                                رقم الهاتف *
-                              </label>
-                              <div className="relative group">
-                                <FaPhone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-xs" />
-                                <input
-                                  type="text"
-                                  name="phone"
-                                  value={phoneNumber.phone}
-                                  onChange={handlePhoneInputChange}
-                                  className="w-full border border-gray-200 dark:border-gray-500 bg-white dark:bg-gray-600 text-black dark:text-white rounded-lg pl-9 pr-3 py-2 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm"
-                                  placeholder="أدخل رقم الهاتف"
-                                />
-                              </div>
-                            </div>
-
-                            <div>
-                              <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">
-                                النوع *
-                              </label>
-                              <div className="relative">
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    setOpenDropdown(
-                                      openDropdown === "phoneType"
-                                        ? null
-                                        : "phoneType"
-                                    )
-                                  }
-                                  className="w-full flex items-center justify-between border border-gray-200 dark:border-gray-500 bg-white dark:bg-gray-600 text-black dark:text-white rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm"
-                                >
-                                  <span className="flex items-center gap-2">
-                                    <FaPhone className="text-[#E41E26] text-xs" />
-                                    {getPhoneTypeArabic(phoneNumber.type)}
-                                  </span>
-                                  <motion.div
-                                    animate={{
-                                      rotate:
-                                        openDropdown === "phoneType" ? 180 : 0,
-                                    }}
-                                    transition={{ duration: 0.3 }}
-                                  >
-                                    <FaChevronDown className="text-[#E41E26] text-xs" />
-                                  </motion.div>
-                                </button>
-
-                                <AnimatePresence>
-                                  {openDropdown === "phoneType" && (
-                                    <motion.ul
-                                      initial={{ opacity: 0, y: -5 }}
-                                      animate={{ opacity: 1, y: 0 }}
-                                      exit={{ opacity: 0, y: -5 }}
-                                      transition={{ duration: 0.2 }}
-                                      className="absolute z-50 mt-2 w-full bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto"
-                                    >
-                                      {[
-                                        { value: "Mobile", label: "موبايل" },
-                                        { value: "Landline", label: "أرضي" },
-                                        { value: "Other", label: "آخر" },
-                                      ].map((type) => (
-                                        <li
-                                          key={type.value}
-                                          onClick={() =>
-                                            handlePhoneTypeSelect(type.value)
-                                          }
-                                          className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] dark:hover:from-gray-500 dark:hover:to-gray-400 cursor-pointer text-gray-700 dark:text-gray-300 transition-all text-sm border-b border-gray-100 dark:border-gray-500 last:border-b-0"
-                                        >
-                                          {type.label}
-                                        </li>
-                                      ))}
-                                    </motion.ul>
-                                  )}
-                                </AnimatePresence>
-                              </div>
-                            </div>
-
-                            <div className="flex items-center justify-center gap-2 py-2">
-                              <label
-                                className={`flex items-center gap-2 text-xs font-semibold cursor-pointer ${
-                                  phoneNumber.type !== "Mobile"
-                                    ? "text-gray-400 dark:text-gray-500 cursor-not-allowed"
-                                    : "text-gray-600 dark:text-gray-400"
-                                }`}
-                              >
-                                <input
-                                  type="checkbox"
-                                  name="isWhatsapp"
-                                  checked={phoneNumber.isWhatsapp}
-                                  onChange={handlePhoneInputChange}
-                                  disabled={phoneNumber.type !== "Mobile"}
-                                  className={`w-3 h-3 text-[#E41E26] bg-gray-100 border-gray-300 rounded focus:ring-[#E41E26] focus:ring-1 ${
-                                    phoneNumber.type !== "Mobile"
-                                      ? "cursor-not-allowed opacity-50"
-                                      : ""
-                                  }`}
-                                />
-                                <FaWhatsapp
-                                  className={`text-sm ${
-                                    phoneNumber.type !== "Mobile"
-                                      ? "text-gray-400 dark:text-gray-500"
-                                      : "text-green-500"
-                                  }`}
-                                />
-                                <span
-                                  className={
-                                    phoneNumber.type !== "Mobile"
-                                      ? "opacity-70"
-                                      : ""
-                                  }
-                                >
-                                  واتساب{" "}
-                                  {phoneNumber.type !== "Mobile"
-                                    ? "(غير متاح)"
-                                    : ""}
-                                </span>
-                              </label>
-                            </div>
-
-                            <motion.button
-                              type="button"
-                              whileHover={{ scale: 1.02 }}
-                              whileTap={{ scale: 0.98 }}
-                              onClick={addPhoneNumber}
-                              disabled={!phoneNumber.phone.trim()}
-                              className={`py-2 rounded-lg font-semibold transition-all duration-300 text-sm flex items-center justify-center gap-2 ${
-                                phoneNumber.phone.trim()
-                                  ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-lg"
-                                  : "bg-gray-300 dark:bg-gray-500 text-gray-500 dark:text-gray-400 cursor-not-allowed"
-                              }`}
-                            >
-                              <FaPlus className="text-xs" />
-                              إضافة رقم
-                            </motion.button>
-                          </div>
-                        </div>
-
-                        {/* Display Added Phone Numbers */}
-                        {formData.phoneNumbers.length > 0 && (
-                          <div className="space-y-2 sm:space-y-3">
-                            <h4 className="text-xs font-semibold text-gray-600 dark:text-gray-400">
-                              الأرقام المضافة ({formData.phoneNumbers.length})
-                            </h4>
-                            {formData.phoneNumbers.map((phone, index) => (
-                              <div
-                                key={index}
-                                className="flex items-center justify-between bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded-lg p-2 sm:p-3"
-                              >
-                                <div className="flex items-center gap-2 sm:gap-3 flex-1">
-                                  <FaPhone className="text-[#E41E26] text-xs sm:text-sm" />
-                                  <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-sm font-medium text-gray-800 dark:text-white">
-                                        {phone.phone}
-                                      </span>
-                                      {phone.isWhatsapp && (
-                                        <FaWhatsapp className="text-green-500 text-xs" />
-                                      )}
-                                    </div>
-                                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                                      ({getPhoneTypeArabic(phone.type)})
-                                      {phone.type !== "Mobile" &&
-                                        phone.isWhatsapp &&
-                                        " - الواتساب غير متاح لهذا النوع"}
-                                    </span>
-                                  </div>
-                                </div>
-                                <button
-                                  type="button"
-                                  onClick={() => removePhoneNumber(index)}
-                                  className="text-red-500 hover:text-red-700 transition-colors duration-200 flex-shrink-0 ml-2"
-                                >
-                                  <FaTimes size={14} />
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="flex items-center gap-2 pt-1 sm:pt-2">
-                        <input
-                          type="checkbox"
-                          id="isActive"
-                          name="isActive"
-                          checked={formData.isActive}
-                          onChange={handleInputChange}
-                          className="w-4 h-4 text-[#E41E26] bg-gray-100 border-gray-300 rounded focus:ring-[#E41E26] focus:ring-2"
-                        />
-                        <label
-                          htmlFor="isActive"
-                          className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300"
-                        >
-                          فرع نشط
-                        </label>
-                      </div>
-
-                      <div className="flex gap-2 sm:gap-3 pt-1 sm:pt-2">
-                        <motion.button
-                          type="button"
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={resetForm}
-                          className="flex-1 py-2.5 sm:py-3 border-2 border-[#E41E26] text-[#E41E26] dark:text-[#FDB913] dark:border-[#FDB913] rounded-lg sm:rounded-xl font-semibold hover:bg-[#E41E26] dark:hover:bg-[#FDB913] hover:text-white transition-all duration-300 text-sm sm:text-base"
-                        >
-                          إلغاء
-                        </motion.button>
-                        <motion.button
-                          type="submit"
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          disabled={!isFormValid()}
-                          className={`flex-1 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base flex items-center justify-center gap-1 sm:gap-2 ${
-                            isFormValid()
-                              ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25"
-                              : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
-                          }`}
-                        >
-                          <FaCheck className="text-xs sm:text-sm" />
-                          {editingId ? "تحديث الفرع" : "إضافة الفرع"}
-                        </motion.button>
-                      </div>
-                    </form>
-                  </div>
-                </motion.div>
+                <BranchForm
+                  formData={formData}
+                  setFormData={setFormData}
+                  cities={cities}
+                  managers={managers}
+                  onSubmit={handleSubmit}
+                  onCancel={resetForm}
+                  isEditing={!!editingId}
+                  openDropdown={openDropdown}
+                  setOpenDropdown={setOpenDropdown}
+                />
               )}
             </AnimatePresence>
           </div>

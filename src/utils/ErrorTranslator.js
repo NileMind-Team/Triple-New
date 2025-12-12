@@ -171,7 +171,7 @@ class ErrorTranslator {
   }
 }
 
-export const translateErrorMessage = (errorData) => {
+export const translateErrorMessageAdminUser = (errorData) => {
   if (!errorData || !errorData.errors) return "حدث خطأ غير معروف";
 
   const translatedErrors = {};
@@ -256,6 +256,71 @@ export const translateErrorMessage = (errorData) => {
 
       return error;
     });
+  });
+
+  return translatedErrors;
+};
+
+export const translateErrorMessageAdminBranches = (errorData) => {
+  if (errorData && Array.isArray(errorData.errors)) {
+    const translatedErrors = { "": [] };
+    errorData.errors.forEach((error) => {
+      if (error.code === "Branch.NameAlreadyUsed") {
+        translatedErrors[""].push("اسم الفرع مستخدم بالفعل.");
+      } else if (error.description) {
+        translatedErrors[""].push(error.description);
+      }
+    });
+    return translatedErrors;
+  }
+
+  if (!errorData || !errorData.errors || typeof errorData.errors !== "object") {
+    return { "": ["حدث خطأ غير معروف"] };
+  }
+
+  const translatedErrors = {};
+
+  if (errorData.errors[""] && Array.isArray(errorData.errors[""])) {
+    translatedErrors[""] = errorData.errors[""].map((msg) => {
+      if (msg.includes("Opening time must be before closing time")) {
+        return "وقت الفتح يجب أن يكون قبل وقت الإغلاق";
+      } else {
+        return msg;
+      }
+    });
+  }
+
+  if (
+    errorData.errors.LocationUrl &&
+    Array.isArray(errorData.errors.LocationUrl)
+  ) {
+    translatedErrors["LocationUrl"] = errorData.errors.LocationUrl.map(
+      (msg) => {
+        if (msg.includes("Invalid Google Maps URL")) {
+          return "رابط خرائط جوجل غير صحيح";
+        } else {
+          return msg;
+        }
+      }
+    );
+  }
+
+  Object.keys(errorData.errors).forEach((key) => {
+    if (!Array.isArray(errorData.errors[key])) {
+      return;
+    }
+
+    if (key.includes("PhoneNumbers")) {
+      translatedErrors[key] = errorData.errors[key].map((msg) => {
+        if (msg.includes("Invalid phone number format")) {
+          return "تنسيق رقم الهاتف غير صحيح";
+        } else {
+          return msg;
+        }
+      });
+    } else if (key !== "" && key !== "LocationUrl") {
+      translatedErrors[key] = errorData.errors[key];
+    }
   });
 
   return translatedErrors;
