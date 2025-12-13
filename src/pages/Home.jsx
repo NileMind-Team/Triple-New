@@ -938,6 +938,40 @@ const Home = () => {
     return !category || category.isActive;
   };
 
+  const checkLogin = (action) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      Swal.fire({
+        title: "تسجيل الدخول مطلوب",
+        text: `يجب تسجيل الدخول للوصول إلى ${action}`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#E41E26",
+        cancelButtonColor: "#6B7280",
+        confirmButtonText: "تسجيل الدخول",
+        cancelButtonText: "إنشاء حساب جديد",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login");
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          navigate("/register");
+        }
+      });
+      return false;
+    }
+    return true;
+  };
+
+  const handleNavigateToFavorites = () => {
+    if (!checkLogin("صفحة المفضلة")) return;
+    navigate("/favorites");
+  };
+
+  const handleNavigateToCart = () => {
+    if (!checkLogin("سلة التسوق")) return;
+    navigate("/cart");
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-4">
@@ -1417,7 +1451,7 @@ const Home = () => {
         className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white rounded-full p-3 sm:p-4 shadow-2xl z-40 cursor-pointer hover:scale-110 transition-transform duration-200 no-product-details ${
           cartItemsCount === 0 ? "opacity-70" : ""
         }`}
-        onClick={() => navigate("/cart")}
+        onClick={handleNavigateToCart}
       >
         <div className="relative">
           <FaShoppingCart className="w-4 h-4 sm:w-6 sm:h-6" />
@@ -1437,7 +1471,7 @@ const Home = () => {
           animate={{ scale: 1 }}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          onClick={() => navigate("/favorites")}
+          onClick={handleNavigateToFavorites}
           className="relative bg-gradient-to-r from-[#FF3366] to-[#FF6B9D] text-white rounded-full p-3 sm:p-4 shadow-2xl hover:shadow-3xl transition-all duration-300 group overflow-hidden no-product-details"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-[#FF6B9D] to-[#FF3366] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

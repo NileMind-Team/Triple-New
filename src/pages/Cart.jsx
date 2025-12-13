@@ -59,6 +59,7 @@ export default function Cart() {
   const [pickupFee, setPickupFee] = useState(null);
   // eslint-disable-next-line no-unused-vars
   const [loadingPickupFee, setLoadingPickupFee] = useState(false);
+  const [itemNotes, setItemNotes] = useState("");
 
   const notesModalRef = React.useRef(null);
   const productDetailsModalRef = React.useRef(null);
@@ -88,14 +89,6 @@ export default function Cart() {
       }
 
       if (
-        showProductDetailsModal &&
-        productDetailsModalRef.current &&
-        !productDetailsModalRef.current.contains(event.target)
-      ) {
-        closeProductDetailsModal();
-      }
-
-      if (
         addressDropdownRef.current &&
         !addressDropdownRef.current.contains(event.target) &&
         addressDropdownOpen
@@ -104,7 +97,7 @@ export default function Cart() {
       }
     };
 
-    if (showNotesModal || showProductDetailsModal || addressDropdownOpen) {
+    if (showNotesModal || addressDropdownOpen) {
       document.addEventListener("mousedown", handleClickOutside);
       document.addEventListener("touchstart", handleClickOutside);
     }
@@ -113,7 +106,7 @@ export default function Cart() {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("touchstart", handleClickOutside);
     };
-  }, [showNotesModal, showProductDetailsModal, addressDropdownOpen]);
+  }, [showNotesModal, addressDropdownOpen]);
 
   useEffect(() => {
     if (location.state?.fromAddresses) {
@@ -198,6 +191,16 @@ export default function Cart() {
     }
   };
 
+  const calculateOptionsTotal = (menuItemOptions, quantity) => {
+    if (!menuItemOptions || !Array.isArray(menuItemOptions)) return 0;
+
+    const optionsTotal = menuItemOptions.reduce((total, option) => {
+      return total + (option.price || 0);
+    }, 0);
+
+    return optionsTotal * quantity;
+  };
+
   const fetchCartItems = async () => {
     try {
       setLoading(true);
@@ -233,8 +236,13 @@ export default function Cart() {
           prepTime = `${item.menuItem.preparationTimeStart}-${item.menuItem.preparationTimeEnd} mins`;
         }
 
+        const optionsTotal = calculateOptionsTotal(
+          item.menuItemOptions,
+          item.quantity
+        );
+
         const finalPrice = priceAfterDiscount;
-        const totalPrice = priceAfterDiscount * item.quantity;
+        const totalPrice = priceAfterDiscount * item.quantity + optionsTotal;
 
         return {
           id: item.id,
@@ -257,6 +265,7 @@ export default function Cart() {
           originalDiscountValue: itemOffer?.discountValue || 0,
           isPercentageDiscount: itemOffer?.isPercentage || false,
           originalTotalPrice: item.totalPrice || basePrice * item.quantity,
+          optionsTotal: optionsTotal,
         };
       });
 
@@ -453,7 +462,8 @@ export default function Cart() {
     try {
       setSelectedProduct(item);
       setProductQuantity(item.quantity);
-      setAdditionalNotes(item.additionalNotes || "");
+      // حفظ النوتس الحالية للعنصر
+      setItemNotes(item.additionalNotes || "");
 
       const response = await axiosInstance.get(
         `/api/MenuItems/Get/${item.menuItem?.id}`
@@ -528,6 +538,7 @@ export default function Cart() {
     setProductDetails(null);
     setProductAddons([]);
     setSelectedAddons({});
+    setItemNotes("");
   };
 
   const handleAddonSelect = (addonId, optionId, type) => {
@@ -587,6 +598,31 @@ export default function Cart() {
     try {
       setUpdatingCart(true);
 
+      // التحقق من الإضافات المطلوبة
+      const missingRequiredAddons = [];
+      productAddons.forEach((addon) => {
+        if (addon.isSelectionRequired) {
+          const selectedOptionIds = selectedAddons[addon.id] || [];
+          if (selectedOptionIds.length === 0) {
+            missingRequiredAddons.push(addon.title);
+          }
+        }
+      });
+
+      if (missingRequiredAddons.length > 0) {
+        Swal.fire({
+          icon: "warning",
+          title: "إضافات مطلوبة",
+          text: `الرجاء اختيار ${missingRequiredAddons.join(" و ")}`,
+          customClass: {
+            popup: "rounded-3xl shadow-2xl dark:bg-gray-800 dark:text-white",
+          },
+        });
+        setUpdatingCart(false);
+        return;
+      }
+
+      // تجميع خيارات الإضافات المحددة
       const options = [];
       Object.values(selectedAddons).forEach((optionIds) => {
         optionIds.forEach((optionId) => {
@@ -594,22 +630,23 @@ export default function Cart() {
         });
       });
 
-      const basePrice = productDetails.basePrice || 0;
-      const discountInMoney = calculateDiscountInMoney(
-        basePrice,
-        productDetails.itemOffer
-      );
-
-      await axiosInstance.delete(`/api/CartItems/Delete/${selectedProduct.id}`);
-
-      await axiosInstance.post("/api/CartItems/AddCartItem", {
-        menuItemId: productDetails.id,
-        quantity: productQuantity,
+      // تحديث العنصر في السلة باستخدام PUT مع النوتس الحالية
+      await axiosInstance.put(`/api/CartItems/Update/${selectedProduct.id}`, {
+        note: itemNotes.trim(),
         options: options,
-        additionalNotes: additionalNotes.trim(),
-        discount: discountInMoney,
       });
 
+      // تحديث الكمية باستخدام PUT منفصل إذا تغيرت
+      if (productQuantity !== selectedProduct.quantity) {
+        await axiosInstance.put(
+          `/api/CartItems/UpdateQuantity/${selectedProduct.id}`,
+          {
+            quantity: productQuantity,
+          }
+        );
+      }
+
+      // إعادة تحميل عناصر السلة
       await fetchCartItems();
 
       Swal.fire({
@@ -657,7 +694,7 @@ export default function Cart() {
   };
 
   const handleClearNotes = () => {
-    setAdditionalNotes("");
+    setItemNotes("");
     toast.info("تم مسح التعليمات الإضافية", {
       position: "top-right",
       autoClose: 1500,
@@ -672,24 +709,37 @@ export default function Cart() {
       const cartItem = cartItems.find((item) => item.id === id);
       if (!cartItem) return;
 
+      const basePrice = cartItem.finalPrice;
+      const optionsPricePerUnit = cartItem.optionsTotal / cartItem.quantity;
+
+      const newOptionsTotal = optionsPricePerUnit * newQuantity;
+      const newTotalPrice = basePrice * newQuantity + newOptionsTotal;
+
+      // استخدام PUT لتحديث الكمية فقط
       await axiosInstance.put(`/api/CartItems/UpdateQuantity/${id}`, {
         quantity: newQuantity,
-        note: cartItem.additionalNotes || "",
       });
 
+      // تحديث الحالة المحلية
       setCartItems((prevItems) =>
         prevItems.map((item) => {
           if (item.id === id) {
-            const newTotalPrice = item.finalPrice * newQuantity;
             return {
               ...item,
               quantity: newQuantity,
               totalPrice: newTotalPrice,
+              optionsTotal: newOptionsTotal,
             };
           }
           return item;
         })
       );
+
+      toast.success("تم تحديث الكمية", {
+        position: "top-right",
+        autoClose: 1000,
+        rtl: true,
+      });
     } catch (error) {
       console.error("Error updating quantity:", error);
       Swal.fire({
@@ -999,8 +1049,8 @@ export default function Cart() {
               </p>
 
               <textarea
-                value={additionalNotes}
-                onChange={(e) => setAdditionalNotes(e.target.value)}
+                value={itemNotes}
+                onChange={(e) => setItemNotes(e.target.value)}
                 placeholder="اكتب تعليماتك هنا..."
                 className="w-full h-40 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-[#E41E26] focus:border-transparent resize-none"
                 dir="rtl"
@@ -1014,12 +1064,12 @@ export default function Cart() {
                 </span>
                 <span
                   className={`text-xs ${
-                    additionalNotes.length >= 450
+                    itemNotes.length >= 450
                       ? "text-red-500"
                       : "text-gray-500 dark:text-gray-400"
                   }`}
                 >
-                  {additionalNotes.length}/500
+                  {itemNotes.length}/500
                 </span>
               </div>
             </div>
@@ -1052,10 +1102,7 @@ export default function Cart() {
 
       {showProductDetailsModal && productDetails && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-          <div
-            className="fixed inset-0"
-            onClick={closeProductDetailsModal}
-          ></div>
+          <div className="fixed inset-0" onClick={closeProductDetailsModal} />
           <motion.div
             ref={productDetailsModalRef}
             initial={{ opacity: 0, scale: 0.9 }}
@@ -1265,13 +1312,16 @@ export default function Cart() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-indigo-700 dark:text-indigo-300 text-sm sm:text-base">
-                      {additionalNotes
+                      {itemNotes
                         ? "تم إضافة تعليمات إضافية"
                         : "إضافة تعليمات إضافية"}
                     </h4>
                     <p className="text-indigo-600/70 dark:text-indigo-400/70 text-xs mt-0.5 sm:mt-1">
-                      {additionalNotes
-                        ? "انقر لتعديل التعليمات الإضافية"
+                      {itemNotes
+                        ? `انقر لتعديل التعليمات الإضافية: ${itemNotes.substring(
+                            0,
+                            50
+                          )}${itemNotes.length > 50 ? "..." : ""}`
                         : "انقر لإضافة تعليمات إضافية"}
                     </p>
                   </div>
@@ -1471,9 +1521,22 @@ export default function Cart() {
                                 {toArabicNumbers(item.price.toFixed(2))} ج.م
                               </p>
                             )}
+
                             <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-1 sm:mb-2 line-clamp-2">
                               {item.description}
                             </p>
+
+                            {item.additionalNotes && (
+                              <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <FaStickyNote className="text-indigo-500 text-xs" />
+                                <span className="text-indigo-600 dark:text-indigo-400">
+                                  {item.additionalNotes.substring(0, 50)}
+                                  {item.additionalNotes.length > 50
+                                    ? "..."
+                                    : ""}
+                                </span>
+                              </div>
+                            )}
 
                             {item.prepTime && (
                               <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-2">
@@ -1522,6 +1585,12 @@ export default function Cart() {
                             <div className="font-bold text-gray-800 dark:text-white text-base sm:text-lg whitespace-nowrap">
                               {toArabicNumbers(item.totalPrice.toFixed(2))} ج.م
                             </div>
+                            {item.optionsTotal > 0 && (
+                              <div className="text-xs text-green-600 dark:text-green-400 mt-0.5">
+                                +{toArabicNumbers(item.optionsTotal.toFixed(2))}{" "}
+                                ج.م للإضافات
+                              </div>
+                            )}
                           </div>
 
                           {/* Remove Button */}
@@ -1799,12 +1868,12 @@ export default function Cart() {
               {/* Additional Notes */}
               <div className="mt-4 sm:mt-6">
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  ملاحظات إضافية
+                  ملاحظات إضافية للطلب الكامل
                 </label>
                 <textarea
                   value={additionalNotes}
                   onChange={(e) => setAdditionalNotes(e.target.value)}
-                  placeholder="أضف ملاحظات أو تعليمات خاصة للطلب..."
+                  placeholder="أضف ملاحظات أو تعليمات خاصة للطلب الكامل..."
                   className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg sm:rounded-xl dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-[#E41E26] focus:border-transparent resize-none h-32"
                   dir="rtl"
                   maxLength={500}

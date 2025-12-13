@@ -129,12 +129,35 @@ const ProductForm = () => {
 
       const blob = await response.blob();
 
-      if (blob.size > 5 * 1024 * 1024) {
-        throw new Error("حجم الصورة يتجاوز الحد الأقصى (5MB)");
+      const maxSize = 5 * 1024 * 1024;
+      if (blob.size > maxSize) {
+        throw new Error(
+          `حجم الصورة (${formatBytes(blob.size)}) يتجاوز الحد الأقصى (5MB)`
+        );
       }
 
-      const filename = url.split("/").pop() || `image-${Date.now()}.jpg`;
-      const file = new File([blob], filename, { type: blob.type });
+      const mimeType = blob.type;
+      const allowedTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/jfif",
+        "image/heic",
+        "image/heif",
+        "image/webp",
+      ];
+
+      if (!allowedTypes.includes(mimeType.toLowerCase())) {
+        const fileType = mimeType.split("/")[1] || "غير معروف";
+        throw new Error(
+          `صيغة الملف (${fileType}) غير مدعومة. الصيغ المدعومة: JPG, JPEG, PNG, JFIF, HEIF/HEIC, WebP`
+        );
+      }
+
+      const extension = getExtensionFromMimeType(mimeType);
+      const filename = `image-${Date.now()}.${extension}`;
+
+      const file = new File([blob], filename, { type: mimeType });
 
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -153,7 +176,7 @@ const ProductForm = () => {
       Swal.fire({
         icon: "success",
         title: "تم تحميل الصورة!",
-        text: "تم تحميل الصورة بنجاح من الرابط المقدم",
+        text: `تم تحميل الصورة بنجاح (${formatBytes(file.size)})`,
         timer: 1500,
         showConfirmButton: false,
       });
@@ -171,6 +194,28 @@ const ProductForm = () => {
     } finally {
       setIsDownloadingImage(false);
     }
+  };
+
+  const getExtensionFromMimeType = (mimeType) => {
+    const mimeToExt = {
+      "image/jpeg": "jpg",
+      "image/jpg": "jpg",
+      "image/png": "png",
+      "image/jfif": "jfif",
+      "image/heic": "heic",
+      "image/heif": "heif",
+      "image/webp": "webp",
+    };
+    return mimeToExt[mimeType.toLowerCase()] || "jpg";
+  };
+
+  const formatBytes = (bytes, decimals = 2) => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
   };
 
   const isValidUrl = (url) => {
@@ -661,22 +706,35 @@ const ProductForm = () => {
     const file = e.target.files[0];
 
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
+      const maxSize = 5 * 1024 * 1024;
+      if (file.size > maxSize) {
         Swal.fire({
           icon: "error",
           title: "حجم الملف كبير",
-          text: "الحد الأقصى لحجم الصورة هو 5MB",
+          text: `حجم الصورة (${formatBytes(
+            file.size
+          )}) يتجاوز الحد الأقصى (5MB)`,
           confirmButtonColor: "#E41E26",
         });
         return;
       }
 
-      const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
-      if (!allowedTypes.includes(file.type)) {
+      const allowedTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/jfif",
+        "image/heic",
+        "image/heif",
+        "image/webp",
+      ];
+
+      if (!allowedTypes.includes(file.type.toLowerCase())) {
+        const fileType = file.type.split("/")[1] || "غير معروف";
         Swal.fire({
           icon: "error",
           title: "نوع ملف غير مدعوم",
-          text: "الأنواع المسموح بها: JPG, JPEG, PNG",
+          text: `صيغة الملف (${fileType}) غير مدعومة. الصيغ المدعومة: JPG, JPEG, PNG, JFIF, HEIF/HEIC, WebP`,
           confirmButtonColor: "#E41E26",
         });
         return;
@@ -1348,14 +1406,15 @@ const ProductForm = () => {
                                 انقر لرفع الصورة
                               </p>
                               <p className="text-gray-500 dark:text-gray-500 text-[10px] xs:text-xs sm:text-sm">
-                                PNG, JPG, JPEG (الحد الأقصى 5MB)
+                                الصيغ المدعومة: JPG, JPEG, PNG, JFIF, HEIF/HEIC,
+                                WebP (الحد الأقصى 5MB)
                               </p>
                             </div>
                           )}
                           <input
                             id="file-input"
                             type="file"
-                            accept="image/*"
+                            accept="image/jpeg,image/jpg,image/png,image/jfif,image/heic,image/heif,image/webp"
                             onChange={handleImageChange}
                             className="hidden"
                             required={!isEditing && imageInputMode === "upload"}
@@ -1404,7 +1463,8 @@ const ProductForm = () => {
                                 </motion.button>
                               </div>
                               <p className="text-gray-500 dark:text-gray-400 text-[10px] xs:text-xs mt-2">
-                                أدخل رابط الصورة ثم انقر على زر "تحميل"
+                                الصيغ المدعومة: JPG, JPEG, PNG, JFIF, HEIF/HEIC,
+                                WebP (الحد الأقصى 5MB)
                               </p>
                             </div>
 

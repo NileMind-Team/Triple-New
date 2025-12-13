@@ -18,6 +18,7 @@ import {
   FaReceipt,
   FaBox,
   FaTag,
+  FaPlusCircle,
 } from "react-icons/fa";
 import Swal from "sweetalert2";
 import axiosInstance from "../api/axiosInstance";
@@ -38,14 +39,54 @@ export default function MyOrders() {
   const [orderDetails, setOrderDetails] = useState(null);
   const [loadingOrderDetails, setLoadingOrderDetails] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [fetchingOrders, setFetchingOrders] = useState(false);
   const BASE_URL = "https://restaurant-template.runasp.net/";
 
-  const calculateFinalTotal = (order) => {
-    const subtotal = order.totalWithoutFee || 0;
-    const deliveryFee = order.deliveryCost || 0;
-    const discount = order.totalDiscount || 0;
+  const calculatePricesFromItems = (items) => {
+    if (!items || items.length === 0) {
+      return {
+        subtotal: 0,
+        totalAdditions: 0,
+        totalDiscount: 0,
+        deliveryFee: 0,
+        totalWithFee: 0,
+      };
+    }
 
-    return subtotal + deliveryFee - discount;
+    let subtotal = 0;
+    let totalAdditions = 0;
+    let totalDiscount = 0;
+
+    items.forEach((item) => {
+      const basePrice =
+        item.menuItemBasePriceSnapshotAtOrder > 0
+          ? item.menuItemBasePriceSnapshotAtOrder
+          : item.menuItem?.basePrice || 0;
+
+      subtotal += basePrice * item.quantity;
+
+      if (item.options && item.options.length > 0) {
+        item.options.forEach((option) => {
+          totalAdditions += option.optionPriceAtOrder || 0;
+        });
+      }
+
+      if (item.totalDiscount && item.totalDiscount > 0) {
+        totalDiscount += item.totalDiscount;
+      }
+    });
+
+    return {
+      subtotal,
+      totalAdditions,
+      totalDiscount,
+      deliveryFee: 0,
+      totalWithFee: 0,
+    };
+  };
+
+  const getFinalTotal = (order) => {
+    return order.totalWithFee || 0;
   };
 
   useEffect(() => {
@@ -125,12 +166,12 @@ export default function MyOrders() {
       }
 
       try {
-        setLoading(true);
+        setFetchingOrders(true);
         const token = localStorage.getItem("token");
 
         if (!token) {
           setOrders([]);
-          setLoading(false);
+          setFetchingOrders(false);
           return;
         }
 
@@ -168,13 +209,13 @@ export default function MyOrders() {
         console.error("Error fetching orders:", error);
         Swal.fire({
           icon: "error",
-          title: "Error",
-          text: "Failed to load orders. Please try again.",
+          title: "خطأ",
+          text: "فشل تحميل الطلبات. يرجى المحاولة مرة أخرى.",
           confirmButtonColor: "#E41E26",
         });
         setOrders([]);
       } finally {
-        setLoading(false);
+        setFetchingOrders(false);
       }
     };
 
@@ -202,12 +243,12 @@ export default function MyOrders() {
 
   const getStatusText = (apiStatus) => {
     const textMap = {
-      Pending: "Pending",
-      Confirmed: "Confirmed",
-      Preparing: "Preparing",
-      OutForDelivery: "Out for Delivery",
-      Delivered: "Delivered",
-      Cancelled: "Cancelled",
+      Pending: "قيد الانتظار",
+      Confirmed: "تم التأكيد",
+      Preparing: "قيد التحضير",
+      OutForDelivery: "قيد التوصيل",
+      Delivered: "تم التوصيل",
+      Cancelled: "ملغي",
     };
     return textMap[apiStatus] || apiStatus;
   };
@@ -256,21 +297,22 @@ export default function MyOrders() {
     e.stopPropagation();
 
     const result = await Swal.fire({
-      title: "Change Order Status",
+      title: "تغيير حالة الطلب",
       input: "select",
       inputOptions: {
-        Pending: "Pending",
-        Confirmed: "Confirmed",
-        Preparing: "Preparing",
-        OutForDelivery: "Out for Delivery",
-        Delivered: "Delivered",
-        Cancelled: "Cancelled",
+        Pending: "قيد الانتظار",
+        Confirmed: "تم التأكيد",
+        Preparing: "قيد التحضير",
+        OutForDelivery: "قيد التوصيل",
+        Delivered: "تم التوصيل",
+        Cancelled: "ملغي",
       },
-      inputPlaceholder: "Select status",
+      inputPlaceholder: "اختر الحالة",
       showCancelButton: true,
       confirmButtonColor: "#E41E26",
       cancelButtonColor: "#6B7280",
-      confirmButtonText: "Update Status",
+      confirmButtonText: "تحديث الحالة",
+      cancelButtonText: "إلغاء",
     });
 
     if (result.isConfirmed) {
@@ -298,8 +340,8 @@ export default function MyOrders() {
 
         Swal.fire({
           icon: "success",
-          title: "Status Updated!",
-          text: `Order status changed to ${getStatusText(newStatus)}`,
+          title: "تم تحديث الحالة!",
+          text: `تم تغيير حالة الطلب إلى ${getStatusText(newStatus)}`,
           timer: 2000,
           showConfirmButton: false,
         });
@@ -307,8 +349,8 @@ export default function MyOrders() {
         console.error("Error updating order status:", error);
         Swal.fire({
           icon: "error",
-          title: "Error",
-          text: "Failed to update order status.",
+          title: "خطأ",
+          text: "فشل تحديث حالة الطلب.",
           confirmButtonColor: "#E41E26",
         });
       }
@@ -319,13 +361,14 @@ export default function MyOrders() {
     e.stopPropagation();
 
     const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "You want to cancel this order?",
+      title: "هل أنت متأكد؟",
+      text: "هل تريد إلغاء هذا الطلب؟",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#E41E26",
       cancelButtonColor: "#6B7280",
-      confirmButtonText: "Yes, cancel it!",
+      confirmButtonText: "نعم، إلغِه!",
+      cancelButtonText: "لا",
     });
 
     if (result.isConfirmed) {
@@ -351,8 +394,8 @@ export default function MyOrders() {
         }
 
         Swal.fire({
-          title: "Cancelled!",
-          text: "Order has been cancelled.",
+          title: "تم الإلغاء!",
+          text: "تم إلغاء الطلب.",
           icon: "success",
           timer: 2000,
           showConfirmButton: false,
@@ -361,8 +404,8 @@ export default function MyOrders() {
         console.error("Error cancelling order:", error);
         Swal.fire({
           icon: "error",
-          title: "Error",
-          text: "Failed to cancel order.",
+          title: "خطأ",
+          text: "فشل إلغاء الطلب.",
           confirmButtonColor: "#E41E26",
         });
       }
@@ -407,7 +450,7 @@ export default function MyOrders() {
             (item.menuItem ? item.menuItem.imageUrl : null),
           menuItemNameSnapshotAtOrder:
             item.menuItemNameSnapshotAtOrder ||
-            (item.menuItem ? item.menuItem.name : "Unknown Item"),
+            (item.menuItem ? item.menuItem.name : "عنصر غير معروف"),
           menuItemDescriptionAtOrder:
             item.menuItemDescriptionAtOrder ||
             (item.menuItem ? item.menuItem.description : ""),
@@ -422,9 +465,17 @@ export default function MyOrders() {
         }));
       }
 
-      if (details) {
-        const finalTotal = calculateFinalTotal(details);
-        details.finalTotal = finalTotal;
+      if (details && details.items && details.items.length > 0) {
+        const calculatedPrices = calculatePricesFromItems(details.items);
+        details.calculatedSubtotal = calculatedPrices.subtotal;
+        details.calculatedTotalAdditions = calculatedPrices.totalAdditions;
+        details.calculatedTotalDiscount = calculatedPrices.totalDiscount;
+        details.calculatedDeliveryFee = details.deliveryCost || 0;
+        details.calculatedTotalWithFee =
+          calculatedPrices.subtotal +
+          calculatedPrices.totalAdditions +
+          details.calculatedDeliveryFee -
+          calculatedPrices.totalDiscount;
       }
 
       setOrderDetails(details);
@@ -432,8 +483,8 @@ export default function MyOrders() {
       console.error("Error fetching order details:", error);
       Swal.fire({
         icon: "error",
-        title: "Error",
-        text: "Failed to load order details.",
+        title: "خطأ",
+        text: "فشل تحميل تفاصيل الطلب.",
         confirmButtonColor: "#E41E26",
       });
     } finally {
@@ -498,21 +549,21 @@ export default function MyOrders() {
               </motion.button>
               <div>
                 <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200">
-                  {isAdminOrRestaurantOrBranch ? "All Orders" : "My Orders"}
+                  {isAdminOrRestaurantOrBranch ? "جميع الطلبات" : "طلباتي"}
                 </h1>
                 <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
                   {isAdminOrRestaurantOrBranch
-                    ? "Manage all orders"
-                    : "Track and manage your orders"}
+                    ? "إدارة جميع الطلبات"
+                    : "تتبع وإدارة طلباتك"}
                 </p>
               </div>
             </div>
             <div className="text-right self-end sm:self-auto">
               <div className="text-lg sm:text-xl md:text-2xl font-bold text-[#E41E26]">
-                {orders.length} Orders
+                {orders.length} طلب
               </div>
               <div className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
-                in total
+                إجمالي
               </div>
             </div>
           </motion.div>
@@ -530,7 +581,7 @@ export default function MyOrders() {
                 {/* Status Filter - Always shown */}
                 <div className="flex-1">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Status
+                    الحالة
                   </label>
                   <div className="relative">
                     <button
@@ -545,7 +596,7 @@ export default function MyOrders() {
                       <span className="flex items-center gap-2">
                         <FaFilter className="text-[#E41E26]" />
                         {filter === "all"
-                          ? "All Status"
+                          ? "جميع الحالات"
                           : getStatusText(filter)}
                       </span>
                       <motion.div
@@ -568,16 +619,16 @@ export default function MyOrders() {
                           className="absolute z-50 mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto dark:bg-gray-700 dark:border-gray-600"
                         >
                           {[
-                            { value: "all", label: "All Status" },
-                            { value: "Pending", label: "Pending" },
-                            { value: "Confirmed", label: "Confirmed" },
-                            { value: "Preparing", label: "Preparing" },
+                            { value: "all", label: "جميع الحالات" },
+                            { value: "Pending", label: "قيد الانتظار" },
+                            { value: "Confirmed", label: "تم التأكيد" },
+                            { value: "Preparing", label: "قيد التحضير" },
                             {
                               value: "OutForDelivery",
-                              label: "Out for Delivery",
+                              label: "قيد التوصيل",
                             },
-                            { value: "Delivered", label: "Delivered" },
-                            { value: "Cancelled", label: "Cancelled" },
+                            { value: "Delivered", label: "تم التوصيل" },
+                            { value: "Cancelled", label: "ملغي" },
                           ].map((item) => (
                             <li
                               key={item.value}
@@ -600,7 +651,7 @@ export default function MyOrders() {
                 {isAdminOrRestaurantOrBranch && (
                   <div className="flex-1">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      User
+                      المستخدم
                     </label>
                     <div className="relative">
                       <button
@@ -620,7 +671,7 @@ export default function MyOrders() {
                               " " +
                               users.find((u) => u.id === selectedUserId)
                                 ?.lastName
-                            : "All Users"}
+                            : "جميع المستخدمين"}
                         </span>
                         <motion.div
                           animate={{
@@ -648,11 +699,11 @@ export default function MyOrders() {
                               }}
                               className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] cursor-pointer text-gray-700 transition-all text-sm sm:text-base border-b border-gray-100 dark:hover:from-gray-600 dark:hover:to-gray-500 dark:text-gray-300 dark:border-gray-600"
                             >
-                              All Users
+                              جميع المستخدمين
                             </li>
                             {loadingUsers ? (
                               <li className="px-4 py-3 text-center text-gray-500 dark:text-gray-400">
-                                Loading users...
+                                جاري تحميل المستخدمين...
                               </li>
                             ) : (
                               users.map((user) => (
@@ -707,7 +758,7 @@ export default function MyOrders() {
                   <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Start Date
+                        تاريخ البداية
                       </label>
                       <input
                         type="date"
@@ -720,7 +771,7 @@ export default function MyOrders() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        End Date
+                        تاريخ النهاية
                       </label>
                       <input
                         type="date"
@@ -745,7 +796,7 @@ export default function MyOrders() {
                             onClick={clearDateRange}
                             className="px-4 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200 text-sm sm:text-base whitespace-nowrap"
                           >
-                            Clear Dates
+                            مسح التواريخ
                           </button>
                         )}
                         {isAdminOrRestaurantOrBranch && selectedUserId && (
@@ -753,14 +804,14 @@ export default function MyOrders() {
                             onClick={clearUserFilter}
                             className="px-4 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200 text-sm sm:text-base whitespace-nowrap"
                           >
-                            Clear User
+                            مسح المستخدم
                           </button>
                         )}
                         <button
                           onClick={clearAllFilters}
                           className="px-4 py-3 bg-[#E41E26] text-white rounded-xl hover:bg-[#c91c23] transition-colors duration-200 text-sm sm:text-base whitespace-nowrap"
                         >
-                          Clear All
+                          مسح الكل
                         </button>
                       </>
                     )}
@@ -770,143 +821,157 @@ export default function MyOrders() {
             </div>
           </motion.div>
 
+          {/* Loading State when fetching orders */}
+          {fetchingOrders && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex flex-col items-center justify-center py-12 bg-white/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl mb-6 sm:mb-8 dark:bg-gray-800/80"
+            >
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E41E26] mb-4"></div>
+            </motion.div>
+          )}
+
           {/* Orders List */}
           <div className="space-y-4 sm:space-y-6 relative z-20">
-            <AnimatePresence>
-              {orders.map((order, index) => {
-                const finalTotal = calculateFinalTotal(order);
+            {!fetchingOrders && (
+              <AnimatePresence>
+                {orders.map((order, index) => {
+                  const finalTotal = getFinalTotal(order);
 
-                return (
-                  <motion.div
-                    key={order.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="bg-white/90 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl p-4 sm:p-6 cursor-pointer hover:shadow-2xl transition-all duration-300 dark:bg-gray-800/90"
-                    onClick={() => handleOrderClick(order)}
-                  >
-                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                      {/* Order Info */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex flex-col xs:flex-row xs:items-center gap-2 xs:gap-3 sm:gap-6 mb-3">
-                          <div className="min-w-0">
-                            <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-200 truncate">
-                              Order #{order.orderNumber}
-                            </h3>
-                            <p className="text-gray-600 dark:text-gray-400 text-sm">
-                              {new Date(order.createdAt).toLocaleDateString(
-                                "en-US",
-                                {
-                                  weekday: "long",
-                                  year: "numeric",
-                                  month: "long",
-                                  day: "numeric",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                }
+                  return (
+                    <motion.div
+                      key={order.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="bg-white/90 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl p-4 sm:p-6 cursor-pointer hover:shadow-2xl transition-all duration-300 dark:bg-gray-800/90"
+                      onClick={() => handleOrderClick(order)}
+                    >
+                      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                        {/* Order Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-col xs:flex-row xs:items-center gap-2 xs:gap-3 sm:gap-6 mb-3">
+                            <div className="min-w-0">
+                              <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-200 truncate">
+                                طلب #{order.orderNumber}
+                              </h3>
+                              <p className="text-gray-600 dark:text-gray-400 text-sm">
+                                {new Date(order.createdAt).toLocaleDateString(
+                                  "ar-SA",
+                                  {
+                                    weekday: "long",
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  }
+                                )}
+                              </p>
+                              {isAdminOrRestaurantOrBranch && order.userId && (
+                                <div className="flex items-center gap-2 mt-2">
+                                  <FaUser className="text-gray-400 dark:text-gray-500 w-3 h-3" />
+                                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                                    {users.find((u) => u.id === order.userId)
+                                      ?.firstName || "مستخدم غير معروف"}
+                                  </span>
+                                </div>
                               )}
-                            </p>
-                            {isAdminOrRestaurantOrBranch && order.userId && (
-                              <div className="flex items-center gap-2 mt-2">
-                                <FaUser className="text-gray-400 dark:text-gray-500 w-3 h-3" />
-                                <span className="text-sm text-gray-600 dark:text-gray-400">
-                                  {users.find((u) => u.id === order.userId)
-                                    ?.firstName || "Unknown User"}
-                                </span>
+                            </div>
+                            <div className="flex-shrink-0">
+                              <div
+                                className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusColor(
+                                  order.status
+                                )} whitespace-nowrap`}
+                              >
+                                {getStatusText(order.status)}
+                              </div>
+                            </div>
+                          </div>
+
+                          {isAdminOrRestaurantOrBranch && (
+                            <div className="flex gap-2 mb-3">
+                              <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={(e) =>
+                                  handleChangeOrderStatus(order.id, e)
+                                }
+                                className="flex items-center gap-1 bg-blue-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-blue-600 transition-colors"
+                              >
+                                <FaEdit size={10} />
+                                تغيير الحالة
+                              </motion.button>
+                              {order.status !== "Cancelled" &&
+                                order.status !== "Rejected" && (
+                                  <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={(e) =>
+                                      handleCancelOrder(order.id, e)
+                                    }
+                                    className="flex items-center gap-1 bg-red-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-600 transition-colors"
+                                  >
+                                    <FaTrash size={10} />
+                                    إلغاء الطلب
+                                  </motion.button>
+                                )}
+                            </div>
+                          )}
+
+                          {/* Customer/Delivery Info */}
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                            <div className="flex items-center gap-2">
+                              <FaMapMarkerAlt className="text-[#E41E26] flex-shrink-0 w-3 h-3" />
+                              <span className="truncate">
+                                {order.location?.streetName ||
+                                  "لم يتم تحديد العنوان"}
+                              </span>
+                            </div>
+                            {order.location?.phoneNumber && (
+                              <div className="flex items-center gap-2 sm:ml-4">
+                                <FaPhone className="text-[#E41E26] flex-shrink-0 w-3 h-3" />
+                                <span>{order.location.phoneNumber}</span>
                               </div>
                             )}
                           </div>
-                          <div className="flex-shrink-0">
-                            <div
-                              className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusColor(
-                                order.status
-                              )} whitespace-nowrap`}
-                            >
-                              {getStatusText(order.status)}
-                            </div>
-                          </div>
                         </div>
 
-                        {isAdminOrRestaurantOrBranch && (
-                          <div className="flex gap-2 mb-3">
-                            <motion.button
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                              onClick={(e) =>
-                                handleChangeOrderStatus(order.id, e)
-                              }
-                              className="flex items-center gap-1 bg-blue-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-blue-600 transition-colors"
-                            >
-                              <FaEdit size={10} />
-                              Change Status
-                            </motion.button>
-                            {order.status !== "Cancelled" &&
-                              order.status !== "Rejected" && (
-                                <motion.button
-                                  whileHover={{ scale: 1.05 }}
-                                  whileTap={{ scale: 0.95 }}
-                                  onClick={(e) =>
-                                    handleCancelOrder(order.id, e)
-                                  }
-                                  className="flex items-center gap-1 bg-red-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-600 transition-colors"
-                                >
-                                  <FaTrash size={10} />
-                                  Cancel Order
-                                </motion.button>
+                        {/* Total and Action */}
+                        <div className="flex flex-row sm:flex-col items-center justify-between sm:items-end lg:items-start gap-3 sm:gap-2 lg:gap-3 pt-3 sm:pt-0 border-t sm:border-t-0 border-gray-100 dark:border-gray-700">
+                          <div className="text-left sm:text-right lg:text-left">
+                            <div className="text-lg sm:text-xl font-bold text-[#E41E26]">
+                              ج.م {finalTotal.toFixed(2)}
+                            </div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400 hidden sm:block">
+                              المبلغ الإجمالي
+                              {order.totalDiscount > 0 && (
+                                <span className="ml-2 text-green-600 dark:text-green-400 flex items-center gap-1">
+                                  <FaTag className="w-3 h-3" />
+                                  -ج.م {order.totalDiscount.toFixed(2)}
+                                </span>
                               )}
+                            </div>
                           </div>
-                        )}
 
-                        {/* Customer/Delivery Info */}
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                          <div className="flex items-center gap-2">
-                            <FaMapMarkerAlt className="text-[#E41E26] flex-shrink-0 w-3 h-3" />
-                            <span className="truncate">
-                              {order.location?.streetName ||
-                                "Address not specified"}
+                          <div className="flex items-center gap-2 text-[#E41E26]">
+                            {getStatusIcon(order.status)}
+                            <span className="text-sm font-semibold whitespace-nowrap">
+                              عرض التفاصيل
                             </span>
                           </div>
-                          {order.location?.phoneNumber && (
-                            <div className="flex items-center gap-2 sm:ml-4">
-                              <FaPhone className="text-[#E41E26] flex-shrink-0 w-3 h-3" />
-                              <span>{order.location.phoneNumber}</span>
-                            </div>
-                          )}
                         </div>
                       </div>
+                    </motion.div>
+                  );
+                })}
+              </AnimatePresence>
+            )}
 
-                      {/* Total and Action */}
-                      <div className="flex flex-row sm:flex-col items-center justify-between sm:items-end lg:items-start gap-3 sm:gap-2 lg:gap-3 pt-3 sm:pt-0 border-t sm:border-t-0 border-gray-100 dark:border-gray-700">
-                        <div className="text-left sm:text-right lg:text-left">
-                          <div className="text-lg sm:text-xl font-bold text-[#E41E26]">
-                            EGP {finalTotal.toFixed(2)}
-                          </div>
-                          <div className="text-sm text-gray-600 dark:text-gray-400 hidden sm:block">
-                            Total Amount
-                            {order.totalDiscount > 0 && (
-                              <span className="ml-2 text-green-600 dark:text-green-400 flex items-center gap-1">
-                                <FaTag className="w-3 h-3" />
-                                -EGP {order.totalDiscount.toFixed(2)}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2 text-[#E41E26]">
-                          {getStatusIcon(order.status)}
-                          <span className="text-sm font-semibold whitespace-nowrap">
-                            View Details
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </AnimatePresence>
-
-            {orders.length === 0 && !loading && (
+            {!fetchingOrders && orders.length === 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -916,15 +981,15 @@ export default function MyOrders() {
                   <FaShoppingBag className="text-gray-400 dark:text-gray-500 text-xl sm:text-3xl" />
                 </div>
                 <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">
-                  No orders found
+                  لا توجد طلبات
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm sm:text-base px-4">
                   {filter !== "all" ||
                   dateRange.start ||
                   dateRange.end ||
                   selectedUserId
-                    ? "Try adjusting your filter criteria"
-                    : "You haven't placed any orders yet"}
+                    ? "حاول تعديل معايير التصفية"
+                    : "لم تقم بوضع أي طلبات بعد"}
                 </p>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -932,7 +997,7 @@ export default function MyOrders() {
                   onClick={() => navigate("/")}
                   className="bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-6 sm:px-8 py-2 sm:py-3 rounded-xl font-bold hover:shadow-lg transition-all duration-300 text-sm sm:text-base"
                 >
-                  Start Shopping
+                  ابدأ التسوق
                 </motion.button>
               </motion.div>
             )}
@@ -968,7 +1033,7 @@ export default function MyOrders() {
                     <FaReceipt className="text-[#E41E26] text-2xl" />
                     <div>
                       <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-200">
-                        Order #{selectedOrder.orderNumber}
+                        طلب #{selectedOrder.orderNumber}
                       </h2>
                       {orderDetails && (
                         <div className="flex items-center gap-2 mt-1">
@@ -982,7 +1047,7 @@ export default function MyOrders() {
                           <span className="text-sm text-gray-600 dark:text-gray-400">
                             {new Date(
                               orderDetails.createdAt
-                            ).toLocaleDateString("en-US", {
+                            ).toLocaleDateString("ar-SA", {
                               year: "numeric",
                               month: "short",
                               day: "numeric",
@@ -1005,8 +1070,8 @@ export default function MyOrders() {
                 {/* Modal Content */}
                 <div className="flex-1 overflow-y-auto p-6">
                   {loadingOrderDetails ? (
-                    <div className="flex items-center justify-center h-64">
-                      <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-[#E41E26]"></div>
+                    <div className="flex flex-col items-center justify-center h-64">
+                      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E41E26] mb-4"></div>
                     </div>
                   ) : orderDetails ? (
                     <div className="space-y-6">
@@ -1014,14 +1079,15 @@ export default function MyOrders() {
                       <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-5">
                         <h3 className="font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2 text-lg">
                           <FaUser className="text-[#E41E26]" />
-                          Customer Information
+                          معلومات العميل
                         </h3>
                         <div className="space-y-3">
                           <div className="flex items-center gap-3">
                             <FaPhone className="text-gray-400 dark:text-gray-500" />
                             <div>
                               <p className="font-medium text-gray-800 dark:text-gray-200">
-                                {orderDetails.location?.phoneNumber || "N/A"}
+                                {orderDetails.location?.phoneNumber ||
+                                  "غير متاح"}
                               </p>
                             </div>
                           </div>
@@ -1035,8 +1101,9 @@ export default function MyOrders() {
                               </p>
                               <p className="text-sm text-gray-600 dark:text-gray-400">
                                 {orderDetails.location?.city?.name || ""} -
-                                Floor {orderDetails.location?.floorNumber || ""}
-                                , Flat {orderDetails.location?.flatNumber || ""}
+                                الطابق{" "}
+                                {orderDetails.location?.floorNumber || ""}، شقة{" "}
+                                {orderDetails.location?.flatNumber || ""}
                               </p>
                               {orderDetails.location?.detailedDescription && (
                                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -1053,7 +1120,7 @@ export default function MyOrders() {
                         <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-5">
                           <h3 className="font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2 text-lg">
                             <FaBox className="text-[#E41E26]" />
-                            Order Items ({orderDetails.items.length})
+                            العناصر المطلوبة ({orderDetails.items.length})
                           </h3>
                           <div className="space-y-4">
                             {orderDetails.items.map((item, index) => {
@@ -1063,7 +1130,7 @@ export default function MyOrders() {
                               const itemName =
                                 item.menuItemNameSnapshotAtOrder ||
                                 item.menuItem?.name ||
-                                "Unknown Item";
+                                "عنصر غير معروف";
                               const itemDescription =
                                 item.menuItemDescriptionAtOrder ||
                                 item.menuItem?.description ||
@@ -1076,6 +1143,16 @@ export default function MyOrders() {
                                 item.totalPrice < 0
                                   ? Math.abs(item.totalPrice)
                                   : item.totalPrice;
+
+                              let itemAdditions = 0;
+                              if (item.options && item.options.length > 0) {
+                                item.options.forEach((option) => {
+                                  itemAdditions +=
+                                    option.optionPriceAtOrder || 0;
+                                });
+                              }
+
+                              const itemDiscount = item.totalDiscount || 0;
 
                               return (
                                 <div
@@ -1105,7 +1182,7 @@ export default function MyOrders() {
                                       {itemName}
                                     </h4>
                                     <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                                      Quantity: {item.quantity}
+                                      الكمية: {item.quantity}
                                     </p>
                                     {itemDescription && (
                                       <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 truncate">
@@ -1116,7 +1193,7 @@ export default function MyOrders() {
                                       item.options.length > 0 && (
                                         <div className="mt-2">
                                           <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                            Options:
+                                            الإضافات:
                                           </p>
                                           <div className="flex flex-wrap gap-1">
                                             {item.options.map(
@@ -1125,7 +1202,11 @@ export default function MyOrders() {
                                                   key={optIndex}
                                                   className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-xs rounded"
                                                 >
-                                                  {opt.optionNameAtOrder}
+                                                  {opt.optionNameAtOrder} (+ج.م{" "}
+                                                  {opt.optionPriceAtOrder?.toFixed(
+                                                    2
+                                                  ) || "0.00"}
+                                                  )
                                                 </span>
                                               )
                                             )}
@@ -1135,16 +1216,21 @@ export default function MyOrders() {
                                   </div>
                                   <div className="text-right flex-shrink-0">
                                     <p className="font-bold text-gray-800 dark:text-gray-200">
-                                      EGP {totalPrice?.toFixed(2) || "0.00"}
+                                      ج.م {totalPrice?.toFixed(2) || "0.00"}
                                     </p>
                                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                                      EGP {basePrice.toFixed(2)} each
+                                      الأساسي: ج.م {basePrice.toFixed(2)} لكل
                                     </p>
-                                    {item.totalDiscount > 0 && (
+                                    {itemAdditions > 0 && (
+                                      <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                                        <FaPlusCircle className="inline w-2 h-2 mr-1" />
+                                        إضافات: +ج.م {itemAdditions.toFixed(2)}
+                                      </p>
+                                    )}
+                                    {itemDiscount > 0 && (
                                       <p className="text-xs text-green-600 dark:text-green-400 mt-1">
                                         <FaTag className="inline w-2 h-2 mr-1" />
-                                        Discount: EGP{" "}
-                                        {item.totalDiscount.toFixed(2)}
+                                        خصم: -ج.م {itemDiscount.toFixed(2)}
                                       </p>
                                     )}
                                   </div>
@@ -1158,77 +1244,99 @@ export default function MyOrders() {
                       {/* Order Summary */}
                       <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-5">
                         <h3 className="font-bold text-gray-800 dark:text-gray-200 mb-4 text-lg">
-                          Order Summary
+                          ملخص الطلب
                         </h3>
                         <div className="space-y-3">
                           <div className="flex justify-between">
                             <span className="text-gray-600 dark:text-gray-400">
-                              Subtotal:
+                              المجموع الجزئي (العناصر):
                             </span>
                             <span className="font-medium text-gray-800 dark:text-gray-200">
-                              EGP{" "}
-                              {orderDetails.totalWithoutFee?.toFixed(2) ||
+                              ج.م{" "}
+                              {orderDetails.calculatedSubtotal?.toFixed(2) ||
                                 "0.00"}
                             </span>
                           </div>
+
+                          {orderDetails.calculatedTotalAdditions > 0 && (
+                            <div className="flex justify-between text-blue-600 dark:text-blue-400">
+                              <span className="flex items-center gap-1">
+                                <FaPlusCircle className="w-3 h-3" />
+                                إجمالي الإضافات:
+                              </span>
+                              <span className="font-medium">
+                                +ج.م{" "}
+                                {orderDetails.calculatedTotalAdditions?.toFixed(
+                                  2
+                                ) || "0.00"}
+                              </span>
+                            </div>
+                          )}
+
                           <div className="flex justify-between">
                             <span className="text-gray-600 dark:text-gray-400">
-                              Delivery Fee:
+                              رسوم التوصيل:
                             </span>
                             <span className="font-medium text-gray-800 dark:text-gray-200">
-                              EGP{" "}
-                              {orderDetails.deliveryCost?.toFixed(2) || "0.00"}
+                              ج.م{" "}
+                              {orderDetails.calculatedDeliveryFee?.toFixed(2) ||
+                                "0.00"}
                             </span>
                           </div>
+
                           {orderDetails.deliveryFee && (
                             <div className="text-sm text-gray-500 dark:text-gray-400 pl-4">
                               <i>
                                 {orderDetails.deliveryFee.areaName} -{" "}
                                 {orderDetails.deliveryFee.estimatedTimeMin}-
                                 {orderDetails.deliveryFee.estimatedTimeMax}{" "}
-                                minutes
+                                دقيقة
                               </i>
                             </div>
                           )}
-                          {orderDetails.totalDiscount > 0 && (
+
+                          {orderDetails.calculatedTotalDiscount > 0 && (
                             <div className="flex justify-between text-green-600 dark:text-green-400">
                               <span className="flex items-center gap-1">
                                 <FaTag className="w-3 h-3" />
-                                Discount:
+                                إجمالي الخصم:
                               </span>
                               <span className="font-medium">
-                                -EGP{" "}
-                                {orderDetails.totalDiscount?.toFixed(2) ||
-                                  "0.00"}
+                                -ج.م{" "}
+                                {orderDetails.calculatedTotalDiscount?.toFixed(
+                                  2
+                                ) || "0.00"}
                               </span>
                             </div>
                           )}
+
                           <div className="border-t pt-3 mt-3">
                             <div className="flex justify-between font-bold text-lg">
                               <span className="text-gray-800 dark:text-gray-200">
-                                Total:
+                                الإجمالي:
                               </span>
                               <span className="text-[#E41E26]">
-                                EGP{" "}
+                                ج.م{" "}
                                 {(
-                                  orderDetails.finalTotal ||
-                                  calculateFinalTotal(orderDetails)
+                                  orderDetails.calculatedTotalWithFee ||
+                                  orderDetails.totalWithFee ||
+                                  0
                                 ).toFixed(2)}
                               </span>
                             </div>
-                            {orderDetails.totalWithFee &&
-                              orderDetails.totalDiscount > 0 && (
-                                <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                  <del className="mr-2">
-                                    EGP {orderDetails.totalWithFee?.toFixed(2)}{" "}
-                                    (Before discount)
-                                  </del>
-                                  <span className="text-green-600 dark:text-green-400">
-                                    You saved EGP{" "}
-                                    {orderDetails.totalDiscount?.toFixed(2)}
-                                  </span>
-                                </div>
-                              )}
+
+                            {orderDetails.calculatedTotalDiscount > 0 && (
+                              <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                <span className="text-green-600 dark:text-green-400">
+                                  لقد وفرت ج.م{" "}
+                                  {orderDetails.calculatedTotalDiscount?.toFixed(
+                                    2
+                                  ) ||
+                                    orderDetails.totalDiscount?.toFixed(2) ||
+                                    "0.00"}
+                                </span>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -1248,7 +1356,7 @@ export default function MyOrders() {
                                 clipRule="evenodd"
                               />
                             </svg>
-                            Special Notes
+                            ملاحظات خاصة
                           </h3>
                           <p className="text-gray-700 dark:text-gray-300">
                             {orderDetails.notes}
@@ -1268,7 +1376,7 @@ export default function MyOrders() {
                             className="flex-1 flex items-center justify-center gap-2 bg-blue-500 text-white px-4 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors"
                           >
                             <FaEdit />
-                            Change Status
+                            تغيير الحالة
                           </motion.button>
                           {orderDetails.status !== "Cancelled" &&
                             orderDetails.status !== "Rejected" && (
@@ -1281,7 +1389,7 @@ export default function MyOrders() {
                                 className="flex-1 flex items-center justify-center gap-2 bg-red-500 text-white px-4 py-3 rounded-lg font-semibold hover:bg-red-600 transition-colors"
                               >
                                 <FaTrash />
-                                Cancel Order
+                                إلغاء الطلب
                               </motion.button>
                             )}
                         </div>
@@ -1291,10 +1399,10 @@ export default function MyOrders() {
                     <div className="text-center py-12">
                       <FaTimesCircle className="text-red-500 text-4xl mx-auto mb-4" />
                       <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-2">
-                        Failed to load order details
+                        فشل تحميل تفاصيل الطلب
                       </h3>
                       <p className="text-gray-600 dark:text-gray-400">
-                        Please try again later
+                        يرجى المحاولة مرة أخرى لاحقاً
                       </p>
                     </div>
                   )}
