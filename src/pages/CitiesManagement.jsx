@@ -12,6 +12,156 @@ import {
 import Swal from "sweetalert2";
 import axiosInstance from "../api/axiosInstance";
 
+const translateErrorMessage = (errorData) => {
+  if (!errorData) return "حدث خطأ غير معروف";
+
+  if (Array.isArray(errorData.errors)) {
+    const error = errorData.errors[0];
+    switch (error.code) {
+      case "User.InvalidCredentials":
+        return "اسم المستخدم أو كلمة المرور غير صحيحة";
+      default:
+        return error.description || "حدث خطأ في المصادقة";
+    }
+  }
+
+  if (errorData.errors && typeof errorData.errors === "object") {
+    const errorMessages = [];
+
+    if (errorData.errors.Name) {
+      errorData.errors.Name.forEach((msg) => {
+        if (
+          msg.toLowerCase().includes("already used") ||
+          msg.toLowerCase().includes("مستخدم") ||
+          msg === "name is already used."
+        ) {
+          errorMessages.push("اسم المدينة مستخدم بالفعل");
+        } else if (
+          msg.toLowerCase().includes("required") ||
+          msg.toLowerCase().includes("مطلوب")
+        ) {
+          errorMessages.push("اسم المدينة مطلوب");
+        } else if (
+          msg.toLowerCase().includes("length") ||
+          msg.toLowerCase().includes("طول")
+        ) {
+          errorMessages.push("اسم المدينة يجب أن يكون بين 3 و 100 حرف");
+        } else {
+          const translated = msg
+            .replace("name", "الاسم")
+            .replace("is required", "مطلوب")
+            .replace("must be", "يجب أن يكون")
+            .replace("characters", "حروف")
+            .replace("minimum", "الحد الأدنى")
+            .replace("maximum", "الحد الأقصى");
+          errorMessages.push(translated);
+        }
+      });
+    }
+
+    if (errorData.errors.UserName) {
+      errorData.errors.UserName.forEach((msg) => {
+        if (msg.includes("letters, numbers, and underscores")) {
+          errorMessages.push(
+            "اسم المستخدم يجب أن يحتوي فقط على أحرف و أرقام وشرطة سفلية"
+          );
+        } else if (msg.includes("required")) {
+          errorMessages.push("اسم المستخدم مطلوب");
+        } else {
+          errorMessages.push(msg);
+        }
+      });
+    }
+
+    if (errorData.errors.Password) {
+      errorData.errors.Password.forEach((msg) => {
+        if (msg.includes("at least 6 characters")) {
+          errorMessages.push("كلمة المرور يجب أن تحتوي على الأقل 6 أحرف");
+        } else if (msg.includes("required")) {
+          errorMessages.push("كلمة المرور مطلوبة");
+        } else {
+          errorMessages.push(msg);
+        }
+      });
+    }
+
+    Object.keys(errorData.errors).forEach((key) => {
+      if (!["Name", "UserName", "Password"].includes(key)) {
+        errorData.errors[key].forEach((msg) => {
+          const translatedKey = key
+            .replace(/([A-Z])/g, " $1")
+            .replace(/^./, (str) => str.toUpperCase());
+
+          const translatedMsg = msg
+            .replace("is required", "مطلوب")
+            .replace("must be", "يجب أن يكون")
+            .replace("invalid", "غير صالح");
+
+          errorMessages.push(`${translatedKey}: ${translatedMsg}`);
+        });
+      }
+    });
+
+    if (errorMessages.length > 1) {
+      return errorMessages.join("<br>");
+    } else if (errorMessages.length === 1) {
+      return errorMessages[0];
+    } else {
+      return "بيانات غير صالحة";
+    }
+  }
+
+  if (typeof errorData.message === "string") {
+    const msg = errorData.message.toLowerCase();
+    if (msg.includes("invalid") || msg.includes("credentials")) {
+      return "اسم المستخدم أو كلمة المرور غير صحيحة";
+    }
+    if (msg.includes("network") || msg.includes("internet")) {
+      return "يرجى التحقق من اتصالك بالإنترنت";
+    }
+    if (msg.includes("timeout") || msg.includes("time out")) {
+      return "انتهت المهلة، يرجى المحاولة مرة أخرى";
+    }
+    if (msg.includes("not found") || msg.includes("404")) {
+      return "لم يتم العثور على المدينة المطلوبة";
+    }
+    if (msg.includes("unauthorized") || msg.includes("401")) {
+      return "غير مصرح لك بهذا الإجراء";
+    }
+    if (msg.includes("forbidden") || msg.includes("403")) {
+      return "ليس لديك صلاحية للقيام بهذا الإجراء";
+    }
+    return errorData.message;
+  }
+
+  if (errorData.title) {
+    if (errorData.title.includes("validation errors")) {
+      return "حدثت أخطاء في التحقق من البيانات";
+    }
+  }
+
+  return "حدث خطأ غير متوقع";
+};
+
+const showErrorAlert = (errorData) => {
+  const translatedMessage = translateErrorMessage(errorData);
+
+  Swal.fire({
+    icon: "error",
+    title: "خطأ",
+    html: translatedMessage,
+    showConfirmButton: false,
+    timer: 2500,
+    background: "#ffffff",
+    color: "#000000",
+    customClass: {
+      popup: "error-popup",
+      title: "error-title",
+      htmlContainer: "error-message",
+    },
+  });
+};
+
 export default function CitiesManagement() {
   const navigate = useNavigate();
   const [cities, setCities] = useState([]);
@@ -83,13 +233,7 @@ export default function CitiesManagement() {
       }
     } catch (error) {
       console.error("Error fetching cities:", error);
-      Swal.fire({
-        icon: "error",
-        title: "خطأ",
-        text: "فشل في تحميل المدن",
-        timer: 2000,
-        showConfirmButton: false,
-      });
+      showErrorAlert(error.response?.data);
     } finally {
       setDataLoading(false);
     }
@@ -157,11 +301,7 @@ export default function CitiesManagement() {
 
       resetForm();
     } catch (err) {
-      Swal.fire({
-        icon: "error",
-        title: "خطأ",
-        text: err.response?.data?.message || "فشل في حفظ المدينة",
-      });
+      showErrorAlert(err.response?.data);
     }
   };
 

@@ -21,6 +21,136 @@ import {
 } from "react-icons/fa";
 import axiosInstance from "../api/axiosInstance";
 
+const translateProfileErrorMessage = (errorData) => {
+  if (!errorData) return "حدث خطأ غير معروف";
+
+  if (errorData.errors && typeof errorData.errors === "object") {
+    const errorMessages = [];
+
+    if (errorData.errors.FirstName) {
+      errorData.errors.FirstName.forEach((msg) => {
+        if (msg.includes("must be between 3 and 100 characters")) {
+          const match = msg.match(/You entered (\d+) characters/);
+          if (match) {
+            errorMessages.push(
+              `الاسم الأول يجب أن يكون بين 3 و 100 حرف. أدخلت ${match[1]} حرفاً.`
+            );
+          } else {
+            errorMessages.push("الاسم الأول يجب أن يكون بين 3 و 100 حرف");
+          }
+        } else if (msg.includes("required")) {
+          errorMessages.push("الاسم الأول مطلوب");
+        } else {
+          errorMessages.push(msg);
+        }
+      });
+    }
+
+    if (errorData.errors.LastName) {
+      errorData.errors.LastName.forEach((msg) => {
+        if (msg.includes("must be between 3 and 100 characters")) {
+          const match = msg.match(/You entered (\d+) characters/);
+          if (match) {
+            errorMessages.push(
+              `الاسم الأخير يجب أن يكون بين 3 و 100 حرف. أدخلت ${match[1]} حرفاً.`
+            );
+          } else {
+            errorMessages.push("الاسم الأخير يجب أن يكون بين 3 و 100 حرف");
+          }
+        } else if (msg.includes("required")) {
+          errorMessages.push("الاسم الأخير مطلوب");
+        } else {
+          errorMessages.push(msg);
+        }
+      });
+    }
+
+    if (errorData.errors.PhoneNumber) {
+      errorData.errors.PhoneNumber.forEach((msg) => {
+        if (msg.includes("must start with 010, 011, 012, or 015")) {
+          errorMessages.push("رقم الهاتف يجب أن يبدأ بـ 010، 011، 012، أو 015");
+        } else if (msg.includes("must end with 11 numbers")) {
+          errorMessages.push("رقم الهاتف يجب أن ينتهي بـ 11 رقماً");
+        } else if (msg.includes("Invalid phone number")) {
+          errorMessages.push("رقم الهاتف غير صالح");
+        } else if (msg.includes("already exists")) {
+          errorMessages.push("رقم الهاتف مسجل بالفعل");
+        } else if (msg.includes("required")) {
+          errorMessages.push("رقم الهاتف مطلوب");
+        } else {
+          errorMessages.push(msg);
+        }
+      });
+    }
+
+    Object.keys(errorData.errors).forEach((key) => {
+      if (!["FirstName", "LastName", "PhoneNumber"].includes(key)) {
+        errorData.errors[key].forEach((msg) => {
+          errorMessages.push(msg);
+        });
+      }
+    });
+
+    if (errorMessages.length > 1) {
+      const htmlMessages = errorMessages.map(
+        (msg) =>
+          `<div style="text-align: right; margin-bottom: 8px; padding-right: 15px; position: relative; color: black;">
+           ${msg}
+           <span style="position: absolute; right: 0; top: 0; color: black;">-</span>
+         </div>`
+      );
+      return htmlMessages.join("");
+    } else if (errorMessages.length === 1) {
+      return `<div style="text-align: right; color: black;">${errorMessages[0]}</div>`;
+    } else {
+      return `<div style="text-align: right; color: black;">بيانات غير صالحة</div>`;
+    }
+  }
+
+  if (Array.isArray(errorData.errors)) {
+    const error = errorData.errors[0];
+    let translatedMessage = "";
+
+    switch (error.code) {
+      case "User.PhoneNumberAlreadyExists":
+        translatedMessage = "رقم الهاتف مسجل بالفعل";
+        break;
+      case "User.InvalidPhoneNumber":
+        translatedMessage = "رقم الهاتف غير صالح";
+        break;
+      case "User.ValidationError":
+        translatedMessage = error.description || "خطأ في التحقق من البيانات";
+        break;
+      default:
+        translatedMessage =
+          error.description || "حدث خطأ في تحديث الملف الشخصي";
+    }
+
+    return `<div style="text-align: right; color: black;">${translatedMessage}</div>`;
+  }
+
+  if (typeof errorData.message === "string") {
+    const msg = errorData.message.toLowerCase();
+    let translatedMessage = "";
+
+    if (msg.includes("phone") && msg.includes("exist")) {
+      translatedMessage = "رقم الهاتف مسجل بالفعل";
+    } else if (msg.includes("validation")) {
+      translatedMessage = "خطأ في التحقق من البيانات المدخلة";
+    } else if (msg.includes("network") || msg.includes("internet")) {
+      translatedMessage = "يرجى التحقق من اتصالك بالإنترنت";
+    } else if (msg.includes("timeout")) {
+      translatedMessage = "انتهت المهلة، يرجى المحاولة مرة أخرى";
+    } else {
+      translatedMessage = errorData.message;
+    }
+
+    return `<div style="text-align: right; color: black;">${translatedMessage}</div>`;
+  }
+
+  return `<div style="text-align: right; color: black;">حدث خطأ غير متوقع في تحديث الملف الشخصي</div>`;
+};
+
 export default function Profile() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -175,46 +305,23 @@ export default function Profile() {
 
         Swal.fire({
           icon: "success",
-          title: "Profile Updated",
-          text: "Your profile has been updated successfully.",
+          title: "تم تحديث الملف الشخصي",
+          text: "تم تحديث ملفك الشخصي بنجاح",
           timer: 2000,
           showConfirmButton: false,
         });
       }
     } catch (err) {
-      const errorMsg =
-        err.response?.data?.errors ||
-        err.response?.data?.message ||
-        "An error occurred while updating profile.";
+      const errorData = err.response?.data;
+      const translatedMessage = translateProfileErrorMessage(errorData);
 
-      if (typeof errorMsg === "object") {
-        const messages = [];
-        if (Array.isArray(errorMsg)) {
-          errorMsg.forEach((e) =>
-            messages.push(e.description || JSON.stringify(e))
-          );
-        } else {
-          Object.values(errorMsg).forEach((vals) => {
-            if (Array.isArray(vals)) {
-              vals.forEach((msg) => messages.push(msg));
-            } else {
-              messages.push(vals);
-            }
-          });
-        }
-
-        Swal.fire({
-          icon: "error",
-          title: "Update Failed",
-          html: messages.map((m) => `<p>${m}</p>`).join(""),
-        });
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Update Failed",
-          text: errorMsg,
-        });
-      }
+      Swal.fire({
+        title: "حدث خطأ",
+        html: translatedMessage,
+        icon: "error",
+        timer: 2500,
+        showConfirmButton: false,
+      });
     }
   };
 

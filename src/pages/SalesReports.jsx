@@ -43,6 +43,10 @@ const fetchOrders = async (startDate, endDate) => {
 
     const response = await axiosInstance.get(url, { params });
 
+    if (!response.data || response.data.length === 0) {
+      throw new Error("لا توجد بيانات في الفترة المحددة");
+    }
+
     return response.data;
   } catch (error) {
     console.error("Error fetching orders:", error);
@@ -638,14 +642,33 @@ const SalesReports = () => {
       });
     } catch (error) {
       console.error("Error fetching report data:", error);
+
+      const errorMessage =
+        error.message === "لا توجد بيانات في الفترة المحددة"
+          ? "لا توجد بيانات في الفترة المحددة"
+          : "فشل في تحميل بيانات التقرير";
+
       Swal.fire({
-        icon: "error",
-        title: "خطأ",
-        text: "فشل في تحميل بيانات التقرير",
-        timer: 2000,
+        icon: "info",
+        title: "لا توجد بيانات",
+        text: errorMessage,
+        timer: 2500,
         showConfirmButton: false,
         background: "#fff",
         color: "#333",
+      });
+
+      setReportData([]);
+      setSummary({
+        totalSales: 0,
+        totalOrders: 0,
+        deliveryOrders: 0,
+        pickupOrders: 0,
+        topProducts: [],
+        dateRange: `${format(startDate, "yyyy-MM-dd")} إلى ${format(
+          endDate,
+          "yyyy-MM-dd"
+        )}`,
       });
     } finally {
       setLoading(false);
