@@ -58,6 +58,71 @@ const Home = () => {
   const [scrollLeft, setScrollLeft] = useState(0);
   const navigate = useNavigate();
 
+  // Skeleton Loading Component
+  const ProductSkeleton = ({ count = 8 }) => {
+    return (
+      <div
+        className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6"
+        style={{ direction: "rtl" }}
+      >
+        {Array.from({ length: count }).map((_, index) => (
+          <div
+            key={index}
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 w-full relative min-h-[180px] animate-pulse"
+          >
+            {/* Mobile View Skeleton */}
+            <div className="sm:hidden">
+              <div className="p-3">
+                <div className="flex">
+                  <div className="w-28 flex-shrink-0 ml-3">
+                    <div className="relative h-32 w-full overflow-hidden rounded-xl bg-gray-200 dark:bg-gray-700"></div>
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded mb-3 w-3/4"></div>
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="px-3 pb-3">
+                <div className="flex gap-2">
+                  <div className="flex-1 py-2.5 rounded-xl bg-gray-200 dark:bg-gray-700"></div>
+                  <div className="flex-1 py-2.5 rounded-xl bg-gray-200 dark:bg-gray-700"></div>
+                  <div className="p-2.5 rounded-xl bg-gray-200 dark:bg-gray-700"></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Desktop View Skeleton */}
+            <div className="hidden sm:block">
+              <div className="relative h-48 w-full overflow-hidden bg-gray-200 dark:bg-gray-700"></div>
+
+              <div className="p-3 sm:p-4">
+                <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-3 w-3/4"></div>
+
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
+                  </div>
+                  <div className="p-2 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+                </div>
+
+                <div className="flex gap-2 mt-3 sm:mt-4">
+                  <div className="flex-1 py-2 sm:py-2.5 rounded-xl bg-gray-200 dark:bg-gray-700"></div>
+                  <div className="flex-1 py-2 sm:py-2.5 rounded-xl bg-gray-200 dark:bg-gray-700"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   useEffect(() => {
     const checkUserRole = async () => {
       try {
@@ -1211,9 +1276,7 @@ const Home = () => {
       <div className="relative z-10 w-full">
         {productsLoading ? (
           <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 md:py-6 w-full">
-            <div className="text-center py-12 md:py-16 bg-white dark:bg-gray-800 rounded-2xl shadow-lg mx-2">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E41E26] mx-auto mb-4"></div>
-            </div>
+            <ProductSkeleton count={pageSize} />
           </div>
         ) : filteredProducts.length === 0 ? (
           <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 md:py-6 w-full">
