@@ -626,7 +626,7 @@ export default function Cart() {
         });
       }
     }
-  }; 
+  };
 
   const closeProductDetailsModal = () => {
     setShowProductDetailsModal(false);
@@ -1169,6 +1169,16 @@ export default function Cart() {
             errorMessages.push(
               "الفرع المختار مغلق حالياً. الرجاء اختيار فرع آخر أو المحاولة عند فتح الفرع."
             );
+          } else if (errorItem.code === "Branch.InActive") {
+            errorMessages.push(
+              "الفرع المختار غير نشط حالياً. الرجاء اختيار فرع آخر أو المحاولة عندما يكون الفرع نشطاً."
+            );
+          } else if (errorItem.code === "DeliveryFee.NotActive") {
+            errorMessages.push(
+              `رسوم ${
+                deliveryType === "delivery" ? "التوصيل" : "الاستلام"
+              } غير نشطة حالياً. الرجاء اختيار فرع آخر أو طريقة استلام مختلفة.`
+            );
           } else if (errorItem.code === "Cart") {
             const match = errorItem.description.match(/\d+/g);
             const unavailableItemIds = match ? match.map(Number) : [];
@@ -1252,7 +1262,6 @@ export default function Cart() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-3 sm:px-4 py-4 sm:py-8 transition-colors duration-300">
-
       {showNotesModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60] p-4">
           <motion.div
