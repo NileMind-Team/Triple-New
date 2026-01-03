@@ -167,6 +167,7 @@ export default function OrderShiftsManagement() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [activeShift, setActiveShift] = useState(null);
+  const [userRoles, setUserRoles] = useState([]);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -208,6 +209,21 @@ export default function OrderShiftsManagement() {
     }
   };
 
+  const fetchUserProfile = async () => {
+    try {
+      const response = await axiosInstance.get("/api/Account/Profile");
+      if (response.data && response.data.roles) {
+        setUserRoles(response.data.roles);
+      }
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    }
+  };
+
+  const canStartShift = () => {
+    return !(userRoles.includes("Admin") || userRoles.includes("Restaurant"));
+  };
+
   useEffect(() => {
     const loadPage = async () => {
       try {
@@ -217,6 +233,7 @@ export default function OrderShiftsManagement() {
           return;
         }
 
+        await fetchUserProfile();
         await checkActiveShift();
       } catch (error) {
         console.error("Error loading page:", error);
@@ -319,6 +336,8 @@ export default function OrderShiftsManagement() {
     }
     return formData.name.trim() !== "";
   };
+
+  const canUserStartShift = canStartShift();
 
   if (loading) {
     return (
@@ -492,15 +511,17 @@ export default function OrderShiftsManagement() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleStartShift}
-                  disabled={!isFormValid()}
+                  disabled={!isFormValid() || !canUserStartShift}
                   className={`flex-1 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
-                    isFormValid()
+                    isFormValid() && canUserStartShift
                       ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25 cursor-pointer"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
                 >
                   <FaPlay className="text-sm" />
-                  بدء الوردية
+                  {!canUserStartShift
+                    ? "غير مسموح ببدء الوردية"
+                    : "بدء الوردية"}
                 </motion.button>
               </div>
             </div>
