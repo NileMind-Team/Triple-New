@@ -285,6 +285,7 @@ const Favorites = () => {
     try {
       await axiosInstance.post("/api/CartItems/AddCartItem", {
         menuItemId: product.id,
+        note: "",
         quantity: 1,
         options: [],
       });
