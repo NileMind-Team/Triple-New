@@ -52,6 +52,7 @@ const Home = () => {
   // eslint-disable-next-line no-unused-vars
   const [pageSize, setPageSize] = useState(8);
   const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [addingToCart, setAddingToCart] = useState(null);
 
   const categoriesContainerRef = useRef(null);
   const categoriesSectionRef = useRef(null);
@@ -624,6 +625,8 @@ const Home = () => {
       return;
     }
 
+    setAddingToCart(product.id);
+
     try {
       await axiosInstance.post("/api/CartItems/AddCartItem", {
         menuItemId: product.id,
@@ -679,6 +682,7 @@ const Home = () => {
                 handleProductDetails(product);
               }
             });
+            setAddingToCart(null);
             return;
           }
         }
@@ -687,6 +691,10 @@ const Home = () => {
       showNotification("error", "خطأ", "فشل في إضافة المنتج إلى السلة", {
         timer: 2000,
       });
+    } finally {
+      setTimeout(() => {
+        setAddingToCart(null);
+      }, 500);
     }
   };
 
@@ -1547,19 +1555,33 @@ const Home = () => {
                               handleAddToCart(product, e);
                             }
                           }}
-                          disabled={!isProductAvailableForCart(product)}
+                          disabled={
+                            !isProductAvailableForCart(product) ||
+                            addingToCart === product.id
+                          }
                           className={`flex-1 py-2.5 rounded-xl font-semibold flex items-center justify-center gap-2 text-xs no-product-details ${
-                            isProductAvailableForCart(product)
+                            addingToCart === product.id
+                              ? "bg-gradient-to-r from-gray-500 to-gray-600 text-white cursor-wait"
+                              : isProductAvailableForCart(product)
                               ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white"
                               : "bg-gray-400 text-gray-200 cursor-not-allowed"
                           }`}
                         >
-                          <FaShoppingCart className="w-3.5 h-3.5" />
-                          <span>
-                            {!isProductAvailableForCart(product)
-                              ? "غير متوفر"
-                              : "أضف إلى السلة"}
-                          </span>
+                          {addingToCart === product.id ? (
+                            <>
+                              <div className="animate-spin rounded-full h-3 w-3 border-t-2 border-b-2 border-white"></div>
+                              <span>يتم الإضافة...</span>
+                            </>
+                          ) : (
+                            <>
+                              <FaShoppingCart className="w-3.5 h-3.5" />
+                              <span>
+                                {!isProductAvailableForCart(product)
+                                  ? "غير متوفر"
+                                  : "أضف إلى السلة"}
+                              </span>
+                            </>
+                          )}
                         </button>
 
                         <button
@@ -1642,19 +1664,33 @@ const Home = () => {
                               handleAddToCart(product, e);
                             }
                           }}
-                          disabled={!isProductAvailableForCart(product)}
+                          disabled={
+                            !isProductAvailableForCart(product) ||
+                            addingToCart === product.id
+                          }
                           className={`flex-1 py-2 sm:py-2.5 rounded-xl font-semibold flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm no-product-details ${
-                            isProductAvailableForCart(product)
+                            addingToCart === product.id
+                              ? "bg-gradient-to-r from-gray-500 to-gray-600 text-white cursor-wait"
+                              : isProductAvailableForCart(product)
                               ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white"
                               : "bg-gray-400 text-gray-200 cursor-not-allowed"
                           }`}
                         >
-                          <FaShoppingCart className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                          <span className="xs:hidden">
-                            {!isProductAvailableForCart(product)
-                              ? "غير متوفر"
-                              : "أضف إلى السلة"}
-                          </span>
+                          {addingToCart === product.id ? (
+                            <>
+                              <div className="animate-spin rounded-full h-3 w-3 border-t-2 border-b-2 border-white"></div>
+                              <span className="xs:hidden">يتم الإضافة...</span>
+                            </>
+                          ) : (
+                            <>
+                              <FaShoppingCart className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                              <span className="xs:hidden">
+                                {!isProductAvailableForCart(product)
+                                  ? "غير متوفر"
+                                  : "أضف إلى السلة"}
+                              </span>
+                            </>
+                          )}
                         </button>
 
                         <button

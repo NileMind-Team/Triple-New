@@ -19,6 +19,7 @@ const Favorites = () => {
   const [favoriteProducts, setFavoriteProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [cartItemsCount, setCartItemsCount] = useState(0);
+  const [addingToCart, setAddingToCart] = useState(null);
   const navigate = useNavigate();
 
   // Function to check if device is mobile
@@ -279,6 +280,8 @@ const Favorites = () => {
       return;
     }
 
+    setAddingToCart(product.id);
+
     try {
       await axiosInstance.post("/api/CartItems/AddCartItem", {
         menuItemId: product.id,
@@ -333,6 +336,7 @@ const Favorites = () => {
                 handleProductDetails(product);
               }
             });
+            setAddingToCart(null);
             return;
           }
         }
@@ -341,6 +345,10 @@ const Favorites = () => {
       showNotification("error", "خطأ", "فشل في إضافة المنتج إلى السلة", {
         timer: 2000,
       });
+    } finally {
+      setTimeout(() => {
+        setAddingToCart(null);
+      }, 500);
     }
   };
 
@@ -612,17 +620,32 @@ const Favorites = () => {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={(e) => handleAddToCart(product, e)}
-                          disabled={!product.isActive}
+                          disabled={
+                            !product.isActive || addingToCart === product.id
+                          }
                           className={`flex-1 py-2.5 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 text-xs no-product-details ${
-                            product.isActive
+                            addingToCart === product.id
+                              ? "bg-gradient-to-r from-gray-500 to-gray-600 text-white cursor-wait"
+                              : product.isActive
                               ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white"
                               : "bg-gray-400 text-gray-200 cursor-not-allowed"
                           }`}
                         >
-                          <FaShoppingCart className="w-3.5 h-3.5" />
-                          <span>
-                            {!product.isActive ? "غير متوفر" : "أضف إلى السلة"}
-                          </span>
+                          {addingToCart === product.id ? (
+                            <>
+                              <div className="animate-spin rounded-full h-3 w-3 border-t-2 border-b-2 border-white"></div>
+                              <span>يتم الإضافة...</span>
+                            </>
+                          ) : (
+                            <>
+                              <FaShoppingCart className="w-3.5 h-3.5" />
+                              <span>
+                                {!product.isActive
+                                  ? "غير متوفر"
+                                  : "أضف إلى السلة"}
+                              </span>
+                            </>
+                          )}
                         </motion.button>
 
                         <motion.button
@@ -704,17 +727,32 @@ const Favorites = () => {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={(e) => handleAddToCart(product, e)}
-                          disabled={!product.isActive}
+                          disabled={
+                            !product.isActive || addingToCart === product.id
+                          }
                           className={`flex-1 py-2 sm:py-2.5 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm no-product-details ${
-                            product.isActive
+                            addingToCart === product.id
+                              ? "bg-gradient-to-r from-gray-500 to-gray-600 text-white cursor-wait"
+                              : product.isActive
                               ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white"
                               : "bg-gray-400 text-gray-200 cursor-not-allowed"
                           }`}
                         >
-                          <FaShoppingCart className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                          <span className="xs:hidden">
-                            {product.isActive ? "أضف إلى السلة" : "غير متوفر"}
-                          </span>
+                          {addingToCart === product.id ? (
+                            <>
+                              <div className="animate-spin rounded-full h-3 w-3 border-t-2 border-b-2 border-white"></div>
+                              <span className="xs:hidden">يتم الإضافة...</span>
+                            </>
+                          ) : (
+                            <>
+                              <FaShoppingCart className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                              <span className="xs:hidden">
+                                {product.isActive
+                                  ? "أضف إلى السلة"
+                                  : "غير متوفر"}
+                              </span>
+                            </>
+                          )}
                         </motion.button>
 
                         <motion.button

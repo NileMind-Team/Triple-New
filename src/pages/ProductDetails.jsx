@@ -58,6 +58,7 @@ const ProductDetails = () => {
   const [showNotesModal, setShowNotesModal] = useState(false);
   const [categoryInfo, setCategoryInfo] = useState(null);
   const [newAddonOptions, setNewAddonOptions] = useState([]);
+  const [addingToCart, setAddingToCart] = useState(false);
   const modalRef = useRef(null);
   const addonTypeModalRef = useRef(null);
   const notesModalRef = useRef(null);
@@ -558,6 +559,8 @@ const ProductDetails = () => {
       return;
     }
 
+    setAddingToCart(true);
+
     try {
       const options = [];
       Object.values(selectedAddons).forEach((optionIds) => {
@@ -590,6 +593,10 @@ const ProductDetails = () => {
       showMessage("error", "خطأ", "فشل في إضافة المنتج إلى السلة", {
         timer: 2000,
       });
+    } finally {
+      setTimeout(() => {
+        setAddingToCart(false);
+      }, 500);
     }
   };
 
@@ -1754,21 +1761,31 @@ const ProductDetails = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleAddToCart}
-                disabled={!isProductAvailableForCart()}
+                disabled={!isProductAvailableForCart() || addingToCart}
                 className={`w-full py-3 md:py-4 rounded-xl md:rounded-2xl font-semibold text-lg md:text-xl hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-3 md:gap-4 ${
-                  isProductAvailableForCart()
+                  addingToCart
+                    ? "bg-gradient-to-r from-gray-500 to-gray-600 text-white cursor-wait"
+                    : isProductAvailableForCart()
                     ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white"
                     : "bg-gray-400 text-gray-200 cursor-not-allowed"
                 }`}
                 dir="rtl"
               >
-                <FaShoppingCart className="text-lg md:text-xl" />
-
-                {isProductAvailableForCart()
-                  ? `أضف إلى السلة - ${toArabicNumbers(
-                      calculateTotalPrice().toFixed(2)
-                    )} ج.م`
-                  : "غير متوفر"}
+                {addingToCart ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+                    <span>يتم الإضافة...</span>
+                  </>
+                ) : (
+                  <>
+                    <FaShoppingCart className="text-lg md:text-xl" />
+                    {isProductAvailableForCart()
+                      ? `أضف إلى السلة - ${toArabicNumbers(
+                          calculateTotalPrice().toFixed(2)
+                        )} ج.م`
+                      : "غير متوفر"}
+                  </>
+                )}
               </motion.button>
             </div>
           </motion.div>
