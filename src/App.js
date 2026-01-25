@@ -11,7 +11,6 @@ import Profile from "./pages/Profile";
 import Addresses from "./pages/Addresses";
 import Reviews from "./pages/Reviews";
 import Cart from "./pages/Cart";
-import OrderTracking from "./pages/OrderTracking";
 import MyOrders from "./pages/MyOrders";
 import ProductForm from "./pages/ProductForm";
 import Footer from "./components/Footer";
@@ -118,7 +117,6 @@ function App() {
           <Route path="/addresses" element={<Addresses />} />
           <Route path="/reviews" element={<Reviews />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/order-tracking" element={<OrderTracking />} />
           <Route path="/my-orders" element={<MyOrders />} />
           <Route path="/products/new" element={<ProductForm />} />
           <Route path="/products/edit" element={<ProductForm />} />
@@ -128,10 +126,8 @@ function App() {
             path="/admin/delivery-cost"
             element={<DeliveryCostManagement />}
           />
-          {/* <Route path="/admin/coupons" element={<CouponsManagement />} /> */}
           <Route path="/admin/cities" element={<CitiesManagement />} />
           <Route path="/product/:id" element={<ProductDetails />} />
-          {/* <Route path="/cashier" element={<Cashier />} /> */}
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/branches" element={<Branches />} />
           <Route path="/admin/item-offers" element={<ItemOffersManagement />} />
