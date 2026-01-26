@@ -5,7 +5,6 @@ import {
   FaArrowLeft,
   FaPlus,
   FaEdit,
-  FaTrash,
   FaMapMarkerAlt,
   FaStar,
   FaCheck,
@@ -20,6 +19,9 @@ import {
   FaExternalLinkAlt,
   FaEye,
   FaEyeSlash,
+  FaCheckCircle,
+  FaTrashAlt,
+  FaGlobeAmericas,
 } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
@@ -29,7 +31,8 @@ import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 
 const mapContainerStyle = {
   width: "100%",
-  height: "390px",
+  height: "350px",
+  borderRadius: "16px",
 };
 
 const defaultCenter = {
@@ -39,6 +42,7 @@ const defaultCenter = {
 
 const libraries = ["places"];
 
+// وظائف الترجمات والتنبيهات كما هي
 const translateAddressErrorMessage = (errorData) => {
   if (!errorData) return "حدث خطأ غير معروف";
 
@@ -179,10 +183,12 @@ const showAddressErrorAlert = (errorData) => {
       style: {
         width: "70%",
         margin: "10px",
-        borderRadius: "8px",
+        borderRadius: "12px",
         textAlign: "right",
         fontSize: "14px",
         direction: "rtl",
+        background: "linear-gradient(135deg, #FF6B6B, #FF8E53)",
+        color: "white",
       },
     });
   } else {
@@ -193,6 +199,8 @@ const showAddressErrorAlert = (errorData) => {
       confirmButtonText: "حاول مرة أخرى",
       timer: 2500,
       showConfirmButton: false,
+      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+      color: "white",
     });
   }
 };
@@ -209,10 +217,12 @@ const showAddressSuccessAlert = (message) => {
       style: {
         width: "70%",
         margin: "10px",
-        borderRadius: "8px",
+        borderRadius: "12px",
         textAlign: "right",
         fontSize: "14px",
         direction: "rtl",
+        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+        color: "white",
       },
     });
   } else {
@@ -222,6 +232,8 @@ const showAddressSuccessAlert = (message) => {
       icon: "success",
       showConfirmButton: false,
       timer: 2500,
+      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+      color: "white",
     });
   }
 };
@@ -234,6 +246,7 @@ export default function Addresses() {
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  // eslint-disable-next-line no-unused-vars
   const [darkMode, setDarkMode] = useState(false);
   const [showMapModal, setShowMapModal] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -473,25 +486,25 @@ export default function Addresses() {
       if (editingId) {
         const res = await axiosInstance.put(
           `/api/Locations/Update/${editingId}`,
-          formattedData
+          formattedData,
         );
         if (res.status === 200 || res.status === 204) {
           setAddresses(
             addresses.map((addr) =>
-              addr.id === editingId ? { ...addr, ...formattedData } : addr
-            )
+              addr.id === editingId ? { ...addr, ...formattedData } : addr,
+            ),
           );
           showAddressSuccessAlert("تم تحديث العنوان: تم تحديث عنوانك بنجاح");
         }
       } else {
         const res = await axiosInstance.post(
           "/api/Locations/Add",
-          formattedData
+          formattedData,
         );
         if (res.status === 200) {
           fetchAddresses();
           showAddressSuccessAlert(
-            "تم إضافة العنوان: تم إضافة عنوانك الجديد بنجاح"
+            "تم إضافة العنوان: تم إضافة عنوانك الجديد بنجاح",
           );
 
           if (location.state?.fromCart) {
@@ -524,13 +537,6 @@ export default function Addresses() {
     setIsAdding(true);
     setShowMapModal(false);
     setSelectedLocation(null);
-
-    setTimeout(() => {
-      const formElement = document.getElementById("address-form");
-      if (formElement && window.innerWidth < 1280) {
-        formElement.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }, 100);
   };
 
   const handleDelete = (id) => {
@@ -543,6 +549,8 @@ export default function Addresses() {
       cancelButtonColor: "#6B7280",
       confirmButtonText: "نعم، احذفه!",
       cancelButtonText: "إلغاء",
+      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+      color: "white",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
@@ -563,11 +571,11 @@ export default function Addresses() {
         addresses.map((addr) => ({
           ...addr,
           isDefaultLocation: addr.id === id,
-        }))
+        })),
       );
 
       showAddressSuccessAlert(
-        "تم تحديث العنوان الافتراضي: تم تغيير عنوانك الافتراضي"
+        "تم تحديث العنوان الافتراضي: تم تغيير عنوانك الافتراضي",
       );
 
       if (location.state?.fromCart) {
@@ -599,16 +607,20 @@ export default function Addresses() {
   };
 
   const handleAddNewAddress = () => {
+    setFormData({
+      cityId: "",
+      locationUrl: "",
+      streetName: "",
+      phoneNumber: "",
+      buildingNumber: "",
+      floorNumber: "",
+      flatNumber: "",
+      detailedDescription: "",
+    });
+    setEditingId(null);
     setIsAdding(true);
     setShowMapModal(false);
     setSelectedLocation(null);
-
-    setTimeout(() => {
-      const formElement = document.getElementById("address-form");
-      if (formElement && window.innerWidth < 1280) {
-        formElement.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }, 100);
   };
 
   const openMapModal = () => {
@@ -628,7 +640,7 @@ export default function Addresses() {
           console.warn("خطأ في تحديد الموقع:", error);
           setSelectedLocation(defaultCenter);
         },
-        { enableHighAccuracy: true }
+        { enableHighAccuracy: true },
       );
     } else {
       setSelectedLocation(defaultCenter);
@@ -651,6 +663,8 @@ export default function Addresses() {
         text: "يرجى اختيار موقع من الخريطة أولاً",
         showConfirmButton: false,
         timer: 2000,
+        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+        color: "white",
       });
     }
   };
@@ -671,65 +685,368 @@ export default function Addresses() {
     ];
 
     return requiredFields.every(
-      (field) => formData[field] && formData[field].toString().trim() !== ""
+      (field) => formData[field] && formData[field].toString().trim() !== "",
     );
-  };
-
-  const getAddressTypeColor = () => {
-    return "from-gray-500/10 to-gray-600/10 border-gray-200 dark:from-gray-500/20 dark:to-gray-600/20 dark:border-gray-700";
   };
 
   if (isLoading) {
     return (
       <div
-        className={`min-h-screen flex items-center justify-center ${
-          darkMode
-            ? "dark bg-gray-900"
-            : "bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4]"
-        } px-4`}
+        className="min-h-screen flex items-center justify-center px-4"
+        style={{
+          background: `linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)`,
+        }}
       >
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E41E26]"></div>
+        <div className="text-center">
+          <div
+            className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+            style={{
+              borderTopColor: "#2E3E88",
+              borderRightColor: "#32B9CC",
+              borderBottomColor: "#2E3E88",
+              borderLeftColor: "transparent",
+            }}
+          ></div>
+          <p className="text-lg font-semibold" style={{ color: "#2E3E88" }}>
+            جارٍ تحميل العناوين...
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
     <div
-      className={`min-h-screen ${
-        darkMode
-          ? "dark bg-gray-900"
-          : "bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4]"
-      } px-3 sm:px-4 md:px-6 py-3 sm:py-6 relative font-sans overflow-hidden transition-colors duration-300`}
+      className="min-h-screen font-sans relative overflow-x-hidden"
+      style={{
+        background: `linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)`,
+        backgroundAttachment: "fixed",
+      }}
     >
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -left-10 sm:-left-20 -top-10 sm:-top-20 w-40 h-40 sm:w-60 sm:h-60 md:w-80 md:h-80 bg-gradient-to-r from-[#E41E26]/10 to-[#FDB913]/10 rounded-full blur-2xl sm:blur-3xl animate-pulse"></div>
-        <div className="absolute -right-10 sm:-right-20 -bottom-10 sm:-bottom-20 w-40 h-40 sm:w-60 sm:h-60 md:w-80 md:h-80 bg-gradient-to-r from-[#FDB913]/10 to-[#E41E26]/10 rounded-full blur-2xl sm:blur-3xl animate-pulse"></div>
+      {/* Header Section */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/80 to-white"></div>
+
+        {/* Hero Header */}
+        <div className="relative bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] py-16 px-4">
+          <div className="max-w-7xl mx-auto">
+            {/* زر الرجوع */}
+            <motion.button
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              onClick={() => {
+                if (location.state?.fromCart) {
+                  navigate("/cart");
+                } else {
+                  navigate(-1);
+                }
+              }}
+              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              style={{
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+              }}
+            >
+              <FaArrowLeft
+                size={20}
+                className="group-hover:-translate-x-1 transition-transform"
+              />
+            </motion.button>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center pt-8"
+            >
+              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
+                <FaMapMarkerAlt className="text-white text-4xl" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                عناويني
+              </h1>
+              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+                إدارة عناوين التوصيل الخاصة بك بسهولة وأمان
+              </p>
+            </motion.div>
+          </div>
+        </div>
       </div>
 
-      <motion.button
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        onClick={() => {
-          if (location.state?.fromCart) {
-            navigate("/cart");
-          } else {
-            navigate(-1);
-          }
-        }}
-        className={`fixed top-3 sm:top-4 left-3 sm:left-4 z-50 ${
-          darkMode
-            ? "bg-gray-800/80 text-white border-gray-600 hover:bg-[#E41E26]"
-            : "bg-white/80 text-[#E41E26] border-[#E41E26]/30 hover:bg-[#E41E26] hover:text-white"
-        } backdrop-blur-md rounded-full p-2 sm:p-3 border shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl group`}
-      >
-        <FaArrowLeft
-          size={14}
-          className="sm:size-4 group-hover:scale-110 transition-transform"
-        />
-      </motion.button>
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10">
+        {/* Floating Action Button */}
+        <motion.button
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleAddNewAddress}
+          className="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-2 group"
+        >
+          <FaPlus className="text-xl group-hover:rotate-90 transition-transform" />
+          <span className="hidden md:inline font-semibold">
+            إضافة عنوان جديد
+          </span>
+        </motion.button>
 
+        {/* Content Container */}
+        <div className="w-full">
+          {/* Addresses List */}
+          <div>
+            {addresses.length === 0 ? (
+              <div className="w-full">
+                <div className="bg-white rounded-2xl p-8 text-center shadow-xl">
+                  <div className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                    <FaMapMarkerAlt
+                      className="text-4xl"
+                      style={{ color: "#2E3E88" }}
+                    />
+                  </div>
+                  <h3
+                    className="text-2xl font-bold mb-3"
+                    style={{ color: "#2E3E88" }}
+                  >
+                    لا توجد عناوين حتى الآن
+                  </h3>
+                  <p
+                    className="mb-6 max-w-md mx-auto"
+                    style={{ color: "#32B9CC" }}
+                  >
+                    أضف عنوانك الأول للبدء في استلام طلباتك
+                  </p>
+                  <button
+                    onClick={handleAddNewAddress}
+                    className="px-8 py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                    style={{
+                      background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                      color: "white",
+                      boxShadow: `0 10px 25px #2E3E8830`,
+                    }}
+                  >
+                    إضافة عنوان جديد
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {addresses.map((address, index) => (
+                  <motion.div
+                    key={address.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col"
+                    style={{
+                      borderTop: address.isDefaultLocation
+                        ? "4px solid #2E3E88"
+                        : "4px solid transparent",
+                      minHeight: "400px",
+                    }}
+                  >
+                    <div className="p-6 flex-grow">
+                      {/* Header */}
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="p-3 rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                            <FaMapMarkerAlt
+                              className="text-xl"
+                              style={{ color: "#2E3E88" }}
+                            />
+                          </div>
+                          <div>
+                            <h4
+                              className="font-bold text-lg"
+                              style={{ color: "#2E3E88" }}
+                            >
+                              {address.city.name}
+                            </h4>
+                            <div className="flex items-center gap-2 mt-1">
+                              {address.isDefaultLocation && (
+                                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white">
+                                  افتراضي
+                                </span>
+                              )}
+                              <span
+                                className="text-sm"
+                                style={{ color: "#32B9CC" }}
+                              >
+                                {address.phoneNumber}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Address Details */}
+                      <div className="space-y-3 mb-6">
+                        <div className="flex items-start gap-3">
+                          <FaRoad
+                            className="mt-1 flex-shrink-0"
+                            style={{ color: "#2E3E88" }}
+                          />
+                          <p className="text-gray-700">{address.streetName}</p>
+                        </div>
+
+                        <div className="flex items-start gap-3">
+                          <FaBuildingIcon
+                            className="mt-1 flex-shrink-0"
+                            style={{ color: "#2E3E88" }}
+                          />
+                          <div className="flex gap-4">
+                            <div>
+                              <span className="text-sm text-gray-500">
+                                المبنى
+                              </span>
+                              <p className="font-medium">
+                                {address.buildingNumber}
+                              </p>
+                            </div>
+                            <div>
+                              <span className="text-sm text-gray-500">
+                                الدور
+                              </span>
+                              <p className="font-medium">
+                                {address.floorNumber}
+                              </p>
+                            </div>
+                            <div>
+                              <span className="text-sm text-gray-500">
+                                الشقة
+                              </span>
+                              <p className="font-medium">
+                                {address.flatNumber}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {address.detailedDescription && (
+                          <div className="flex items-start gap-3">
+                            <FaTag
+                              className="mt-1 flex-shrink-0"
+                              style={{ color: "#2E3E88" }}
+                            />
+                            <p className="text-gray-700">
+                              {address.detailedDescription}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Map Section */}
+                      <div className="mt-auto">
+                        {/* زر عرض الخريطة */}
+                        <div className="mb-3">
+                          <button
+                            onClick={() =>
+                              address.locationUrl &&
+                              toggleMapVisibility(address.id)
+                            }
+                            disabled={!address.locationUrl}
+                            className={`flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl font-medium transition-all duration-300 ${
+                              address.locationUrl
+                                ? expandedMaps[address.id]
+                                  ? "bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white hover:shadow-md"
+                                  : "bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10 text-[#2E3E88] hover:shadow-md"
+                                : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                            }`}
+                          >
+                            {address.locationUrl ? (
+                              <>
+                                {expandedMaps[address.id] ? (
+                                  <>
+                                    <FaEyeSlash />
+                                    إخفاء الخريطة
+                                  </>
+                                ) : (
+                                  <>
+                                    <FaEye />
+                                    عرض الخريطة
+                                  </>
+                                )}
+                              </>
+                            ) : (
+                              <>
+                                <FaMap />
+                                لا توجد خريطة
+                              </>
+                            )}
+                          </button>
+                        </div>
+
+                        <AnimatePresence>
+                          {expandedMaps[address.id] && address.locationUrl && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: "auto" }}
+                              exit={{ opacity: 0, height: 0 }}
+                              className="rounded-xl overflow-hidden mb-4"
+                            >
+                              <iframe
+                                src={address.locationUrl}
+                                width="100%"
+                                height="200"
+                                style={{ border: 0 }}
+                                allowFullScreen=""
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                                title={`خريطة موقع ${address.streetName}`}
+                                className="w-full rounded-lg"
+                              />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+
+                        {/* Action Buttons */}
+                        <div className="flex gap-3 pt-4 border-t border-gray-100">
+                          {!address.isDefaultLocation && (
+                            <button
+                              onClick={() => handleSetDefault(address.id)}
+                              className="flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
+                              style={{
+                                background: "#2E3E8810",
+                                color: "#2E3E88",
+                              }}
+                            >
+                              <FaStar />
+                              تعيين افتراضي
+                            </button>
+                          )}
+                          <button
+                            onClick={() => handleEdit(address)}
+                            className="flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
+                            style={{
+                              background: "#32B9CC10",
+                              color: "#32B9CC",
+                            }}
+                          >
+                            <FaEdit />
+                            تعديل
+                          </button>
+                          <button
+                            onClick={() => handleDelete(address.id)}
+                            className="flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
+                            style={{
+                              background: "#FF6B6B10",
+                              color: "#FF6B6B",
+                            }}
+                          >
+                            <FaTrashAlt />
+                            حذف
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Address Form Modal */}
       <AnimatePresence>
-        {showMapModal && (
+        {isAdding && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -740,66 +1057,411 @@ export default function Addresses() {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className={`${
-                darkMode ? "bg-gray-800" : "bg-white"
-              } rounded-2xl sm:rounded-3xl w-full max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col`}
+              className="bg-white rounded-3xl w-full max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
             >
+              {/* Modal Header */}
               <div
-                className={`${
-                  darkMode ? "bg-gray-700" : "bg-gray-50"
-                } px-6 py-4 border-b ${
-                  darkMode ? "border-gray-600" : "border-gray-200"
-                } flex items-center justify-between flex-shrink-0`}
+                className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+                style={{
+                  background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                }}
               >
                 <div className="flex items-center gap-3">
-                  <FaMap className="text-[#E41E26] text-xl" />
-                  <h3
-                    className={`text-lg font-bold ${
-                      darkMode ? "text-white" : "text-gray-800"
-                    }`}
-                  >
-                    اختر موقعك من الخريطة
+                  {editingId ? <FaEdit /> : <FaPlus />}
+                  <h3 className="text-lg font-bold text-white">
+                    {editingId ? "تعديل العنوان" : "إضافة عنوان جديد"}
                   </h3>
                 </div>
                 <button
-                  onClick={closeMapModal}
-                  className={`p-2 rounded-full ${
-                    darkMode
-                      ? "hover:bg-gray-600 text-gray-300"
-                      : "hover:bg-gray-200 text-gray-500"
-                  } transition-colors`}
+                  onClick={resetForm}
+                  className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
                 >
                   <FaTimes size={16} />
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto">
-                <div className="p-4">
-                  <div className="mb-4">
-                    <p
-                      className={`text-sm ${
-                        darkMode ? "text-gray-300" : "text-gray-600"
-                      }`}
+              {/* Form Content */}
+              <div className="flex-1 overflow-y-auto p-6">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* City Dropdown */}
+                  <div>
+                    <label
+                      className="block text-sm font-semibold mb-2"
+                      style={{ color: "#2E3E88" }}
                     >
+                      المدينة
+                    </label>
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() => toggleDropdown("city")}
+                        className="w-full flex items-center justify-between border border-gray-200 rounded-xl px-4 py-3.5 transition-all hover:border-[#2E3E88] group text-right"
+                        style={{
+                          background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
+                        }}
+                      >
+                        <div className="flex items-center gap-3">
+                          <FaCity className="text-[#2E3E88] group-hover:scale-110 transition-transform" />
+                          <span className="font-medium">
+                            {formData.cityId
+                              ? cities.find(
+                                  (c) => c.id.toString() === formData.cityId,
+                                )?.name
+                              : "اختر المدينة"}
+                          </span>
+                        </div>
+                        <motion.div
+                          animate={{
+                            rotate: openDropdown === "city" ? 180 : 0,
+                          }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <FaChevronDown className="text-[#2E3E88]" />
+                        </motion.div>
+                      </button>
+                      <AnimatePresence>
+                        {openDropdown === "city" && (
+                          <motion.ul
+                            initial={{ opacity: 0, y: -5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -5 }}
+                            className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto"
+                          >
+                            {cities.map((city) => (
+                              <li
+                                key={city.id}
+                                onClick={() => {
+                                  setFormData({
+                                    ...formData,
+                                    cityId: city.id.toString(),
+                                  });
+                                  setOpenDropdown(null);
+                                }}
+                                className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b last:border-b-0"
+                              >
+                                {city.name}
+                              </li>
+                            ))}
+                          </motion.ul>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+
+                  {/* Phone Number */}
+                  <div>
+                    <label
+                      className="block text-sm font-semibold mb-2"
+                      style={{ color: "#2E3E88" }}
+                    >
+                      رقم الهاتف
+                    </label>
+                    <div className="relative group">
+                      <FaPhone className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
+                      <input
+                        type="tel"
+                        name="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={handleInputChange}
+                        required
+                        inputMode="tel"
+                        pattern="[0-9٠-٩]*"
+                        className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                        style={{
+                          background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
+                        }}
+                        placeholder="رقم الهاتف"
+                        dir="rtl"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Street Name */}
+                  <div>
+                    <label
+                      className="block text-sm font-semibold mb-2"
+                      style={{ color: "#2E3E88" }}
+                    >
+                      اسم الشارع
+                    </label>
+                    <div className="relative group">
+                      <FaRoad className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
+                      <input
+                        type="text"
+                        name="streetName"
+                        value={formData.streetName}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                        style={{
+                          background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
+                        }}
+                        placeholder="اسم الشارع"
+                        dir="rtl"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Building, Floor, Flat Numbers */}
+                  <div className="grid grid-cols-3 gap-3">
+                    <div>
+                      <label
+                        className="block text-sm font-semibold mb-2"
+                        style={{ color: "#2E3E88" }}
+                      >
+                        المبنى
+                      </label>
+                      <div className="relative group">
+                        <FaBuildingIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          pattern="[0-9٠-٩]*"
+                          name="buildingNumber"
+                          value={formData.buildingNumber}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-center"
+                          style={{
+                            background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
+                          }}
+                          placeholder="رقم"
+                          dir="rtl"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label
+                        className="block text-sm font-semibold mb-2"
+                        style={{ color: "#2E3E88" }}
+                      >
+                        الدور
+                      </label>
+                      <div className="relative group">
+                        <FaTag className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          pattern="[0-9٠-٩]*"
+                          name="floorNumber"
+                          value={formData.floorNumber}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-center"
+                          style={{
+                            background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
+                          }}
+                          placeholder="الدور"
+                          dir="rtl"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label
+                        className="block text-sm font-semibold mb-2"
+                        style={{ color: "#2E3E88" }}
+                      >
+                        الشقة
+                      </label>
+                      <div className="relative group">
+                        <FaTag className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          pattern="[0-9٠-٩]*"
+                          name="flatNumber"
+                          value={formData.flatNumber}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-center"
+                          style={{
+                            background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
+                          }}
+                          placeholder="الشقة"
+                          dir="rtl"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Additional Details */}
+                  <div>
+                    <label
+                      className="block text-sm font-semibold mb-2"
+                      style={{ color: "#2E3E88" }}
+                    >
+                      تفاصيل إضافية
+                    </label>
+                    <textarea
+                      name="detailedDescription"
+                      value={formData.detailedDescription}
+                      onChange={handleInputChange}
+                      required
+                      rows="3"
+                      className="w-full border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 resize-none"
+                      style={{
+                        background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
+                      }}
+                      placeholder="أي تفاصيل إضافية عن موقعك..."
+                      dir="rtl"
+                    />
+                  </div>
+
+                  {/* Map Selection */}
+                  <div>
+                    <label
+                      className="block text-sm font-semibold mb-2"
+                      style={{ color: "#2E3E88" }}
+                    >
+                      تحديد الموقع على الخريطة
+                    </label>
+                    <motion.button
+                      type="button"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={openMapModal}
+                      className="w-full flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl font-semibold mb-3 transition-all duration-300 hover:shadow-lg"
+                      style={{
+                        background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                        color: "white",
+                      }}
+                    >
+                      <FaMap />
+                      <span>اختيار الموقع من الخريطة</span>
+                      <FaExternalLinkAlt />
+                    </motion.button>
+
+                    <input
+                      type="url"
+                      name="locationUrl"
+                      value={formData.locationUrl}
+                      onChange={handleInputChange}
+                      disabled
+                      className="w-full border border-gray-200 rounded-xl px-4 py-3.5 outline-none transition-all duration-200 bg-gray-50 text-gray-500 cursor-not-allowed"
+                      placeholder="سيتم تعبئته تلقائياً عند اختيار موقع من الخريطة"
+                      dir="rtl"
+                    />
+
+                    {formData.locationUrl && (
+                      <p className="text-sm mt-2" style={{ color: "#32B9CC" }}>
+                        ✓ تم إضافة رابط الخريطة بنجاح
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Form Actions */}
+                  <div className="flex gap-3 pt-4">
+                    <motion.button
+                      type="button"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={resetForm}
+                      className="flex-1 py-3.5 border-2 rounded-xl font-semibold transition-all duration-300"
+                      style={{
+                        borderColor: "#2E3E88",
+                        color: "#2E3E88",
+                        background: "transparent",
+                      }}
+                    >
+                      إلغاء
+                    </motion.button>
+                    <motion.button
+                      type="submit"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      disabled={!isFormValid()}
+                      className={`flex-1 py-3.5 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                        isFormValid()
+                          ? "shadow-lg hover:shadow-xl cursor-pointer"
+                          : "opacity-50 cursor-not-allowed"
+                      }`}
+                      style={
+                        isFormValid()
+                          ? {
+                              background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                              color: "white",
+                            }
+                          : {
+                              background: "#e5e7eb",
+                              color: "#6b7280",
+                            }
+                      }
+                    >
+                      <FaCheckCircle />
+                      {editingId ? "تحديث العنوان" : "حفظ العنوان"}
+                    </motion.button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Map Modal */}
+      <AnimatePresence>
+        {showMapModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="bg-white rounded-3xl w-full max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
+            >
+              {/* Modal Header */}
+              <div
+                className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+                style={{
+                  background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  <FaGlobeAmericas className="text-white text-xl" />
+                  <h3 className="text-lg font-bold text-white">
+                    اختر موقعك من الخريطة
+                  </h3>
+                </div>
+                <button
+                  onClick={closeMapModal}
+                  className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
+                >
+                  <FaTimes size={16} />
+                </button>
+              </div>
+
+              {/* Modal Content */}
+              <div className="flex-1 overflow-y-auto">
+                <div className="p-6">
+                  <div className="mb-6">
+                    <p className="text-gray-600">
                       انقر على الخريطة لتحديد موقعك بدقة
                     </p>
                   </div>
 
+                  {/* Map Loading State */}
                   {!mapLoaded && (
-                    <div className="flex items-center justify-center h-64 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                    <div className="flex items-center justify-center h-64 bg-gradient-to-r from-[#f0f8ff] to-[#e0f7fa] rounded-2xl">
                       <div className="text-center">
-                        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-[#E41E26] mx-auto mb-4"></div>
-                        <p
-                          className={`text-sm ${
-                            darkMode ? "text-gray-300" : "text-gray-600"
-                          }`}
-                        >
-                          جاري تحميل الخريطة...
-                        </p>
+                        <div
+                          className="animate-spin rounded-full h-16 w-16 border-4 mx-auto mb-4"
+                          style={{
+                            borderTopColor: "#2E3E88",
+                            borderRightColor: "#32B9CC",
+                            borderBottomColor: "#2E3E88",
+                            borderLeftColor: "transparent",
+                          }}
+                        ></div>
+                        <p className="text-gray-600">جاري تحميل الخريطة...</p>
                       </div>
                     </div>
                   )}
 
+                  {/* Google Maps */}
                   <LoadScript
                     googleMapsApiKey="AIzaSyC9UUx3lHra53Dbx5rcZdWSBsSxUaPZDa4"
                     libraries={libraries}
@@ -810,58 +1472,89 @@ export default function Addresses() {
                     }}
                   >
                     {mapLoaded && (
-                      <GoogleMap
-                        mapContainerStyle={mapContainerStyle}
-                        center={selectedLocation || defaultCenter}
-                        zoom={12}
-                        onClick={handleMapClick}
-                        onLoad={handleMapLoad}
-                      >
-                        {selectedLocation && (
-                          <Marker position={selectedLocation} />
-                        )}
-                      </GoogleMap>
+                      <div className="rounded-2xl overflow-hidden border border-gray-200">
+                        <GoogleMap
+                          mapContainerStyle={mapContainerStyle}
+                          center={selectedLocation || defaultCenter}
+                          zoom={15}
+                          onClick={handleMapClick}
+                          onLoad={handleMapLoad}
+                          options={{
+                            styles: [
+                              {
+                                featureType: "all",
+                                elementType: "labels.text.fill",
+                                stylers: [{ color: "#2E3E88" }],
+                              },
+                              {
+                                featureType: "all",
+                                elementType: "labels.text.stroke",
+                                stylers: [{ color: "#ffffff" }],
+                              },
+                            ],
+                          }}
+                        >
+                          {selectedLocation && (
+                            <Marker
+                              position={selectedLocation}
+                              icon={{
+                                url:
+                                  "data:image/svg+xml;charset=UTF-8," +
+                                  encodeURIComponent(`
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+                                    <circle cx="20" cy="20" r="15" fill="#2E3E88" fill-opacity="0.8"/>
+                                    <circle cx="20" cy="20" r="8" fill="#32B9CC"/>
+                                    <circle cx="20" cy="20" r="4" fill="white"/>
+                                  </svg>
+                                `),
+                                scaledSize: new window.google.maps.Size(40, 40),
+                              }}
+                            />
+                          )}
+                        </GoogleMap>
+                      </div>
                     )}
                   </LoadScript>
 
+                  {/* Selected Location Info */}
                   {selectedLocation && (
-                    <div
-                      className={`mt-4 p-4 rounded-lg ${
-                        darkMode
-                          ? "bg-green-900/20 border border-green-800"
-                          : "bg-green-50 border border-green-200"
-                      }`}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="mt-6 p-4 rounded-xl"
+                      style={{
+                        background: `linear-gradient(135deg, #2E3E88/10, #32B9CC/10)`,
+                        border: "1px solid #2E3E8820",
+                      }}
                     >
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                        <div className="flex-1">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
                           <p
-                            className={`text-sm font-medium ${
-                              darkMode ? "text-green-300" : "text-green-700"
-                            }`}
+                            className="font-semibold mb-2"
+                            style={{ color: "#2E3E88" }}
                           >
                             ✓ الموقع المختار
                           </p>
-                          <p
-                            className={`text-xs ${
-                              darkMode ? "text-green-400" : "text-green-600"
-                            }`}
-                          >
+                          <p className="text-sm text-gray-600">
                             خط العرض: {selectedLocation.lat.toFixed(6)} | خط
                             الطول: {selectedLocation.lng.toFixed(6)}
                           </p>
                         </div>
-
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={confirmLocation}
-                          className="bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-6 py-3 rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-200 flex items-center gap-2 whitespace-nowrap flex-shrink-0"
+                          className="px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg"
+                          style={{
+                            background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                            color: "white",
+                          }}
                         >
-                          <FaCheck className="text-sm" />
+                          <FaCheck className="inline ml-2" />
                           تأكيد الموقع
                         </motion.button>
                       </div>
-                    </div>
+                    </motion.div>
                   )}
                 </div>
               </div>
@@ -869,667 +1562,6 @@ export default function Addresses() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, type: "spring" }}
-        className={`max-w-7xl mx-auto ${
-          darkMode
-            ? "bg-gray-800/90 border-gray-700"
-            : "bg-white/90 border-white/50"
-        } backdrop-blur-xl shadow-xl sm:shadow-2xl rounded-2xl sm:rounded-3xl border relative overflow-hidden transition-colors duration-300`}
-      >
-        <div className="relative h-36 sm:h-40 md:h-44 lg:h-52 bg-gradient-to-r from-[#E41E26] to-[#FDB913] overflow-hidden">
-          <div className="absolute inset-0 bg-black/10"></div>
-          <div className="absolute -top-4 sm:-top-6 -right-4 sm:-right-6 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 bg-white/10 rounded-full"></div>
-          <div className="absolute -bottom-4 sm:-bottom-6 -left-4 sm:-left-6 w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-32 lg:h-32 bg-white/10 rounded-full"></div>
-
-          <div className="relative z-10 h-full flex flex-col justify-end items-center text-center px-4 sm:px-6 pb-6 sm:pb-8 md:pb-10">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="flex items-center justify-center gap-2 sm:gap-3 mb-2 sm:mb-3"
-            >
-              <div className="p-2 sm:p-3 bg-white/20 backdrop-blur-sm rounded-xl sm:rounded-2xl">
-                <FaMapMarkerAlt className="text-white text-xl sm:text-2xl md:text-3xl" />
-              </div>
-              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white">
-                عناويني
-              </h1>
-            </motion.div>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-white/90 text-sm sm:text-base md:text-lg lg:text-xl max-w-2xl mb-2 sm:mb-3"
-            >
-              إدارة عناوين التوصيل الخاصة بك
-            </motion.p>
-          </div>
-        </div>
-
-        <div className="relative px-3 sm:px-4 md:px-6 lg:px-8 pb-4 sm:pb-6 md:pb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="flex justify-center -mt-6 sm:-mt-7 md:-mt-8 mb-6 sm:mb-8 md:mb-10"
-          >
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleAddNewAddress}
-              className="flex items-center gap-2 bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-4 sm:px-5 md:px-6 py-3 sm:py-3 md:py-4 rounded-xl sm:rounded-2xl font-semibold shadow-2xl sm:shadow-3xl hover:shadow-4xl hover:shadow-[#E41E26]/50 transition-all duration-300 text-sm sm:text-base md:text-lg border-2 border-white whitespace-nowrap transform translate-y-2"
-            >
-              <FaPlus className="text-sm sm:text-base md:text-lg" />
-              <span>إضافة عنوان جديد</span>
-            </motion.button>
-          </motion.div>
-
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
-            <div
-              className={`space-y-3 sm:space-y-4 md:space-y-5 ${
-                isAdding ? "xl:col-span-2" : "xl:col-span-3"
-              }`}
-            >
-              <AnimatePresence>
-                {addresses.map((address, index) => (
-                  <motion.div
-                    key={address.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className={`${
-                      darkMode
-                        ? "bg-gray-700/80 border-gray-600"
-                        : "bg-white/80 border-gray-200/50"
-                    } backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border-2 transition-all duration-300 hover:shadow-lg ${
-                      address.isDefaultLocation
-                        ? `border-[#E41E26] ${
-                            darkMode
-                              ? "bg-gradient-to-r from-gray-800 to-gray-700"
-                              : "bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4]"
-                          }`
-                        : ""
-                    }`}
-                  >
-                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                          <div
-                            className={`p-1 sm:p-2 rounded-lg sm:rounded-xl bg-gradient-to-r ${getAddressTypeColor()} border`}
-                          >
-                            <FaMapMarkerAlt className="text-[#E41E26]" />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                              <h3
-                                className={`font-bold ${
-                                  darkMode ? "text-white" : "text-gray-800"
-                                } text-base sm:text-lg md:text-xl truncate`}
-                              >
-                                {address.city.name}
-                              </h3>
-                              {address.isDefaultLocation && (
-                                <span className="bg-[#E41E26] text-white text-xs px-2 py-1 rounded-full whitespace-nowrap inline-flex items-center gap-1 self-start sm:self-center">
-                                  <FaStar className="text-xs" />
-                                  افتراضي
-                                </span>
-                              )}
-                            </div>
-                            <p
-                              className={`${
-                                darkMode ? "text-gray-300" : "text-gray-600"
-                              } text-xs sm:text-sm capitalize truncate mt-1`}
-                            >
-                              {address.streetName}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div
-                          className={`space-y-1 sm:space-y-2 ${
-                            darkMode ? "text-gray-300" : "text-gray-700"
-                          } text-sm sm:text-base`}
-                        >
-                          <p className="truncate">{address.phoneNumber}</p>
-                          <p className="truncate">
-                            {address.streetName}, مبنى رقم{" "}
-                            {address.buildingNumber}
-                          </p>
-                          {(address.floorNumber || address.flatNumber) && (
-                            <p className="truncate">
-                              الدور {address.floorNumber}, شقة{" "}
-                              {address.flatNumber}
-                            </p>
-                          )}
-                          {address.detailedDescription && (
-                            <p className="truncate">
-                              {address.detailedDescription}
-                            </p>
-                          )}
-                        </div>
-
-                        {address.locationUrl && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{
-                              opacity: expandedMaps[address.id] ? 1 : 0,
-                              height: expandedMaps[address.id] ? "auto" : 0,
-                            }}
-                            transition={{ duration: 0.3 }}
-                            className="mt-3 sm:mt-4 overflow-hidden"
-                          >
-                            {expandedMaps[address.id] && (
-                              <div className="rounded-lg sm:rounded-xl overflow-hidden border border-gray-200 dark:border-gray-600">
-                                <iframe
-                                  src={address.locationUrl}
-                                  width="100%"
-                                  height="200"
-                                  style={{ border: 0 }}
-                                  allowFullScreen=""
-                                  loading="lazy"
-                                  referrerPolicy="no-referrer-when-downgrade"
-                                  title={`خريطة موقع ${address.streetName}`}
-                                  className="w-full"
-                                />
-                              </div>
-                            )}
-                          </motion.div>
-                        )}
-
-                        {address.locationUrl && (
-                          <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.2 }}
-                            className="mt-3 sm:mt-4"
-                          >
-                            <motion.button
-                              whileHover={{ scale: 1.02 }}
-                              whileTap={{ scale: 0.98 }}
-                              onClick={() => toggleMapVisibility(address.id)}
-                              className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl font-medium text-xs sm:text-sm transition-all duration-300 ${
-                                darkMode
-                                  ? expandedMaps[address.id]
-                                    ? "bg-gray-600 text-gray-200 hover:bg-gray-500"
-                                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                                  : expandedMaps[address.id]
-                                  ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                              } border ${
-                                darkMode ? "border-gray-600" : "border-gray-200"
-                              }`}
-                            >
-                              {expandedMaps[address.id] ? (
-                                <>
-                                  <FaEyeSlash className="text-xs sm:text-sm" />
-                                  <span>إخفاء الخريطة</span>
-                                </>
-                              ) : (
-                                <>
-                                  <FaEye className="text-xs sm:text-sm" />
-                                  <span>عرض الخريطة</span>
-                                </>
-                              )}
-                            </motion.button>
-                          </motion.div>
-                        )}
-                      </div>
-
-                      <div className="flex flex-row sm:flex-col lg:flex-row gap-1 sm:gap-2 justify-end sm:justify-start">
-                        {!address.isDefaultLocation && (
-                          <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => handleSetDefault(address.id)}
-                            className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 ${
-                              darkMode
-                                ? "bg-green-900/50 text-green-300 hover:bg-green-800"
-                                : "bg-green-50 text-green-700 hover:bg-green-100"
-                            } rounded-lg transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center`}
-                          >
-                            <FaStar className="text-xs sm:text-sm" />
-                            <span className="whitespace-nowrap hidden xs:inline">
-                              تعيين افتراضي
-                            </span>
-                            <span className="whitespace-nowrap xs:hidden">
-                              افتراضي
-                            </span>
-                          </motion.button>
-                        )}
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => handleEdit(address)}
-                          className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 ${
-                            darkMode
-                              ? "bg-blue-900/50 text-blue-300 hover:bg-blue-800"
-                              : "bg-blue-50 text-blue-700 hover:bg-blue-100"
-                          } rounded-lg transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center`}
-                        >
-                          <FaEdit className="text-xs sm:text-sm" />
-                          <span className="whitespace-nowrap">تعديل</span>
-                        </motion.button>
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => handleDelete(address.id)}
-                          className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 ${
-                            darkMode
-                              ? "bg-red-900/50 text-red-300 hover:bg-red-800"
-                              : "bg-red-50 text-red-700 hover:bg-red-100"
-                          } rounded-lg transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center`}
-                        >
-                          <FaTrash className="text-xs sm:text-sm" />
-                          <span className="whitespace-nowrap">حذف</span>
-                        </motion.button>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-
-              {addresses.length === 0 && !isAdding && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className={`text-center py-8 sm:py-10 md:py-12 ${
-                    darkMode
-                      ? "bg-gray-700/80 border-gray-600"
-                      : "bg-white/80 border-gray-200/50"
-                  } backdrop-blur-sm rounded-xl sm:rounded-2xl border`}
-                >
-                  <FaMapMarkerAlt
-                    className={`mx-auto text-3xl sm:text-4xl md:text-5xl ${
-                      darkMode ? "text-gray-500" : "text-gray-400"
-                    } mb-3 sm:mb-4`}
-                  />
-                  <h3
-                    className={`text-lg sm:text-xl md:text-2xl font-semibold ${
-                      darkMode ? "text-gray-300" : "text-gray-600"
-                    } mb-2 sm:mb-3`}
-                  >
-                    لا توجد عناوين حتى الآن
-                  </h3>
-                  <p
-                    className={`${
-                      darkMode ? "text-gray-400" : "text-gray-500"
-                    } text-sm sm:text-base mb-4 sm:mb-6 max-w-xs sm:max-w-sm mx-auto`}
-                  >
-                    أضف عنوانك الأول للبدء
-                  </p>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleAddNewAddress}
-                    className="flex items-center gap-2 bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base mx-auto"
-                  >
-                    <FaPlus className="text-xs sm:text-sm" />
-                    <span>أضف عنوانك الأول</span>
-                  </motion.button>
-                </motion.div>
-              )}
-            </div>
-
-            <AnimatePresence>
-              {isAdding && (
-                <motion.div
-                  id="address-form"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  className="xl:col-span-1"
-                >
-                  <div
-                    className={`${
-                      darkMode
-                        ? "bg-gray-700/80 border-gray-600"
-                        : "bg-white/80 border-gray-200/50"
-                    } backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border shadow-lg sticky top-4 sm:top-6 transition-colors duration-300`}
-                  >
-                    <div className="flex items-center justify-between mb-3 sm:mb-4">
-                      <h3
-                        className={`text-base sm:text-lg md:text-xl font-bold ${
-                          darkMode ? "text-white" : "text-gray-800"
-                        } truncate`}
-                      >
-                        {editingId ? "تعديل العنوان" : "إضافة عنوان جديد"}
-                      </h3>
-                      <button
-                        onClick={resetForm}
-                        className={`${
-                          darkMode
-                            ? "text-gray-400 hover:text-[#FDB913]"
-                            : "text-gray-500 hover:text-[#E41E26]"
-                        } transition-colors duration-200 flex-shrink-0 ml-2`}
-                      >
-                        <FaTimes size={16} className="sm:size-5" />
-                      </button>
-                    </div>
-
-                    <form
-                      onSubmit={handleSubmit}
-                      className="space-y-3 sm:space-y-4"
-                    >
-                      <div>
-                        <label
-                          className={`block text-xs sm:text-sm font-semibold ${
-                            darkMode ? "text-gray-300" : "text-gray-700"
-                          } mb-1 sm:mb-2`}
-                        >
-                          المدينة *
-                        </label>
-                        <div className="relative">
-                          <button
-                            type="button"
-                            onClick={() => toggleDropdown("city")}
-                            className={`w-full flex items-center justify-between border ${
-                              darkMode
-                                ? "border-gray-600 bg-gray-800 text-gray-300 hover:border-[#E41E26]"
-                                : "border-gray-200 bg-white text-gray-600 hover:border-[#E41E26]"
-                            } rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 transition-all group text-sm sm:text-base`}
-                          >
-                            <div className="flex items-center gap-3">
-                              <FaCity className="text-[#E41E26] text-sm" />
-                              <span>
-                                {formData.cityId
-                                  ? cities.find(
-                                      (c) => c.id.toString() === formData.cityId
-                                    )?.name
-                                  : "اختر المدينة"}
-                              </span>
-                            </div>
-                            <motion.div
-                              animate={{
-                                rotate: openDropdown === "city" ? 180 : 0,
-                              }}
-                              transition={{ duration: 0.3 }}
-                            >
-                              <FaChevronDown className="text-[#E41E26]" />
-                            </motion.div>
-                          </button>
-                          <AnimatePresence>
-                            {openDropdown === "city" && (
-                              <motion.ul
-                                initial={{ opacity: 0, y: -5 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -5 }}
-                                transition={{ duration: 0.2 }}
-                                className={`absolute z-10 mt-2 w-full ${
-                                  darkMode
-                                    ? "bg-gray-800 border-gray-600"
-                                    : "bg-white border-gray-200"
-                                } border shadow-xl rounded-lg sm:rounded-xl overflow-hidden max-h-48 overflow-y-auto`}
-                              >
-                                {cities.map((city) => (
-                                  <li
-                                    key={city.id}
-                                    onClick={() => {
-                                      setFormData({
-                                        ...formData,
-                                        cityId: city.id.toString(),
-                                      });
-                                      setOpenDropdown(null);
-                                    }}
-                                    className={`px-4 py-2.5 sm:py-3 ${
-                                      darkMode
-                                        ? "hover:bg-gray-700 text-gray-300 border-gray-600"
-                                        : "hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] text-gray-700 border-gray-100"
-                                    } cursor-pointer transition-all text-sm sm:text-base border-b last:border-b-0`}
-                                  >
-                                    {city.name}
-                                  </li>
-                                ))}
-                              </motion.ul>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                      </div>
-
-                      <div>
-                        <label
-                          className={`block text-xs sm:text-sm font-semibold ${
-                            darkMode ? "text-gray-300" : "text-gray-700"
-                          } mb-1 sm:mb-2`}
-                        >
-                          رقم الهاتف *
-                        </label>
-                        <div className="relative group">
-                          <FaPhone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
-                          <input
-                            type="tel"
-                            name="phoneNumber"
-                            value={formData.phoneNumber}
-                            onChange={handleInputChange}
-                            required
-                            inputMode="tel"
-                            pattern="[0-9٠-٩]*"
-                            className={`w-full border ${
-                              darkMode
-                                ? "border-gray-600 bg-gray-800 text-white"
-                                : "border-gray-200 bg-white text-black"
-                            } rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
-                            placeholder="رقم الهاتف"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label
-                          className={`block text-xs sm:text-sm font-semibold ${
-                            darkMode ? "text-gray-300" : "text-gray-700"
-                          } mb-1 sm:mb-2`}
-                        >
-                          اسم الشارع *
-                        </label>
-                        <div className="relative group">
-                          <FaRoad className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
-                          <input
-                            type="text"
-                            name="streetName"
-                            value={formData.streetName}
-                            onChange={handleInputChange}
-                            required
-                            className={`w-full border ${
-                              darkMode
-                                ? "border-gray-600 bg-gray-800 text-white"
-                                : "border-gray-200 bg-white text-black"
-                            } rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
-                            placeholder="اسم الشارع"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 xs:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
-                        <div>
-                          <label
-                            className={`block text-xs sm:text-sm font-semibold ${
-                              darkMode ? "text-gray-300" : "text-gray-700"
-                            } mb-1 sm:mb-2`}
-                          >
-                            رقم المبنى *
-                          </label>
-                          <div className="relative group">
-                            <FaBuildingIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
-                            <input
-                              type="text"
-                              inputMode="numeric"
-                              pattern="[0-9٠-٩]*"
-                              name="buildingNumber"
-                              value={formData.buildingNumber}
-                              onChange={handleInputChange}
-                              required
-                              className={`w-full border ${
-                                darkMode
-                                  ? "border-gray-600 bg-gray-800 text-white"
-                                  : "border-gray-200 bg-white text-black"
-                              } rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
-                              placeholder="رقم"
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <label
-                            className={`block text-xs sm:text-sm font-semibold ${
-                              darkMode ? "text-gray-300" : "text-gray-700"
-                            } mb-1 sm:mb-2`}
-                          >
-                            رقم الدور *
-                          </label>
-                          <div className="relative group">
-                            <FaTag className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
-                            <input
-                              type="text"
-                              inputMode="numeric"
-                              pattern="[0-9٠-٩]*"
-                              name="floorNumber"
-                              value={formData.floorNumber}
-                              onChange={handleInputChange}
-                              required
-                              className={`w-full border ${
-                                darkMode
-                                  ? "border-gray-600 bg-gray-800 text-white"
-                                  : "border-gray-200 bg-white text-black"
-                              } rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
-                              placeholder="الدور"
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <label
-                            className={`block text-xs sm:text-sm font-semibold ${
-                              darkMode ? "text-gray-300" : "text-gray-700"
-                            } mb-1 sm:mb-2`}
-                          >
-                            رقم الشقة *
-                          </label>
-                          <div className="relative group">
-                            <FaTag className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
-                            <input
-                              type="text"
-                              inputMode="numeric"
-                              pattern="[0-9٠-٩]*"
-                              name="flatNumber"
-                              value={formData.flatNumber}
-                              onChange={handleInputChange}
-                              required
-                              className={`w-full border ${
-                                darkMode
-                                  ? "border-gray-600 bg-gray-800 text-white"
-                                  : "border-gray-200 bg-white text-black"
-                              } rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
-                              placeholder="الشقة"
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      <div>
-                        <label
-                          className={`block text-xs sm:text-sm font-semibold ${
-                            darkMode ? "text-gray-300" : "text-gray-700"
-                          } mb-1 sm:mb-2`}
-                        >
-                          تفاصيل إضافية *
-                        </label>
-                        <textarea
-                          name="detailedDescription"
-                          value={formData.detailedDescription}
-                          onChange={handleInputChange}
-                          required
-                          rows="3"
-                          className={`w-full border ${
-                            darkMode
-                              ? "border-gray-600 bg-gray-800 text-white"
-                              : "border-gray-200 bg-white text-black"
-                          } rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base resize-none`}
-                          placeholder="أي تفاصيل إضافية عن موقعك..."
-                        />
-                      </div>
-
-                      <div>
-                        <label
-                          className={`block text-xs sm:text-sm font-semibold ${
-                            darkMode ? "text-gray-300" : "text-gray-700"
-                          } mb-1 sm:mb-2`}
-                        >
-                          رابط الموقع
-                        </label>
-
-                        <motion.button
-                          type="button"
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={openMapModal}
-                          className="flex items-center gap-2 w-full mb-2 px-3 py-2.5 bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white rounded-lg hover:shadow-lg transition-all duration-200 text-sm font-semibold"
-                        >
-                          <FaMap className="text-sm" />
-                          <span>اختيار الموقع من الخريطة</span>
-                          <FaExternalLinkAlt className="text-sm ml-auto" />
-                        </motion.button>
-
-                        <input
-                          type="url"
-                          name="locationUrl"
-                          value={formData.locationUrl}
-                          onChange={handleInputChange}
-                          disabled
-                          className={`w-full border ${
-                            darkMode
-                              ? "border-gray-600 bg-gray-800 text-gray-400"
-                              : "border-gray-200 bg-gray-100 text-gray-500"
-                          } rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 outline-none transition-all duration-200 text-sm sm:text-base cursor-not-allowed`}
-                          placeholder="سيتم تعبئته تلقائياً عند اختيار موقع من الخريطة"
-                        />
-
-                        {formData.locationUrl && (
-                          <p
-                            className={`text-xs mt-1 ${
-                              darkMode ? "text-green-400" : "text-green-600"
-                            }`}
-                          >
-                            ✓ تم إضافة رابط الخريطة بنجاح
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="flex gap-2 sm:gap-3 pt-1 sm:pt-2">
-                        <motion.button
-                          type="button"
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={resetForm}
-                          className={`flex-1 py-2.5 sm:py-3 border-2 border-[#E41E26] text-[#E41E26] rounded-lg sm:rounded-xl font-semibold hover:bg-[#E41E26] hover:text-white transition-all duration-300 text-sm sm:text-base`}
-                        >
-                          إلغاء
-                        </motion.button>
-                        <motion.button
-                          type="submit"
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          disabled={!isFormValid()}
-                          className={`flex-1 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base flex items-center justify-center gap-1 sm:gap-2 ${
-                            isFormValid()
-                              ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25 cursor-pointer"
-                              : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                          }`}
-                        >
-                          <FaCheck className="text-xs sm:text-sm" />
-                          {editingId ? "تحديث" : "حفظ"}
-                        </motion.button>
-                      </div>
-                    </form>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-      </motion.div>
     </div>
   );
 }

@@ -11,6 +11,8 @@ import {
   FaTimes,
   FaChevronDown,
   FaStore,
+  FaCommentAlt,
+  FaCalendarAlt,
 } from "react-icons/fa";
 import Swal from "sweetalert2";
 import axiosInstance from "../api/axiosInstance";
@@ -25,6 +27,8 @@ export default function Reviews() {
   const [isLoading, setIsLoading] = useState(true);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [branches, setBranches] = useState([]);
+  const [selectedReview, setSelectedReview] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
 
   const [formData, setFormData] = useState({
     branchId: "",
@@ -34,78 +38,66 @@ export default function Reviews() {
 
   const showMobileMessage = (type, title, text) => {
     if (window.innerWidth < 768) {
-      if (type === "success") {
-        toast.success(text, {
-          position: "top-right",
-          autoClose: 2500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          style: {
-            width: "70%",
-            margin: "10px",
-            borderRadius: "8px",
-            textAlign: "right",
-            fontSize: "14px",
-            direction: "rtl",
-          },
-        });
-      } else if (type === "error") {
-        toast.error(text, {
-          position: "top-right",
-          autoClose: 2500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          style: {
-            width: "70%",
-            margin: "10px",
-            borderRadius: "8px",
-            textAlign: "right",
-            fontSize: "14px",
-            direction: "rtl",
-          },
-        });
-      } else if (type === "info") {
-        toast.info(text, {
-          position: "top-right",
-          autoClose: 2500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          style: {
-            width: "70%",
-            margin: "10px",
-            borderRadius: "8px",
-            textAlign: "right",
-            fontSize: "14px",
-            direction: "rtl",
-          },
-        });
-      } else if (type === "warning") {
-        toast.warning(text, {
-          position: "top-right",
-          autoClose: 2500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          style: {
-            width: "70%",
-            margin: "10px",
-            borderRadius: "8px",
-            textAlign: "right",
-            fontSize: "14px",
-            direction: "rtl",
-          },
-        });
+      const toastOptions = {
+        position: "top-right",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        style: {
+          width: "70%",
+          margin: "10px",
+          borderRadius: "12px",
+          textAlign: "right",
+          fontSize: "14px",
+          direction: "rtl",
+          background:
+            type === "error"
+              ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
+              : type === "success"
+                ? "linear-gradient(135deg, #2E3E88, #32B9CC)"
+                : "linear-gradient(135deg, #2E3E88, #32B9CC)",
+          color: "white",
+        },
+      };
+
+      switch (type) {
+        case "success":
+          toast.success(text, toastOptions);
+          break;
+        case "error":
+          toast.error(text, toastOptions);
+          break;
+        case "info":
+          toast.info(text, toastOptions);
+          break;
+        case "warning":
+          toast.warning(text, toastOptions);
+          break;
+        default:
+          toast(text, toastOptions);
       }
       return true;
     }
     return false;
+  };
+
+  const showMessage = (type, title, text) => {
+    if (window.innerWidth < 768) {
+      showMobileMessage(type, title, text);
+    } else {
+      Swal.fire({
+        title: title,
+        html: text,
+        icon: type,
+        confirmButtonText: "حسنًا",
+        timer: 2500,
+        showConfirmButton: false,
+        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+        color: "white",
+      });
+    }
   };
 
   const toggleDropdown = (menu) =>
@@ -114,7 +106,7 @@ export default function Reviews() {
   useEffect(() => {
     fetchReviews();
     fetchBranches();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchReviews = async () => {
@@ -126,7 +118,7 @@ export default function Reviews() {
           res.data.map(async (review) => {
             try {
               const branchRes = await axiosInstance.get(
-                `/api/Branches/Get/${review.branchId}`
+                `/api/Branches/Get/${review.branchId}`,
               );
               if (branchRes.status === 200) {
                 return {
@@ -141,26 +133,13 @@ export default function Reviews() {
               ...review,
               branchName: `فرع ${review.branchId}`,
             };
-          })
+          }),
         );
         setReviews(reviewsWithBranchNames);
       }
     } catch (err) {
       console.error("Failed to fetch reviews", err);
-
-      const isMobile = showMobileMessage(
-        "error",
-        "خطأ",
-        "فشل في تحميل التقييمات."
-      );
-
-      if (!isMobile) {
-        Swal.fire({
-          icon: "error",
-          title: "خطأ",
-          text: "فشل في تحميل التقييمات.",
-        });
-      }
+      showMessage("error", "خطأ", "فشل في تحميل التقييمات.");
     } finally {
       setIsLoading(false);
     }
@@ -200,66 +179,28 @@ export default function Reviews() {
         // Update existing review
         const res = await axiosInstance.put(
           `/api/Reviews/Update/${editingId}`,
-          formData
+          formData,
         );
         if (res.status === 200 || res.status === 204) {
           await fetchReviews();
-
-          const isMobile = showMobileMessage(
-            "success",
-            "تم تحديث التقييم",
-            "تم تحديث تقييمك بنجاح."
-          );
-
-          if (!isMobile) {
-            Swal.fire({
-              icon: "success",
-              title: "تم تحديث التقييم",
-              text: "تم تحديث تقييمك بنجاح.",
-              timer: 2000,
-              showConfirmButton: false,
-            });
-          }
+          showMessage("success", "تم بنجاح", "تم تحديث تقييمك بنجاح.");
         }
       } else {
         // Add new review
         const res = await axiosInstance.post("/api/Reviews/Add", formData);
         if (res.status === 200 || res.status === 201) {
           await fetchReviews();
-
-          const isMobile = showMobileMessage(
-            "success",
-            "تم إضافة التقييم",
-            "تم إضافة تقييمك بنجاح."
-          );
-
-          if (!isMobile) {
-            Swal.fire({
-              icon: "success",
-              title: "تم إضافة التقييم",
-              text: "تم إضافة تقييمك بنجاح.",
-              timer: 2000,
-              showConfirmButton: false,
-            });
-          }
+          showMessage("success", "تم بنجاح", "تم إضافة تقييمك بنجاح.");
         }
       }
 
       resetForm();
     } catch (err) {
-      const isMobile = showMobileMessage(
+      showMessage(
         "error",
         "خطأ",
-        err.response?.data?.message || "فشل في حفظ التقييم."
+        err.response?.data?.message || "فشل في حفظ التقييم.",
       );
-
-      if (!isMobile) {
-        Swal.fire({
-          icon: "error",
-          title: "خطأ",
-          text: err.response?.data?.message || "فشل في حفظ التقييم.",
-        });
-      }
     }
   };
 
@@ -271,13 +212,6 @@ export default function Reviews() {
     });
     setEditingId(review.id);
     setIsAdding(true);
-
-    setTimeout(() => {
-      const formElement = document.getElementById("review-form");
-      if (formElement && window.innerWidth < 1280) {
-        formElement.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }, 100);
   };
 
   const handleDelete = (id) => {
@@ -286,45 +220,20 @@ export default function Reviews() {
       text: "لن تتمكن من التراجع عن هذا!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#E41E26",
+      confirmButtonColor: "#2E3E88",
       cancelButtonColor: "#6B7280",
       confirmButtonText: "نعم، احذفه!",
       cancelButtonText: "إلغاء",
+      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+      color: "white",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
           await axiosInstance.delete(`/api/Reviews/Delete/${id}`);
           await fetchReviews();
-
-          const isMobile = showMobileMessage(
-            "success",
-            "تم الحذف",
-            "تم حذف تقييمك بنجاح."
-          );
-
-          if (!isMobile) {
-            Swal.fire({
-              title: "تم الحذف!",
-              text: "تم حذف تقييمك بنجاح.",
-              icon: "success",
-              timer: 2000,
-              showConfirmButton: false,
-            });
-          }
+          showMessage("success", "تم الحذف", "تم حذف تقييمك بنجاح.");
         } catch (err) {
-          const isMobile = showMobileMessage(
-            "error",
-            "خطأ",
-            "فشل في حذف التقييم."
-          );
-
-          if (!isMobile) {
-            Swal.fire({
-              icon: "error",
-              title: "خطأ",
-              text: "فشل في حذف التقييم.",
-            });
-          }
+          showMessage("error", "خطأ", "فشل في حذف التقييم.");
         }
       }
     });
@@ -343,19 +252,22 @@ export default function Reviews() {
 
   const handleAddNewReview = () => {
     setIsAdding(true);
+  };
 
-    setTimeout(() => {
-      const formElement = document.getElementById("review-form");
-      if (formElement && window.innerWidth < 1280) {
-        formElement.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }, 100);
+  const handleReviewClick = (review) => {
+    setSelectedReview(review);
+    setShowDetailsModal(true);
+  };
+
+  const closeDetailsModal = () => {
+    setShowDetailsModal(false);
+    setSelectedReview(null);
   };
 
   const isFormValid = () => {
     const requiredFields = ["branchId", "rating", "comment"];
     return requiredFields.every(
-      (field) => formData[field] && formData[field].toString().trim() !== ""
+      (field) => formData[field] && formData[field].toString().trim() !== "",
     );
   };
 
@@ -363,7 +275,7 @@ export default function Reviews() {
     rating,
     interactive = false,
     onRatingChange = null,
-    size = "sm"
+    size = "sm",
   ) => {
     return (
       <div className="flex items-center gap-1">
@@ -376,11 +288,7 @@ export default function Reviews() {
               interactive
                 ? "cursor-pointer hover:scale-110 transition-transform"
                 : "cursor-default"
-            } ${
-              star <= rating
-                ? "text-[#FDB913]"
-                : "text-gray-300 dark:text-gray-600"
-            }`}
+            } ${star <= rating ? "text-yellow-500" : "text-gray-300"}`}
           >
             <FaStar
               className={`${
@@ -393,354 +301,614 @@ export default function Reviews() {
     );
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("ar-EG", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-4">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E41E26]"></div>
+      <div
+        className="min-h-screen flex items-center justify-center px-4"
+        style={{
+          background: `linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)`,
+        }}
+      >
+        <div className="text-center">
+          <div
+            className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+            style={{
+              borderTopColor: "#2E3E88",
+              borderRightColor: "#32B9CC",
+              borderBottomColor: "#2E3E88",
+              borderLeftColor: "transparent",
+            }}
+          ></div>
+          <p className="text-lg font-semibold" style={{ color: "#2E3E88" }}>
+            جارٍ تحميل التقييمات...
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
     <div
-      className={`min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-3 sm:px-4 md:px-6 py-3 sm:py-6 relative font-sans overflow-hidden transition-colors duration-300`}
+      className="min-h-screen font-sans relative overflow-x-hidden"
+      style={{
+        background: `linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)`,
+        backgroundAttachment: "fixed",
+      }}
+      dir="rtl"
     >
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -left-10 sm:-left-20 -top-10 sm:-top-20 w-40 h-40 sm:w-60 sm:h-60 md:w-80 md:h-80 bg-gradient-to-r from-[#E41E26]/10 to-[#FDB913]/10 rounded-full blur-2xl sm:blur-3xl animate-pulse"></div>
-        <div className="absolute -right-10 sm:-right-20 -bottom-10 sm:-bottom-20 w-40 h-40 sm:w-60 sm:h-60 md:w-80 md:h-80 bg-gradient-to-r from-[#FDB913]/10 to-[#E41E26]/10 rounded-full blur-2xl sm:blur-3xl animate-pulse"></div>
-      </div>
+      {/* Header Section */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/80 to-white"></div>
 
-      {/* Back Button */}
-      <motion.button
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        onClick={() => navigate(-1)}
-        className="fixed top-3 sm:top-4 left-3 sm:left-4 z-50 bg-white/80 backdrop-blur-md hover:bg-[#E41E26] hover:text-white rounded-full p-2 sm:p-3 text-[#E41E26] border border-[#E41E26]/30 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl group dark:bg-gray-800/80 dark:text-gray-200 dark:hover:bg-[#E41E26]"
-      >
-        <FaArrowLeft
-          size={14}
-          className="sm:size-4 group-hover:scale-110 transition-transform"
-        />
-      </motion.button>
+        {/* Hero Header */}
+        <div className="relative bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] py-16 px-4">
+          <div className="max-w-7xl mx-auto">
+            {/* زر الرجوع */}
+            <motion.button
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              onClick={() => navigate(-1)}
+              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              style={{
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+              }}
+            >
+              <FaArrowLeft
+                size={20}
+                className="group-hover:-translate-x-1 transition-transform"
+              />
+            </motion.button>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, type: "spring" }}
-        className="max-w-7xl mx-auto bg-white/90 backdrop-blur-xl shadow-xl sm:shadow-2xl rounded-2xl sm:rounded-3xl border border-white/50 relative overflow-hidden dark:bg-gray-800/90 dark:border-gray-700/50"
-      >
-        {/* Header Background */}
-        <div className="relative h-36 sm:h-40 md:h-44 lg:h-52 bg-gradient-to-r from-[#E41E26] to-[#FDB913] overflow-hidden">
-          <div className="absolute inset-0 bg-black/10"></div>
-          <div className="absolute -top-4 sm:-top-6 -right-4 sm:-right-6 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 bg-white/10 rounded-full"></div>
-          <div className="absolute -bottom-4 sm:-bottom-6 -left-4 sm:-left-6 w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-32 lg:h-32 bg-white/10 rounded-full"></div>
-
-          {/* Header Content */}
-          <div className="relative z-10 h-full flex flex-col justify-end items-center text-center px-4 sm:px-6 pb-6 sm:pb-8 md:pb-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="flex items-center justify-center gap-2 sm:gap-3 mb-2 sm:mb-3"
+              className="text-center pt-8"
             >
-              <div className="p-2 sm:p-3 bg-white/20 backdrop-blur-sm rounded-xl sm:rounded-2xl">
-                <FaStar className="text-white text-xl sm:text-2xl md:text-3xl" />
+              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
+                <FaStar className="text-white text-4xl" />
               </div>
-              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white">
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                 تقييماتي
               </h1>
+              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+                شارك تجربتك مع فروعنا وساعد الآخرين في اختيار الأفضل
+              </p>
             </motion.div>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-white/90 text-sm sm:text-base md:text-lg lg:text-xl max-w-2xl mb-2 sm:mb-3"
-            >
-              شارك تجربتك مع فروعنا
-            </motion.p>
           </div>
         </div>
+      </div>
 
-        {/* Main Content */}
-        <div className="relative px-3 sm:px-4 md:px-6 lg:px-8 pb-4 sm:pb-6 md:pb-8">
-          {/* Add Button */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="flex justify-center -mt-6 sm:-mt-7 md:-mt-8 mb-6 sm:mb-8 md:mb-10"
-          >
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleAddNewReview}
-              className="flex items-center gap-2 bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-4 sm:px-5 md:px-6 py-3 sm:py-3 md:py-4 rounded-xl sm:rounded-2xl font-semibold shadow-2xl sm:shadow-3xl hover:shadow-4xl hover:shadow-[#E41E26]/50 transition-all duration-300 text-sm sm:text-base md:text-lg border-2 border-white whitespace-nowrap transform translate-y-2"
-            >
-              <FaPlus className="text-sm sm:text-base md:text-lg" />
-              <span>اكتب تقييم جديد</span>
-            </motion.button>
-          </motion.div>
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10">
+        {/* Floating Action Button */}
+        <motion.button
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleAddNewReview}
+          className="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-2 group"
+        >
+          <FaPlus className="text-xl group-hover:rotate-90 transition-transform" />
+          <span className="hidden md:inline font-semibold">
+            إضافة تقييم جديد
+          </span>
+        </motion.button>
 
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
-            {/* Reviews List */}
-            <div
-              className={`space-y-3 sm:space-y-4 md:space-y-5 ${
-                isAdding ? "xl:col-span-2" : "xl:col-span-3"
-              }`}
-            >
-              <AnimatePresence>
+        {/* Content Container */}
+        <div className="w-full">
+          {/* Reviews List */}
+          <div>
+            {reviews.length === 0 ? (
+              <div className="w-full">
+                <div className="bg-white rounded-2xl p-8 text-center shadow-xl">
+                  <div className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                    <FaStar className="text-4xl" style={{ color: "#2E3E88" }} />
+                  </div>
+                  <h3
+                    className="text-2xl font-bold mb-3"
+                    style={{ color: "#2E3E88" }}
+                  >
+                    لا توجد تقييمات حتى الآن
+                  </h3>
+                  <p
+                    className="mb-6 max-w-md mx-auto"
+                    style={{ color: "#32B9CC" }}
+                  >
+                    شارك تجربتك مع فروعنا من خلال إضافة أول تقييم لك
+                  </p>
+                  <button
+                    onClick={handleAddNewReview}
+                    className="px-8 py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                    style={{
+                      background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                      color: "white",
+                      boxShadow: `0 10px 25px #2E3E8830`,
+                    }}
+                  >
+                    إضافة تقييم جديد
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {reviews.map((review, index) => (
                   <motion.div
                     key={review.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border-2 border-gray-200/50 transition-all duration-300 hover:shadow-lg dark:bg-gray-700/80 dark:border-gray-600/50"
+                    onClick={() => handleReviewClick(review)}
+                    className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col cursor-pointer"
+                    style={{
+                      borderTop: "4px solid #2E3E88",
+                      minHeight: "200px",
+                    }}
                   >
-                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                          <div className="p-1 sm:p-2 rounded-lg sm:rounded-xl bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] border border-[#FDB913]/30 dark:from-gray-600 dark:to-gray-500">
-                            <FaStore className="text-[#E41E26] text-xs sm:text-sm" />
+                    <div className="p-6 flex-grow">
+                      {/* Header */}
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="p-3 rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                            <FaStore
+                              className="text-xl"
+                              style={{ color: "#2E3E88" }}
+                            />
                           </div>
-                          <div className="min-w-0 flex-1">
-                            <h3 className="font-bold text-gray-800 dark:text-gray-200 text-base sm:text-lg md:text-xl truncate">
-                              {review.branchName || `فرع ${review.branchId}`}
-                            </h3>
+                          <div>
+                            <h4
+                              className="font-bold text-lg"
+                              style={{ color: "#2E3E88" }}
+                            >
+                              {review.branchName}
+                            </h4>
                             <div className="flex items-center gap-2 mt-1">
-                              {renderStars(review.rating)}
-                              <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                                ({review.rating}/5)
-                              </span>
+                              <div className="flex items-center gap-1">
+                                {renderStars(review.rating)}
+                                <span className="text-sm text-gray-600">
+                                  ({review.rating}/5)
+                                </span>
+                              </div>
                             </div>
                           </div>
                         </div>
-
-                        <p className="text-gray-700 dark:text-gray-300 text-sm sm:text-base mb-3 sm:mb-4 leading-relaxed">
-                          {review.comment}
-                        </p>
                       </div>
 
-                      <div className="flex flex-row sm:flex-col lg:flex-row gap-1 sm:gap-2 justify-end sm:justify-start">
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => handleEdit(review)}
-                          className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50"
+                      {/* Review Preview */}
+                      <div className="space-y-3 mb-6">
+                        <div className="flex items-start gap-3">
+                          <FaCommentAlt
+                            className="mt-1 flex-shrink-0"
+                            style={{ color: "#2E3E88" }}
+                          />
+                          <p className="text-gray-700 line-clamp-3">
+                            {review.comment}
+                          </p>
+                        </div>
+
+                        {review.createdAt && (
+                          <div className="flex items-start gap-3">
+                            <FaCalendarAlt
+                              className="mt-1 flex-shrink-0"
+                              style={{ color: "#2E3E88" }}
+                            />
+                            <span className="text-sm text-gray-500">
+                              {formatDate(review.createdAt)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex gap-3 pt-4 border-t border-gray-100">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEdit(review);
+                          }}
+                          className="flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
+                          style={{
+                            background: "#32B9CC10",
+                            color: "#32B9CC",
+                          }}
                         >
-                          <FaEdit className="text-xs sm:text-sm" />
-                          <span className="whitespace-nowrap">تعديل</span>
-                        </motion.button>
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => handleDelete(review.id)}
-                          className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/50"
+                          <FaEdit />
+                          تعديل
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(review.id);
+                          }}
+                          className="flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
+                          style={{
+                            background: "#FF6B6B10",
+                            color: "#FF6B6B",
+                          }}
                         >
-                          <FaTrash className="text-xs sm:text-sm" />
-                          <span className="whitespace-nowrap">حذف</span>
-                        </motion.button>
+                          <FaTrash />
+                          حذف
+                        </button>
                       </div>
                     </div>
                   </motion.div>
                 ))}
-              </AnimatePresence>
-
-              {reviews.length === 0 && !isAdding && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="text-center py-8 sm:py-10 md:py-12 bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-gray-200/50 dark:bg-gray-700/80 dark:border-gray-600/50"
-                >
-                  <FaStar className="mx-auto text-3xl sm:text-4xl md:text-5xl text-gray-400 dark:text-gray-500 mb-3 sm:mb-4" />
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-600 dark:text-gray-400 mb-2 sm:mb-3">
-                    لا توجد تقييمات بعد
-                  </h3>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base mb-4 sm:mb-6 max-w-xs sm:max-w-sm mx-auto">
-                    شارك تجربتك من خلال تقييم فروعنا
-                  </p>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleAddNewReview}
-                    className="flex items-center gap-2 bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base mx-auto"
-                  >
-                    <FaPlus className="text-xs sm:text-sm" />
-                    <span>اكتب أول تقييم لك</span>
-                  </motion.button>
-                </motion.div>
-              )}
-            </div>
-
-            {/* Add/Edit Review Form */}
-            <AnimatePresence>
-              {isAdding && (
-                <motion.div
-                  id="review-form"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  className="xl:col-span-1"
-                >
-                  <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-gray-200/50 shadow-lg sticky top-4 sm:top-6 dark:bg-gray-700/80 dark:border-gray-600/50">
-                    <div className="flex items-center justify-between mb-3 sm:mb-4">
-                      <h3 className="text-base sm:text-lg md:text-xl font-bold text-gray-800 dark:text-gray-200 truncate">
-                        {editingId ? "تعديل التقييم" : "كتابة تقييم جديد"}
-                      </h3>
-                      <button
-                        onClick={resetForm}
-                        className="text-gray-500 hover:text-[#E41E26] transition-colors duration-200 flex-shrink-0 ml-2 dark:text-gray-400"
-                      >
-                        <FaTimes size={16} className="sm:size-5" />
-                      </button>
-                    </div>
-
-                    <form
-                      onSubmit={handleSubmit}
-                      className="space-y-3 sm:space-y-4"
-                    >
-                      {/* Branch Dropdown */}
-                      <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                          الفرع *
-                        </label>
-                        <div className="relative">
-                          <button
-                            type="button"
-                            onClick={() => toggleDropdown("branch")}
-                            className="w-full flex items-center justify-between border border-gray-200 bg-white rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 text-gray-600 hover:border-[#E41E26] transition-all group text-sm sm:text-base dark:bg-gray-600 dark:border-gray-500 dark:text-gray-300"
-                          >
-                            <div className="flex items-center gap-3">
-                              <FaStore className="text-[#E41E26] text-sm" />
-                              <span>
-                                {formData.branchId
-                                  ? branches.find(
-                                      (b) =>
-                                        b.id === parseInt(formData.branchId)
-                                    )?.name
-                                  : "اختر الفرع"}
-                              </span>
-                            </div>
-                            <motion.div
-                              animate={{
-                                rotate: openDropdown === "branch" ? 180 : 0,
-                              }}
-                              transition={{ duration: 0.3 }}
-                            >
-                              <FaChevronDown className="text-[#E41E26]" />
-                            </motion.div>
-                          </button>
-                          <AnimatePresence>
-                            {openDropdown === "branch" && (
-                              <motion.ul
-                                initial={{ opacity: 0, y: -5 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -5 }}
-                                transition={{ duration: 0.2 }}
-                                className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-xl rounded-lg sm:rounded-xl overflow-hidden max-h-48 overflow-y-auto dark:bg-gray-700 dark:border-gray-600"
-                              >
-                                {branches.map((branch) => (
-                                  <li
-                                    key={branch.id}
-                                    onClick={() => {
-                                      setFormData({
-                                        ...formData,
-                                        branchId: branch.id,
-                                      });
-                                      setOpenDropdown(null);
-                                    }}
-                                    className="px-4 py-2.5 sm:py-3 hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] cursor-pointer text-gray-700 transition-all text-sm sm:text-base border-b border-gray-100 last:border-b-0 dark:hover:from-gray-600 dark:hover:to-gray-500 dark:text-gray-300 dark:border-gray-600"
-                                  >
-                                    {branch.name}
-                                  </li>
-                                ))}
-                              </motion.ul>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                      </div>
-
-                      {/* Rating */}
-                      <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                          التقييم *
-                        </label>
-                        <div className="flex items-center justify-between gap-2 bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] p-2 sm:p-3 rounded-lg sm:rounded-xl border border-[#FDB913]/30 dark:from-gray-600 dark:to-gray-500 dark:border-gray-500">
-                          <div className="flex items-center gap-2 flex-shrink-0">
-                            <FaStar className="text-[#E41E26] text-xs sm:text-sm" />
-                            <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap hidden sm:block">
-                              التقييم العام:
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {renderStars(
-                              formData.rating,
-                              true,
-                              handleRatingChange,
-                              "lg"
-                            )}
-                            <span className="text-xs sm:text-sm font-semibold text-[#E41E26] whitespace-nowrap">
-                              ({formData.rating}/5)
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Comment */}
-                      <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                          تقييمك *
-                        </label>
-                        <textarea
-                          name="comment"
-                          value={formData.comment}
-                          onChange={handleInputChange}
-                          required
-                          rows="4"
-                          className="w-full border border-gray-200 bg-white text-black rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base resize-none dark:bg-gray-600 dark:border-gray-500 dark:text-white"
-                          placeholder="شارك تجربتك مع هذا الفرع... (كيف كانت الخدمة؟ جودة الطعام؟ التجربة العامة؟)"
-                        />
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                          شارك ملاحظاتك الصادقة حول الخدمة وجودة الطعام والتجربة
-                          العامة
-                        </p>
-                      </div>
-
-                      <div className="flex gap-2 sm:gap-3 pt-1 sm:pt-2">
-                        <motion.button
-                          type="button"
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={resetForm}
-                          className="flex-1 py-2.5 sm:py-3 border-2 border-[#E41E26] text-[#E41E26] rounded-lg sm:rounded-xl font-semibold hover:bg-[#E41E26] hover:text-white transition-all duration-300 text-sm sm:text-base dark:border-[#E41E26] dark:text-[#E41E26] dark:hover:bg-[#E41E26] dark:hover:text-white"
-                        >
-                          إلغاء
-                        </motion.button>
-                        <motion.button
-                          type="submit"
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          disabled={!isFormValid()}
-                          className={`flex-1 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base flex items-center justify-center gap-1 sm:gap-2 ${
-                            isFormValid()
-                              ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25 cursor-pointer"
-                              : "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400"
-                          }`}
-                        >
-                          <FaCheck className="text-xs sm:text-sm" />
-                          {editingId ? "تحديث التقييم" : "إرسال التقييم"}
-                        </motion.button>
-                      </div>
-                    </form>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+              </div>
+            )}
           </div>
         </div>
-      </motion.div>
+      </div>
+
+      {/* Add/Edit Review Form Modal */}
+      <AnimatePresence>
+        {isAdding && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="bg-white rounded-3xl w-full max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
+            >
+              {/* Modal Header */}
+              <div
+                className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+                style={{
+                  background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  {editingId ? <FaEdit /> : <FaPlus />}
+                  <h3 className="text-lg font-bold text-white">
+                    {editingId ? "تعديل التقييم" : "إضافة تقييم جديد"}
+                  </h3>
+                </div>
+                <button
+                  onClick={resetForm}
+                  className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
+                >
+                  <FaTimes size={16} />
+                </button>
+              </div>
+
+              {/* Form Content */}
+              <div className="flex-1 overflow-y-auto p-6">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* Branch Dropdown */}
+                  <div>
+                    <label
+                      className="block text-sm font-semibold mb-2"
+                      style={{ color: "#2E3E88" }}
+                    >
+                      الفرع
+                    </label>
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() => toggleDropdown("branch")}
+                        className="w-full flex items-center justify-between border border-gray-200 rounded-xl px-4 py-3.5 transition-all hover:border-[#2E3E88] group text-right"
+                        style={{
+                          background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
+                        }}
+                      >
+                        <div className="flex items-center gap-3">
+                          <FaStore className="text-[#2E3E88] group-hover:scale-110 transition-transform" />
+                          <span className="font-medium">
+                            {formData.branchId
+                              ? branches.find(
+                                  (b) => b.id === parseInt(formData.branchId),
+                                )?.name
+                              : "اختر الفرع"}
+                          </span>
+                        </div>
+                        <motion.div
+                          animate={{
+                            rotate: openDropdown === "branch" ? 180 : 0,
+                          }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <FaChevronDown className="text-[#2E3E88]" />
+                        </motion.div>
+                      </button>
+                      <AnimatePresence>
+                        {openDropdown === "branch" && (
+                          <motion.ul
+                            initial={{ opacity: 0, y: -5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -5 }}
+                            className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto"
+                          >
+                            {branches.map((branch) => (
+                              <li
+                                key={branch.id}
+                                onClick={() => {
+                                  setFormData({
+                                    ...formData,
+                                    branchId: branch.id,
+                                  });
+                                  setOpenDropdown(null);
+                                }}
+                                className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b last:border-b-0"
+                              >
+                                {branch.name}
+                              </li>
+                            ))}
+                          </motion.ul>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+
+                  {/* Rating */}
+                  <div>
+                    <label
+                      className="block text-sm font-semibold mb-2"
+                      style={{ color: "#2E3E88" }}
+                    >
+                      التقييم
+                    </label>
+                    <div className="flex items-center justify-between gap-4 bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 p-4 rounded-xl border border-[#2E3E88]/20">
+                      <div className="flex items-center gap-2">
+                        <FaStar className="text-yellow-500" />
+                        <span className="font-medium text-gray-700">
+                          التقييم العام:
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {renderStars(
+                          formData.rating,
+                          true,
+                          handleRatingChange,
+                          "lg",
+                        )}
+                        <span
+                          className="font-semibold"
+                          style={{ color: "#2E3E88" }}
+                        >
+                          ({formData.rating}/5)
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Comment */}
+                  <div>
+                    <label
+                      className="block text-sm font-semibold mb-2"
+                      style={{ color: "#2E3E88" }}
+                    >
+                      تقييمك
+                    </label>
+                    <textarea
+                      name="comment"
+                      value={formData.comment}
+                      onChange={handleInputChange}
+                      required
+                      rows="5"
+                      className="w-full border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 resize-none"
+                      style={{
+                        background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
+                      }}
+                      placeholder="شارك تجربتك مع هذا الفرع... (كيف كانت الخدمة؟ جودة الطعام؟ التجربة العامة؟)"
+                      dir="rtl"
+                    />
+                  </div>
+
+                  {/* Form Actions */}
+                  <div className="flex gap-3 pt-4">
+                    <motion.button
+                      type="button"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={resetForm}
+                      className="flex-1 py-3.5 border-2 rounded-xl font-semibold transition-all duration-300"
+                      style={{
+                        borderColor: "#2E3E88",
+                        color: "#2E3E88",
+                        background: "transparent",
+                      }}
+                    >
+                      إلغاء
+                    </motion.button>
+                    <motion.button
+                      type="submit"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      disabled={!isFormValid()}
+                      className={`flex-1 py-3.5 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                        isFormValid()
+                          ? "shadow-lg hover:shadow-xl cursor-pointer"
+                          : "opacity-50 cursor-not-allowed"
+                      }`}
+                      style={
+                        isFormValid()
+                          ? {
+                              background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                              color: "white",
+                            }
+                          : {
+                              background: "#e5e7eb",
+                              color: "#6b7280",
+                            }
+                      }
+                    >
+                      <FaCheck />
+                      {editingId ? "تحديث التقييم" : "حفظ التقييم"}
+                    </motion.button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Review Details Modal */}
+      <AnimatePresence>
+        {showDetailsModal && selectedReview && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="bg-white rounded-3xl w-full max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
+            >
+              {/* Modal Header */}
+              <div
+                className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+                style={{
+                  background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  <FaStar className="text-white text-xl" />
+                  <h3 className="text-lg font-bold text-white">
+                    تفاصيل التقييم
+                  </h3>
+                </div>
+                <button
+                  onClick={closeDetailsModal}
+                  className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
+                >
+                  <FaTimes size={16} />
+                </button>
+              </div>
+
+              {/* Modal Content */}
+              <div className="flex-1 overflow-y-auto p-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Left Column - Review Details */}
+                  <div className="lg:col-span-2 space-y-6">
+                    {/* Branch Info */}
+                    <div className="flex items-start gap-4">
+                      <div className="p-4 rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                        <FaStore
+                          className="text-2xl"
+                          style={{ color: "#2E3E88" }}
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <h4
+                          className="text-xl font-bold"
+                          style={{ color: "#2E3E88" }}
+                        >
+                          {selectedReview.branchName}
+                        </h4>
+                        <div className="flex items-center gap-2 mt-2">
+                          <div className="flex items-center gap-1">
+                            {renderStars(selectedReview.rating)}
+                          </div>
+                          <span className="font-semibold text-gray-700">
+                            ({selectedReview.rating}/5)
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Comment */}
+                    <div className="space-y-3">
+                      <h4
+                        className="text-lg font-bold flex items-center gap-2"
+                        style={{ color: "#2E3E88" }}
+                      >
+                        <FaCommentAlt />
+                        التقييم
+                      </h4>
+                      <div className="bg-gray-50 rounded-xl p-4">
+                        <p className="text-gray-700 leading-relaxed">
+                          {selectedReview.comment}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Date */}
+                    {selectedReview.createdAt && (
+                      <div className="flex items-center gap-3">
+                        <FaCalendarAlt style={{ color: "#2E3E88" }} />
+                        <div>
+                          <p className="text-sm text-gray-500 mb-1">
+                            تاريخ التقييم
+                          </p>
+                          <p className="font-medium text-gray-700">
+                            {formatDate(selectedReview.createdAt)}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Right Column - Actions */}
+                  <div className="space-y-6">
+                    {/* Rating Summary */}
+                    <div className="bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-xl p-4 text-center">
+                      <h4
+                        className="text-lg font-bold mb-3"
+                        style={{ color: "#2E3E88" }}
+                      >
+                        التقييم العام
+                      </h4>
+                      <div className="flex items-center justify-center gap-1 mb-2">
+                        {renderStars(selectedReview.rating)}
+                      </div>
+                      <p className="text-2xl font-bold text-gray-800">
+                        {selectedReview.rating} / 5
+                      </p>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="space-y-3">
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => {
+                          closeDetailsModal();
+                          handleEdit(selectedReview);
+                        }}
+                        className="w-full py-3.5 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+                      >
+                        <FaEdit />
+                        تعديل التقييم
+                      </motion.button>
+
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => {
+                          closeDetailsModal();
+                          handleDelete(selectedReview.id);
+                        }}
+                        className="w-full py-3.5 bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] text-white rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+                      >
+                        <FaTrash />
+                        حذف التقييم
+                      </motion.button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

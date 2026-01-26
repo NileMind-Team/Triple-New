@@ -18,6 +18,9 @@ import {
   FaRegHeart,
   FaFire,
   FaPercent,
+  FaHome,
+  FaBolt,
+  FaBoxOpen,
 } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -42,8 +45,8 @@ const Home = () => {
   const [productsLoading, setProductsLoading] = useState(false);
   const [showCategoriesManager, setShowCategoriesManager] = useState(false);
   const [categories, setCategories] = useState([
-    { id: "all", name: "جميع العناصر" },
-    { id: "offers", name: "العروض" },
+    { id: "all", name: "جميع المنتجات" },
+    { id: "offers", name: "العروض الحصرية" },
   ]);
   const [editingCategory, setEditingCategory] = useState(null);
   const [newCategory, setNewCategory] = useState({ name: "", isActive: true });
@@ -53,6 +56,7 @@ const Home = () => {
   const [pageSize, setPageSize] = useState(8);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [addingToCart, setAddingToCart] = useState(null);
+  const [hoveredButton, setHoveredButton] = useState(null);
 
   const categoriesContainerRef = useRef(null);
   const categoriesSectionRef = useRef(null);
@@ -79,7 +83,7 @@ const Home = () => {
         confirmButtonText: options.confirmButtonText,
         showCancelButton: options.showCancelButton,
         cancelButtonText: options.cancelButtonText,
-        confirmButtonColor: "#E41E26",
+        confirmButtonColor: "#2E3E88",
         cancelButtonColor: "#6B7280",
         ...options.swalOptions,
       });
@@ -105,6 +109,8 @@ const Home = () => {
           boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)",
           maxWidth: "400px",
           minWidth: "250px",
+          background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+          color: "white",
         },
         ...options.toastOptions,
       };
@@ -123,7 +129,7 @@ const Home = () => {
         text: text,
         timer: options.timer || 2000,
         showConfirmButton: false,
-        confirmButtonColor: "#E41E26",
+        confirmButtonColor: "#2E3E88",
         ...options.swalOptions,
       });
     }
@@ -159,62 +165,47 @@ const Home = () => {
     });
   };
 
-  // Skeleton Loading Component
+  // Skeleton Loading Component - تصميم جديد
   const ProductSkeleton = ({ count = 8 }) => {
     return (
       <div
-        className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6"
+        className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"
         style={{ direction: "rtl" }}
       >
         {Array.from({ length: count }).map((_, index) => (
           <div
             key={index}
-            className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 w-full relative min-h-[180px] animate-pulse"
+            className="bg-white dark:bg-gray-800 rounded-3xl shadow-lg overflow-hidden border-0 relative min-h-[200px] animate-pulse"
+            style={{
+              background: "linear-gradient(145deg, #ffffff, #f5f9ff)",
+              boxShadow: "0 10px 30px rgba(46, 62, 136, 0.1)",
+            }}
           >
-            {/* Mobile View Skeleton */}
-            <div className="sm:hidden">
-              <div className="p-3">
-                <div className="flex">
-                  <div className="w-28 flex-shrink-0 ml-3">
-                    <div className="relative h-32 w-full overflow-hidden rounded-xl bg-gray-200 dark:bg-gray-700"></div>
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
-                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
-                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded mb-3 w-3/4"></div>
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="px-3 pb-3">
-                <div className="flex gap-2">
-                  <div className="flex-1 py-2.5 rounded-xl bg-gray-200 dark:bg-gray-700"></div>
-                  <div className="flex-1 py-2.5 rounded-xl bg-gray-200 dark:bg-gray-700"></div>
-                  <div className="p-2.5 rounded-xl bg-gray-200 dark:bg-gray-700"></div>
-                </div>
-              </div>
+            {/* Skeleton Image */}
+            <div className="relative h-40 w-full overflow-hidden bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
             </div>
 
-            {/* Desktop View Skeleton */}
-            <div className="hidden sm:block">
-              <div className="relative h-48 w-full overflow-hidden bg-gray-200 dark:bg-gray-700"></div>
-
-              <div className="p-3 sm:p-4">
-                <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-3 w-3/4"></div>
-
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
-                  </div>
-                  <div className="p-2 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+            {/* Skeleton Content */}
+            <div className="p-4">
+              <div className="flex justify-between items-start mb-3">
+                <div className="space-y-2 flex-1">
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded-full w-3/4"></div>
+                  <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full w-1/2"></div>
                 </div>
+                <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 ml-2"></div>
+              </div>
 
-                <div className="flex gap-2 mt-3 sm:mt-4">
-                  <div className="flex-1 py-2 sm:py-2.5 rounded-xl bg-gray-200 dark:bg-gray-700"></div>
-                  <div className="flex-1 py-2 sm:py-2.5 rounded-xl bg-gray-200 dark:bg-gray-700"></div>
+              <div className="space-y-3">
+                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full w-5/6"></div>
+              </div>
+
+              <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded-lg w-20"></div>
+                <div className="flex gap-2">
+                  <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-xl w-24"></div>
+                  <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-xl w-8"></div>
                 </div>
               </div>
             </div>
@@ -302,8 +293,8 @@ const Home = () => {
         const categoriesData = response.data;
 
         const transformedCategories = [
-          { id: "all", name: "جميع العناصر" },
-          { id: "offers", name: "العروض" },
+          { id: "all", name: "جميع المنتجات" },
+          { id: "offers", name: "العروض الحصرية" },
           ...categoriesData.map((category) => ({
             id: category.id.toString(),
             name: category.name,
@@ -360,7 +351,7 @@ const Home = () => {
       const response = await axiosInstance.post(
         "/api/MenuItems/GetAll",
         requestBody,
-        { params: queryParams }
+        { params: queryParams },
       );
 
       const responseData = response.data;
@@ -375,11 +366,11 @@ const Home = () => {
         isPriceBasedOnRequest: product.basePrice === 0,
         image: product.imageUrl
           ? `https://restaurant-template.runasp.net/${product.imageUrl}`
-          : "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&h=300&fit=crop",
+          : "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w-400&h-300&fit-crop",
         ingredients: [],
         description: product.description,
         isActive: product.isActive,
-        isAvailable: product.isAvailable !== false, // Assuming true if not specified
+        isAvailable: product.isAvailable !== false,
         calories: product.calories,
         preparationTimeStart: product.preparationTimeStart,
         preparationTimeEnd: product.preparationTimeEnd,
@@ -394,7 +385,7 @@ const Home = () => {
           everyday: product.isAllTime,
           specificDays:
             product.menuItemSchedules?.map((schedule) =>
-              getDayName(schedule.day)
+              getDayName(schedule.day),
             ) || [],
         },
         menuItemSchedules: product.menuItemSchedules || [],
@@ -411,7 +402,7 @@ const Home = () => {
 
       if (selectedCategory === "offers") {
         const offersProducts = transformedProducts.filter(
-          (product) => product.itemOffer && product.itemOffer.isEnabled
+          (product) => product.itemOffer && product.itemOffer.isEnabled,
         );
         setFilteredProducts(offersProducts);
 
@@ -423,8 +414,8 @@ const Home = () => {
         setTotalPages(
           responseData.totalPages ||
             Math.ceil(
-              (responseData.totalCount || productsData.length) / pageSize
-            )
+              (responseData.totalCount || productsData.length) / pageSize,
+            ),
         );
       }
 
@@ -454,7 +445,7 @@ const Home = () => {
 
       const totalCount = cartItems.reduce(
         (total, item) => total + item.quantity,
-        0
+        0,
       );
       setCartItemsCount(totalCount);
     } catch (error) {
@@ -497,7 +488,7 @@ const Home = () => {
     if (!searchTerm) {
       if (selectedCategory === "offers") {
         const offersProducts = products.filter(
-          (product) => product.itemOffer && product.itemOffer.isEnabled
+          (product) => product.itemOffer && product.itemOffer.isEnabled,
         );
         setFilteredProducts(offersProducts);
       } else {
@@ -510,7 +501,7 @@ const Home = () => {
 
     if (selectedCategory === "offers") {
       filtered = filtered.filter(
-        (product) => product.itemOffer && product.itemOffer.isEnabled
+        (product) => product.itemOffer && product.itemOffer.isEnabled,
       );
     }
 
@@ -519,8 +510,8 @@ const Home = () => {
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.ingredients.some((ingredient) =>
-          ingredient.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+          ingredient.toLowerCase().includes(searchTerm.toLowerCase()),
+        ),
     );
 
     setFilteredProducts(filtered);
@@ -540,7 +531,7 @@ const Home = () => {
         text: "يجب تسجيل الدخول لإضافة المنتجات إلى المفضلة",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#E41E26",
+        confirmButtonColor: "#2E3E88",
         cancelButtonColor: "#6B7280",
         confirmButtonText: "تسجيل الدخول",
         cancelButtonText: "إنشاء حساب جديد",
@@ -557,7 +548,7 @@ const Home = () => {
     try {
       if (isProductInFavorites(product.id)) {
         const favoriteItem = favorites.find(
-          (fav) => fav.menuItemId === product.id
+          (fav) => fav.menuItemId === product.id,
         );
         await axiosInstance.delete(`/api/Favorites/Delete/${favoriteItem.id}`);
         setFavorites(favorites.filter((fav) => fav.menuItemId !== product.id));
@@ -566,7 +557,7 @@ const Home = () => {
           "success",
           "تم الإزالة",
           `تم إزالة ${product.name} من المفضلة`,
-          { timer: 1500 }
+          { timer: 1500 },
         );
       } else {
         await axiosInstance.post("/api/Favorites/Add", {
@@ -580,7 +571,7 @@ const Home = () => {
           "success",
           "تم الإضافة",
           `تم إضافة ${product.name} إلى المفضلة`,
-          { timer: 1500 }
+          { timer: 1500 },
         );
       }
     } catch (error) {
@@ -635,7 +626,7 @@ const Home = () => {
         text: "يجب تسجيل الدخول لإضافة المنتجات إلى السلة",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#E41E26",
+        confirmButtonColor: "#2E3E88",
         cancelButtonColor: "#6B7280",
         confirmButtonText: "تسجيل الدخول",
         cancelButtonText: "إنشاء حساب جديد",
@@ -654,7 +645,7 @@ const Home = () => {
         "error",
         "المنتج غير متوفر",
         `${product.name} غير متوفر حالياً`,
-        { timer: 2000 }
+        { timer: 2000 },
       );
       return;
     }
@@ -675,7 +666,7 @@ const Home = () => {
         "success",
         "تم الإضافة إلى السلة!",
         `تم إضافة ${product.name} إلى سلة التسوق`,
-        { timer: 1500 }
+        { timer: 1500 },
       );
     } catch (error) {
       console.error("Error adding to cart:", error);
@@ -683,12 +674,12 @@ const Home = () => {
       if (error.response && error.response.data && error.response.data.errors) {
         const errors = error.response.data.errors;
         const missingOptionsError = errors.find(
-          (err) => err.code === "MissingRequiredOptions"
+          (err) => err.code === "MissingRequiredOptions",
         );
 
         if (missingOptionsError) {
           const requiredOptions = extractRequiredOptionsFromError(
-            missingOptionsError.description
+            missingOptionsError.description,
           );
 
           if (requiredOptions.length > 0) {
@@ -709,7 +700,7 @@ const Home = () => {
               confirmButtonText: "عرض التفاصيل",
               showCancelButton: true,
               cancelButtonText: "إلغاء",
-              confirmButtonColor: "#E41E26",
+              confirmButtonColor: "#2E3E88",
               cancelButtonColor: "#6B7280",
             }).then((result) => {
               if (result.isConfirmed) {
@@ -745,7 +736,7 @@ const Home = () => {
       const offersData = response.data;
 
       const existingOffer = offersData.find(
-        (offer) => offer.menuItemId === product.id
+        (offer) => offer.menuItemId === product.id,
       );
 
       if (existingOffer) {
@@ -775,7 +766,7 @@ const Home = () => {
       text: "لن تتمكن من التراجع عن هذا الإجراء!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#E41E26",
+      confirmButtonColor: "#2E3E88",
       cancelButtonColor: "#6B7280",
       confirmButtonText: "نعم، احذفه!",
       cancelButtonText: "إلغاء",
@@ -799,9 +790,7 @@ const Home = () => {
     });
   };
 
-  // تحديث دالة handleToggleActive لتأخذ بعين الاعتبار كلا من isActive و isAvailable
   const isProductActive = (product) => {
-    // المنتج يعتبر مفعل إذا كان isActive = true و isAvailable = true
     return product.isActive && product.isAvailable;
   };
 
@@ -811,23 +800,22 @@ const Home = () => {
     const productToToggle = products.find((p) => p.id === productId);
     if (productToToggle && productToToggle.categoryId) {
       const category = categories.find(
-        (cat) => cat.originalId === productToToggle.categoryId
+        (cat) => cat.originalId === productToToggle.categoryId,
       );
       if (category && !category.isActive) {
         showNotification(
           "error",
           "لا يمكن التعديل",
           "لا يمكن تعديل حالة المنتج لأن الفئة معطلة",
-          { timer: 2000 }
+          { timer: 2000 },
         );
         return;
       }
     }
 
     try {
-      // تحديث حالة المنتج
       await axiosInstance.put(
-        `/api/MenuItems/ChangeMenuItemActiveStatus/${productId}`
+        `/api/MenuItems/ChangeMenuItemActiveStatus/${productId}`,
       );
 
       fetchProducts();
@@ -838,7 +826,7 @@ const Home = () => {
         "success",
         "تم تحديث الحالة!",
         `تم ${isCurrentlyActive ? "تعطيل" : "تفعيل"} المنتج`,
-        { timer: 1500 }
+        { timer: 1500 },
       );
     } catch (error) {
       console.error("Error updating product status:", error);
@@ -858,7 +846,7 @@ const Home = () => {
         "error",
         "لا يمكن التعديل",
         "لا يمكن تعديل هذا التصنيف",
-        { timer: 2000 }
+        { timer: 2000 },
       );
       return;
     }
@@ -877,7 +865,7 @@ const Home = () => {
         "error",
         "لا يمكن التعديل",
         "لا يمكن تعديل هذا التصنيف",
-        { timer: 2000 }
+        { timer: 2000 },
       );
       return;
     }
@@ -888,13 +876,13 @@ const Home = () => {
         {
           name: editingCategory.name,
           isActive: editingCategory.isActive,
-        }
+        },
       );
 
       setCategories(
         categories.map((cat) =>
-          cat.id === editingCategory.id ? { ...editingCategory } : cat
-        )
+          cat.id === editingCategory.id ? { ...editingCategory } : cat,
+        ),
       );
 
       setEditingCategory(null);
@@ -937,7 +925,7 @@ const Home = () => {
         "success",
         "تم الإضافة!",
         "تم إضافة التصنيف الجديد بنجاح",
-        { timer: 1500 }
+        { timer: 1500 },
       );
     } catch (error) {
       console.error("Error adding category:", error);
@@ -956,7 +944,7 @@ const Home = () => {
     const category = categories.find((cat) => cat.id === categoryId);
 
     const productsInCategory = products.filter(
-      (product) => product.categoryId === category.originalId
+      (product) => product.categoryId === category.originalId,
     );
 
     if (productsInCategory.length > 0) {
@@ -964,7 +952,7 @@ const Home = () => {
         title: "لا يمكن حذف التصنيف",
         text: `يوجد ${productsInCategory.length} منتج في هذا التصنيف. يرجى إعادة تعيين أو حذف هذه المنتجات أولاً.`,
         icon: "warning",
-        confirmButtonColor: "#E41E26",
+        confirmButtonColor: "#2E3E88",
         confirmButtonText: "حسناً",
       });
       return;
@@ -975,7 +963,7 @@ const Home = () => {
       text: "لن تتمكن من التراجع عن هذا الإجراء!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#E41E26",
+      confirmButtonColor: "#2E3E88",
       cancelButtonColor: "#6B7280",
       confirmButtonText: "نعم، احذفه!",
       cancelButtonText: "إلغاء",
@@ -983,7 +971,7 @@ const Home = () => {
       if (result.isConfirmed) {
         try {
           await axiosInstance.delete(
-            `/api/Categories/Delete/${category.originalId}`
+            `/api/Categories/Delete/${category.originalId}`,
           );
 
           setCategories(categories.filter((cat) => cat.id !== categoryId));
@@ -1013,7 +1001,7 @@ const Home = () => {
         "error",
         "لا يمكن التعديل",
         "لا يمكن تعديل هذا التصنيف",
-        { timer: 2000 }
+        { timer: 2000 },
       );
       return;
     }
@@ -1022,20 +1010,20 @@ const Home = () => {
 
     try {
       await axiosInstance.put(
-        `/api/Categories/ChangeCategoryActiveStatus/${category.originalId}`
+        `/api/Categories/ChangeCategoryActiveStatus/${category.originalId}`,
       );
 
       setCategories(
         categories.map((cat) =>
-          cat.id === categoryId ? { ...cat, isActive: !cat.isActive } : cat
-        )
+          cat.id === categoryId ? { ...cat, isActive: !cat.isActive } : cat,
+        ),
       );
 
       showNotification(
         "success",
         "تم تحديث الحالة!",
         `تم ${category.isActive ? "تعطيل" : "تفعيل"} التصنيف`,
-        { timer: 1500 }
+        { timer: 1500 },
       );
     } catch (error) {
       console.error("Error updating category status:", error);
@@ -1055,17 +1043,6 @@ const Home = () => {
     setEditingCategory(null);
     setNewCategory({ name: "", isActive: true });
     document.body.style.overflow = "auto";
-  };
-
-  const scrollCategories = (direction) => {
-    const container = categoriesContainerRef.current;
-    if (container) {
-      const scrollAmount = 200;
-      container.scrollBy({
-        left: direction === "left" ? -scrollAmount : scrollAmount,
-        behavior: "smooth",
-      });
-    }
   };
 
   const handleMouseDown = (e) => {
@@ -1124,7 +1101,10 @@ const Home = () => {
   const formatPriceDisplay = (product) => {
     if (product.isPriceBasedOnRequest) {
       return (
-        <div className="text-[#E41E26] font-bold text-lg sm:text-xl">
+        <div
+          className="font-bold text-lg sm:text-xl"
+          style={{ color: "#2E3E88" }}
+        >
           السعر حسب الطلب
         </div>
       );
@@ -1136,7 +1116,10 @@ const Home = () => {
           <div className="text-gray-400 dark:text-gray-500 text-sm line-through">
             {product.price} ج.م
           </div>
-          <div className="text-[#E41E26] font-bold text-lg sm:text-xl">
+          <div
+            className="font-bold text-lg sm:text-xl"
+            style={{ color: "#2E3E88" }}
+          >
             {product.finalPrice.toFixed(2)} ج.م
           </div>
         </>
@@ -1144,34 +1127,10 @@ const Home = () => {
     }
 
     return (
-      <div className="text-[#E41E26] font-bold text-lg sm:text-xl">
-        {product.price} ج.م
-      </div>
-    );
-  };
-
-  const formatPriceDisplayMobile = (product) => {
-    if (product.isPriceBasedOnRequest) {
-      return (
-        <div className="text-[#E41E26] font-bold text-sm">السعر حسب الطلب</div>
-      );
-    }
-
-    if (product.itemOffer && product.itemOffer.isEnabled) {
-      return (
-        <>
-          <div className="text-gray-400 dark:text-gray-500 text-xs line-through">
-            {product.price} ج.م
-          </div>
-          <div className="text-[#E41E26] font-bold text-sm">
-            {product.finalPrice.toFixed(2)} ج.م
-          </div>
-        </>
-      );
-    }
-
-    return (
-      <div className="text-[#E41E26] font-bold text-sm">
+      <div
+        className="font-bold text-lg sm:text-xl"
+        style={{ color: "#2E3E88" }}
+      >
         {product.price} ج.م
       </div>
     );
@@ -1183,7 +1142,7 @@ const Home = () => {
     }
 
     const category = categories.find(
-      (cat) => cat.originalId === product.categoryId
+      (cat) => cat.originalId === product.categoryId,
     );
 
     if (!category) {
@@ -1194,11 +1153,6 @@ const Home = () => {
   };
 
   const isProductAvailableForCart = (product) => {
-    // المنتج متاح إذا كان:
-    // 1. isActive = true
-    // 2. isAvailable = true
-    // 3. الفئة مفعلة
-
     if (!product.isActive) {
       return false;
     }
@@ -1218,7 +1172,7 @@ const Home = () => {
     if (!product.categoryId) return true;
 
     const category = categories.find(
-      (cat) => cat.originalId === product.categoryId
+      (cat) => cat.originalId === product.categoryId,
     );
     return !category || category.isActive;
   };
@@ -1231,7 +1185,7 @@ const Home = () => {
         text: `يجب تسجيل الدخول للوصول إلى ${action}`,
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#E41E26",
+        confirmButtonColor: "#2E3E88",
         cancelButtonColor: "#6B7280",
         confirmButtonText: "تسجيل الدخول",
         cancelButtonText: "إنشاء حساب جديد",
@@ -1329,13 +1283,13 @@ const Home = () => {
 
     window.addEventListener(
       "categorySelectedFromFooter",
-      handleCategorySelectedFromFooter
+      handleCategorySelectedFromFooter,
     );
 
     return () => {
       window.removeEventListener(
         "categorySelectedFromFooter",
-        handleCategorySelectedFromFooter
+        handleCategorySelectedFromFooter,
       );
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1348,39 +1302,84 @@ const Home = () => {
   const canShowAdminButtons = isAdmin || isRestaurant;
   const canShowToggleButton = isAdmin || isRestaurant || isBranch;
 
+  // دالة للحصول على اسم الزر من النوع
+  const getButtonLabel = (buttonType) => {
+    switch (buttonType) {
+      case "cart":
+        return `سلة التسوق (${cartItemsCount})`;
+      case "favorites":
+        return `المفضلة (${favorites.length})`;
+      case "addProduct":
+        return "إضافة منتج جديد";
+      case "categories":
+        return "إدارة التصنيفات";
+      default:
+        return "";
+    }
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-4">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E41E26]"></div>
+      <div
+        className="min-h-screen flex items-center justify-center px-4"
+        style={{
+          background: `linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)`,
+        }}
+      >
+        <div className="text-center">
+          <div
+            className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+            style={{
+              borderTopColor: "#2E3E88",
+              borderRightColor: "#32B9CC",
+              borderBottomColor: "#2E3E88",
+              borderLeftColor: "transparent",
+            }}
+          ></div>
+          <p className="text-lg font-semibold" style={{ color: "#2E3E88" }}>
+            جارٍ تحميل المحتوى...
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 font-sans relative overflow-x-hidden">
+    <div
+      className="min-h-screen font-sans relative overflow-x-hidden"
+      style={{
+        background: `linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)`,
+        backgroundAttachment: "fixed",
+      }}
+    >
       <div ref={topOfPageRef}></div>
 
-      <HeroSwipper />
+      {/* Header Section */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/80 to-white"></div>
+        <HeroSwipper />
+      </div>
 
+      {/* Categories Section - متوسطة في المنتصف */}
       <div
         ref={categoriesSectionRef}
-        className="relative max-w-6xl mx-auto -mt-8 md:-mt-12 px-2 sm:px-4 z-20 w-full"
+        className="relative max-w-7xl mx-auto mt-6 px-4 z-20"
       >
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-3 md:p-4 relative w-full">
-          <button
-            onClick={() => scrollCategories("left")}
-            className="absolute left-1 md:left-2 top-1/2 transform -translate-y-1/2 bg-white/90 dark:bg-gray-700/90 backdrop-blur-sm rounded-full p-2 text-gray-600 dark:text-gray-300 hover:text-[#E41E26] z-10 shadow-lg"
-          >
-            <FaChevronLeft size={14} className="sm:w-4" />
-          </button>
-
+        <div
+          className="bg-white rounded-2xl p-2 shadow-xl relative"
+          style={{
+            boxShadow: "0 10px 30px rgba(46, 62, 136, 0.1)",
+            background: `linear-gradient(135deg, #ffffff, #f0f8ff)`,
+          }}
+        >
           <div
             ref={categoriesContainerRef}
-            className="flex overflow-x-auto scrollbar-hide gap-2 md:gap-4 px-6 sm:px-8 cursor-grab active:cursor-grabbing select-none"
+            className="flex overflow-x-auto scrollbar-hide gap-2 px-2 py-3 cursor-grab active:cursor-grabbing select-none justify-center"
             style={{
               scrollbarWidth: "none",
               msOverflowStyle: "none",
               direction: "rtl",
+              margin: "0 auto",
             }}
             onMouseDown={handleMouseDown}
             onMouseLeave={handleMouseLeave}
@@ -1400,57 +1399,133 @@ const Home = () => {
                     scrollToCategories();
                   }, 50);
                 }}
-                className={`flex-shrink-0 flex items-center gap-2 px-3 md:px-4 py-2 md:py-3 rounded-xl font-semibold text-sm md:text-base ${
-                  selectedCategory === category.id
-                    ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white shadow-lg"
-                    : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                } ${
-                  !category.isActive &&
-                  category.id !== "all" &&
-                  category.id !== "offers"
-                    ? "opacity-60"
-                    : ""
-                }`}
+                className="flex-shrink-0 relative group"
                 style={{ direction: "rtl" }}
               >
-                <span className="whitespace-nowrap">{category.name}</span>
-                {category.id !== "all" &&
-                  category.id !== "offers" &&
-                  !category.isActive && (
-                    <span className="text-xs text-red-500">(معطل)</span>
-                  )}
+                <div
+                  className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-300 w-24 h-24 ${
+                    selectedCategory === category.id
+                      ? "scale-105"
+                      : "hover:scale-105"
+                  }`}
+                  style={{
+                    background:
+                      selectedCategory === category.id
+                        ? `linear-gradient(135deg, #2E3E88, #32B9CC)`
+                        : `linear-gradient(135deg, #ffffff, #f0f8ff)`,
+                    boxShadow:
+                      selectedCategory === category.id
+                        ? `0 8px 20px rgba(46, 62, 136, 0.3)`
+                        : `0 4px 12px rgba(46, 62, 136, 0.1)`,
+                    border:
+                      selectedCategory === category.id
+                        ? "none"
+                        : `1px solid #32B9CC20`,
+                  }}
+                >
+                  <div
+                    className={`w-10 h-10 rounded-lg flex items-center justify-center mb-2 ${
+                      selectedCategory === category.id
+                        ? "bg-white/20"
+                        : "bg-gradient-to-br from-white to-gray-50"
+                    }`}
+                  >
+                    {category.id === "offers" ? (
+                      <FaFire
+                        className={`text-base ${
+                          selectedCategory === category.id ? "text-white" : ""
+                        }`}
+                        style={
+                          selectedCategory === category.id
+                            ? {}
+                            : { color: "#2E3E88" }
+                        }
+                      />
+                    ) : category.id === "all" ? (
+                      <FaHome
+                        className={`text-base ${
+                          selectedCategory === category.id ? "text-white" : ""
+                        }`}
+                        style={
+                          selectedCategory === category.id
+                            ? {}
+                            : { color: "#2E3E88" }
+                        }
+                      />
+                    ) : (
+                      <FaTag
+                        className={`text-base ${
+                          selectedCategory === category.id ? "text-white" : ""
+                        }`}
+                        style={
+                          selectedCategory === category.id
+                            ? {}
+                            : { color: "#2E3E88" }
+                        }
+                      />
+                    )}
+                  </div>
+
+                  <span
+                    className={`font-medium text-xs text-center leading-tight ${
+                      selectedCategory === category.id ? "text-white" : ""
+                    }`}
+                    style={
+                      selectedCategory !== category.id
+                        ? { color: "#2E3E88" }
+                        : {}
+                    }
+                  >
+                    {category.name}
+                  </span>
+
+                  {category.id !== "all" &&
+                    category.id !== "offers" &&
+                    !category.isActive && (
+                      <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-red-500"></div>
+                    )}
+                </div>
               </button>
             ))}
           </div>
-
-          <button
-            onClick={() => scrollCategories("right")}
-            className="absolute right-1 md:right-2 top-1/2 transform -translate-y-1/2 bg-white/90 dark:bg-gray-700/90 backdrop-blur-sm rounded-full p-2 text-gray-600 dark:text-gray-300 hover:text-[#E41E26] z-10 shadow-lg"
-          >
-            <FaChevronRight size={14} className="sm:w-4" />
-          </button>
         </div>
       </div>
 
-      {/* Products Grid - Show skeleton until both data and images are loaded */}
-      <div className="relative z-10 w-full">
+      {/* Products Grid */}
+      <div className="relative z-10 w-full mt-8">
         {productsLoading || !imagesLoaded ? (
-          <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 md:py-6 w-full">
+          <div className="max-w-7xl mx-auto px-4 py-8">
             <ProductSkeleton count={pageSize} />
           </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 md:py-6 w-full">
-            <div className="text-center py-12 md:py-16 bg-white dark:bg-gray-800 rounded-2xl shadow-lg mx-2">
-              <FaEye className="mx-auto text-4xl md:text-6xl text-gray-400 mb-4" />
-              <h3 className="text-xl md:text-2xl font-semibold text-gray-600 dark:text-gray-400 mb-2">
+          <div className="max-w-7xl mx-auto px-4 py-8">
+            <div
+              className="text-center py-16 rounded-3xl mx-4 shadow-xl"
+              style={{
+                background: `linear-gradient(135deg, #ffffff, #f0f8ff)`,
+                boxShadow: "0 20px 40px rgba(46, 62, 136, 0.1)",
+              }}
+            >
+              <div
+                className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center"
+                style={{
+                  background: `linear-gradient(135deg, #2E3E8820, #32B9CC20)`,
+                }}
+              >
+                <FaBoxOpen className="text-4xl" style={{ color: "#2E3E88" }} />
+              </div>
+              <h3
+                className="text-2xl font-bold mb-3"
+                style={{ color: "#2E3E88" }}
+              >
                 {selectedCategory === "offers"
                   ? "لا توجد عروض حالياً"
                   : "لم يتم العثور على منتجات"}
               </h3>
-              <p className="text-gray-500 dark:text-gray-500 mb-4 px-4">
+              <p className="mb-6 max-w-md mx-auto" style={{ color: "#32B9CC" }}>
                 {selectedCategory === "offers"
                   ? "لا توجد منتجات تحتوي على عروض حالياً"
-                  : "حاول تعديل معايير التصفية"}
+                  : "حاول تعديل معايير البحث أو تصفح فئات أخرى"}
               </p>
               <button
                 onClick={() => {
@@ -1460,24 +1535,71 @@ const Home = () => {
                     scrollToCategories();
                   }, 50);
                 }}
-                className="bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-6 py-3 rounded-xl font-semibold shadow-lg text-sm md:text-base"
+                className="px-8 py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                style={{
+                  background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                  color: "white",
+                  boxShadow: `0 10px 25px #2E3E8830`,
+                }}
               >
                 عرض جميع المنتجات
               </button>
             </div>
           </div>
         ) : (
-          <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 md:py-6 w-full relative">
+          <div className="max-w-7xl mx-auto px-4 py-8 relative">
+            {/* Products Grid Header */}
+            <div className="flex justify-between items-center mb-8 px-2">
+              <div>
+                <h2
+                  className="text-2xl md:text-3xl font-bold"
+                  style={{ color: "#2E3E88" }}
+                >
+                  {selectedCategory === "all"
+                    ? "جميع المنتجات"
+                    : selectedCategory === "offers"
+                      ? "العروض الحصرية"
+                      : categories.find((c) => c.id === selectedCategory)?.name}
+                </h2>
+                <p className="mt-2" style={{ color: "#32B9CC" }}>
+                  {filteredProducts.length} منتج متاح
+                </p>
+              </div>
+
+              {canShowAdminButtons && (
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleAddNewProduct}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl font-semibold transition-all duration-300 hover:scale-105"
+                    style={{
+                      background: `linear-gradient(135deg, #32B9CC, #2E3E88)`,
+                      color: "white",
+                    }}
+                  >
+                    <FaPlus />
+                    <span className="hidden sm:inline">إضافة منتج</span>
+                  </button>
+                </div>
+              )}
+            </div>
+
             <div
-              className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6"
+              className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
               style={{ direction: "rtl" }}
             >
               {filteredProducts.map((product) => (
                 <div
                   key={`${product.id}-${currentPage}`}
-                  className={`bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 cursor-pointer w-full relative min-h-[180px] ${
+                  className={`group relative rounded-3xl overflow-hidden cursor-pointer transition-all duration-500 transform hover:-translate-y-2 ${
                     !isProductAvailableForCart(product) ? "opacity-70" : ""
-                  } ${isProductCategoryDisabled(product) ? "opacity-80" : ""}`}
+                  }`}
+                  style={{
+                    background: `linear-gradient(145deg, #ffffff, #f0f8ff)`,
+                    boxShadow: "0 15px 35px rgba(46, 62, 136, 0.1)",
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
                   onClick={(e) => {
                     const isButtonClick =
                       e.target.closest("button") ||
@@ -1488,117 +1610,161 @@ const Home = () => {
                     }
                   }}
                 >
+                  {/* Offer Badge */}
                   {product.itemOffer && product.itemOffer.isEnabled && (
-                    <div className="absolute top-2 right-2 z-10">
-                      <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-3 py-1.5 rounded-xl shadow-2xl flex items-center gap-1.5">
-                        <FaFire className="text-white" size={12} />
-                        <span className="text-xs font-bold whitespace-nowrap">
+                    <div className="absolute top-4 right-4 z-10">
+                      <div
+                        className="px-4 py-2 rounded-xl shadow-2xl flex items-center gap-2 text-white font-bold"
+                        style={{
+                          background: `linear-gradient(135deg, #FF6B6B, #FFA726)`,
+                          boxShadow: "0 5px 15px rgba(255, 107, 107, 0.4)",
+                        }}
+                      >
+                        <FaBolt />
+                        <span className="text-xs whitespace-nowrap">
                           {formatOfferText(product.itemOffer)}
                         </span>
                       </div>
                     </div>
                   )}
 
-                  {/* Admin/Restaurant/Branch Buttons */}
-                  {(canShowAdminButtons || canShowToggleButton) && (
-                    <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
-                      {/* Toggle Active Button - Available for Admin, Restaurant, and Branch */}
-                      {canShowToggleButton && (
+                  {/* Product Image */}
+                  <div className="relative h-56 w-full overflow-hidden">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      loading="lazy"
+                    />
+
+                    {/* Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                    {/* Admin Buttons Overlay */}
+                    {(canShowAdminButtons || canShowToggleButton) && (
+                      <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
+                        {/* Toggle Active Button */}
+                        {canShowToggleButton && (
+                          <button
+                            onClick={(e) => {
+                              if (!canToggleProductActive(product)) {
+                                showNotification(
+                                  "error",
+                                  "لا يمكن التعديل",
+                                  "لا يمكن تعديل حالة المنتج لأن الفئة معطلة",
+                                  { timer: 2000 },
+                                );
+                                return;
+                              }
+                              handleToggleActive(product.id, e);
+                            }}
+                            disabled={!canToggleProductActive(product)}
+                            className={`p-2 rounded-full shadow-lg text-xs no-product-details transition-all ${
+                              isProductActive(product)
+                                ? "bg-yellow-500 hover:bg-yellow-600 text-white"
+                                : "bg-green-500 hover:bg-green-600 text-white"
+                            } ${
+                              !canToggleProductActive(product)
+                                ? "opacity-50 cursor-not-allowed"
+                                : ""
+                            }`}
+                            title={isProductActive(product) ? "تعطيل" : "تفعيل"}
+                          >
+                            {isProductActive(product) ? (
+                              <FaTimesCircle size={12} />
+                            ) : (
+                              <FaCheckCircle size={12} />
+                            )}
+                          </button>
+                        )}
+
+                        {/* Admin/Restaurant Only Buttons */}
+                        {canShowAdminButtons && (
+                          <>
+                            <button
+                              onClick={(e) => handleEditProduct(product, e)}
+                              className="bg-blue-500 text-white p-2 rounded-full shadow-lg hover:bg-blue-600 no-product-details transition-all"
+                              title="تعديل"
+                            >
+                              <FaEdit size={12} />
+                            </button>
+                            <button
+                              onClick={(e) => handleManageOffers(product, e)}
+                              className="bg-purple-500 text-white p-2 rounded-full shadow-lg hover:bg-purple-600 no-product-details transition-all"
+                              title="العروض"
+                            >
+                              <FaPercent size={12} />
+                            </button>
+                            <button
+                              onClick={(e) =>
+                                handleDeleteProduct(product.id, e)
+                              }
+                              className="bg-red-500 text-white p-2 rounded-full shadow-lg hover:bg-red-600 no-product-details transition-all"
+                              title="حذف"
+                            >
+                              <FaTrash size={12} />
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Product Content */}
+                  <div className="p-5 flex-1 flex flex-col">
+                    {/* Category Tag */}
+                    <div className="mb-3">
+                      <span
+                        className="inline-block px-3 py-1 rounded-full text-xs font-medium"
+                        style={{
+                          background: `#2E3E8815`,
+                          color: "#2E3E88",
+                        }}
+                      >
+                        {product.category}
+                      </span>
+                    </div>
+
+                    {/* Product Name */}
+                    <h3
+                      className="font-bold text-lg mb-2 line-clamp-1 group-hover:text-opacity-80 transition-colors"
+                      dir={isArabic(product.name) ? "rtl" : "ltr"}
+                      style={{ color: "#2E3E88" }}
+                    >
+                      {product.name}
+                    </h3>
+
+                    {/* Product Description */}
+                    <p
+                      className="text-gray-600 text-sm mb-4 line-clamp-2 leading-relaxed flex-1"
+                      dir={isArabic(product.description) ? "rtl" : "ltr"}
+                    >
+                      {product.description}
+                    </p>
+
+                    {/* Price & Actions */}
+                    <div className="mt-auto pt-4 border-t border-gray-100">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2">
+                          {formatPriceDisplay(product)}
+                        </div>
+
                         <button
-                          onClick={(e) => {
-                            if (!canToggleProductActive(product)) {
-                              showNotification(
-                                "error",
-                                "لا يمكن التعديل",
-                                "لا يمكن تعديل حالة المنتج لأن الفئة معطلة",
-                                { timer: 2000 }
-                              );
-                              return;
-                            }
-                            handleToggleActive(product.id, e);
-                          }}
-                          disabled={!canToggleProductActive(product)}
-                          className={`p-2 rounded-lg shadow-lg text-xs no-product-details ${
-                            isProductActive(product)
-                              ? "bg-yellow-500 text-white hover:bg-yellow-600"
-                              : "bg-green-500 text-white hover:bg-green-600"
-                          } ${
-                            !canToggleProductActive(product)
-                              ? "opacity-50 cursor-not-allowed"
-                              : ""
+                          onClick={(e) => handleToggleFavorite(product, e)}
+                          className={`p-2 rounded-full no-product-details transition-all hover:scale-110 ${
+                            isProductInFavorites(product.id)
+                              ? "text-red-500 bg-red-50"
+                              : "text-gray-400 bg-gray-100 hover:text-red-500"
                           }`}
                         >
-                          {isProductActive(product) ? (
-                            <FaTimesCircle size={12} />
+                          {isProductInFavorites(product.id) ? (
+                            <FaHeart size={20} />
                           ) : (
-                            <FaCheckCircle size={12} />
+                            <FaRegHeart size={20} />
                           )}
                         </button>
-                      )}
-
-                      {/* Admin/Restaurant Only Buttons */}
-                      {canShowAdminButtons && (
-                        <>
-                          <button
-                            onClick={(e) => handleEditProduct(product, e)}
-                            className="bg-blue-500 text-white p-2 rounded-lg shadow-lg hover:bg-blue-600 no-product-details"
-                          >
-                            <FaEdit size={12} />
-                          </button>
-                          <button
-                            onClick={(e) => handleManageOffers(product, e)}
-                            className="bg-purple-500 text-white p-2 rounded-lg shadow-lg hover:bg-purple-600 no-product-details"
-                          >
-                            <FaPercent size={12} />
-                          </button>
-                          <button
-                            onClick={(e) => handleDeleteProduct(product.id, e)}
-                            className="bg-red-500 text-white p-2 rounded-lg shadow-lg hover:bg-red-600 no-product-details"
-                          >
-                            <FaTrash size={12} />
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  )}
-
-                  <div className="sm:hidden">
-                    <div className="p-3">
-                      <div className="flex">
-                        <div className="w-28 flex-shrink-0 ml-3">
-                          <div className="relative h-32 w-full overflow-hidden rounded-xl">
-                            <img
-                              src={product.image}
-                              alt={product.name}
-                              className="w-full h-full object-cover"
-                              loading="lazy"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="flex-1 min-w-0">
-                          <h3
-                            className="font-bold text-sm text-gray-800 dark:text-gray-200 hover:text-[#E41E26] line-clamp-1 mb-2"
-                            dir={isArabic(product.name) ? "rtl" : "ltr"}
-                          >
-                            {product.name}
-                          </h3>
-
-                          <p
-                            className="text-gray-600 dark:text-gray-400 text-xs mb-2 line-clamp-1 leading-relaxed"
-                            dir={isArabic(product.description) ? "rtl" : "ltr"}
-                          >
-                            {product.description}
-                          </p>
-
-                          <div className="flex items-center gap-1 mb-3">
-                            {formatPriceDisplayMobile(product)}
-                          </div>
-                        </div>
                       </div>
-                    </div>
 
-                    <div className="px-3 pb-3">
                       <div className="flex gap-2">
                         <button
                           onClick={(e) => {
@@ -1610,22 +1776,32 @@ const Home = () => {
                             !isProductAvailableForCart(product) ||
                             addingToCart === product.id
                           }
-                          className={`flex-1 py-2.5 rounded-xl font-semibold flex items-center justify-center gap-2 text-xs no-product-details ${
+                          className={`flex-1 py-3 rounded-xl font-bold flex items-center justify-center gap-2 text-sm no-product-details transition-all ${
                             addingToCart === product.id
-                              ? "bg-gradient-to-r from-gray-500 to-gray-600 text-white cursor-wait"
+                              ? "bg-gray-500 text-white cursor-wait"
                               : isProductAvailableForCart(product)
-                              ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white"
-                              : "bg-gray-400 text-gray-200 cursor-not-allowed"
+                                ? "hover:scale-105 active:scale-95"
+                                : "bg-gray-300 text-gray-500 cursor-not-allowed"
                           }`}
+                          style={
+                            isProductAvailableForCart(product) &&
+                            addingToCart !== product.id
+                              ? {
+                                  background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                                  color: "white",
+                                  boxShadow: `0 5px 15px #2E3E8830`,
+                                }
+                              : {}
+                          }
                         >
                           {addingToCart === product.id ? (
                             <>
-                              <div className="animate-spin rounded-full h-3 w-3 border-t-2 border-b-2 border-white"></div>
+                              <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
                               <span>يتم الإضافة...</span>
                             </>
                           ) : (
                             <>
-                              <FaShoppingCart className="w-3.5 h-3.5" />
+                              <FaShoppingCart className="w-4 h-4" />
                               <span>
                                 {!isProductAvailableForCart(product)
                                   ? "غير متوفر"
@@ -1640,119 +1816,14 @@ const Home = () => {
                             e.stopPropagation();
                             handleProductDetails(product);
                           }}
-                          className="flex-1 py-2.5 rounded-xl font-semibold flex items-center justify-center gap-2 text-xs no-product-details bg-gradient-to-r from-gray-600 to-gray-800 text-white"
-                        >
-                          <FaEye className="w-3.5 h-3.5" />
-                          <span>عرض التفاصيل</span>
-                        </button>
-
-                        <button
-                          onClick={(e) => handleToggleFavorite(product, e)}
-                          className={`p-2.5 rounded-xl font-semibold flex items-center justify-center text-xs no-product-details ${
-                            isProductInFavorites(product.id)
-                              ? "text-red-500 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30"
-                              : "text-gray-400 bg-gray-50 dark:bg-gray-700 hover:text-red-500 hover:bg-gray-100 dark:hover:bg-gray-600"
-                          }`}
-                        >
-                          {isProductInFavorites(product.id) ? (
-                            <FaHeart size={16} />
-                          ) : (
-                            <FaRegHeart size={16} />
-                          )}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="hidden sm:block">
-                    <div className="relative h-48 w-full overflow-hidden">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                    </div>
-
-                    <div className="p-3 sm:p-4">
-                      <h3
-                        className="font-bold text-base sm:text-lg text-gray-800 dark:text-gray-200 mb-2 hover:text-[#E41E26] line-clamp-1"
-                        dir={isArabic(product.name) ? "rtl" : "ltr"}
-                      >
-                        {product.name}
-                      </h3>
-                      <p
-                        className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-3 line-clamp-1 leading-relaxed"
-                        dir={isArabic(product.description) ? "rtl" : "ltr"}
-                      >
-                        {product.description}
-                      </p>
-
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          {formatPriceDisplay(product)}
-                        </div>
-                        <button
-                          onClick={(e) => handleToggleFavorite(product, e)}
-                          className={`p-2 rounded-full no-product-details ${
-                            isProductInFavorites(product.id)
-                              ? "text-red-500 bg-red-50 dark:bg-red-900/20"
-                              : "text-gray-400 bg-gray-50 dark:bg-gray-700 hover:text-red-500"
-                          }`}
-                        >
-                          {isProductInFavorites(product.id) ? (
-                            <FaHeart size={18} />
-                          ) : (
-                            <FaRegHeart size={18} />
-                          )}
-                        </button>
-                      </div>
-
-                      <div className="flex gap-2 mt-3 sm:mt-4">
-                        <button
-                          onClick={(e) => {
-                            if (isProductAvailableForCart(product)) {
-                              handleAddToCart(product, e);
-                            }
+                          className="w-12 flex items-center justify-center rounded-xl font-bold no-product-details transition-all hover:scale-105 active:scale-95"
+                          style={{
+                            background: `#32B9CC15`,
+                            color: "#32B9CC",
                           }}
-                          disabled={
-                            !isProductAvailableForCart(product) ||
-                            addingToCart === product.id
-                          }
-                          className={`flex-1 py-2 sm:py-2.5 rounded-xl font-semibold flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm no-product-details ${
-                            addingToCart === product.id
-                              ? "bg-gradient-to-r from-gray-500 to-gray-600 text-white cursor-wait"
-                              : isProductAvailableForCart(product)
-                              ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white"
-                              : "bg-gray-400 text-gray-200 cursor-not-allowed"
-                          }`}
+                          title="عرض التفاصيل"
                         >
-                          {addingToCart === product.id ? (
-                            <>
-                              <div className="animate-spin rounded-full h-3 w-3 border-t-2 border-b-2 border-white"></div>
-                              <span className="xs:hidden">يتم الإضافة...</span>
-                            </>
-                          ) : (
-                            <>
-                              <FaShoppingCart className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                              <span className="xs:hidden">
-                                {!isProductAvailableForCart(product)
-                                  ? "غير متوفر"
-                                  : "أضف إلى السلة"}
-                              </span>
-                            </>
-                          )}
-                        </button>
-
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleProductDetails(product);
-                          }}
-                          className="flex-1 py-2 sm:py-2.5 rounded-xl font-semibold flex items-center justify-center gap-1 sm:gap-2 text-xs sm:text-sm no-product-details bg-gradient-to-r from-gray-600 to-gray-800 text-white"
-                        >
-                          <FaEye className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                          <span className="xs:hidden">عرض التفاصيل</span>
+                          <FaEye className="w-5 h-5" />
                         </button>
                       </div>
                     </div>
@@ -1761,36 +1832,60 @@ const Home = () => {
               ))}
             </div>
 
+            {/* Pagination */}
             {totalPages > 1 && (
-              <div className="mt-8 flex flex-col items-center">
-                <div className="flex items-center justify-center gap-1 sm:gap-2">
+              <div className="mt-12 flex flex-col items-center">
+                <div className="flex items-center justify-center gap-2">
                   <button
                     onClick={handlePrevPage}
                     disabled={currentPage === 1}
-                    className={`p-2 sm:p-3 rounded-xl ${
+                    className={`p-3 rounded-xl transition-all ${
                       currentPage === 1
-                        ? "bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed"
-                        : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600"
+                        ? "opacity-50 cursor-not-allowed"
+                        : "hover:scale-105 active:scale-95"
                     }`}
+                    style={{
+                      background:
+                        currentPage === 1
+                          ? `#2E3E8810`
+                          : `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                      color: currentPage === 1 ? `#2E3E8850` : "white",
+                      boxShadow:
+                        currentPage === 1 ? "none" : `0 5px 15px #2E3E8830`,
+                    }}
                   >
-                    <FaChevronRight className="text-sm sm:text-base" />
+                    <FaChevronRight className="text-base" />
                   </button>
 
-                  <div className="flex items-center gap-1 sm:gap-2">
+                  <div className="flex items-center gap-2">
                     {getPaginationNumbers().map((pageNum, index) => (
                       <React.Fragment key={index}>
                         {pageNum === "..." ? (
-                          <span className="px-2 sm:px-3 py-1 sm:py-2 text-gray-500">
+                          <span
+                            className="px-4 py-2"
+                            style={{ color: "#32B9CC" }}
+                          >
                             ...
                           </span>
                         ) : (
                           <button
                             onClick={() => handlePageChange(pageNum)}
-                            className={`px-3 sm:px-4 py-1 sm:py-2 rounded-xl font-semibold ${
+                            className={`px-4 py-2 rounded-xl font-bold transition-all hover:scale-105 active:scale-95 ${
                               currentPage === pageNum
-                                ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white shadow-lg"
-                                : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600"
+                                ? "text-white shadow-lg"
+                                : "hover:shadow-md"
                             }`}
+                            style={
+                              currentPage === pageNum
+                                ? {
+                                    background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                                    boxShadow: `0 5px 15px #2E3E8840`,
+                                  }
+                                : {
+                                    color: "#2E3E88",
+                                    background: `#2E3E8810`,
+                                  }
+                            }
                           >
                             {pageNum}
                           </button>
@@ -1802,13 +1897,24 @@ const Home = () => {
                   <button
                     onClick={handleNextPage}
                     disabled={currentPage === totalPages}
-                    className={`p-2 sm:p-3 rounded-xl ${
+                    className={`p-3 rounded-xl transition-all ${
                       currentPage === totalPages
-                        ? "bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed"
-                        : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600"
+                        ? "opacity-50 cursor-not-allowed"
+                        : "hover:scale-105 active:scale-95"
                     }`}
+                    style={{
+                      background:
+                        currentPage === totalPages
+                          ? `#2E3E8810`
+                          : `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                      color: currentPage === totalPages ? `#2E3E8850` : "white",
+                      boxShadow:
+                        currentPage === totalPages
+                          ? "none"
+                          : `0 5px 15px #2E3E8830`,
+                    }}
                   >
-                    <FaChevronLeft className="text-sm sm:text-base" />
+                    <FaChevronLeft className="text-base" />
                   </button>
                 </div>
               </div>
@@ -1817,89 +1923,210 @@ const Home = () => {
         )}
       </div>
 
-      {/* Cart Button */}
-      <div
-        className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white rounded-full p-3 sm:p-4 shadow-2xl z-40 cursor-pointer hover:scale-110 no-product-details ${
-          cartItemsCount === 0 ? "opacity-70" : ""
-        }`}
-        onClick={handleNavigateToCart}
-      >
+      {/* Floating Action Buttons - على اليسار مع تلميحات احترافية */}
+      <div className="fixed bottom-6 left-6 flex flex-col gap-4 z-40">
+        {/* Cart Button */}
         <div className="relative">
-          <FaShoppingCart className="w-4 h-4 sm:w-6 sm:h-6" />
-          {cartItemsCount > 0 && (
-            <span className="absolute -top-2 -right-2 bg-white text-[#E41E26] rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center text-xs font-bold">
-              {cartItemsCount}
-            </span>
-          )}
-        </div>
-      </div>
+          <button
+            onClick={handleNavigateToCart}
+            onMouseEnter={() => setHoveredButton("cart")}
+            onMouseLeave={() => setHoveredButton(null)}
+            className={`relative rounded-full p-4 shadow-2xl transition-all duration-300 hover:scale-110 no-product-details ${
+              cartItemsCount === 0 ? "opacity-90" : ""
+            }`}
+            style={{
+              background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+              boxShadow: `0 10px 30px #2E3E8840`,
+            }}
+          >
+            <div className="relative">
+              <FaShoppingCart className="w-6 h-6 text-white" />
+              {cartItemsCount > 0 && (
+                <span
+                  className="absolute -top-2 -right-2 bg-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold"
+                  style={{ color: "#2E3E88" }}
+                >
+                  {cartItemsCount}
+                </span>
+              )}
+            </div>
+          </button>
 
-      {/* Floating Buttons - Always Visible Favorites Button */}
-      <div className="fixed bottom-4 left-4 flex flex-col gap-3 z-40">
-        {/* Favorites Button - Always Visible */}
-        <button
-          onClick={handleNavigateToFavorites}
-          className="relative bg-gradient-to-r from-[#FF3366] to-[#FF6B9D] text-white rounded-full p-3 sm:p-4 shadow-2xl hover:scale-110 no-product-details"
-        >
-          <div className="relative flex items-center justify-center">
-            <FaHeart className="w-4 h-4 sm:w-6 sm:h-6" />
-
-            {favorites.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-white text-[#FF3366] rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center text-xs font-bold shadow-md">
-                {favorites.length}
-              </span>
-            )}
-          </div>
-
-          <div className="absolute right-full mr-3 top-1/2 transform -translate-y-1/2 opacity-0 hover:opacity-100 pointer-events-none">
-            <div className="bg-gray-900 text-white text-xs font-semibold px-3 py-2 rounded-lg shadow-lg whitespace-nowrap">
-              منتجاتي المفضلة
-              <div className="absolute left-full top-1/2 transform -translate-y-1/2">
-                <div className="w-2 h-2 bg-gray-900 rotate-45"></div>
+          {/* Tooltip for Cart */}
+          {hoveredButton === "cart" && (
+            <div className="absolute left-full ml-3 top-1/2 transform -translate-y-1/2 z-50">
+              <div className="relative">
+                <div
+                  className="bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl whitespace-nowrap text-sm font-semibold"
+                  style={{
+                    background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                    boxShadow: `0 10px 25px #2E3E8830`,
+                  }}
+                >
+                  {getButtonLabel("cart")}
+                  <div className="absolute right-full top-1/2 transform -translate-y-1/2">
+                    <div
+                      className="w-3 h-3"
+                      style={{
+                        borderRight: `6px solid #2E3E88`,
+                        borderTop: "6px solid transparent",
+                        borderBottom: "6px solid transparent",
+                      }}
+                    ></div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </button>
+          )}
+        </div>
 
-        {/* Admin Only Buttons - Only for Admin and Restaurant, NOT for Branch */}
+        {/* Favorites Button */}
+        <div className="relative">
+          <button
+            onClick={handleNavigateToFavorites}
+            onMouseEnter={() => setHoveredButton("favorites")}
+            onMouseLeave={() => setHoveredButton(null)}
+            className="relative rounded-full p-4 shadow-2xl transition-all duration-300 hover:scale-110 no-product-details"
+            style={{
+              background: "linear-gradient(135deg, #FF6B6B, #FF3366)",
+              boxShadow: "0 10px 30px rgba(255, 107, 107, 0.4)",
+            }}
+          >
+            <div className="relative flex items-center justify-center">
+              <FaHeart className="w-6 h-6 text-white" />
+
+              {favorites.length > 0 && (
+                <span
+                  className="absolute -top-2 -right-2 bg-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold"
+                  style={{ color: "#FF3366" }}
+                >
+                  {favorites.length}
+                </span>
+              )}
+            </div>
+          </button>
+
+          {/* Tooltip for Favorites */}
+          {hoveredButton === "favorites" && (
+            <div className="absolute left-full ml-3 top-1/2 transform -translate-y-1/2 z-50">
+              <div className="relative">
+                <div
+                  className="bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl whitespace-nowrap text-sm font-semibold"
+                  style={{
+                    background: "linear-gradient(135deg, #FF6B6B, #FF3366)",
+                    boxShadow: "0 10px 25px rgba(255, 107, 107, 0.4)",
+                  }}
+                >
+                  {getButtonLabel("favorites")}
+                  <div className="absolute right-full top-1/2 transform -translate-y-1/2">
+                    <div
+                      className="w-3 h-3"
+                      style={{
+                        borderRight: "6px solid #FF3366",
+                        borderTop: "6px solid transparent",
+                        borderBottom: "6px solid transparent",
+                      }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Admin Buttons */}
         {canShowAdminButtons && (
           <>
-            <button
-              onClick={handleAddNewProduct}
-              className="relative bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full p-3 sm:p-4 shadow-2xl hover:scale-110 no-product-details"
-            >
-              <FaPlus className="w-4 h-4 sm:w-6 sm:h-6" />
+            {/* Add Product Button */}
+            <div className="relative">
+              <button
+                onClick={handleAddNewProduct}
+                onMouseEnter={() => setHoveredButton("addProduct")}
+                onMouseLeave={() => setHoveredButton(null)}
+                className="relative rounded-full p-4 shadow-2xl transition-all duration-300 hover:scale-110 no-product-details"
+                style={{
+                  background: "linear-gradient(135deg, #4CAF50, #2E7D32)",
+                  boxShadow: "0 10px 30px rgba(76, 175, 80, 0.4)",
+                }}
+              >
+                <FaPlus className="w-6 h-6 text-white" />
+              </button>
 
-              <div className="absolute right-full mr-3 top-1/2 transform -translate-y-1/2 opacity-0 hover:opacity-100 pointer-events-none">
-                <div className="bg-gray-900 text-white text-xs font-semibold px-3 py-2 rounded-lg shadow-lg whitespace-nowrap">
-                  إضافة منتج جديد
-                  <div className="absolute left-full top-1/2 transform -translate-y-1/2">
-                    <div className="w-2 h-2 bg-gray-900 rotate-45"></div>
+              {/* Tooltip for Add Product */}
+              {hoveredButton === "addProduct" && (
+                <div className="absolute left-full ml-3 top-1/2 transform -translate-y-1/2 z-50">
+                  <div className="relative">
+                    <div
+                      className="bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl whitespace-nowrap text-sm font-semibold"
+                      style={{
+                        background: "linear-gradient(135deg, #4CAF50, #2E7D32)",
+                        boxShadow: "0 10px 25px rgba(76, 175, 80, 0.4)",
+                      }}
+                    >
+                      {getButtonLabel("addProduct")}
+                      <div className="absolute right-full top-1/2 transform -translate-y-1/2">
+                        <div
+                          className="w-3 h-3"
+                          style={{
+                            borderRight: "6px solid #2E7D32",
+                            borderTop: "6px solid transparent",
+                            borderBottom: "6px solid transparent",
+                          }}
+                        ></div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </button>
+              )}
+            </div>
 
-            <button
-              onClick={handleOpenCategoriesManager}
-              className="relative bg-gradient-to-r from-purple-500 to-violet-600 text-white rounded-full p-3 sm:p-4 shadow-2xl hover:scale-110 no-product-details"
-            >
-              <FaList className="w-4 h-4 sm:w-6 sm:h-6" />
+            {/* Categories Manager Button */}
+            <div className="relative">
+              <button
+                onClick={handleOpenCategoriesManager}
+                onMouseEnter={() => setHoveredButton("categories")}
+                onMouseLeave={() => setHoveredButton(null)}
+                className="relative rounded-full p-4 shadow-2xl transition-all duration-300 hover:scale-110 no-product-details"
+                style={{
+                  background: "linear-gradient(135deg, #9C27B0, #7B1FA2)",
+                  boxShadow: "0 10px 30px rgba(156, 39, 176, 0.4)",
+                }}
+              >
+                <FaList className="w-6 h-6 text-white" />
+              </button>
 
-              <div className="absolute right-full mr-3 top-1/2 transform -translate-y-1/2 opacity-0 hover:opacity-100 pointer-events-none">
-                <div className="bg-gray-900 text-white text-xs font-semibold px-3 py-2 rounded-lg shadow-lg whitespace-nowrap">
-                  إدارة التصنيفات
-                  <div className="absolute left-full top-1/2 transform -translate-y-1/2">
-                    <div className="w-2 h-2 bg-gray-900 rotate-45"></div>
+              {/* Tooltip for Categories Manager */}
+              {hoveredButton === "categories" && (
+                <div className="absolute left-full ml-3 top-1/2 transform -translate-y-1/2 z-50">
+                  <div className="relative">
+                    <div
+                      className="bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl whitespace-nowrap text-sm font-semibold"
+                      style={{
+                        background: "linear-gradient(135deg, #9C27B0, #7B1FA2)",
+                        boxShadow: "0 10px 25px rgba(156, 39, 176, 0.4)",
+                      }}
+                    >
+                      {getButtonLabel("categories")}
+                      <div className="absolute right-full top-1/2 transform -translate-y-1/2">
+                        <div
+                          className="w-3 h-3"
+                          style={{
+                            borderRight: "6px solid #7B1FA2",
+                            borderTop: "6px solid transparent",
+                            borderBottom: "6px solid transparent",
+                          }}
+                        ></div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </button>
+              )}
+            </div>
           </>
         )}
       </div>
 
-      {/* Categories Manager Modal */}
+      {/* Categories Manager Modal - تصميم جديد */}
       {showCategoriesManager && canShowAdminButtons && (
         <>
           <div
@@ -1908,56 +2135,82 @@ const Home = () => {
           />
 
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
             onClick={handleCloseCategoriesManager}
           >
             <div
-              className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden w-full max-w-4xl mx-auto my-auto max-h-[90vh] overflow-y-auto"
+              className="bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-4xl mx-auto my-auto max-h-[90vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
               dir="rtl"
+              style={{
+                background: `linear-gradient(135deg, #ffffff, #f0f8ff)`,
+                boxShadow: "0 40px 80px rgba(46, 62, 136, 0.2)",
+              }}
             >
-              <div className="bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white p-4 sm:p-6 relative">
+              {/* Modal Header */}
+              <div
+                className="p-6 relative text-white"
+                style={{
+                  background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                }}
+              >
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="bg-white/20 p-2 sm:p-3 rounded-2xl backdrop-blur-sm">
-                      <FaLayerGroup className="text-xl sm:text-2xl" />
+                  <div className="flex items-center gap-4">
+                    <div className="bg-white/20 p-3 rounded-2xl backdrop-blur-sm">
+                      <FaLayerGroup className="text-2xl" />
                     </div>
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-bold">
-                        إدارة التصنيفات
-                      </h2>
-                      <p className="text-white/80 mt-1 text-sm sm:text-base">
+                      <h2 className="text-2xl font-bold">إدارة التصنيفات</h2>
+                      <p className="text-white/80 mt-1">
                         إضافة، تعديل وحذف التصنيفات
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={handleCloseCategoriesManager}
-                    className="bg-white/20 backdrop-blur-sm rounded-full p-2 sm:p-3 text-white hover:bg-white/30 no-product-details"
+                    className="bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 no-product-details transition-all"
                   >
-                    <FaTimes size={16} className="sm:w-5" />
+                    <FaTimes size={20} />
                   </button>
                 </div>
               </div>
 
-              <div className="p-4 sm:p-6">
-                <div className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-700 dark:to-gray-800 border border-gray-200 dark:border-gray-600 rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8 shadow-lg">
-                  <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-                    <div className="bg-[#E41E26]/10 p-2 rounded-xl">
-                      <FaPlus className="text-[#E41E26] text-base sm:text-lg" />
+              {/* Modal Content */}
+              <div className="p-6">
+                {/* Add New Category */}
+                <div
+                  className="rounded-2xl p-6 mb-8"
+                  style={{
+                    background: `linear-gradient(135deg, #2E3E8805, #32B9CC05)`,
+                    border: `2px dashed #2E3E8820`,
+                  }}
+                >
+                  <div className="flex items-center gap-3 mb-6">
+                    <div
+                      className="p-3 rounded-xl"
+                      style={{
+                        background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                      }}
+                    >
+                      <FaPlus className="text-white text-lg" />
                     </div>
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-200">
+                    <h3
+                      className="text-xl font-bold"
+                      style={{ color: "#2E3E88" }}
+                    >
                       إضافة تصنيف جديد
                     </h3>
                   </div>
 
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-2">
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
+                      <label
+                        className="block text-sm font-semibold mb-3"
+                        style={{ color: "#2E3E88" }}
+                      >
                         اسم التصنيف
                       </label>
                       <div className="relative">
-                        <FaTag className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-base" />
                         <input
                           type="text"
                           value={newCategory.name}
@@ -1968,16 +2221,26 @@ const Home = () => {
                             })
                           }
                           placeholder="أدخل اسم التصنيف الجديد..."
-                          className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 rounded-xl border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-600 dark:text-white focus:ring-2 focus:ring-[#E41E26] focus:border-[#E41E26] outline-none text-right text-base font-medium"
+                          className="w-full px-4 py-4 rounded-xl border-2 focus:ring-3 focus:outline-none text-right text-lg font-medium transition-all"
+                          style={{
+                            borderColor: `#32B9CC30`,
+                            background: "white",
+                            color: "#2E3E88",
+                            focusBorderColor: "#2E3E88",
+                            focusRingColor: `#2E3E8820`,
+                          }}
                         />
                       </div>
                     </div>
 
                     <div className="flex flex-col justify-center">
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
+                      <label
+                        className="block text-sm font-semibold mb-3"
+                        style={{ color: "#2E3E88" }}
+                      >
                         حالة التصنيف
                       </label>
-                      <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="flex items-center gap-4">
                         <label className="flex items-center cursor-pointer">
                           <div className="relative">
                             <input
@@ -1992,23 +2255,23 @@ const Home = () => {
                               className="sr-only"
                             />
                             <div
-                              className={`block w-14 sm:w-16 h-7 sm:h-8 rounded-full ${
+                              className={`block w-16 h-8 rounded-full transition-all duration-300 ${
                                 newCategory.isActive
                                   ? "bg-green-500"
                                   : "bg-gray-400"
                               }`}
                             ></div>
                             <div
-                              className={`absolute right-1 top-1 bg-white w-5 sm:w-6 h-5 sm:h-6 rounded-full shadow-lg ${
+                              className={`absolute right-1 top-1 bg-white w-6 h-6 rounded-full shadow-lg transition-all duration-300 ${
                                 newCategory.isActive
-                                  ? "transform translate-x-[-1.5rem] sm:translate-x-[-1.75rem]"
+                                  ? "transform translate-x-[-1.75rem]"
                                   : ""
                               }`}
                             ></div>
                           </div>
                         </label>
                         <span
-                          className={`font-semibold text-base sm:text-lg ${
+                          className={`font-semibold text-lg ${
                             newCategory.isActive
                               ? "text-green-600"
                               : "text-gray-500"
@@ -2020,10 +2283,15 @@ const Home = () => {
                     </div>
                   </div>
 
-                  <div className="flex justify-start mt-4 sm:mt-6">
+                  <div className="flex justify-start mt-6">
                     <button
                       onClick={handleAddCategory}
-                      className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold shadow-lg flex items-center gap-2 sm:gap-3 text-sm sm:text-base no-product-details"
+                      className="px-8 py-4 rounded-xl font-bold shadow-lg flex items-center gap-3 text-lg no-product-details transition-all hover:scale-105"
+                      style={{
+                        background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                        color: "white",
+                        boxShadow: `0 10px 25px #2E3E8830`,
+                      }}
                     >
                       <FaPlus />
                       إضافة تصنيف جديد
@@ -2031,32 +2299,52 @@ const Home = () => {
                   </div>
                 </div>
 
+                {/* Categories List */}
                 <div>
-                  <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-                    <div className="bg-[#FDB913]/10 p-2 rounded-xl">
-                      <FaList className="text-[#FDB913] text-base sm:text-lg" />
+                  <div className="flex items-center gap-3 mb-6">
+                    <div
+                      className="p-3 rounded-xl"
+                      style={{
+                        background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                      }}
+                    >
+                      <FaList className="text-white text-lg" />
                     </div>
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-200">
+                    <h3
+                      className="text-xl font-bold"
+                      style={{ color: "#2E3E88" }}
+                    >
                       التصنيفات الحالية ({categories.length - 2})
                     </h3>
                   </div>
 
-                  <div className="space-y-3 sm:space-y-4">
+                  <div className="space-y-4">
                     {categories.map((category) => (
                       <div
                         key={category.id}
-                        className={`bg-white dark:bg-gray-700 border-2 ${
+                        className={`rounded-2xl p-6 transition-all ${
                           category.id === "all" || category.id === "offers"
-                            ? "border-gray-300 dark:border-gray-600"
-                            : "border-gray-200 dark:border-gray-600 hover:border-[#E41E26]/30 dark:hover:border-[#E41E26]/30"
-                        } rounded-2xl p-4 sm:p-6 hover:shadow-lg`}
+                            ? "opacity-80"
+                            : "hover:shadow-xl"
+                        }`}
+                        style={{
+                          background: `linear-gradient(135deg, #ffffff, #f0f8ff)`,
+                          boxShadow: "0 10px 30px rgba(46, 62, 136, 0.1)",
+                          border:
+                            category.id === "all" || category.id === "offers"
+                              ? `2px solid #2E3E8820`
+                              : `2px solid #32B9CC20`,
+                        }}
                       >
                         {editingCategory &&
                         editingCategory.id === category.id ? (
-                          <div className="space-y-4 sm:space-y-6">
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+                          <div className="space-y-6">
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                               <div className="lg:col-span-2">
-                                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
+                                <label
+                                  className="block text-sm font-semibold mb-3"
+                                  style={{ color: "#2E3E88" }}
+                                >
                                   اسم التصنيف
                                 </label>
                                 <input
@@ -2068,16 +2356,26 @@ const Home = () => {
                                       name: e.target.value,
                                     })
                                   }
-                                  className="w-full px-3 sm:px-4 py-3 sm:py-4 rounded-xl border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-600 dark:text-white focus:ring-2 focus:ring-[#E41E26] focus:border-[#E41E26] outline-none text-right text-base font-medium"
+                                  className="w-full px-4 py-4 rounded-xl border-2 focus:ring-3 focus:outline-none text-right text-lg font-medium transition-all"
+                                  style={{
+                                    borderColor: `#32B9CC30`,
+                                    background: "white",
+                                    color: "#2E3E88",
+                                    focusBorderColor: "#2E3E88",
+                                    focusRingColor: `#2E3E8820`,
+                                  }}
                                   dir="rtl"
                                 />
                               </div>
 
                               <div className="flex flex-col justify-center">
-                                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
+                                <label
+                                  className="block text-sm font-semibold mb-3"
+                                  style={{ color: "#2E3E88" }}
+                                >
                                   حالة التصنيف
                                 </label>
-                                <div className="flex items-center gap-3 sm:gap-4">
+                                <div className="flex items-center gap-4">
                                   <label className="flex items-center cursor-pointer">
                                     <div className="relative">
                                       <input
@@ -2092,23 +2390,23 @@ const Home = () => {
                                         className="sr-only"
                                       />
                                       <div
-                                        className={`block w-14 sm:w-16 h-7 sm:h-8 rounded-full ${
+                                        className={`block w-16 h-8 rounded-full transition-all duration-300 ${
                                           editingCategory.isActive
                                             ? "bg-green-500"
                                             : "bg-gray-400"
                                         }`}
                                       ></div>
                                       <div
-                                        className={`absolute right-1 top-1 bg-white w-5 sm:w-6 h-5 sm:h-6 rounded-full shadow-lg ${
+                                        className={`absolute right-1 top-1 bg-white w-6 h-6 rounded-full shadow-lg transition-all duration-300 ${
                                           editingCategory.isActive
-                                            ? "transform translate-x-[-1.5rem] sm:translate-x-[-1.75rem]"
+                                            ? "transform translate-x-[-1.75rem]"
                                             : ""
                                         }`}
                                       ></div>
                                     </div>
                                   </label>
                                   <span
-                                    className={`font-semibold text-base sm:text-lg ${
+                                    className={`font-semibold text-lg ${
                                       editingCategory.isActive
                                         ? "text-green-600"
                                         : "text-gray-500"
@@ -2120,16 +2418,28 @@ const Home = () => {
                               </div>
                             </div>
 
-                            <div className="flex gap-2 sm:gap-3 justify-start pt-3 sm:pt-4 border-t border-gray-200 dark:border-gray-600">
+                            <div
+                              className="flex gap-3 justify-start pt-4 border-t"
+                              style={{ borderColor: `#2E3E8820` }}
+                            >
                               <button
                                 onClick={() => setEditingCategory(null)}
-                                className="px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 text-sm sm:text-base no-product-details"
+                                className="px-6 py-3 rounded-xl font-semibold no-product-details transition-all hover:scale-105"
+                                style={{
+                                  background: `#2E3E8810`,
+                                  color: "#2E3E88",
+                                }}
                               >
                                 إلغاء التعديل
                               </button>
                               <button
                                 onClick={handleSaveCategory}
-                                className="bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-bold shadow-lg flex items-center gap-2 text-sm sm:text-base no-product-details"
+                                className="px-6 py-3 rounded-xl font-bold shadow-lg flex items-center gap-2 no-product-details transition-all hover:scale-105"
+                                style={{
+                                  background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                                  color: "white",
+                                  boxShadow: `0 5px 15px #2E3E8830`,
+                                }}
                               >
                                 <FaSave />
                                 حفظ التغييرات
@@ -2137,44 +2447,55 @@ const Home = () => {
                             </div>
                           </div>
                         ) : (
-                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
-                            <div className="flex items-center gap-3 sm:gap-4">
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div className="flex items-center gap-4">
                               <div
-                                className={`p-2 sm:p-3 rounded-xl ${
+                                className={`p-3 rounded-xl ${
                                   category.id === "all"
-                                    ? "bg-gray-100 dark:bg-gray-600"
+                                    ? `bg-gradient-to-br from-blue-50 to-blue-100`
                                     : category.id === "offers"
-                                    ? "bg-orange-100 dark:bg-orange-900/30"
-                                    : category.isActive
-                                    ? "bg-green-100 dark:bg-green-900/30"
-                                    : "bg-red-100 dark:bg-red-900/30"
+                                      ? `bg-gradient-to-br from-orange-50 to-orange-100`
+                                      : category.isActive
+                                        ? `bg-gradient-to-br from-green-50 to-green-100`
+                                        : `bg-gradient-to-br from-red-50 to-red-100`
                                 }`}
                               >
                                 {category.id === "offers" ? (
-                                  <FaFire className="text-orange-600 text-base sm:text-lg" />
+                                  <FaFire
+                                    className="text-lg"
+                                    style={{ color: "#FF9800" }}
+                                  />
                                 ) : (
                                   <FaTag
-                                    className={`text-base sm:text-lg ${
+                                    className="text-lg"
+                                    style={
                                       category.id === "all"
-                                        ? "text-gray-600 dark:text-gray-400"
+                                        ? { color: "#32B9CC" }
                                         : category.isActive
-                                        ? "text-green-600"
-                                        : "text-red-600"
-                                    }`}
+                                          ? { color: "#4CAF50" }
+                                          : { color: "#F44336" }
+                                    }
                                   />
                                 )}
                               </div>
                               <div>
-                                <h4 className="font-bold text-gray-800 dark:text-gray-200 text-base sm:text-lg mb-1">
+                                <h4
+                                  className="font-bold text-lg mb-1"
+                                  style={{ color: "#2E3E88" }}
+                                >
                                   {category.name}
                                 </h4>
-                                <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
+                                <div className="flex items-center gap-3 text-sm">
                                   {category.id === "offers" ? (
-                                    <span className="text-orange-600 font-medium">
+                                    <span
+                                      className="font-medium"
+                                      style={{ color: "#FF9800" }}
+                                    >
                                       {
                                         products.filter(
                                           (p) =>
-                                            p.itemOffer && p.itemOffer.isEnabled
+                                            p.itemOffer &&
+                                            p.itemOffer.isEnabled,
                                         ).length
                                       }{" "}
                                       منتج
@@ -2183,20 +2504,23 @@ const Home = () => {
                                     category.id !== "all" && (
                                       <>
                                         <span
-                                          className={`px-2 py-1 rounded-full font-medium ${
+                                          className={`px-3 py-1 rounded-full font-medium ${
                                             category.isActive
-                                              ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
-                                              : "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400"
+                                              ? "bg-green-100 text-green-700"
+                                              : "bg-red-100 text-red-700"
                                           }`}
                                         >
                                           {category.isActive ? "مفعل" : "معطل"}
                                         </span>
-                                        <span className="text-gray-500 dark:text-gray-400">
+                                        <span
+                                          className="text-gray-500"
+                                          style={{ color: "#32B9CC" }}
+                                        >
                                           {
                                             products.filter(
                                               (p) =>
                                                 p.categoryId ===
-                                                category.originalId
+                                                category.originalId,
                                             ).length
                                           }{" "}
                                           منتج
@@ -2208,7 +2532,7 @@ const Home = () => {
                               </div>
                             </div>
 
-                            <div className="flex gap-1 sm:gap-2 justify-end sm:justify-start">
+                            <div className="flex gap-2 justify-end">
                               {category.id !== "all" &&
                                 category.id !== "offers" && (
                                   <>
@@ -2216,10 +2540,10 @@ const Home = () => {
                                       onClick={(e) =>
                                         handleToggleCategoryActive(
                                           category.id,
-                                          e
+                                          e,
                                         )
                                       }
-                                      className={`p-2 sm:p-3 rounded-xl shadow-md no-product-details ${
+                                      className={`p-3 rounded-xl shadow-md no-product-details transition-all hover:scale-105 ${
                                         category.isActive
                                           ? "bg-yellow-500 hover:bg-yellow-600 text-white"
                                           : "bg-green-500 hover:bg-green-600 text-white"
@@ -2231,40 +2555,28 @@ const Home = () => {
                                       }
                                     >
                                       {category.isActive ? (
-                                        <FaTimesCircle
-                                          size={16}
-                                          className="sm:w-4 sm:h-4"
-                                        />
+                                        <FaTimesCircle size={18} />
                                       ) : (
-                                        <FaCheckCircle
-                                          size={16}
-                                          className="sm:w-4 sm:h-4"
-                                        />
+                                        <FaCheckCircle size={18} />
                                       )}
                                     </button>
                                     <button
                                       onClick={() =>
                                         handleEditCategory(category)
                                       }
-                                      className="bg-blue-500 text-white p-2 sm:p-3 rounded-xl hover:bg-blue-600 shadow-md no-product-details"
+                                      className="bg-blue-500 text-white p-3 rounded-xl hover:bg-blue-600 shadow-md no-product-details transition-all hover:scale-105"
                                       title="تعديل التصنيف"
                                     >
-                                      <FaEdit
-                                        size={16}
-                                        className="sm:w-4 sm:h-4"
-                                      />
+                                      <FaEdit size={18} />
                                     </button>
                                     <button
                                       onClick={() =>
                                         handleDeleteCategory(category.id)
                                       }
-                                      className="bg-red-500 text-white p-2 sm:p-3 rounded-xl hover:bg-red-600 shadow-md no-product-details"
+                                      className="bg-red-500 text-white p-3 rounded-xl hover:bg-red-600 shadow-md no-product-details transition-all hover:scale-105"
                                       title="حذف التصنيف"
                                     >
-                                      <FaTrash
-                                        size={16}
-                                        className="sm:w-4 sm:h-4"
-                                      />
+                                      <FaTrash size={18} />
                                     </button>
                                   </>
                                 )}
