@@ -9,10 +9,12 @@ import {
   FaEyeSlash,
   FaCheck,
   FaTimes,
+  FaBuilding,
+  FaUserShield,
+  FaUserTag,
 } from "react-icons/fa";
 
 export default function UserForm({
-  isAdding,
   formData,
   setFormData,
   availableRoles,
@@ -24,37 +26,58 @@ export default function UserForm({
 }) {
   const [showPassword, setShowPassword] = useState(false);
 
-  if (!isAdding) return null;
+  const getRoleIconFull = (role) => {
+    switch (role) {
+      case "Admin":
+        return <FaUserShield />;
+      case "Restaurant":
+        return <FaBuilding />;
+      case "Branch":
+        return <FaUserTag />;
+      default:
+        return <FaUser />;
+    }
+  };
 
   return (
     <motion.div
-      id="user-form"
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 20 }}
-      className="xl:col-span-1"
+      initial={{ opacity: 0, scale: 0.9, y: 20 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.9, y: 20 }}
+      className="bg-white rounded-3xl w-full max-w-2xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
     >
-      <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-gray-200/50 shadow-lg sticky top-4 sm:top-6">
-        <div className="flex items-center justify-between mb-3 sm:mb-4">
-          <h3 className="text-base sm:text-lg md:text-xl font-bold text-gray-800 truncate">
-            إضافة مستخدم جديد
-          </h3>
-          <button
-            onClick={resetForm}
-            className="text-gray-500 hover:text-[#E41E26] transition-colors duration-200 flex-shrink-0 ml-2"
-          >
-            <FaTimes size={16} className="sm:size-5" />
-          </button>
+      {/* Modal Header */}
+      <div
+        className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+        style={{
+          background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+        }}
+      >
+        <div className="flex items-center gap-3">
+          <FaUserShield />
+          <h3 className="text-lg font-bold text-white">إضافة مستخدم جديد</h3>
         </div>
+        <button
+          onClick={resetForm}
+          className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
+        >
+          <FaTimes size={16} />
+        </button>
+      </div>
 
-        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
-          <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
+      {/* Form Content */}
+      <div className="flex-1 overflow-y-auto p-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: "#2E3E88" }}
+              >
                 الاسم الأول *
               </label>
-              <div className="relative group" style={{ direction: "ltr" }}>
-                <FaUser className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
+              <div className="relative group">
+                <FaUser className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
                 <input
                   type="text"
                   name="firstName"
@@ -63,18 +86,24 @@ export default function UserForm({
                     setFormData({ ...formData, firstName: e.target.value })
                   }
                   required
-                  className="w-full border border-gray-200 bg-white text-black rounded-lg sm:rounded-xl pr-9 pl-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                  className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                  style={{
+                    background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                  }}
                   placeholder="الاسم الأول"
-                  style={{ textAlign: "right" }}
+                  dir="rtl"
                 />
               </div>
             </div>
             <div>
-              <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: "#2E3E88" }}
+              >
                 الاسم الأخير *
               </label>
-              <div className="relative group" style={{ direction: "ltr" }}>
-                <FaUser className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
+              <div className="relative group">
+                <FaUser className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
                 <input
                   type="text"
                   name="lastName"
@@ -83,20 +112,26 @@ export default function UserForm({
                     setFormData({ ...formData, lastName: e.target.value })
                   }
                   required
-                  className="w-full border border-gray-200 bg-white text-black rounded-lg sm:rounded-xl pr-9 pl-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                  className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                  style={{
+                    background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                  }}
                   placeholder="الاسم الأخير"
-                  style={{ textAlign: "right" }}
+                  dir="rtl"
                 />
               </div>
             </div>
           </div>
 
           <div>
-            <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+            <label
+              className="block text-sm font-semibold mb-2"
+              style={{ color: "#2E3E88" }}
+            >
               البريد الإلكتروني *
             </label>
-            <div className="relative group" style={{ direction: "ltr" }}>
-              <FaEnvelope className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
+            <div className="relative group">
+              <FaEnvelope className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
               <input
                 type="email"
                 name="email"
@@ -105,19 +140,25 @@ export default function UserForm({
                   setFormData({ ...formData, email: e.target.value })
                 }
                 required
-                className="w-full border border-gray-200 bg-white text-black rounded-lg sm:rounded-xl pr-9 pl-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                style={{
+                  background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                }}
                 placeholder="البريد الإلكتروني"
-                style={{ textAlign: "right" }}
+                dir="rtl"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+            <label
+              className="block text-sm font-semibold mb-2"
+              style={{ color: "#2E3E88" }}
+            >
               رقم الهاتف
             </label>
-            <div className="relative group" style={{ direction: "ltr" }}>
-              <FaPhone className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
+            <div className="relative group">
+              <FaPhone className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
               <input
                 type="tel"
                 name="phoneNumber"
@@ -125,22 +166,28 @@ export default function UserForm({
                 onChange={(e) =>
                   setFormData({ ...formData, phoneNumber: e.target.value })
                 }
-                className="w-full border border-gray-200 bg-white text-black rounded-lg sm:rounded-xl pr-9 pl-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                style={{
+                  background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                }}
                 placeholder="رقم الهاتف"
-                style={{ textAlign: "right" }}
+                dir="rtl"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+            <label
+              className="block text-sm font-semibold mb-2"
+              style={{ color: "#2E3E88" }}
+            >
               كلمة المرور *
             </label>
-            <div className="relative group" style={{ direction: "ltr" }}>
-              <FaLock className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
+            <div className="relative group">
+              <FaLock className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
               <div
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[#E41E26] cursor-pointer transition-colors duration-200 text-sm"
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[#2E3E88] cursor-pointer transition-colors duration-200"
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </div>
@@ -152,46 +199,74 @@ export default function UserForm({
                   setFormData({ ...formData, password: e.target.value })
                 }
                 required
-                className="w-full border border-gray-200 bg-white text-black rounded-lg sm:rounded-xl pr-9 pl-9 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                className="w-full border border-gray-200 rounded-xl pr-12 pl-12 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                style={{
+                  background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                }}
                 placeholder="كلمة المرور"
-                style={{ textAlign: "right" }}
+                dir="rtl"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1 sm:mb-2">
+            <label
+              className="block text-sm font-semibold mb-2"
+              style={{ color: "#2E3E88" }}
+            >
               الصلاحيات *
             </label>
-            <div className="space-y-2 p-3 bg-gray-50 rounded-lg sm:rounded-xl border border-gray-200">
+            <div
+              className="space-y-3 p-4 rounded-xl border"
+              style={{
+                background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                border: "1px solid #2E3E8820",
+              }}
+            >
               {availableRoles.map((role) => (
-                <div key={role.id} className="flex items-center gap-2">
+                <div key={role.id} className="flex items-center gap-3">
                   <input
                     type="checkbox"
                     id={`role-${role.name}`}
                     checked={formData.roles.includes(role.name)}
                     onChange={() => handleRoleToggle(role.name)}
-                    className="w-4 h-4 sm:w-5 sm:h-5 text-[#E41E26] bg-white border-gray-300 rounded focus:ring-[#E41E26] focus:ring-2"
+                    className="w-5 h-5 text-[#2E3E88] bg-white border-gray-300 rounded focus:ring-2 focus:ring-[#2E3E88] focus:ring-offset-0"
                   />
                   <label
                     htmlFor={`role-${role.name}`}
-                    className="flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer"
+                    className="flex items-center gap-3 text-sm font-medium cursor-pointer flex-1"
+                    style={{ color: "#2E3E88" }}
                   >
-                    <span className="text-sm">{getRoleIcon(role.name)}</span>
+                    <span className="text-lg">
+                      {getRoleIconFull(role.name)}
+                    </span>
                     <span>{role.name}</span>
+                    <span
+                      className="text-xs mr-auto"
+                      style={{ color: "#32B9CC" }}
+                    >
+                      {formData.roles.includes(role.name)
+                        ? "✓ محددة"
+                        : "غير محددة"}
+                    </span>
                   </label>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="flex gap-2 sm:gap-3 pt-1 sm:pt-2">
+          <div className="flex gap-3 pt-4">
             <motion.button
               type="button"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={resetForm}
-              className="flex-1 py-2.5 sm:py-3 border-2 border-[#E41E26] text-[#E41E26] rounded-lg sm:rounded-xl font-semibold hover:bg-[#E41E26] hover:text-white transition-all duration-300 text-sm sm:text-base"
+              className="flex-1 py-3.5 border-2 rounded-xl font-semibold transition-all duration-300"
+              style={{
+                borderColor: "#2E3E88",
+                color: "#2E3E88",
+                background: "transparent",
+              }}
             >
               إلغاء
             </motion.button>
@@ -200,13 +275,24 @@ export default function UserForm({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               disabled={!isFormValid()}
-              className={`flex-1 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base flex items-center justify-center gap-1 sm:gap-2 ${
+              className={`flex-1 py-3.5 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
                 isFormValid()
-                  ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25"
-                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  ? "shadow-lg hover:shadow-xl cursor-pointer"
+                  : "opacity-50 cursor-not-allowed"
               }`}
+              style={
+                isFormValid()
+                  ? {
+                      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                      color: "white",
+                    }
+                  : {
+                      background: "#e5e7eb",
+                      color: "#6b7280",
+                    }
+              }
             >
-              <FaCheck className="text-xs sm:text-sm" />
+              <FaCheck />
               إضافة مستخدم
             </motion.button>
           </div>

@@ -7,17 +7,12 @@ import {
   FaEyeSlash,
   FaArrowLeft,
   FaUser,
-  FaEnvelope,
-  FaLock,
-  FaPhone,
   FaEdit,
   FaCheckCircle,
   FaTimesCircle,
   FaCamera,
   FaSave,
-  FaKey,
   FaShieldAlt,
-  FaBars,
 } from "react-icons/fa";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -35,7 +30,7 @@ const translateProfileErrorMessage = (errorData) => {
           const match = msg.match(/You entered (\d+) characters/);
           if (match) {
             errorMessages.push(
-              `الاسم الأول يجب أن يكون بين 3 و 100 حرف. أدخلت ${match[1]} حرفاً.`
+              `الاسم الأول يجب أن يكون بين 3 و 100 حرف. أدخلت ${match[1]} حرفاً.`,
             );
           } else {
             errorMessages.push("الاسم الأول يجب أن يكون بين 3 و 100 حرف");
@@ -54,7 +49,7 @@ const translateProfileErrorMessage = (errorData) => {
           const match = msg.match(/You entered (\d+) characters/);
           if (match) {
             errorMessages.push(
-              `الاسم الأخير يجب أن يكون بين 3 و 100 حرف. أدخلت ${match[1]} حرفاً.`
+              `الاسم الأخير يجب أن يكون بين 3 و 100 حرف. أدخلت ${match[1]} حرفاً.`,
             );
           } else {
             errorMessages.push("الاسم الأخير يجب أن يكون بين 3 و 100 حرف");
@@ -89,7 +84,7 @@ const translateProfileErrorMessage = (errorData) => {
       errorData.errors.NewPassword.forEach((msg) => {
         if (msg.includes("cannot be same as the current password")) {
           errorMessages.push(
-            "كلمة المرور الجديدة لا يمكن أن تكون مماثلة لكلمة المرور الحالية"
+            "كلمة المرور الجديدة لا يمكن أن تكون مماثلة لكلمة المرور الحالية",
           );
         } else {
           errorMessages.push(msg);
@@ -113,7 +108,7 @@ const translateProfileErrorMessage = (errorData) => {
           `<div style="text-align: right; margin-bottom: 8px; padding-right: 15px; position: relative; color: black;">
            ${msg}
            <span style="position: absolute; right: 0; top: 0; color: black;">-</span>
-         </div>`
+         </div>`,
       );
       return htmlMessages.join("");
     } else if (errorMessages.length === 1) {
@@ -170,32 +165,29 @@ const translateProfileErrorMessage = (errorData) => {
   return `<div style="text-align: right; color: black;">حدث خطأ غير متوقع في تحديث الملف الشخصي</div>`;
 };
 
-const showProfileMobileSuccessToast = (message) => {
-  if (window.innerWidth < 768) {
-    toast.success(message, {
-      position: "top-right",
-      autoClose: 2500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      style: {
-        width: "70%",
-        margin: "10px",
-        borderRadius: "8px",
-        textAlign: "right",
-        fontSize: "14px",
-        direction: "rtl",
-      },
-    });
-  }
-};
+const showProfileMessage = (type, title, text, options = {}) => {
+  const { showButtons = false, ...otherOptions } = options;
 
-const showProfileMobileErrorToast = (message) => {
-  if (window.innerWidth < 768) {
-    toast.error(message, {
+  if (window.innerWidth >= 768) {
+    Swal.fire({
+      icon: type,
+      title: title,
+      text: text,
+      showConfirmButton: showButtons,
+      timer: showButtons ? undefined : otherOptions.timer || 2500,
+      showCancelButton: showButtons,
+      confirmButtonText: showButtons ? "نعم" : undefined,
+      cancelButtonText: showButtons ? "لا" : undefined,
+      confirmButtonColor: "#2E3E88",
+      cancelButtonColor: "#6B7280",
+      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+      color: "white",
+      ...otherOptions,
+    });
+  } else {
+    const toastOptions = {
       position: "top-right",
-      autoClose: 2500,
+      autoClose: otherOptions.timer || 2500,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
@@ -203,12 +195,33 @@ const showProfileMobileErrorToast = (message) => {
       style: {
         width: "70%",
         margin: "10px",
-        borderRadius: "8px",
+        borderRadius: "12px",
         textAlign: "right",
         fontSize: "14px",
         direction: "rtl",
+        background:
+          type === "error"
+            ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
+            : type === "warning"
+              ? "linear-gradient(135deg, #FFA726, #FF9800)"
+              : "linear-gradient(135deg, #2E3E88, #32B9CC)",
+        color: "white",
       },
-    });
+    };
+
+    switch (type) {
+      case "success":
+        toast.success(text, toastOptions);
+        break;
+      case "error":
+        toast.error(text, toastOptions);
+        break;
+      case "warning":
+        toast.warning(text, toastOptions);
+        break;
+      default:
+        toast.info(text, toastOptions);
+    }
   }
 };
 
@@ -233,7 +246,25 @@ export default function Profile() {
   const [hasChanges, setHasChanges] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const [menuItems] = useState([
+    {
+      id: "profile",
+      label: "الملف الشخصي",
+      icon: FaUser,
+      description: "إدارة معلوماتك الشخصية",
+      color: "#2E3E88",
+      bgColor: "#2E3E8810",
+    },
+    {
+      id: "security",
+      label: "الأمان",
+      icon: FaShieldAlt,
+      description: "تغيير كلمة المرور",
+      color: "#32B9CC",
+      bgColor: "#32B9CC10",
+    },
+  ]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -262,15 +293,7 @@ export default function Profile() {
           localStorage.setItem("user", JSON.stringify(userData));
         }
       } catch (err) {
-        if (window.innerWidth < 768) {
-          showProfileMobileErrorToast("فشل في جلب بيانات الملف الشخصي");
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "خطأ",
-            text: "فشل في جلب بيانات الملف الشخصي.",
-          });
-        }
+        showProfileMessage("error", "خطأ", "فشل في جلب بيانات الملف الشخصي");
       }
     };
     fetchProfile();
@@ -307,15 +330,9 @@ export default function Profile() {
       {condition ? (
         <FaCheckCircle className="text-green-500" />
       ) : (
-        <FaTimesCircle className="text-gray-400 dark:text-gray-500" />
+        <FaTimesCircle className="text-gray-400" />
       )}
-      <span
-        className={
-          condition
-            ? "text-green-600 dark:text-green-400"
-            : "text-gray-500 dark:text-gray-400"
-        }
-      >
+      <span className={condition ? "text-green-600" : "text-gray-500"}>
         {label}
       </span>
     </div>
@@ -327,6 +344,8 @@ export default function Profile() {
       didOpen: () => {
         Swal.showLoading();
       },
+      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+      color: "white",
     });
 
     try {
@@ -345,7 +364,7 @@ export default function Profile() {
           const imageRes = await axiosInstance.put(
             "/api/Account/ChangeImage",
             imageData,
-            { headers: { "Content-Type": "multipart/form-data" } }
+            { headers: { "Content-Type": "multipart/form-data" } },
           );
 
           if (imageRes.status === 200) {
@@ -370,17 +389,11 @@ export default function Profile() {
 
         Swal.close();
 
-        if (window.innerWidth < 768) {
-          showProfileMobileSuccessToast("تم تحديث ملفك الشخصي بنجاح");
-        } else {
-          Swal.fire({
-            icon: "success",
-            title: "تم تحديث الملف الشخصي",
-            text: "تم تحديث ملفك الشخصي بنجاح",
-            timer: 2000,
-            showConfirmButton: false,
-          });
-        }
+        showProfileMessage(
+          "success",
+          "تم التحديث",
+          "تم تحديث ملفك الشخصي بنجاح",
+        );
       }
     } catch (err) {
       const errorData = err.response?.data;
@@ -393,7 +406,7 @@ export default function Profile() {
         tempDiv.innerHTML = translatedMessage;
         const textContent =
           tempDiv.textContent || tempDiv.innerText || "حدث خطأ";
-        showProfileMobileErrorToast(textContent);
+        showProfileMessage("error", "خطأ", textContent);
       } else {
         Swal.fire({
           title: "حدث خطأ",
@@ -401,6 +414,8 @@ export default function Profile() {
           icon: "error",
           timer: 2500,
           showConfirmButton: false,
+          background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+          color: "white",
         });
       }
     }
@@ -415,17 +430,11 @@ export default function Profile() {
         newPassword: passwordData.newPassword,
       });
       if (res.status === 200) {
-        if (window.innerWidth < 768) {
-          showProfileMobileSuccessToast("تم تحديث كلمة المرور بنجاح");
-        } else {
-          Swal.fire({
-            icon: "success",
-            title: "تم تحديث كلمة المرور",
-            text: "تم تحديث كلمة المرور بنجاح.",
-            timer: 2000,
-            showConfirmButton: false,
-          });
-        }
+        showProfileMessage(
+          "success",
+          "تم التحديث",
+          "تم تحديث كلمة المرور بنجاح",
+        );
         setPasswordData({
           oldPassword: "",
           newPassword: "",
@@ -440,7 +449,7 @@ export default function Profile() {
         tempDiv.innerHTML = translatedMessage;
         const textContent =
           tempDiv.textContent || tempDiv.innerText || "حدث خطأ";
-        showProfileMobileErrorToast(textContent);
+        showProfileMessage("error", "خطأ", textContent);
       } else {
         Swal.fire({
           title: "فشل التحديث",
@@ -448,6 +457,8 @@ export default function Profile() {
           icon: "error",
           timer: 2500,
           showConfirmButton: false,
+          background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+          color: "white",
         });
       }
     }
@@ -455,511 +466,591 @@ export default function Profile() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E41E26]"></div>
+      <div
+        className="min-h-screen flex items-center justify-center px-4"
+        style={{
+          background: "linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)",
+        }}
+      >
+        <div className="text-center">
+          <div
+            className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+            style={{
+              borderTopColor: "#2E3E88",
+              borderRightColor: "#32B9CC",
+              borderBottomColor: "#2E3E88",
+              borderLeftColor: "transparent",
+            }}
+          ></div>
+          <p className="text-lg font-semibold" style={{ color: "#2E3E88" }}>
+            جارٍ تحميل الملف الشخصي...
+          </p>
+        </div>
       </div>
     );
   }
 
   const fieldClass =
-    "w-full border border-gray-200 bg-white/80 backdrop-blur-sm text-black rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 hover:border-[#E41E26]/50 dark:bg-gray-600/80 dark:border-gray-500 dark:text-white text-right";
-
-  const tabs = [
-    {
-      id: "profile",
-      label: "الملف الشخصي",
-      icon: FaUser,
-      description: "إدارة معلوماتك الشخصية",
-    },
-    {
-      id: "security",
-      label: "الإعدادات الأمنية",
-      icon: FaShieldAlt,
-      description: "تحديث كلمة المرور والإعدادات الأمنية",
-    },
-  ];
+    "w-full border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-right";
 
   return (
     <div
-      className={`min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-4 py-4 sm:py-8 relative font-sans overflow-hidden transition-colors duration-300`}
-      dir="rtl"
+      className="min-h-screen font-sans relative overflow-x-hidden"
+      style={{
+        background: "linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)",
+        backgroundAttachment: "fixed",
+      }}
     >
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -left-20 -top-20 w-60 h-60 sm:w-80 sm:h-80 bg-gradient-to-r from-[#E41E26]/10 to-[#FDB913]/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -right-20 -bottom-20 w-60 h-60 sm:w-80 sm:h-80 bg-gradient-to-r from-[#FDB913]/10 to-[#E41E26]/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 sm:w-96 sm:h-96 bg-gradient-to-r from-[#E41E26]/5 to-[#FDB913]/5 rounded-full blur-3xl"></div>
-      </div>
+      {/* Header Section */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/80 to-white"></div>
 
-      {/* Back Button */}
-      <motion.button
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        onClick={() => navigate(-1)}
-        className="fixed top-4 left-4 z-50 bg-white/80 backdrop-blur-md hover:bg-[#E41E26] hover:text-white rounded-full p-2 sm:p-3 text-[#E41E26] border border-[#E41E26]/30 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl group dark:bg-gray-800/80 dark:text-gray-200 dark:hover:bg-[#E41E26]"
-      >
-        <FaArrowLeft
-          size={16}
-          className="sm:size-[18px] group-hover:scale-110 transition-transform"
-        />
-      </motion.button>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, type: "spring" }}
-        className="max-w-4xl mx-auto bg-white/90 backdrop-blur-xl shadow-2xl rounded-3xl border border-white/50 relative overflow-hidden dark:bg-gray-800/90 dark:border-gray-700/50"
-      >
-        {/* Header Background */}
-        <div className="relative h-24 sm:h-32 bg-gradient-to-r from-[#E41E26] to-[#FDB913] overflow-hidden">
-          <div className="absolute inset-0 bg-black/10"></div>
-          <div className="absolute -top-6 -right-6 w-24 h-24 sm:w-40 sm:h-40 bg-white/10 rounded-full"></div>
-          <div className="absolute -bottom-6 -left-6 w-20 h-20 sm:w-32 sm:h-32 bg-white/10 rounded-full"></div>
-        </div>
-
-        {/* Main Content */}
-        <div className="relative px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8 -mt-12 sm:-mt-16">
-          {/* Profile Header */}
-          <div className="flex flex-col items-center text-center lg:flex-row lg:items-end lg:text-right gap-4 sm:gap-6 mb-6 sm:mb-8">
-            {/* Avatar Section */}
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.3, type: "spring" }}
-              className="relative group"
-            >
-              {user.avatar ? (
-                <img
-                  src={user.avatar}
-                  alt="الصورة الشخصية"
-                  className="w-20 h-20 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full object-cover border-4 border-white shadow-2xl dark:border-gray-800"
-                />
-              ) : (
-                <div className="w-20 h-20 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white flex items-center justify-center text-2xl sm:text-3xl lg:text-4xl font-bold border-4 border-white shadow-2xl dark:border-gray-800">
-                  {user.firstName?.charAt(0).toUpperCase() || "م"}
-                </div>
-              )}
-
-              {isEditingProfile && activeTab === "profile" && (
-                <label className="absolute bottom-1 left-1 sm:bottom-2 sm:left-2 bg-[#E41E26] hover:bg-[#FDB913] text-white p-2 sm:p-3 rounded-full shadow-2xl cursor-pointer transition-all duration-300 hover:scale-110 group-hover:scale-110">
-                  <input
-                    type="file"
-                    className="hidden"
-                    onChange={handleAvatarChange}
-                    accept="image/*"
-                  />
-                  <FaCamera size={12} className="sm:size-[16px]" />
-                </label>
-              )}
-            </motion.div>
-
-            {/* User Info */}
-            <div className="flex-1">
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-1 sm:mb-2 text-right"
-              >
-                {user.firstName} {user.lastName}
-              </motion.h1>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="text-gray-600 dark:text-gray-400 flex items-center justify-center lg:justify-start gap-2 text-sm sm:text-base"
-              >
-                <span className="truncate block max-w-[200px] sm:max-w-[300px] lg:max-w-[400px] text-right">
-                  {user.email}
-                </span>
-                <FaEnvelope className="text-[#E41E26] flex-shrink-0" />
-              </motion.p>
-            </div>
-
-            {/* Action Buttons */}
-            <motion.div
+        {/* Hero Header */}
+        <div
+          className="relative py-16 px-4"
+          style={{
+            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+          }}
+        >
+          <div className="max-w-7xl mx-auto">
+            {/* زر الرجوع */}
+            <motion.button
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.6 }}
-              className="flex gap-2 sm:gap-3"
+              onClick={() => navigate(-1)}
+              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              style={{
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+              }}
             >
-              {activeTab === "profile" && !isEditingProfile ? (
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setIsEditingProfile(true)}
-                  className="flex items-center gap-2 bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl hover:shadow-[#E41E26]/25 transition-all duration-300 text-sm sm:text-base"
+              <FaArrowLeft
+                size={20}
+                className="group-hover:-translate-x-1 transition-transform"
+              />
+            </motion.button>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center pt-8"
+            >
+              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
+                <FaUser className="text-white text-4xl" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                الملف الشخصي
+              </h1>
+              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+                إدارة معلومات حسابك وإعدادات الأمان
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column - User Info */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* User Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="bg-white rounded-3xl shadow-xl overflow-hidden"
+            >
+              <div
+                className="relative h-32"
+                style={{
+                  background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                }}
+              >
+                <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2">
+                  <div className="relative group">
+                    {user.avatar ? (
+                      <img
+                        src={user.avatar}
+                        alt="الصورة الشخصية"
+                        className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-2xl"
+                      />
+                    ) : (
+                      <div
+                        className="w-32 h-32 rounded-full text-white flex items-center justify-center text-5xl font-bold border-4 border-white shadow-2xl"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                        }}
+                      >
+                        {user.firstName?.charAt(0).toUpperCase() || "م"}
+                      </div>
+                    )}
+
+                    {isEditingProfile && activeTab === "profile" && (
+                      <label
+                        className="absolute bottom-2 right-2 bg-white p-3 rounded-full shadow-2xl cursor-pointer transition-all duration-300 hover:scale-110 group-hover:scale-110"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                          color: "white",
+                        }}
+                      >
+                        <input
+                          type="file"
+                          className="hidden"
+                          onChange={handleAvatarChange}
+                          accept="image/*"
+                        />
+                        <FaCamera size={16} />
+                      </label>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-20 pb-6 px-6 text-center">
+                <h2
+                  className="text-2xl font-bold mb-2"
+                  style={{ color: "#2E3E88" }}
                 >
-                  <FaEdit className="flex-shrink-0" />
-                  <span className="hidden sm:inline">تعديل الملف الشخصي</span>
-                  <span className="sm:hidden">تعديل</span>
-                </motion.button>
-              ) : (
-                activeTab === "profile" && (
+                  {user.firstName} {user.lastName}
+                </h2>
+                <p className="mb-6" style={{ color: "#32B9CC" }}>
+                  {user.email}
+                </p>
+
+                {activeTab === "profile" && !isEditingProfile ? (
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={handleSaveProfile}
-                    disabled={!hasChanges}
-                    className={`flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 text-sm sm:text-base ${
-                      hasChanges
-                        ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25"
-                        : "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400"
-                    }`}
+                    onClick={() => setIsEditingProfile(true)}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                    style={{
+                      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                      color: "white",
+                    }}
                   >
-                    <FaSave className="flex-shrink-0" />
-                    <span className="hidden sm:inline">حفظ التغييرات</span>
-                    <span className="sm:hidden">حفظ</span>
+                    <FaEdit />
+                    <span>تعديل الملف الشخصي</span>
                   </motion.button>
-                )
-              )}
+                ) : (
+                  activeTab === "profile" && (
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={handleSaveProfile}
+                      disabled={!hasChanges}
+                      className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 ${
+                        hasChanges
+                          ? "shadow-lg hover:shadow-xl cursor-pointer"
+                          : "opacity-50 cursor-not-allowed"
+                      }`}
+                      style={
+                        hasChanges
+                          ? {
+                              background:
+                                "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                              color: "white",
+                            }
+                          : {
+                              background: "#e5e7eb",
+                              color: "#6b7280",
+                            }
+                      }
+                    >
+                      <FaSave />
+                      <span>حفظ التغييرات</span>
+                    </motion.button>
+                  )
+                )}
+              </div>
             </motion.div>
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="lg:hidden mb-4">
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="w-full flex items-center justify-between bg-gray-100/80 backdrop-blur-sm rounded-2xl p-4 font-semibold transition-all duration-300 dark:bg-gray-700/80 dark:text-gray-200"
+          {/* Right Column - Content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Navigation Menu */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="bg-white rounded-3xl shadow-xl p-6"
             >
-              <div className="flex items-center gap-3">
-                {tabs.find((tab) => tab.id === activeTab)?.icon &&
-                  React.createElement(
-                    tabs.find((tab) => tab.id === activeTab).icon,
-                    {
-                      className: "text-[#E41E26] text-xl",
+              <h3
+                className="text-xl font-bold mb-4"
+                style={{ color: "#2E3E88" }}
+              >
+                القائمة الرئيسية
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-2 gap-3">
+                {menuItems.map((item) => (
+                  <motion.button
+                    key={item.id}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => {
+                      setActiveTab(item.id);
+                      if (item.id === "security") {
+                        setIsEditingProfile(false);
+                      }
+                    }}
+                    className={`flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-300 ${
+                      activeTab === item.id ? "shadow-lg" : "hover:shadow-md"
+                    }`}
+                    style={
+                      activeTab === item.id
+                        ? {
+                            background: `linear-gradient(135deg, ${item.color}, ${item.color}80)`,
+                            color: "white",
+                          }
+                        : {
+                            background:
+                              "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                            border: "1px solid #2E3E8820",
+                            color: item.color,
+                          }
                     }
-                  )}
-                <span>{tabs.find((tab) => tab.id === activeTab)?.label}</span>
+                  >
+                    <item.icon className="text-2xl mb-2" />
+                    <span className="font-semibold">{item.label}</span>
+                    <span className="text-xs mt-1 opacity-80">
+                      {item.description}
+                    </span>
+                  </motion.button>
+                ))}
               </div>
-              <FaBars className="text-[#E41E26]" />
-            </motion.button>
+            </motion.div>
 
-            {/* Mobile Dropdown Menu */}
-            <AnimatePresence>
-              {isMobileMenuOpen && (
+            {/* Content Area */}
+            <AnimatePresence mode="wait">
+              {activeTab === "profile" && (
                 <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="bg-white/95 backdrop-blur-sm rounded-2xl mt-2 overflow-hidden shadow-lg border border-gray-200/50 dark:bg-gray-700/95 dark:border-gray-600/50"
+                  key="profile-content"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="bg-white rounded-3xl shadow-xl overflow-hidden"
                 >
-                  {tabs.map((tab) => (
-                    <motion.button
-                      key={tab.id}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => {
-                        setActiveTab(tab.id);
-                        setIsMobileMenuOpen(false);
-                        if (tab.id === "security") {
-                          setIsEditingProfile(false);
-                        }
-                      }}
-                      className={`w-full flex items-center gap-3 p-4 text-right transition-all duration-200 ${
-                        activeTab === tab.id
-                          ? "bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] text-[#E41E26] dark:from-gray-600 dark:to-gray-500"
-                          : "text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-600"
-                      }`}
-                    >
-                      <tab.icon className="text-xl flex-shrink-0" />
-                      <div className="flex-1">
-                        <div className="font-semibold">{tab.label}</div>
-                        <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                          {tab.description}
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-6">
+                      <h3
+                        className="text-xl font-bold"
+                        style={{ color: "#2E3E88" }}
+                      >
+                        المعلومات الشخصية
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <FaUser style={{ color: "#2E3E88" }} />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* First Name */}
+                      <div>
+                        <label
+                          className="block text-sm font-semibold mb-2 text-right"
+                          style={{ color: "#2E3E88" }}
+                        >
+                          الاسم الأول
+                        </label>
+                        <div className="relative">
+                          {isEditingProfile ? (
+                            <input
+                              type="text"
+                              name="firstName"
+                              value={formData.firstName}
+                              onChange={handleChange}
+                              className={fieldClass}
+                              placeholder="أدخل اسمك الأول"
+                              dir="rtl"
+                              style={{
+                                background:
+                                  "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                              }}
+                            />
+                          ) : (
+                            <div
+                              className="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-right"
+                              style={{
+                                background:
+                                  "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                                color: "#2E3E88",
+                              }}
+                            >
+                              {user.firstName}
+                            </div>
+                          )}
                         </div>
                       </div>
-                    </motion.button>
-                  ))}
+
+                      {/* Last Name */}
+                      <div>
+                        <label
+                          className="block text-sm font-semibold mb-2 text-right"
+                          style={{ color: "#2E3E88" }}
+                        >
+                          الاسم الأخير
+                        </label>
+                        <div className="relative">
+                          {isEditingProfile ? (
+                            <input
+                              type="text"
+                              name="lastName"
+                              value={formData.lastName}
+                              onChange={handleChange}
+                              className={fieldClass}
+                              placeholder="أدخل اسمك الأخير"
+                              dir="rtl"
+                              style={{
+                                background:
+                                  "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                              }}
+                            />
+                          ) : (
+                            <div
+                              className="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-right"
+                              style={{
+                                background:
+                                  "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                                color: "#2E3E88",
+                              }}
+                            >
+                              {user.lastName}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Email */}
+                      <div className="md:col-span-2">
+                        <label
+                          className="block text-sm font-semibold mb-2 text-right"
+                          style={{ color: "#2E3E88" }}
+                        >
+                          البريد الإلكتروني
+                        </label>
+                        <div className="relative">
+                          <div
+                            className="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-right truncate"
+                            style={{
+                              background:
+                                "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                              color: "#2E3E88",
+                            }}
+                          >
+                            {user.email}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Phone Number */}
+                      <div className="md:col-span-2">
+                        <label
+                          className="block text-sm font-semibold mb-2 text-right"
+                          style={{ color: "#2E3E88" }}
+                        >
+                          رقم الهاتف
+                        </label>
+                        <div className="relative">
+                          {isEditingProfile ? (
+                            <input
+                              type="tel"
+                              name="phoneNumber"
+                              value={formData.phoneNumber}
+                              onChange={handleChange}
+                              className={fieldClass}
+                              placeholder="أدخل رقم هاتفك"
+                              dir="rtl"
+                              style={{
+                                background:
+                                  "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                              }}
+                            />
+                          ) : (
+                            <div
+                              className="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-right"
+                              style={{
+                                background:
+                                  "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                                color: "#2E3E88",
+                              }}
+                            >
+                              {user.phoneNumber || "غير متوفر"}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {activeTab === "security" && (
+                <motion.div
+                  key="security-content"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="bg-white rounded-3xl shadow-xl overflow-hidden"
+                >
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-6">
+                      <h3
+                        className="text-xl font-bold"
+                        style={{ color: "#2E3E88" }}
+                      >
+                        إعدادات الأمان
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <FaShieldAlt style={{ color: "#2E3E88" }} />
+                      </div>
+                    </div>
+
+                    <div className="space-y-6">
+                      {/* Current Password */}
+                      <div>
+                        <label
+                          className="block text-sm font-semibold mb-2 text-right"
+                          style={{ color: "#2E3E88" }}
+                        >
+                          كلمة المرور الحالية
+                        </label>
+                        <div className="relative">
+                          <input
+                            type={showPassword.old ? "text" : "password"}
+                            name="oldPassword"
+                            placeholder="أدخل كلمة المرور الحالية"
+                            value={passwordData.oldPassword}
+                            onChange={handlePasswordChange}
+                            className={fieldClass + " pr-12"}
+                            dir="rtl"
+                            style={{
+                              background:
+                                "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                            }}
+                          />
+                          <button
+                            onClick={() =>
+                              setShowPassword({
+                                ...showPassword,
+                                old: !showPassword.old,
+                              })
+                            }
+                            className="absolute left-4 top-1/2 transform -translate-y-1/2 cursor-pointer transition-all duration-200 hover:scale-110"
+                            style={{ color: "#2E3E88" }}
+                          >
+                            {showPassword.old ? <FaEyeSlash /> : <FaEye />}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* New Password */}
+                      <div>
+                        <label
+                          className="block text-sm font-semibold mb-2 text-right"
+                          style={{ color: "#2E3E88" }}
+                        >
+                          كلمة المرور الجديدة
+                        </label>
+                        <div className="relative">
+                          <input
+                            type={showPassword.new ? "text" : "password"}
+                            name="newPassword"
+                            placeholder="أدخل كلمة المرور الجديدة"
+                            value={passwordData.newPassword}
+                            onChange={handlePasswordChange}
+                            className={fieldClass + " pr-12"}
+                            dir="rtl"
+                            style={{
+                              background:
+                                "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                            }}
+                          />
+                          <button
+                            onClick={() =>
+                              setShowPassword({
+                                ...showPassword,
+                                new: !showPassword.new,
+                              })
+                            }
+                            className="absolute left-4 top-1/2 transform -translate-y-1/2 cursor-pointer transition-all duration-200 hover:scale-110"
+                            style={{ color: "#2E3E88" }}
+                          >
+                            {showPassword.new ? <FaEyeSlash /> : <FaEye />}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Password Requirements */}
+                      <div
+                        className="p-4 rounded-xl"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                          border: "1px solid #2E3E8820",
+                        }}
+                      >
+                        <p
+                          className="text-sm font-semibold mb-3 text-right"
+                          style={{ color: "#2E3E88" }}
+                        >
+                          متطلبات كلمة المرور:
+                        </p>
+                        <div className="grid grid-cols-2 gap-2 text-right">
+                          {getValidationItem(
+                            passwordValidations.length,
+                            "8 أحرف على الأقل",
+                          )}
+                          {getValidationItem(
+                            passwordValidations.lowercase,
+                            "حرف صغير واحد على الأقل",
+                          )}
+                          {getValidationItem(
+                            passwordValidations.uppercase,
+                            "حرف كبير واحد على الأقل",
+                          )}
+                          {getValidationItem(
+                            passwordValidations.specialChar,
+                            "رمز خاص واحد على الأقل",
+                          )}
+                        </div>
+                      </div>
+
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={handleSavePassword}
+                        disabled={
+                          !allPasswordValid || !passwordData.oldPassword
+                        }
+                        className={`w-full font-semibold py-3.5 rounded-xl transition-all duration-300 text-lg ${
+                          allPasswordValid && passwordData.oldPassword
+                            ? "shadow-lg hover:shadow-xl cursor-pointer"
+                            : "opacity-50 cursor-not-allowed"
+                        }`}
+                        style={
+                          allPasswordValid && passwordData.oldPassword
+                            ? {
+                                background:
+                                  "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                                color: "white",
+                              }
+                            : {
+                                background: "#e5e7eb",
+                                color: "#6b7280",
+                              }
+                        }
+                      >
+                        تحديث كلمة المرور
+                      </motion.button>
+                    </div>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
-
-          {/* Desktop Tabs Navigation */}
-          <div className="hidden lg:flex gap-1 bg-gray-100/80 backdrop-blur-sm rounded-2xl p-1 mb-6 sm:mb-8 w-full dark:bg-gray-700/80">
-            {tabs.map((tab) => (
-              <motion.button
-                key={tab.id}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => {
-                  setActiveTab(tab.id);
-                  if (tab.id === "security") {
-                    setIsEditingProfile(false);
-                  }
-                }}
-                className={`flex items-center gap-3 flex-1 py-4 px-6 rounded-xl font-semibold transition-all duration-300 text-right ${
-                  activeTab === tab.id
-                    ? "bg-white text-[#E41E26] shadow-lg dark:bg-gray-600 dark:text-[#E41E26]"
-                    : "text-gray-600 hover:text-[#E41E26] hover:bg-white/50 dark:text-gray-300 dark:hover:bg-gray-600/50"
-                }`}
-              >
-                <tab.icon className="text-xl flex-shrink-0" />
-                <div className="flex-1">
-                  <div className="font-semibold text-lg">{tab.label}</div>
-                  <div
-                    className={`text-sm mt-1 ${
-                      activeTab === tab.id
-                        ? "text-[#E41E26]/80 dark:text-[#E41E26]/70"
-                        : "text-gray-500 dark:text-gray-400"
-                    }`}
-                  >
-                    {tab.description}
-                  </div>
-                </div>
-              </motion.button>
-            ))}
-          </div>
-
-          {/* Tab Content - Responsive */}
-          <div className="relative min-h-[300px] sm:min-h-[400px]">
-            {/* Profile Information Tab */}
-            {activeTab === "profile" && (
-              <motion.div
-                key="profile-content"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-              >
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-gray-200/50 shadow-lg dark:bg-gray-700/80 dark:border-gray-600/50">
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-200 mb-3 sm:mb-4 flex items-center gap-2 justify-start">
-                    <FaUser className="text-[#E41E26]" />
-                    المعلومات الشخصية
-                  </h3>
-
-                  <div className="space-y-3 sm:space-y-4">
-                    {/* First Name */}
-                    <div className="space-y-2">
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 text-right">
-                        الاسم الأول
-                      </label>
-                      <div className="relative group">
-                        <FaUser
-                          className={`absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-lg transition-all duration-300 group-focus-within:scale-110 ${
-                            isEditingProfile ? "opacity-100" : "opacity-70"
-                          }`}
-                        />
-                        {isEditingProfile ? (
-                          <input
-                            type="text"
-                            name="firstName"
-                            value={formData.firstName}
-                            onChange={handleChange}
-                            className={fieldClass + " pr-10 sm:pr-12"}
-                            placeholder="أدخل اسمك الأول"
-                            dir="rtl"
-                          />
-                        ) : (
-                          <div className="w-full border border-gray-200 bg-white/50 text-gray-800 text-base sm:text-lg font-medium pr-10 sm:pr-12 py-3 sm:py-3.5 rounded-xl dark:bg-gray-600/50 dark:text-gray-200 dark:border-gray-500 text-right">
-                            {user.firstName}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Last Name */}
-                    <div className="space-y-2">
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 text-right">
-                        الاسم الأخير
-                      </label>
-                      <div className="relative group">
-                        <FaUser
-                          className={`absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-lg transition-all duration-300 group-focus-within:scale-110 ${
-                            isEditingProfile ? "opacity-100" : "opacity-70"
-                          }`}
-                        />
-                        {isEditingProfile ? (
-                          <input
-                            type="text"
-                            name="lastName"
-                            value={formData.lastName}
-                            onChange={handleChange}
-                            className={fieldClass + " pr-10 sm:pr-12"}
-                            placeholder="أدخل اسمك الأخير"
-                            dir="rtl"
-                          />
-                        ) : (
-                          <div className="w-full border border-gray-200 bg-white/50 text-gray-800 text-base sm:text-lg font-medium pr-10 sm:pr-12 py-3 sm:py-3.5 rounded-xl dark:bg-gray-600/50 dark:text-gray-200 dark:border-gray-500 text-right">
-                            {user.lastName}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Email */}
-                    <div className="space-y-2">
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 text-right">
-                        البريد الإلكتروني
-                      </label>
-                      <div className="relative group">
-                        <FaEnvelope className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-lg transition-all duration-300 opacity-70" />
-                        <div className="w-full border border-gray-200 bg-gray-100/50 text-gray-800 text-base sm:text-lg font-medium pr-10 sm:pr-12 py-3 sm:py-3.5 rounded-xl truncate dark:bg-gray-600/50 dark:text-gray-200 dark:border-gray-500 text-right">
-                          {user.email}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Phone Number */}
-                    <div className="space-y-2">
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 text-right">
-                        رقم الهاتف
-                      </label>
-                      <div className="relative group">
-                        <FaPhone
-                          className={`absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-lg transition-all duration-300 group-focus-within:scale-110 ${
-                            isEditingProfile ? "opacity-100" : "opacity-70"
-                          }`}
-                        />
-                        {isEditingProfile ? (
-                          <input
-                            type="tel"
-                            name="phoneNumber"
-                            value={formData.phoneNumber}
-                            onChange={handleChange}
-                            className={fieldClass + " pr-10 sm:pr-12"}
-                            placeholder="أدخل رقم هاتفك"
-                            dir="rtl"
-                          />
-                        ) : (
-                          <div className="w-full border border-gray-200 bg-white/50 text-gray-800 text-base sm:text-lg font-medium pr-10 sm:pr-12 py-3 sm:py-3.5 rounded-xl dark:bg-gray-600/50 dark:text-gray-200 dark:border-gray-500 text-right">
-                            {user.phoneNumber || "غير متوفر"}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Security Settings Tab */}
-            {activeTab === "security" && (
-              <motion.div
-                key="security-content"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-              >
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-gray-200/50 shadow-lg dark:bg-gray-700/80 dark:border-gray-600/50">
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-200 mb-3 sm:mb-4 flex items-center gap-2 justify-start">
-                    <FaKey className="text-[#E41E26]" />
-                    تغيير كلمة المرور
-                  </h3>
-
-                  <div className="space-y-3 sm:space-y-4">
-                    {/* Current Password */}
-                    <div className="space-y-2">
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 text-right">
-                        كلمة المرور الحالية
-                      </label>
-                      <div className="relative group">
-                        <FaLock className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-lg transition-all duration-300 group-focus-within:scale-110 opacity-70" />
-                        <input
-                          type={showPassword.old ? "text" : "password"}
-                          name="oldPassword"
-                          placeholder="أدخل كلمة المرور الحالية"
-                          value={passwordData.oldPassword}
-                          onChange={handlePasswordChange}
-                          className={
-                            fieldClass + " pr-10 sm:pr-12 pl-10 sm:pl-12"
-                          }
-                          dir="rtl"
-                        />
-                        <div
-                          onClick={() =>
-                            setShowPassword({
-                              ...showPassword,
-                              old: !showPassword.old,
-                            })
-                          }
-                          className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[#E41E26] cursor-pointer transition-all duration-200 hover:scale-110 dark:text-gray-400"
-                        >
-                          {showPassword.old ? <FaEyeSlash /> : <FaEye />}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* New Password */}
-                    <div className="space-y-2">
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 text-right">
-                        كلمة المرور الجديدة
-                      </label>
-                      <div className="relative group">
-                        <FaLock className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-lg transition-all duration-300 group-focus-within:scale-110 opacity-70" />
-                        <input
-                          type={showPassword.new ? "text" : "password"}
-                          name="newPassword"
-                          placeholder="أدخل كلمة المرور الجديدة"
-                          value={passwordData.newPassword}
-                          onChange={handlePasswordChange}
-                          className={
-                            fieldClass + " pr-10 sm:pr-12 pl-10 sm:pl-12"
-                          }
-                          dir="rtl"
-                        />
-                        <div
-                          onClick={() =>
-                            setShowPassword({
-                              ...showPassword,
-                              new: !showPassword.new,
-                            })
-                          }
-                          className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[#E41E26] cursor-pointer transition-all duration-200 hover:scale-110 dark:text-gray-400"
-                        >
-                          {showPassword.new ? <FaEyeSlash /> : <FaEye />}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Password Requirements */}
-                    <div className="bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] p-3 sm:p-4 rounded-xl border border-[#FDB913]/30 space-y-2 dark:from-gray-600 dark:to-gray-500 dark:border-gray-500">
-                      <p className="text-sm font-semibold text-[#E41E26] mb-2 text-right">
-                        متطلبات كلمة المرور:
-                      </p>
-                      <div className="grid grid-cols-1 gap-1 sm:gap-2 text-right">
-                        {getValidationItem(
-                          passwordValidations.length,
-                          "8 أحرف على الأقل"
-                        )}
-                        {getValidationItem(
-                          passwordValidations.lowercase,
-                          "حرف صغير واحد على الأقل"
-                        )}
-                        {getValidationItem(
-                          passwordValidations.uppercase,
-                          "حرف كبير واحد على الأقل"
-                        )}
-                        {getValidationItem(
-                          passwordValidations.specialChar,
-                          "رمز خاص واحد على الأقل"
-                        )}
-                      </div>
-                    </div>
-
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={handleSavePassword}
-                      disabled={!allPasswordValid || !passwordData.oldPassword}
-                      className={`w-full font-semibold py-3 sm:py-3.5 rounded-xl transition-all duration-300 text-base sm:text-lg ${
-                        allPasswordValid && passwordData.oldPassword
-                          ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25"
-                          : "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400"
-                      }`}
-                    >
-                      تحديث كلمة المرور
-                    </motion.button>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

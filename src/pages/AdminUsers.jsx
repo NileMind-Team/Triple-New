@@ -14,7 +14,6 @@ import {
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { useUsers } from "../hooks/useUsers";
-import Header from "../components/adminUsers/Header";
 import SearchBar from "../components/adminUsers/SearchBar";
 import UserCard from "../components/adminUsers/UserCard";
 import EmptyState from "../components/adminUsers/EmptyState";
@@ -65,10 +64,12 @@ export default function AdminUsers() {
         style: {
           width: "70%",
           margin: "10px",
-          borderRadius: "8px",
+          borderRadius: "12px",
           textAlign: "right",
           fontSize: "14px",
           direction: "rtl",
+          background: "linear-gradient(135deg, #FFA726, #FF9800)",
+          color: "white",
         },
       });
     } else {
@@ -76,11 +77,10 @@ export default function AdminUsers() {
         icon: "warning",
         title: title || "تحذير",
         text: message,
-        confirmButtonColor: "#E41E26",
-        background: "#ffffff",
-        color: "#000000",
         showConfirmButton: false,
         timer: 2500,
+        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+        color: "white",
       });
     }
   };
@@ -139,27 +139,18 @@ export default function AdminUsers() {
   const handleAddNewUser = () => {
     setIsAdding(true);
     setFormErrors({});
-
-    if (window.innerWidth < 1280) {
-      setTimeout(() => {
-        document.getElementById("user-form")?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }, 100);
-    }
   };
 
   const getRoleBadgeColor = (role) => {
     switch (role) {
       case "Admin":
-        return "bg-red-100 text-red-800 border-red-200";
+        return "bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] text-white border-transparent";
       case "Restaurant":
-        return "bg-blue-100 text-blue-800 border-blue-200";
+        return "bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white border-transparent";
       case "Branch":
-        return "bg-green-100 text-green-800 border-green-200";
+        return "bg-gradient-to-r from-[#4CAF50] to-[#2E3E88] text-white border-transparent";
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
+        return "bg-gradient-to-r from-[#9E9E9E] to-[#607D8B] text-white border-transparent";
     }
   };
 
@@ -179,14 +170,26 @@ export default function AdminUsers() {
   const getStatusBadge = (user) => {
     if (user.isActive === false) {
       return (
-        <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-semibold border border-red-200 flex items-center gap-1">
+        <span
+          className="px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1"
+          style={{
+            background: "linear-gradient(135deg, #FF6B6B, #FF8E53)",
+            color: "white",
+          }}
+        >
           <FaLock className="text-xs" />
           معطل
         </span>
       );
     }
     return (
-      <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold border border-green-200 flex items-center gap-1">
+      <span
+        className="px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1"
+        style={{
+          background: "linear-gradient(135deg, #4CAF50, #2E3E88)",
+          color: "white",
+        }}
+      >
         <FaLockOpen className="text-xs" />
         مفعل
       </span>
@@ -209,8 +212,26 @@ export default function AdminUsers() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] px-4">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E41E26]"></div>
+      <div
+        className="min-h-screen flex items-center justify-center px-4"
+        style={{
+          background: "linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)",
+        }}
+      >
+        <div className="text-center">
+          <div
+            className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+            style={{
+              borderTopColor: "#2E3E88",
+              borderRightColor: "#32B9CC",
+              borderBottomColor: "#2E3E88",
+              borderLeftColor: "transparent",
+            }}
+          ></div>
+          <p className="text-lg font-semibold" style={{ color: "#2E3E88" }}>
+            جارٍ التحميل...
+          </p>
+        </div>
       </div>
     );
   }
@@ -223,101 +244,137 @@ export default function AdminUsers() {
 
   return (
     <div
-      className={`min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] px-3 sm:px-4 md:px-6 py-3 sm:py-6 relative font-sans overflow-hidden transition-colors duration-300`}
-      style={{ direction: "rtl" }}
+      className="min-h-screen font-sans relative overflow-x-hidden"
+      style={{
+        background: "linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)",
+        backgroundAttachment: "fixed",
+      }}
     >
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -left-10 sm:-left-20 -top-10 sm:-top-20 w-40 h-40 sm:w-60 sm:h-60 md:w-80 md:h-80 bg-gradient-to-r from-[#E41E26]/10 to-[#FDB913]/10 rounded-full blur-2xl sm:blur-3xl animate-pulse"></div>
-        <div className="absolute -right-10 sm:-right-20 -bottom-10 sm:-bottom-20 w-40 h-40 sm:w-60 sm:h-60 md:w-80 md:h-80 bg-gradient-to-r from-[#FDB913]/10 to-[#E41E26]/10 rounded-full blur-2xl sm:blur-3xl animate-pulse"></div>
+      {/* Header Section */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/80 to-white"></div>
+
+        {/* Hero Header */}
+        <div
+          className="relative py-16 px-4"
+          style={{
+            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+          }}
+        >
+          <div className="max-w-7xl mx-auto">
+            <motion.button
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              onClick={() => navigate(-1)}
+              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              style={{
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+              }}
+            >
+              <FaArrowLeft
+                size={20}
+                className="group-hover:-translate-x-1 transition-transform"
+              />
+            </motion.button>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center pt-8"
+            >
+              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
+                <FaUserShield className="text-white text-4xl" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                إدارة المستخدمين
+              </h1>
+              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+                إدارة وإضافة وتعديل مستخدمي النظام بسهولة وأمان
+              </p>
+            </motion.div>
+          </div>
+        </div>
       </div>
 
-      <motion.button
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        onClick={() => navigate(-1)}
-        className="fixed top-3 sm:top-4 left-3 sm:left-4 z-50 bg-white/80 backdrop-blur-md hover:bg-[#E41E26] hover:text-white rounded-full p-2 sm:p-3 text-[#E41E26] border border-[#E41E26]/30 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl group"
-      >
-        <FaArrowLeft
-          size={14}
-          className="sm:size-4 group-hover:scale-110 transition-transform"
-        />
-      </motion.button>
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10">
+        {/* Floating Action Button */}
+        <motion.button
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleAddNewUser}
+          className="fixed bottom-6 right-6 z-40 text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-2 group"
+          style={{
+            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+          }}
+        >
+          <FaPlus className="text-xl group-hover:rotate-90 transition-transform" />
+          <span className="hidden md:inline font-semibold">
+            إضافة مستخدم جديد
+          </span>
+        </motion.button>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, type: "spring" }}
-        className="max-w-7xl mx-auto bg-white/90 backdrop-blur-xl shadow-xl sm:shadow-2xl rounded-2xl sm:rounded-3xl border border-white/50 relative overflow-hidden"
-      >
-        <Header />
-
-        <div className="relative px-3 sm:px-4 md:px-6 lg:px-8 pb-4 sm:pb-6 md:pb-8">
+        {/* Content Container */}
+        <div className="w-full">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="flex justify-center -mt-6 sm:-mt-7 md:-mt-8 mb-6 sm:mb-8 md:mb-10"
+            transition={{ delay: 0.5 }}
+            className="mb-8"
           >
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleAddNewUser}
-              className="flex items-center gap-2 bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-4 sm:px-5 md:px-6 py-3 sm:py-3 md:py-4 rounded-xl sm:rounded-2xl font-semibold shadow-2xl sm:shadow-3xl hover:shadow-4xl hover:shadow-[#E41E26]/50 transition-all duration-300 text-sm sm:text-base md:text-lg border-2 border-white whitespace-nowrap transform translate-y-2"
-            >
-              <FaPlus className="text-sm sm:text-base md:text-lg" />
-              <span>إضافة مستخدم جديد</span>
-            </motion.button>
+            <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
           </motion.div>
 
-          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
-            <div
-              className={`space-y-3 sm:space-y-4 md:space-y-5 ${
-                isAdding ? "xl:col-span-2" : "xl:col-span-3"
-              }`}
-            >
-              {sortedUsers.length > 0 ? (
-                sortedUsers.map((user, index) => (
-                  <UserCard
-                    key={user.id}
-                    user={user}
-                    index={index}
-                    isCurrentUser={isCurrentUser}
-                    getRoleBadgeColor={getRoleBadgeColor}
-                    getRoleIcon={getRoleIcon}
-                    getStatusBadge={getStatusBadge}
-                    getAvailableRolesToAssign={getAvailableRolesToAssign}
-                    assigningRole={assigningRole}
-                    setAssigningRole={setAssigningRole}
-                    handleAssignRole={handleAssignRole}
-                    handleToggleStatus={handleToggleStatus}
-                  />
-                ))
-              ) : (
+          {/* Users Grid - 2 users per row on large screens */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {sortedUsers.length > 0 ? (
+              sortedUsers.map((user, index) => (
+                <UserCard
+                  key={user.id}
+                  user={user}
+                  index={index}
+                  isCurrentUser={isCurrentUser}
+                  getRoleBadgeColor={getRoleBadgeColor}
+                  getRoleIcon={getRoleIcon}
+                  getStatusBadge={getStatusBadge}
+                  getAvailableRolesToAssign={getAvailableRolesToAssign}
+                  assigningRole={assigningRole}
+                  setAssigningRole={setAssigningRole}
+                  handleAssignRole={handleAssignRole}
+                  handleToggleStatus={handleToggleStatus}
+                />
+              ))
+            ) : (
+              <div className="lg:col-span-2">
                 <EmptyState
                   searchTerm={searchTerm}
                   handleAddNewUser={handleAddNewUser}
                 />
-              )}
-            </div>
-
-            <AnimatePresence>
-              <UserForm
-                isAdding={isAdding}
-                formData={formData}
-                setFormData={setFormData}
-                availableRoles={availableRoles}
-                handleRoleToggle={handleRoleToggle}
-                handleSubmit={handleSubmit}
-                resetForm={resetForm}
-                getRoleIcon={getRoleIcon}
-                isFormValid={isFormValid}
-              />
-            </AnimatePresence>
+              </div>
+            )}
           </div>
         </div>
-      </motion.div>
+      </div>
+
+      {/* User Form Modal */}
+      <AnimatePresence>
+        {isAdding && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <UserForm
+              formData={formData}
+              setFormData={setFormData}
+              availableRoles={availableRoles}
+              handleRoleToggle={handleRoleToggle}
+              handleSubmit={handleSubmit}
+              resetForm={resetForm}
+              getRoleIcon={getRoleIcon}
+              isFormValid={isFormValid}
+            />
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

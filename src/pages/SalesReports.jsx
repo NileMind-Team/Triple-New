@@ -26,13 +26,14 @@ import {
   FaChevronRight,
   FaBuilding,
   FaChevronDown,
+  FaArrowLeft,
 } from "react-icons/fa";
-import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format, subDays } from "date-fns";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "../api/axiosInstance";
 
 const showSalesMobileSuccessToast = (message) => {
@@ -47,10 +48,12 @@ const showSalesMobileSuccessToast = (message) => {
       style: {
         width: "70%",
         margin: "10px",
-        borderRadius: "8px",
+        borderRadius: "12px",
         textAlign: "right",
         fontSize: "14px",
         direction: "rtl",
+        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+        color: "white",
       },
     });
   }
@@ -74,10 +77,17 @@ const showSalesMobileAlertToast = (message, type = "info") => {
       style: {
         width: "70%",
         margin: "10px",
-        borderRadius: "8px",
+        borderRadius: "12px",
         textAlign: "right",
         fontSize: "14px",
         direction: "rtl",
+        background:
+          type === "error"
+            ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
+            : type === "warning"
+              ? "linear-gradient(135deg, #FFA726, #FF9800)"
+              : "linear-gradient(135deg, #2E3E88, #32B9CC)",
+        color: "white",
       },
     });
   }
@@ -313,19 +323,19 @@ const OrderDetailsModal = ({ order, onClose }) => {
   const getStatusIcon = (status) => {
     switch (status) {
       case "Pending":
-        return <FaClock className="text-yellow-500" />;
+        return <FaClock style={{ color: "#32B9CC" }} />;
       case "Confirmed":
-        return <FaCheckCircle className="text-blue-500" />;
+        return <FaCheckCircle style={{ color: "#2E3E88" }} />;
       case "Preparing":
-        return <FaUtensils className="text-orange-500" />;
+        return <FaUtensils style={{ color: "#FF8E53" }} />;
       case "OutForDelivery":
-        return <FaMotorcycle className="text-purple-500" />;
+        return <FaMotorcycle style={{ color: "#9C27B0" }} />;
       case "Delivered":
-        return <FaCheck className="text-green-500" />;
+        return <FaCheck style={{ color: "#4CAF50" }} />;
       case "Cancelled":
-        return <FaBan className="text-red-500" />;
+        return <FaBan style={{ color: "#FF6B6B" }} />;
       default:
-        return <FaClock className="text-gray-500" />;
+        return <FaClock style={{ color: "#9E9E9E" }} />;
     }
   };
 
@@ -351,19 +361,19 @@ const OrderDetailsModal = ({ order, onClose }) => {
   const getStatusColor = (status) => {
     switch (status) {
       case "Pending":
-        return "text-yellow-600 dark:text-yellow-400";
+        return "#32B9CC";
       case "Confirmed":
-        return "text-blue-600 dark:text-blue-400";
+        return "#2E3E88";
       case "Preparing":
-        return "text-orange-600 dark:text-orange-400";
+        return "#FF8E53";
       case "OutForDelivery":
-        return "text-purple-600 dark:text-purple-400";
+        return "#9C27B0";
       case "Delivered":
-        return "text-green-600 dark:text-green-400";
+        return "#4CAF50";
       case "Cancelled":
-        return "text-red-600 dark:text-red-400";
+        return "#FF6B6B";
       default:
-        return "text-gray-600 dark:text-gray-400";
+        return "#9E9E9E";
     }
   };
 
@@ -371,9 +381,7 @@ const OrderDetailsModal = ({ order, onClose }) => {
     if (!item) return 0;
 
     const basePrice = item.menuItem?.basePrice || item.basePriceAtOrder || 0;
-
     const itemDiscount = item.totalDiscount || 0;
-
     const optionsTotal =
       item.options?.reduce(
         (sum, option) => sum + (option.optionPriceAtOrder || 0),
@@ -393,10 +401,16 @@ const OrderDetailsModal = ({ order, onClose }) => {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
-        className="relative bg-white dark:bg-gray-800 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden shadow-2xl"
+        className="relative bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-hidden shadow-2xl"
+        dir="rtl"
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#E41E26] to-[#FDB913] p-6 relative">
+        <div
+          className="p-6 relative"
+          style={{
+            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+          }}
+        >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-3 bg-white/20 backdrop-blur-sm rounded-2xl">
@@ -420,51 +434,56 @@ const OrderDetailsModal = ({ order, onClose }) => {
         {/* Content */}
         <div className="overflow-y-auto max-h-[calc(90vh-80px)] p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
+            <div
+              className="rounded-xl p-4"
+              style={{
+                background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                border: "1px solid #2E3E8820",
+              }}
+            >
               <div className="flex items-center gap-2 mb-4">
-                <FaUser className="text-[#E41E26]" />
-                <h3 className="font-bold text-gray-800 dark:text-white">
+                <FaUser style={{ color: "#2E3E88" }} />
+                <h3 className="font-bold" style={{ color: "#2E3E88" }}>
                   معلومات العميل
                 </h3>
               </div>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">
-                    اسم العميل:
-                  </span>
-                  <span className="font-medium text-gray-800 dark:text-white">
+                  <span className="text-gray-600">اسم العميل:</span>
+                  <span className="font-medium" style={{ color: "#2E3E88" }}>
                     {getUserFullName()}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">
-                    رقم الهاتف:
-                  </span>
-                  <span className="font-medium text-gray-800 dark:text-white">
+                  <span className="text-gray-600">رقم الهاتف:</span>
+                  <span className="font-medium" style={{ color: "#32B9CC" }}>
                     {getPhoneNumber()}
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
+            <div
+              className="rounded-xl p-4"
+              style={{
+                background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                border: "1px solid #2E3E8820",
+              }}
+            >
               <div className="flex items-center gap-2 mb-4">
-                <FaMapMarkerAlt className="text-[#E41E26]" />
-                <h3 className="font-bold text-gray-800 dark:text-white">
+                <FaMapMarkerAlt style={{ color: "#2E3E88" }} />
+                <h3 className="font-bold" style={{ color: "#2E3E88" }}>
                   معلومات التوصيل
                 </h3>
               </div>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">
-                    نوع الطلب:
-                  </span>
+                  <span className="text-gray-600">نوع الطلب:</span>
                   <span
-                    className={`font-medium ${
-                      order.deliveryFee?.fee > 0
-                        ? "text-blue-600 dark:text-blue-400"
-                        : "text-green-600 dark:text-green-400"
-                    }`}
+                    className="font-medium"
+                    style={{
+                      color: order.deliveryFee?.fee > 0 ? "#2E3E88" : "#32B9CC",
+                    }}
                   >
                     {order.deliveryFee?.areaName ||
                       (order.deliveryFee?.fee > 0 ? "توصيل" : "استلام")}
@@ -472,19 +491,15 @@ const OrderDetailsModal = ({ order, onClose }) => {
                 </div>
                 {order.location?.streetName && (
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">
-                      العنوان:
-                    </span>
-                    <span className="font-medium text-gray-800 dark:text-white">
+                    <span className="text-gray-600">العنوان:</span>
+                    <span className="font-medium" style={{ color: "#2E3E88" }}>
                       {order.location.streetName}
                     </span>
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">
-                    تكلفة التوصيل:
-                  </span>
-                  <span className="font-medium text-gray-800 dark:text-white">
+                  <span className="text-gray-600">تكلفة التوصيل:</span>
+                  <span className="font-medium" style={{ color: "#32B9CC" }}>
                     {order.deliveryCost?.toFixed(2) || "0.00"} ج.م
                   </span>
                 </div>
@@ -494,8 +509,8 @@ const OrderDetailsModal = ({ order, onClose }) => {
 
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-4">
-              <FaBox className="text-[#E41E26]" />
-              <h3 className="font-bold text-gray-800 dark:text-white">
+              <FaBox style={{ color: "#2E3E88" }} />
+              <h3 className="font-bold" style={{ color: "#2E3E88" }}>
                 المنتجات المطلوبة
               </h3>
             </div>
@@ -503,7 +518,6 @@ const OrderDetailsModal = ({ order, onClose }) => {
               <div className="space-y-4">
                 {order.items.map((item, index) => {
                   const itemFinalPrice = calculateItemFinalPrice(item);
-
                   const basePrice =
                     item.menuItem?.basePrice || item.basePriceAtOrder || 0;
                   const isPriceBasedOnRequest = basePrice === 0;
@@ -520,7 +534,11 @@ const OrderDetailsModal = ({ order, onClose }) => {
                   return (
                     <div
                       key={index}
-                      className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:shadow-lg transition-shadow duration-200"
+                      className="bg-white border rounded-xl p-4 hover:shadow-lg transition-shadow duration-200"
+                      style={{
+                        border: "1px solid #2E3E8820",
+                        background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                      }}
                     >
                       <div className="flex flex-col md:flex-row gap-4">
                         {(item.menuItem?.imageUrl ||
@@ -557,12 +575,15 @@ const OrderDetailsModal = ({ order, onClose }) => {
                         >
                           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div className="md:col-span-2">
-                              <p className="font-bold text-lg text-gray-800 dark:text-white mb-1">
+                              <p
+                                className="font-bold text-lg mb-1"
+                                style={{ color: "#2E3E88" }}
+                              >
                                 {item.menuItem?.name ||
                                   item.menuItemNameSnapshotAtOrder ||
                                   "منتج غير معروف"}
                               </p>
-                              <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+                              <p className="text-sm text-gray-600 line-clamp-2">
                                 {item.menuItem?.description?.substring(
                                   0,
                                   100,
@@ -580,21 +601,27 @@ const OrderDetailsModal = ({ order, onClose }) => {
                             </div>
 
                             <div className="text-center">
-                              <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                              <p className="text-sm text-gray-500 mb-1">
                                 الكمية
                               </p>
-                              <p className="font-bold text-lg text-gray-800 dark:text-white">
+                              <p
+                                className="font-bold text-lg"
+                                style={{ color: "#2E3E88" }}
+                              >
                                 {item.quantity || 1}
                               </p>
                             </div>
 
                             <div className="text-center">
-                              <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                              <p className="text-sm text-gray-500 mb-1">
                                 السعر الأساسي
                               </p>
-                              <p className="font-bold text-lg text-green-600 dark:text-green-400">
+                              <p
+                                className="font-bold text-lg"
+                                style={{ color: "#4CAF50" }}
+                              >
                                 {isPriceBasedOnRequest ? (
-                                  <span className="text-[#E41E26] dark:text-[#FDB913]">
+                                  <span style={{ color: "#FF8E53" }}>
                                     السعر حسب الطلب
                                   </span>
                                 ) : (
@@ -605,21 +632,39 @@ const OrderDetailsModal = ({ order, onClose }) => {
                           </div>
 
                           {item.options && item.options.length > 0 && (
-                            <div className="mt-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg p-3">
-                              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <div
+                              className="mt-4 rounded-lg p-3"
+                              style={{
+                                background:
+                                  "linear-gradient(135deg, #2E3E8810, #32B9CC10)",
+                              }}
+                            >
+                              <p
+                                className="text-sm font-medium mb-2"
+                                style={{ color: "#2E3E88" }}
+                              >
                                 الاضافات المختارة:
                               </p>
                               <div className="space-y-2">
                                 {item.options.map((option, optionIndex) => (
                                   <div
                                     key={optionIndex}
-                                    className="flex justify-between items-center bg-white dark:bg-gray-800 px-3 py-2 rounded-md border border-gray-200 dark:border-gray-700"
+                                    className="flex justify-between items-center bg-white px-3 py-2 rounded-md border"
+                                    style={{
+                                      border: "1px solid #2E3E8820",
+                                    }}
                                   >
-                                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                                    <span
+                                      className="text-sm"
+                                      style={{ color: "#2E3E88" }}
+                                    >
                                       {option.optionNameAtOrder ||
                                         `إضافة ${optionIndex + 1}`}
                                     </span>
-                                    <span className="text-sm font-medium text-green-600 dark:text-green-400">
+                                    <span
+                                      className="text-sm font-medium"
+                                      style={{ color: "#4CAF50" }}
+                                    >
                                       +
                                       {option.optionPriceAtOrder?.toFixed(2) ||
                                         "0.00"}{" "}
@@ -627,11 +672,20 @@ const OrderDetailsModal = ({ order, onClose }) => {
                                     </span>
                                   </div>
                                 ))}
-                                <div className="flex justify-between items-center pt-2 border-t border-gray-300 dark:border-gray-600">
-                                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <div
+                                  className="flex justify-between items-center pt-2 border-t"
+                                  style={{ borderColor: "#2E3E8820" }}
+                                >
+                                  <span
+                                    className="text-sm font-medium"
+                                    style={{ color: "#2E3E88" }}
+                                  >
                                     إجمالي الاضافات:
                                   </span>
-                                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
+                                  <span
+                                    className="text-sm font-bold"
+                                    style={{ color: "#2E3E88" }}
+                                  >
                                     {item.options
                                       .reduce(
                                         (sum, option) =>
@@ -647,31 +701,48 @@ const OrderDetailsModal = ({ order, onClose }) => {
                             </div>
                           )}
 
-                          <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                          <div
+                            className="mt-4 pt-4 border-t"
+                            style={{ borderColor: "#2E3E8820" }}
+                          >
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                               <div className="text-center">
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                                <p className="text-xs text-gray-500 mb-1">
                                   السعر
                                 </p>
-                                <p className="text-sm font-bold text-blue-600 dark:text-blue-400">
+                                <p
+                                  className="text-sm font-bold"
+                                  style={{ color: "#2E3E88" }}
+                                >
                                   {itemPriceWithOptions} ج.م
                                 </p>
                               </div>
 
                               <div className="text-center">
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                                <p className="text-xs text-gray-500 mb-1">
                                   خصم المنتج
                                 </p>
-                                <p className="text-sm font-bold text-red-600 dark:text-red-400">
+                                <p
+                                  className="text-sm font-bold"
+                                  style={{ color: "#FF6B6B" }}
+                                >
                                   {item.totalDiscount?.toFixed(2) || "0.00"} ج.م
                                 </p>
                               </div>
 
                               <div className="text-center col-span-2">
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                                <p className="text-xs text-gray-500 mb-1">
                                   الإجمالي النهائي للمنتج
                                 </p>
-                                <p className="text-lg font-bold text-[#E41E26] dark:text-[#FDB913]">
+                                <p
+                                  className="text-lg font-bold"
+                                  style={{
+                                    background:
+                                      "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                                    WebkitBackgroundClip: "text",
+                                    WebkitTextFillColor: "transparent",
+                                  }}
+                                >
                                   {itemFinalPrice.toFixed(2)} ج.م
                                 </p>
                               </div>
@@ -684,54 +755,71 @@ const OrderDetailsModal = ({ order, onClose }) => {
                 })}
               </div>
             ) : (
-              <div className="text-center py-8 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
-                <FaBox className="mx-auto text-3xl text-gray-400 dark:text-gray-500 mb-3" />
-                <p className="text-gray-600 dark:text-gray-400">
-                  لا توجد منتجات في هذا الطلب
-                </p>
+              <div
+                className="text-center py-8 rounded-xl"
+                style={{
+                  background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                  border: "1px solid #2E3E8820",
+                }}
+              >
+                <FaBox
+                  className="mx-auto text-3xl mb-3"
+                  style={{ color: "#2E3E88" }}
+                />
+                <p style={{ color: "#32B9CC" }}>لا توجد منتجات في هذا الطلب</p>
               </div>
             )}
           </div>
 
-          <div className="bg-gradient-to-r from-gray-50 to-white dark:from-gray-700 dark:to-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700">
+          <div
+            className="rounded-xl p-4 border mb-6"
+            style={{
+              background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+              border: "1px solid #2E3E8820",
+            }}
+          >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center">
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                  الإجمالي بعد الخصم
-                </p>
-                <p className="text-xl font-bold text-gray-800 dark:text-white">
+                <p className="text-sm text-gray-500 mb-1">الإجمالي بعد الخصم</p>
+                <p className="text-xl font-bold" style={{ color: "#2E3E88" }}>
                   {order.totalWithoutFee?.toFixed(2) || "0.00"} ج.م
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                  إجمالي الخصم
-                </p>
-                <p className="text-xl font-bold text-red-600 dark:text-red-400">
+                <p className="text-sm text-gray-500 mb-1">إجمالي الخصم</p>
+                <p className="text-xl font-bold" style={{ color: "#FF6B6B" }}>
                   {order.totalDiscount?.toFixed(2) || "0.00"} ج.م
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                  المبلغ النهائي
-                </p>
-                <p className="text-xl font-bold text-[#E41E26] dark:text-[#FDB913]">
+                <p className="text-sm text-gray-500 mb-1">المبلغ النهائي</p>
+                <p
+                  className="text-xl font-bold"
+                  style={{
+                    background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
                   {order.totalWithFee?.toFixed(2) || "0.00"} ج.م
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+          <div
+            className="p-4 rounded-xl"
+            style={{
+              background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+              border: "1px solid #2E3E8820",
+            }}
+          >
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                  حالة الطلب
-                </p>
+                <p className="text-sm text-gray-500 mb-1">حالة الطلب</p>
                 <p
-                  className={`text-lg font-bold ${getStatusColor(
-                    order.status,
-                  )}`}
+                  className="text-lg font-bold"
+                  style={{ color: getStatusColor(order.status) }}
                 >
                   <span className="flex items-center gap-2">
                     {getStatusIcon(order.status)}
@@ -741,13 +829,14 @@ const OrderDetailsModal = ({ order, onClose }) => {
               </div>
             </div>
             {order.notes && (
-              <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                  ملاحظات:
-                </p>
-                <p className="text-gray-800 dark:text-gray-300">
-                  {order.notes}
-                </p>
+              <div
+                className="mt-4 p-3 rounded-lg"
+                style={{
+                  background: "linear-gradient(135deg, #2E3E8810, #32B9CC10)",
+                }}
+              >
+                <p className="text-sm text-gray-600 mb-1">ملاحظات:</p>
+                <p style={{ color: "#2E3E88" }}>{order.notes}</p>
               </div>
             )}
           </div>
@@ -758,6 +847,7 @@ const OrderDetailsModal = ({ order, onClose }) => {
 };
 
 const SalesReports = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -803,42 +893,20 @@ const SalesReports = () => {
   const fetchReportData = async (isFilterAction = false, page = 1) => {
     if (!startDate || !endDate) {
       if (isFilterAction) {
-        if (window.innerWidth < 768) {
-          showSalesMobileAlertToast(
-            "يرجى تحديد تاريخ البداية والنهاية أولاً",
-            "warning",
-          );
-        } else {
-          Swal.fire({
-            icon: "warning",
-            title: "تاريخ غير مكتمل",
-            text: "يرجى تحديد تاريخ البداية والنهاية أولاً",
-            timer: 3000,
-            showConfirmButton: false,
-            background: "#fff",
-            color: "#333",
-          });
-        }
+        showSalesMobileAlertToast(
+          "يرجى تحديد تاريخ البداية والنهاية أولاً",
+          "warning",
+        );
       }
       return;
     }
 
     if (startDate > endDate) {
       if (isFilterAction) {
-        if (window.innerWidth < 768) {
-          showSalesMobileAlertToast(
-            "تاريخ البداية يجب أن يكون قبل تاريخ النهاية",
-            "error",
-          );
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "خطأ في التاريخ",
-            text: "تاريخ البداية يجب أن يكون قبل تاريخ النهاية",
-            timer: 3000,
-            showConfirmButton: false,
-          });
-        }
+        showSalesMobileAlertToast(
+          "تاريخ البداية يجب أن يكون قبل تاريخ النهاية",
+          "error",
+        );
       }
       return;
     }
@@ -882,16 +950,7 @@ const SalesReports = () => {
 
       if (isFilterAction) {
         setTimeout(() => {
-          if (window.innerWidth < 768) {
-            showSalesMobileSuccessToast("تم تطبيق الفلترة بنجاح");
-          } else {
-            Swal.fire({
-              icon: "success",
-              title: "تم تطبيق الفلترة بنجاح",
-              timer: 1500,
-              showConfirmButton: false,
-            });
-          }
+          showSalesMobileSuccessToast("تم تطبيق الفلترة بنجاح");
         }, 500);
       }
     } catch (error) {
@@ -910,17 +969,7 @@ const SalesReports = () => {
         errorMessage = "فشل في تحميل بيانات التقرير";
       }
 
-      if (window.innerWidth < 768) {
-        showSalesMobileAlertToast(errorMessage, "info");
-      } else {
-        Swal.fire({
-          icon: "info",
-          title: "لا توجد بيانات",
-          text: errorMessage,
-          timer: 2500,
-          showConfirmButton: false,
-        });
-      }
+      showSalesMobileAlertToast(errorMessage, "info");
 
       setReportData([]);
       setAllOrdersForStats([]);
@@ -955,17 +1004,7 @@ const SalesReports = () => {
       setOrderDetails(details);
       setSelectedOrder(details);
     } catch (error) {
-      if (window.innerWidth < 768) {
-        showSalesMobileAlertToast("فشل في تحميل تفاصيل الطلب", "error");
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "خطأ",
-          text: "فشل في تحميل تفاصيل الطلب",
-          timer: 2000,
-          showConfirmButton: false,
-        });
-      }
+      showSalesMobileAlertToast("فشل في تحميل تفاصيل الطلب", "error");
     } finally {
       setLoadingDetails(false);
     }
@@ -1054,19 +1093,19 @@ const SalesReports = () => {
   const getStatusClass = (status) => {
     switch (status) {
       case "Pending":
-        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300";
+        return "bg-gradient-to-r from-[#32B9CC]/10 to-[#2E3E88]/10 text-[#32B9CC]";
       case "Confirmed":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300";
+        return "bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10 text-[#2E3E88]";
       case "Preparing":
-        return "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300";
+        return "bg-gradient-to-r from-[#FF8E53]/10 to-[#FF6B6B]/10 text-[#FF8E53]";
       case "OutForDelivery":
-        return "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300";
+        return "bg-gradient-to-r from-[#9C27B0]/10 to-[#E41E26]/10 text-[#9C27B0]";
       case "Delivered":
-        return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300";
+        return "bg-gradient-to-r from-[#4CAF50]/10 to-[#2E3E88]/10 text-[#4CAF50]";
       case "Cancelled":
-        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300";
+        return "bg-gradient-to-r from-[#FF6B6B]/10 to-[#FF8E53]/10 text-[#FF6B6B]";
       default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
+        return "bg-gradient-to-r from-[#9E9E9E]/10 to-[#607D8B]/10 text-[#9E9E9E]";
     }
   };
 
@@ -1075,39 +1114,19 @@ const SalesReports = () => {
       setIsPrinting(true);
 
       if (!startDate || !endDate) {
-        if (window.innerWidth < 768) {
-          showSalesMobileAlertToast(
-            "يرجى تحديد تاريخ البداية والنهاية أولاً",
-            "warning",
-          );
-        } else {
-          Swal.fire({
-            icon: "warning",
-            title: "تاريخ غير مكتمل",
-            text: "يرجى تحديد تاريخ البداية والنهاية أولاً",
-            timer: 2000,
-            showConfirmButton: false,
-          });
-        }
+        showSalesMobileAlertToast(
+          "يرجى تحديد تاريخ البداية والنهاية أولاً",
+          "warning",
+        );
         setIsPrinting(false);
         return;
       }
 
       if (allOrdersForStats.length === 0) {
-        if (window.innerWidth < 768) {
-          showSalesMobileAlertToast(
-            "لا توجد بيانات لعرضها في التقرير",
-            "warning",
-          );
-        } else {
-          Swal.fire({
-            icon: "warning",
-            title: "لا توجد بيانات",
-            text: "لا توجد بيانات لعرضها في التقرير",
-            timer: 2000,
-            showConfirmButton: false,
-          });
-        }
+        showSalesMobileAlertToast(
+          "لا توجد بيانات لعرضها في التقرير",
+          "warning",
+        );
         setIsPrinting(false);
         return;
       }
@@ -1476,17 +1495,7 @@ ${
       };
     } catch (error) {
       console.error("Error in print process:", error);
-      if (window.innerWidth < 768) {
-        showSalesMobileAlertToast("فشل في تحميل بيانات الطباعة", "error");
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "خطأ",
-          text: "فشل في تحميل بيانات الطباعة",
-          timer: 2000,
-          showConfirmButton: false,
-        });
-      }
+      showSalesMobileAlertToast("فشل في تحميل بيانات الطباعة", "error");
       setIsPrinting(false);
     }
   };
@@ -1558,77 +1567,117 @@ ${
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-4">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E41E26]"></div>
+      <div
+        className="min-h-screen flex items-center justify-center px-4"
+        style={{
+          background: "linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)",
+        }}
+      >
+        <div className="text-center">
+          <div
+            className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+            style={{
+              borderTopColor: "#2E3E88",
+              borderRightColor: "#32B9CC",
+              borderBottomColor: "#2E3E88",
+              borderLeftColor: "transparent",
+            }}
+          ></div>
+          <p className="text-lg font-semibold" style={{ color: "#2E3E88" }}>
+            جارٍ تحميل التقرير...
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
     <div
+      className="min-h-screen font-sans relative overflow-x-hidden"
+      style={{
+        background: "linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)",
+        backgroundAttachment: "fixed",
+      }}
       dir="rtl"
-      className="min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-3 sm:px-4 md:px-6 py-6 relative font-sans overflow-hidden transition-colors duration-300"
     >
-      {/* Background decorations */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -left-10 -top-10 w-40 h-40 sm:w-60 sm:h-60 bg-gradient-to-r from-[#E41E26]/10 to-[#FDB913]/10 rounded-full blur-2xl animate-pulse"></div>
-        <div className="absolute -right-10 -bottom-10 w-40 h-40 sm:w-60 sm:h-60 bg-gradient-to-r from-[#FDB913]/10 to-[#E41E26]/10 rounded-full blur-2xl animate-pulse"></div>
-      </div>
+      {/* Header Section */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/80 to-white"></div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, type: "spring" }}
-        className="max-w-7xl mx-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl shadow-xl rounded-2xl sm:rounded-3xl border border-white/50 dark:border-gray-700/50 relative overflow-hidden transition-colors duration-300"
-      >
-        {/* Header */}
-        <div className="bg-gradient-to-r from-[#E41E26] to-[#FDB913] px-6 py-8 relative overflow-hidden">
-          <div className="absolute inset-0 bg-black/10"></div>
-          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="p-3 bg-white/20 backdrop-blur-sm rounded-2xl">
-                <FaChartBar className="text-white text-2xl" />
+        {/* Hero Header */}
+        <div
+          className="relative py-16 px-4"
+          style={{
+            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+          }}
+        >
+          <div className="max-w-7xl mx-auto">
+            {/* زر الرجوع */}
+            <motion.button
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              onClick={() => navigate(-1)}
+              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              style={{
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+              }}
+            >
+              <FaArrowLeft
+                size={20}
+                className="group-hover:-translate-x-1 transition-transform"
+              />
+            </motion.button>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center pt-8"
+            >
+              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
+                <FaChartBar className="text-white text-4xl" />
               </div>
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1">
-                  تقارير المبيعات
-                </h1>
-                <p className="text-white/90 text-sm">
-                  تحليل مفصل لأداء المبيعات والفروع
-                </p>
-              </div>
-            </div>
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                تقارير المبيعات
+              </h1>
+              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+                تحليل مفصل لأداء المبيعات والفروع
+              </p>
+            </motion.div>
           </div>
         </div>
+      </div>
 
-        {/* Main Content */}
-        <div className="p-4 sm:p-6" dir="rtl">
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10">
+        {/* Content Container */}
+        <div className="w-full">
           {/* Date Filter Section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-700 dark:to-gray-800 border border-gray-200 dark:border-gray-600 rounded-2xl p-4 sm:p-6 mb-6 shadow-lg"
+            className="bg-white rounded-2xl p-6 mb-6 shadow-xl"
           >
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-              <div className="flex items-center gap-2">
-                <FaCalendarAlt className="text-[#E41E26] text-xl" />
-                <h3 className="text-lg font-bold text-gray-800 dark:text-white">
-                  فلترة بتاريخ وفرع
-                </h3>
-              </div>
+            <div className="flex items-center gap-2 mb-6">
+              <FaCalendarAlt className="text-xl" style={{ color: "#2E3E88" }} />
+              <h3 className="text-lg font-bold" style={{ color: "#2E3E88" }}>
+                فلترة بتاريخ وفرع
+              </h3>
             </div>
 
-            <div
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4"
-              dir="rtl"
-            >
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  className="block text-sm font-semibold mb-2"
+                  style={{ color: "#2E3E88" }}
+                >
                   من تاريخ
                 </label>
                 <div className="relative">
-                  <FaCalendarAlt className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26]" />
+                  <FaCalendarAlt
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    style={{ color: "#2E3E88" }}
+                  />
                   <DatePicker
                     selected={startDate}
                     onChange={(date) => setStartDate(date)}
@@ -1636,19 +1685,29 @@ ${
                     startDate={startDate}
                     endDate={endDate}
                     dateFormat="dd/MM/yyyy"
-                    className="w-full pl-10 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-[#E41E26] focus:border-transparent outline-none text-right"
+                    className="w-full pr-10 pl-3 py-2.5 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-right"
+                    style={{
+                      background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                    }}
                     locale="ar"
                     placeholderText="اختر تاريخ البداية"
+                    showPopperArrow={false}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  className="block text-sm font-semibold mb-2"
+                  style={{ color: "#2E3E88" }}
+                >
                   إلى تاريخ
                 </label>
                 <div className="relative">
-                  <FaCalendarAlt className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26]" />
+                  <FaCalendarAlt
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    style={{ color: "#2E3E88" }}
+                  />
                   <DatePicker
                     selected={endDate}
                     onChange={(date) => setEndDate(date)}
@@ -1657,15 +1716,22 @@ ${
                     endDate={endDate}
                     minDate={startDate}
                     dateFormat="dd/MM/yyyy"
-                    className="w-full pl-10 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-[#E41E26] focus:border-transparent outline-none text-right"
+                    className="w-full pr-10 pl-3 py-2.5 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-right"
+                    style={{
+                      background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                    }}
                     locale="ar"
                     placeholderText="اختر تاريخ النهاية"
+                    showPopperArrow={false}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  className="block text-sm font-semibold mb-2"
+                  style={{ color: "#2E3E88" }}
+                >
                   الفرع
                 </label>
                 <div className="relative">
@@ -1675,92 +1741,120 @@ ${
                       onClick={() =>
                         setIsBranchDropdownOpen(!isBranchDropdownOpen)
                       }
-                      className={`w-full flex items-center justify-between px-3 py-2.5 border ${
-                        isBranchDropdownOpen
-                          ? "border-[#E41E26] ring-2 ring-[#E41E26]/30"
-                          : "border-gray-300 dark:border-gray-600"
-                      } dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-[#E41E26] focus:border-transparent outline-none text-right group transition-all`}
+                      className="w-full flex items-center justify-between border border-gray-200 rounded-xl px-4 py-2.5 transition-all hover:border-[#2E3E88] group text-right"
+                      style={{
+                        background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                      }}
                     >
-                      <div className="flex items-center gap-2">
-                        <FaBuilding className="text-[#E41E26]" />
-                        <span className="text-sm">
+                      <div className="flex items-center gap-3">
+                        <FaBuilding
+                          className="group-hover:scale-110 transition-transform"
+                          style={{ color: "#2E3E88" }}
+                        />
+                        <span className="font-medium">
                           {getSelectedBranchName()}
                         </span>
                       </div>
-                      <FaChevronDown
-                        className={`text-[#E41E26] transition-transform duration-300 ${
-                          isBranchDropdownOpen ? "rotate-180" : ""
-                        }`}
-                      />
+                      <motion.div
+                        animate={{ rotate: isBranchDropdownOpen ? 180 : 0 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <FaChevronDown style={{ color: "#2E3E88" }} />
+                      </motion.div>
                     </button>
 
                     {isBranchDropdownOpen && (
-                      <div className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                        <div className="py-1">
-                          <button
-                            onClick={() => handleBranchSelect("all")}
-                            className={`w-full text-right px-4 py-3 hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] dark:hover:bg-gray-700 transition-all text-sm ${
-                              selectedBranch === "all"
-                                ? "bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] dark:bg-gray-700"
-                                : ""
-                            }`}
+                      <motion.ul
+                        initial={{ opacity: 0, y: -5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -5 }}
+                        className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto"
+                      >
+                        <li
+                          onClick={() => handleBranchSelect("all")}
+                          className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 cursor-pointer transition-all border-b last:border-b-0 text-right"
+                        >
+                          <span className="text-gray-700">جميع الفروع</span>
+                        </li>
+                        {branches.map((branch) => (
+                          <li
+                            key={branch.id}
+                            onClick={() => handleBranchSelect(branch.id)}
+                            className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 cursor-pointer transition-all border-b last:border-b-0 text-right"
                           >
-                            جميع الفروع
-                          </button>
-                          {branches.map((branch) => (
-                            <button
-                              key={branch.id}
-                              onClick={() => handleBranchSelect(branch.id)}
-                              className={`w-full text-right px-4 py-3 hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] dark:hover:bg-gray-700 transition-all text-sm ${
-                                selectedBranch === branch.id
-                                  ? "bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] dark:bg-gray-700"
-                                  : ""
-                              }`}
-                            >
-                              {branch.name}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
+                            <span className="text-gray-700">{branch.name}</span>
+                          </li>
+                        ))}
+                      </motion.ul>
                     )}
                   </div>
                 </div>
               </div>
 
               <div className="lg:col-span-2">
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  className="block text-sm font-semibold mb-2"
+                  style={{ color: "#2E3E88" }}
+                >
                   إجراءات التقرير
                 </label>
                 <div className="flex gap-3">
                   <motion.button
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleDateFilter}
                     disabled={!startDate || !endDate}
-                    className={`flex-1 px-4 py-2.5 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 ${
+                    className={`flex-1 px-4 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
                       startDate && endDate
-                        ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white cursor-pointer"
-                        : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                        ? "shadow-lg hover:shadow-xl cursor-pointer"
+                        : "opacity-50 cursor-not-allowed"
                     }`}
+                    style={
+                      startDate && endDate
+                        ? {
+                            background:
+                              "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                            color: "white",
+                          }
+                        : {
+                            background: "#e5e7eb",
+                            color: "#6b7280",
+                          }
+                    }
                   >
                     <FaFilter />
                     تطبيق الفلترة
                   </motion.button>
                   {reportData && reportData.length > 0 && (
                     <motion.button
-                      whileHover={{ scale: 1.05 }}
+                      whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={handlePrint}
                       disabled={isPrinting}
-                      className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 ${
+                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold transition-all duration-300 ${
                         isPrinting
-                          ? "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
-                          : "bg-gradient-to-r from-blue-600 to-cyan-600 text-white cursor-pointer"
+                          ? "opacity-50 cursor-not-allowed"
+                          : "shadow-lg hover:shadow-xl cursor-pointer"
                       }`}
+                      style={
+                        !isPrinting
+                          ? {
+                              background:
+                                "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                              color: "white",
+                            }
+                          : {
+                              background: "#e5e7eb",
+                              color: "#6b7280",
+                            }
+                      }
                     >
                       {isPrinting ? (
                         <>
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                          <div
+                            className="animate-spin rounded-full h-5 w-5 border-b-2 mr-2"
+                            style={{ borderColor: "white" }}
+                          ></div>
                           جاري الطباعة...
                         </>
                       ) : (
@@ -1785,61 +1879,117 @@ ${
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6"
             >
               {/* Total Sales Card */}
-              <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl p-5 text-white shadow-lg">
+              <div className="bg-white rounded-2xl p-5 shadow-xl text-right">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm opacity-90">إجمالي المبيعات</p>
-                    <p className="text-2xl font-bold mt-1">
+                    <p className="text-sm mb-1" style={{ color: "#32B9CC" }}>
+                      إجمالي المبيعات
+                    </p>
+                    <p
+                      className="text-2xl font-bold mt-1"
+                      style={{ color: "#2E3E88" }}
+                    >
                       {formatCurrency(summary.totalSales)}
                     </p>
                   </div>
-                  <div className="p-3 bg-white/20 rounded-xl">
-                    <FaMoneyBill className="text-2xl" />
+                  <div
+                    className="p-3 rounded-xl"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
+                    }}
+                  >
+                    <FaMoneyBill
+                      className="text-2xl"
+                      style={{ color: "#2E3E88" }}
+                    />
                   </div>
                 </div>
               </div>
 
               {/* Total Orders Card */}
-              <div className="bg-gradient-to-r from-blue-500 to-cyan-600 rounded-2xl p-5 text-white shadow-lg">
+              <div className="bg-white rounded-2xl p-5 shadow-xl text-right">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm opacity-90">إجمالي الطلبات</p>
-                    <p className="text-2xl font-bold mt-1">
+                    <p className="text-sm mb-1" style={{ color: "#32B9CC" }}>
+                      إجمالي الطلبات
+                    </p>
+                    <p
+                      className="text-2xl font-bold mt-1"
+                      style={{ color: "#2E3E88" }}
+                    >
                       {summary.totalOrders}
                     </p>
                   </div>
-                  <div className="p-3 bg-white/20 rounded-xl">
-                    <FaShoppingCart className="text-2xl" />
+                  <div
+                    className="p-3 rounded-xl"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
+                    }}
+                  >
+                    <FaShoppingCart
+                      className="text-2xl"
+                      style={{ color: "#2E3E88" }}
+                    />
                   </div>
                 </div>
               </div>
 
               {/* Delivery Orders */}
-              <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl p-5 text-white shadow-lg">
+              <div className="bg-white rounded-2xl p-5 shadow-xl text-right">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm opacity-90">طلبات التوصيل</p>
-                    <p className="text-2xl font-bold mt-1">
+                    <p className="text-sm mb-1" style={{ color: "#32B9CC" }}>
+                      طلبات التوصيل
+                    </p>
+                    <p
+                      className="text-2xl font-bold mt-1"
+                      style={{ color: "#2E3E88" }}
+                    >
                       {summary.deliveryOrders}
                     </p>
                   </div>
-                  <div className="p-3 bg-white/20 rounded-xl">
-                    <FaTruck className="text-2xl" />
+                  <div
+                    className="p-3 rounded-xl"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
+                    }}
+                  >
+                    <FaTruck
+                      className="text-2xl"
+                      style={{ color: "#2E3E88" }}
+                    />
                   </div>
                 </div>
               </div>
 
               {/* Pickup Orders */}
-              <div className="bg-gradient-to-r from-orange-500 to-red-600 rounded-2xl p-5 text-white shadow-lg">
+              <div className="bg-white rounded-2xl p-5 shadow-xl text-right">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm opacity-90">طلبات الاستلام</p>
-                    <p className="text-2xl font-bold mt-1">
+                    <p className="text-sm mb-1" style={{ color: "#32B9CC" }}>
+                      طلبات الاستلام
+                    </p>
+                    <p
+                      className="text-2xl font-bold mt-1"
+                      style={{ color: "#2E3E88" }}
+                    >
                       {summary.pickupOrders}
                     </p>
                   </div>
-                  <div className="p-3 bg-white/20 rounded-xl">
-                    <FaStore className="text-2xl" />
+                  <div
+                    className="p-3 rounded-xl"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
+                    }}
+                  >
+                    <FaStore
+                      className="text-2xl"
+                      style={{ color: "#2E3E88" }}
+                    />
                   </div>
                 </div>
               </div>
@@ -1852,16 +2002,22 @@ ${
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-6 shadow-lg"
+              className="bg-white rounded-2xl p-6 mb-6 shadow-xl text-right"
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <FaChartBar className="text-[#E41E26] text-xl" />
-                  <h3 className="text-lg font-bold text-gray-800 dark:text-white">
+                  <FaChartBar
+                    className="text-xl"
+                    style={{ color: "#2E3E88" }}
+                  />
+                  <h3
+                    className="text-lg font-bold"
+                    style={{ color: "#2E3E88" }}
+                  >
                     المنتجات الأكثر مبيعاً
                   </h3>
                 </div>
-                <span className="text-sm text-gray-500 dark:text-gray-400">
+                <span className="text-sm" style={{ color: "#32B9CC" }}>
                   أعلى 5 منتجات حسب الإيرادات
                 </span>
               </div>
@@ -1870,23 +2026,33 @@ ${
                 {summary.topProducts.map((product, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                    className="flex items-center justify-between p-3 rounded-lg hover:shadow-md transition-all duration-200 text-right"
+                    style={{
+                      background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                      border: "1px solid #2E3E8820",
+                    }}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#E41E26] to-[#FDB913] flex items-center justify-center text-white font-bold">
+                      <div
+                        className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                        }}
+                      >
                         {index + 1}
                       </div>
                       <div>
-                        <p className="font-medium text-gray-800 dark:text-white">
+                        <p className="font-medium" style={{ color: "#2E3E88" }}>
                           {product.name}
                         </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                        <p className="text-sm" style={{ color: "#32B9CC" }}>
                           {product.quantity} وحدة مباعة
                         </p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-bold text-gray-800 dark:text-white">
+                    <div className="text-left">
+                      <p className="font-bold" style={{ color: "#2E3E88" }}>
                         {formatCurrency(product.revenue)}
                       </p>
                     </div>
@@ -1903,17 +2069,23 @@ ${
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-lg mb-6"
+                className="bg-white rounded-2xl overflow-hidden shadow-xl mb-6"
               >
-                <div className="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <div className="px-6 py-4 border-b border-gray-100 text-right">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <FaListAlt className="text-[#E41E26] text-xl" />
-                      <h3 className="text-lg font-bold text-gray-800 dark:text-white">
+                      <FaListAlt
+                        className="text-xl"
+                        style={{ color: "#2E3E88" }}
+                      />
+                      <h3
+                        className="text-lg font-bold"
+                        style={{ color: "#2E3E88" }}
+                      >
                         تفاصيل الطلبات
                       </h3>
                     </div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                    <div className="text-sm" style={{ color: "#32B9CC" }}>
                       إجمالي {totalItems} طلب • صفحة {currentPage} من{" "}
                       {totalPages}
                     </div>
@@ -1921,60 +2093,110 @@ ${
                 </div>
 
                 <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-gray-50 dark:bg-gray-700/50">
+                  <table className="w-full text-right">
+                    <thead
+                      className="border-b border-gray-100"
+                      style={{
+                        background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                      }}
+                    >
                       <tr>
-                        <th className="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">
+                        <th
+                          className="px-4 py-3 text-right font-semibold"
+                          style={{ color: "#2E3E88" }}
+                        >
                           رقم الطلب
                         </th>
-                        <th className="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">
+                        <th
+                          className="px-4 py-3 text-right font-semibold"
+                          style={{ color: "#2E3E88" }}
+                        >
                           اسم العميل
                         </th>
-                        <th className="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">
+                        <th
+                          className="px-4 py-3 text-right font-semibold"
+                          style={{ color: "#2E3E88" }}
+                        >
                           رقم الهاتف
                         </th>
-                        <th className="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">
+                        <th
+                          className="px-4 py-3 text-right font-semibold"
+                          style={{ color: "#2E3E88" }}
+                        >
                           نوع الطلب
                         </th>
-                        <th className="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">
+                        <th
+                          className="px-4 py-3 text-right font-semibold"
+                          style={{ color: "#2E3E88" }}
+                        >
                           الفرع
                         </th>
-                        <th className="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">
+                        <th
+                          className="px-4 py-3 text-right font-semibold"
+                          style={{ color: "#2E3E88" }}
+                        >
                           المدينة
                         </th>
-                        <th className="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">
+                        <th
+                          className="px-4 py-3 text-right font-semibold"
+                          style={{ color: "#2E3E88" }}
+                        >
                           الحالة
                         </th>
-                        <th className="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">
+                        <th
+                          className="px-4 py-3 text-right font-semibold"
+                          style={{ color: "#2E3E88" }}
+                        >
                           الإجمالي
                         </th>
-                        <th className="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">
+                        <th
+                          className="px-4 py-3 text-right font-semibold"
+                          style={{ color: "#2E3E88" }}
+                        >
                           الإجراءات
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                    <tbody className="divide-y divide-gray-100">
                       {reportData.map((order) => (
                         <tr
                           key={order.id}
-                          className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors duration-150"
+                          className="hover:bg-gray-50 transition-colors duration-150"
                         >
-                          <td className="px-4 py-3 text-center font-mono text-sm text-gray-800 dark:text-white font-bold">
+                          <td
+                            className="px-4 py-3 text-right font-mono text-sm font-bold"
+                            style={{ color: "#2E3E88" }}
+                          >
                             {order.orderNumber}
                           </td>
-                          <td className="px-4 py-3 text-center text-sm text-gray-600 dark:text-gray-400">
+                          <td
+                            className="px-4 py-3 text-right text-sm"
+                            style={{ color: "#2E3E88" }}
+                          >
                             {getCustomerName(order)}
                           </td>
-                          <td className="px-4 py-3 text-center text-sm text-gray-600 dark:text-gray-400">
+                          <td
+                            className="px-4 py-3 text-right text-sm"
+                            style={{ color: "#32B9CC" }}
+                          >
                             {getCustomerPhone(order)}
                           </td>
-                          <td className="px-4 py-3 text-center">
+                          <td className="px-4 py-3 text-right">
                             <span
-                              className={`inline-flex items-center justify-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
+                              className="inline-flex items-center justify-center gap-1 px-3 py-1 rounded-full text-xs font-medium"
+                              style={
                                 order.deliveryFee?.fee > 0
-                                  ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-                                  : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
-                              }`}
+                                  ? {
+                                      background:
+                                        "linear-gradient(135deg, #2E3E8810, #32B9CC10)",
+                                      color: "#2E3E88",
+                                    }
+                                  : {
+                                      background:
+                                        "linear-gradient(135deg, #4CAF5010, #2E3E8810)",
+                                      color: "#4CAF50",
+                                    }
+                              }
                             >
                               {order.deliveryFee?.fee > 0 ? (
                                 <>
@@ -1989,13 +2211,19 @@ ${
                               )}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-center text-sm text-gray-600 dark:text-gray-400">
+                          <td
+                            className="px-4 py-3 text-right text-sm"
+                            style={{ color: "#32B9CC" }}
+                          >
                             {getOrderBranchName(order)}
                           </td>
-                          <td className="px-4 py-3 text-center text-sm text-gray-600 dark:text-gray-400">
+                          <td
+                            className="px-4 py-3 text-right text-sm"
+                            style={{ color: "#2E3E88" }}
+                          >
                             {getCustomerCity(order)}
                           </td>
-                          <td className="px-4 py-3 text-center">
+                          <td className="px-4 py-3 text-right">
                             <span
                               className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${getStatusClass(
                                 order.status,
@@ -2005,16 +2233,29 @@ ${
                               {getStatusLabel(order.status)}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-center font-bold text-[#E41E26] dark:text-[#FDB913]">
+                          <td
+                            className="px-4 py-3 text-right font-bold"
+                            style={{
+                              background:
+                                "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                              WebkitBackgroundClip: "text",
+                              WebkitTextFillColor: "transparent",
+                            }}
+                          >
                             {formatCurrency(order.totalWithFee)}
                           </td>
-                          <td className="px-4 py-3 text-center">
+                          <td className="px-4 py-3 text-right">
                             <motion.button
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
                               onClick={() => handleViewOrderDetails(order.id)}
                               disabled={loadingDetails}
-                              className="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all duration-300 mx-auto"
+                              className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium hover:shadow-lg transition-all duration-300 mx-auto"
+                              style={{
+                                background:
+                                  "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                                color: "white",
+                              }}
                             >
                               {loadingDetails &&
                               selectedOrder?.id === order.id ? (
@@ -2028,16 +2269,30 @@ ${
                         </tr>
                       ))}
                     </tbody>
-                    <tfoot className="bg-gray-50 dark:bg-gray-700/50 border-t border-gray-200 dark:border-gray-700">
+                    <tfoot
+                      className="border-t border-gray-100 text-right"
+                      style={{
+                        background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                      }}
+                    >
                       <tr>
                         <td
                           colSpan="8"
-                          className="px-4 py-3 text-center font-bold text-gray-800 dark:text-white"
+                          className="px-4 py-3 text-right font-bold"
+                          style={{ color: "#2E3E88" }}
                         >
                           المجموع الكلي:
                         </td>
-                        <td className="px-4 py-3 text-center">
-                          <span className="text-xl font-bold text-[#E41E26] dark:text-[#FDB913]">
+                        <td className="px-4 py-3 text-right">
+                          <span
+                            className="text-xl font-bold"
+                            style={{
+                              background:
+                                "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                              WebkitBackgroundClip: "text",
+                              WebkitTextFillColor: "transparent",
+                            }}
+                          >
                             {formatCurrency(summary?.totalSales || 0)}
                           </span>
                         </td>
@@ -2047,7 +2302,7 @@ ${
                 </div>
               </motion.div>
 
-              {/* Pagination - بنفس ديزاين الكود الأول */}
+              {/* Pagination */}
               {totalPages > 1 && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -2061,18 +2316,24 @@ ${
                       disabled={currentPage === 1}
                       className={`p-2 sm:p-3 rounded-xl ${
                         currentPage === 1
-                          ? "bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed"
-                          : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600"
+                          ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                          : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
                       }`}
                     >
-                      <FaChevronRight className="text-sm sm:text-base" />
+                      <FaChevronLeft
+                        className="text-sm sm:text-base"
+                        style={{ color: "#2E3E88" }}
+                      />
                     </button>
 
                     <div className="flex items-center gap-1 sm:gap-2">
                       {getPaginationNumbers().map((pageNum, index) => (
                         <React.Fragment key={index}>
                           {pageNum === "..." ? (
-                            <span className="px-2 sm:px-3 py-1 sm:py-2 text-gray-500">
+                            <span
+                              className="px-2 sm:px-3 py-1 sm:py-2"
+                              style={{ color: "#32B9CC" }}
+                            >
                               ...
                             </span>
                           ) : (
@@ -2080,9 +2341,19 @@ ${
                               onClick={() => handlePageChange(pageNum)}
                               className={`px-3 sm:px-4 py-1 sm:py-2 rounded-xl font-semibold ${
                                 currentPage === pageNum
-                                  ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white shadow-lg"
-                                  : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600"
+                                  ? "shadow-lg text-white"
+                                  : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
                               }`}
+                              style={
+                                currentPage === pageNum
+                                  ? {
+                                      background:
+                                        "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                                    }
+                                  : {
+                                      color: "#2E3E88",
+                                    }
+                              }
                             >
                               {pageNum}
                             </button>
@@ -2096,11 +2367,14 @@ ${
                       disabled={currentPage === totalPages}
                       className={`p-2 sm:p-3 rounded-xl ${
                         currentPage === totalPages
-                          ? "bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed"
-                          : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600"
+                          ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                          : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
                       }`}
                     >
-                      <FaChevronLeft className="text-sm sm:text-base" />
+                      <FaChevronRight
+                        className="text-sm sm:text-base"
+                        style={{ color: "#2E3E88" }}
+                      />
                     </button>
                   </div>
                 </motion.div>
@@ -2113,18 +2387,29 @@ ${
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="text-center py-12"
+              dir="rtl"
             >
-              <div className="text-5xl mb-4 text-gray-400">📊</div>
-              <h3 className="text-xl font-bold text-gray-600 dark:text-gray-300 mb-2">
+              <div
+                className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center"
+                style={{
+                  background: "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
+                }}
+              >
+                <FaChartBar className="text-4xl" style={{ color: "#2E3E88" }} />
+              </div>
+              <h3
+                className="text-2xl font-bold mb-3"
+                style={{ color: "#2E3E88" }}
+              >
                 لا توجد بيانات لعرضها
               </h3>
-              <p className="text-gray-500 dark:text-gray-400">
+              <p className="mb-6 max-w-md mx-auto" style={{ color: "#32B9CC" }}>
                 يرجى تحديد فترة زمنية وتطبيق الفلترة لعرض التقرير
               </p>
             </motion.div>
           )}
         </div>
-      </motion.div>
+      </div>
 
       {/* Order Details Modal */}
       {selectedOrder && (

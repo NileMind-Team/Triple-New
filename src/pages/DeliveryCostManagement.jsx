@@ -1,23 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaMapMarkerAlt, FaPlus } from "react-icons/fa";
+import { FaArrowLeft, FaMapMarkerAlt, FaPlus } from "react-icons/fa";
 import useDeliveryAreas from "../hooks/useDeliveryAreas";
-import HeaderStats from "../components/deliveryCostManagement/HeaderStats";
-import SearchFilterBar from "../components/deliveryCostManagement/SearchFilterBar";
 import DeliveryAreaCard from "../components/deliveryCostManagement/DeliveryAreaCard";
 import DeliveryAreaForm from "../components/deliveryCostManagement/DeliveryAreaForm";
 
 export default function DeliveryCostManagement() {
   const navigate = useNavigate();
   const {
-    deliveryAreas,
     filteredAreas,
     branches,
     loading,
     searchTerm,
-    setSearchTerm,
     filter,
-    setFilter,
     isAdding,
     setIsAdding,
     editingId,
@@ -36,35 +31,106 @@ export default function DeliveryCostManagement() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-4">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E41E26]"></div>
+      <div
+        className="min-h-screen flex items-center justify-center px-4"
+        style={{
+          background: "linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)",
+        }}
+      >
+        <div className="text-center">
+          <div
+            className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+            style={{
+              borderTopColor: "#2E3E88",
+              borderRightColor: "#32B9CC",
+              borderBottomColor: "#2E3E88",
+              borderLeftColor: "transparent",
+            }}
+          ></div>
+          <p className="text-lg font-semibold" style={{ color: "#2E3E88" }}>
+            جارٍ تحميل مناطق التوصيل...
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-3 sm:px-4 py-4 sm:py-8 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto" dir="rtl">
-        <HeaderStats
-          deliveryAreasCount={deliveryAreas.length}
-          navigate={navigate}
-        />
+    <div
+      className="min-h-screen font-sans relative overflow-x-hidden"
+      style={{
+        background: "linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)",
+        backgroundAttachment: "fixed",
+      }}
+    >
+      {/* Header Section */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/80 to-white"></div>
 
-        <SearchFilterBar
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          filter={filter}
-          setFilter={setFilter}
-          handleAddNewArea={() => setIsAdding(true)}
-        />
+        {/* Hero Header */}
+        <div
+          className="relative py-16 px-4"
+          style={{
+            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+          }}
+        >
+          <div className="max-w-7xl mx-auto">
+            {/* زر الرجوع */}
+            <motion.button
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              onClick={() => navigate(-1)}
+              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              style={{
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+              }}
+            >
+              <FaArrowLeft
+                size={20}
+                className="group-hover:-translate-x-1 transition-transform"
+              />
+            </motion.button>
 
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
-          {/* Areas List */}
-          <div
-            className={`space-y-3 sm:space-y-4 md:space-y-5 ${
-              isAdding ? "xl:col-span-2" : "xl:col-span-3"
-            }`}
-          >
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center pt-8"
+            >
+              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
+                <FaMapMarkerAlt className="text-white text-4xl" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                إدارة تكاليف التوصيل
+              </h1>
+              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+                إدارة مناطق وتكاليف التوصيل بسهولة وأمان
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10">
+        {/* Floating Action Button */}
+        <motion.button
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setIsAdding(true)}
+          className="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-2 group"
+        >
+          <FaPlus className="text-xl group-hover:rotate-90 transition-transform" />
+          <span className="hidden md:inline font-semibold">
+            إضافة منطقة جديدة
+          </span>
+        </motion.button>
+
+        {/* Content Container */}
+        <div className="w-full">
+          {/* Areas Grid - بطاقتين في الصف */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <AnimatePresence>
               {filteredAreas.map((area, index) => (
                 <DeliveryAreaCard
@@ -77,44 +143,90 @@ export default function DeliveryCostManagement() {
                 />
               ))}
             </AnimatePresence>
-
-            {filteredAreas.length === 0 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-center py-8 sm:py-10 md:py-12 bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-gray-200/50 dark:bg-gray-700/80 dark:border-gray-600"
-              >
-                <FaMapMarkerAlt className="mx-auto text-3xl sm:text-4xl md:text-5xl text-gray-400 dark:text-gray-500 mb-3 sm:mb-4" />
-                <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-600 dark:text-gray-400 mb-2 sm:mb-3">
-                  لم يتم العثور على مناطق توصيل
-                </h3>
-                <p className="text-gray-500 dark:text-gray-500 text-sm sm:text-base mb-4 sm:mb-6 max-w-xs sm:max-w-sm mx-auto">
-                  {searchTerm || filter !== "all"
-                    ? "حاول تعديل معايير البحث أو التصفية"
-                    : "أضف أول منطقة توصيل للبدء"}
-                </p>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setIsAdding(true)}
-                  className="flex items-center gap-2 bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base mx-auto"
-                >
-                  <span>أضف أول منطقة</span>
-                  <FaPlus className="text-xs sm:text-sm" />
-                </motion.button>
-              </motion.div>
-            )}
           </div>
 
-          {/* Add/Edit Area Form */}
-          <AnimatePresence>
-            {isAdding && (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                className="xl:col-span-1"
+          {/* Empty State */}
+          {filteredAreas.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="bg-white rounded-2xl p-8 text-center shadow-xl"
+            >
+              <div className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                <FaMapMarkerAlt
+                  className="text-4xl"
+                  style={{ color: "#2E3E88" }}
+                />
+              </div>
+              <h3
+                className="text-2xl font-bold mb-3"
+                style={{ color: "#2E3E88" }}
               >
+                لم يتم العثور على مناطق توصيل
+              </h3>
+              <p className="mb-6 max-w-md mx-auto" style={{ color: "#32B9CC" }}>
+                {searchTerm || filter !== "all"
+                  ? "حاول تعديل معايير البحث أو التصفية"
+                  : "أضف أول منطقة توصيل للبدء"}
+              </p>
+              <button
+                onClick={() => setIsAdding(true)}
+                className="px-8 py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                style={{
+                  background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                  color: "white",
+                  boxShadow: "0 10px 25px #2E3E8830",
+                }}
+              >
+                إضافة منطقة جديدة
+              </button>
+            </motion.div>
+          )}
+        </div>
+      </div>
+
+      {/* Form Modal */}
+      <AnimatePresence>
+        {isAdding && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="bg-white rounded-3xl w-full max-w-2xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
+            >
+              {/* Modal Header */}
+              <div
+                className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+                style={{
+                  background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  {editingId ? (
+                    <FaMapMarkerAlt className="text-white text-xl" />
+                  ) : (
+                    <FaPlus className="text-white text-xl" />
+                  )}
+                  <h3 className="text-lg font-bold text-white">
+                    {editingId ? "تعديل المنطقة" : "إضافة منطقة جديدة"}
+                  </h3>
+                </div>
+                <button
+                  onClick={resetForm}
+                  className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
+                >
+                  <FaPlus size={16} className="rotate-45" />
+                </button>
+              </div>
+
+              {/* Modal Content */}
+              <div className="flex-1 overflow-y-auto p-6">
                 <DeliveryAreaForm
                   formData={formData}
                   setFormData={setFormData}
@@ -129,16 +241,16 @@ export default function DeliveryCostManagement() {
                   getSelectedBranchName={() => {
                     if (!formData.branchId) return "اختر الفرع";
                     const branch = branches.find(
-                      (b) => b.id === parseInt(formData.branchId)
+                      (b) => b.id === parseInt(formData.branchId),
                     );
                     return branch ? branch.name : "اختر الفرع";
                   }}
                 />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -8,7 +8,6 @@ import {
   FaPlus,
   FaEdit,
   FaTrash,
-  FaSearch,
   FaSave,
   FaTimes,
   FaCalendarAlt,
@@ -82,7 +81,6 @@ const translateOfferErrorMessage = (errorData, useHTML = true) => {
   if (errorData.errors && typeof errorData.errors === "object") {
     const errorMessages = [];
 
-    // معالجة أخطاء الحقول الفردية
     if (
       errorData.errors.DiscountValue &&
       Array.isArray(errorData.errors.DiscountValue)
@@ -265,47 +263,47 @@ const adjustTimeFromAPI = (dateString) => {
   return date;
 };
 
-const isMobileScreen = () => {
-  return window.innerWidth < 768;
-};
-
-const showMessage = (type, title, text, options = {}) => {
+const showOfferMessage = (type, title, text, options = {}) => {
   const { showButtons = false, ...otherOptions } = options;
 
-  if (!isMobileScreen() || showButtons) {
-    const swalOptions = {
+  if (window.innerWidth >= 768) {
+    Swal.fire({
       icon: type,
       title: title,
       text: text,
-      showConfirmButton: false,
-      timer: otherOptions.timer || 2000,
+      showConfirmButton: showButtons,
+      timer: showButtons ? undefined : otherOptions.timer || 2500,
+      showCancelButton: showButtons,
+      confirmButtonText: showButtons ? "نعم" : undefined,
+      cancelButtonText: showButtons ? "لا" : undefined,
+      confirmButtonColor: "#2E3E88",
+      cancelButtonColor: "#6B7280",
+      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+      color: "white",
       ...otherOptions,
-    };
-
-    if (showButtons) {
-      delete swalOptions.timer;
-      delete swalOptions.showConfirmButton;
-    }
-
-    Swal.fire(swalOptions);
+    });
   } else {
     const toastOptions = {
       position: "top-right",
-      autoClose: otherOptions.timer || 2000,
+      autoClose: otherOptions.timer || 2500,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
-      progress: undefined,
-      rtl: true,
-      className: "toast-mobile",
-      bodyClassName: "toast-body-mobile",
       style: {
         width: "70%",
         margin: "10px",
-        borderRadius: "10px",
+        borderRadius: "12px",
         textAlign: "right",
+        fontSize: "14px",
         direction: "rtl",
+        background:
+          type === "error"
+            ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
+            : type === "warning"
+              ? "linear-gradient(135deg, #FFA726, #FF9800)"
+              : "linear-gradient(135deg, #2E3E88, #32B9CC)",
+        color: "white",
       },
     };
 
@@ -329,11 +327,9 @@ export default function ItemOffersManagement() {
   const navigate = useNavigate();
   const location = useLocation();
   const [offers, setOffers] = useState([]);
-  const [filteredOffers, setFilteredOffers] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
   const [isAdminOrRestaurantOrBranch, setIsAdminOrRestaurantOrBranch] =
     useState(false);
   const [menuItems, setMenuItems] = useState([]);
@@ -406,7 +402,7 @@ export default function ItemOffersManagement() {
           return;
         }
 
-        showMessage(
+        showOfferMessage(
           "error",
           "خطأ في الاتصال",
           "حدث خطأ أثناء جلب البيانات. يرجى المحاولة مرة أخرى.",
@@ -491,10 +487,9 @@ export default function ItemOffersManagement() {
       );
 
       setOffers(offersWithDetails);
-      setFilteredOffers(offersWithDetails);
     } catch (error) {
       console.error("خطأ في جلب العروض:", error);
-      showMessage("error", "خطأ", "فشل في تحميل بيانات العروض");
+      showOfferMessage("error", "خطأ", "فشل في تحميل بيانات العروض");
     }
   };
 
@@ -519,38 +514,11 @@ export default function ItemOffersManagement() {
       setMenuItems(itemsWithoutActiveOffers);
     } catch (error) {
       console.error("خطأ في جلب العناصر:", error);
-      showMessage("error", "خطأ", "فشل في تحميل العناصر");
+      showOfferMessage("error", "خطأ", "فشل في تحميل العناصر");
     } finally {
       setLoadingItems(false);
     }
   };
-
-  useEffect(() => {
-    let filtered = offers;
-
-    if (searchTerm) {
-      filtered = filtered.filter((offer) => {
-        if (offer.menuItem) {
-          const itemMatch =
-            offer.menuItem.name
-              ?.toLowerCase()
-              .includes(searchTerm.toLowerCase()) ||
-            offer.menuItem.description
-              ?.toLowerCase()
-              .includes(searchTerm.toLowerCase());
-
-          const branchMatch = offer.branchNames.some((name) =>
-            name.toLowerCase().includes(searchTerm.toLowerCase()),
-          );
-
-          return itemMatch || branchMatch;
-        }
-        return false;
-      });
-    }
-
-    setFilteredOffers(filtered);
-  }, [searchTerm, offers]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -611,12 +579,16 @@ export default function ItemOffersManagement() {
       !formData.startDate ||
       !formData.endDate
     ) {
-      showMessage("error", "معلومات ناقصة", "يرجى ملء جميع الحقول المطلوبة");
+      showOfferMessage(
+        "error",
+        "معلومات ناقصة",
+        "يرجى ملء جميع الحقول المطلوبة",
+      );
       return;
     }
 
     if (formData.branchesIds.length === 0) {
-      showMessage(
+      showOfferMessage(
         "error",
         "لم يتم اختيار فروع",
         "يرجى اختيار فرع واحد على الأقل",
@@ -646,7 +618,7 @@ export default function ItemOffersManagement() {
           offerData,
         );
         if (res.status === 200 || res.status === 204) {
-          showMessage(
+          showOfferMessage(
             "success",
             "تم تحديث العرض",
             "تم تحديث عرض العنصر بنجاح.",
@@ -655,7 +627,7 @@ export default function ItemOffersManagement() {
       } else {
         const res = await axiosInstance.post("/api/ItemOffers/Add", offerData);
         if (res.status === 200 || res.status === 201) {
-          showMessage(
+          showOfferMessage(
             "success",
             "تم إضافة العرض",
             "تم إضافة عرض العنصر الجديد بنجاح.",
@@ -676,7 +648,7 @@ export default function ItemOffersManagement() {
         false,
       );
 
-      showMessage("error", "حدث خطأ", translatedMessage, { timer: 2500 });
+      showOfferMessage("error", "حدث خطأ", translatedMessage, { timer: 2500 });
     } finally {
       setIsSubmitting(false);
     }
@@ -714,20 +686,22 @@ export default function ItemOffersManagement() {
       text: "لن تتمكن من التراجع عن هذا الإجراء!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#E41E26",
+      confirmButtonColor: "#2E3E88",
       cancelButtonColor: "#6B7280",
       confirmButtonText: "نعم، احذفه!",
       cancelButtonText: "إلغاء",
+      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+      color: "white",
       reverseButtons: true,
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
           await axiosInstance.delete(`/api/ItemOffers/Delete/${id}`);
           fetchOffers();
-          showMessage("success", "تم الحذف!", "تم حذف عرض العنصر.");
+          showOfferMessage("success", "تم الحذف!", "تم حذف عرض العنصر.");
           fetchMenuItems();
         } catch (err) {
-          showMessage("error", "خطأ", "فشل في حذف عرض العنصر.", {
+          showOfferMessage("error", "خطأ", "فشل في حذف عرض العنصر.", {
             timer: 2500,
           });
         }
@@ -758,7 +732,7 @@ export default function ItemOffersManagement() {
       );
       if (response.status === 200 || response.status === 204) {
         fetchOffers();
-        showMessage(
+        showOfferMessage(
           "success",
           "تم تحديث الحالة!",
           `تم ${offer.isEnabled ? "تعطيل" : "تفعيل"} عرض العنصر`,
@@ -768,7 +742,9 @@ export default function ItemOffersManagement() {
       }
     } catch (error) {
       console.error("خطأ في تحديث حالة العرض:", error);
-      showMessage("error", "خطأ", "فشل في تحديث حالة العرض", { timer: 2500 });
+      showOfferMessage("error", "خطأ", "فشل في تحديث حالة العرض", {
+        timer: 2500,
+      });
     }
   };
 
@@ -806,13 +782,10 @@ export default function ItemOffersManagement() {
   };
 
   const getStatusColor = (offer) => {
-    if (!offer.isEnabled)
-      return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300";
-    if (new Date(offer.endDate) < new Date())
-      return "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300";
-    if (new Date(offer.startDate) > new Date())
-      return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300";
-    return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300";
+    if (!offer.isEnabled) return "#FF6B6B";
+    if (new Date(offer.endDate) < new Date()) return "#9E9E9E";
+    if (new Date(offer.startDate) > new Date()) return "#32B9CC";
+    return "#4CAF50";
   };
 
   const getStatusText = (offer) => {
@@ -835,9 +808,25 @@ export default function ItemOffersManagement() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-4">
-        <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E41E26]"></div>
+      <div
+        className="min-h-screen flex items-center justify-center px-4"
+        style={{
+          background: "linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)",
+        }}
+      >
+        <div className="text-center">
+          <div
+            className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+            style={{
+              borderTopColor: "#2E3E88",
+              borderRightColor: "#32B9CC",
+              borderBottomColor: "#2E3E88",
+              borderLeftColor: "transparent",
+            }}
+          ></div>
+          <p className="text-lg font-semibold" style={{ color: "#2E3E88" }}>
+            جارٍ تحميل العروض...
+          </p>
         </div>
       </div>
     );
@@ -848,369 +837,504 @@ export default function ItemOffersManagement() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-3 sm:px-4 py-4 sm:py-8 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8"
+    <div
+      className="min-h-screen font-sans relative overflow-x-hidden"
+      style={{
+        background: "linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)",
+        backgroundAttachment: "fixed",
+      }}
+    >
+      {/* Header Section */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/80 to-white"></div>
+
+        {/* Hero Header */}
+        <div
+          className="relative py-16 px-4"
+          style={{
+            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+          }}
         >
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="max-w-7xl mx-auto">
+            {/* زر الرجوع */}
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
               onClick={() => navigate(-1)}
-              className="bg-white/80 backdrop-blur-md rounded-full p-2 sm:p-3 text-[#E41E26] hover:bg-[#E41E26] hover:text-white transition-all duration-300 shadow-lg dark:bg-gray-800/80 dark:text-gray-200 dark:hover:bg-[#E41E26]"
+              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              style={{
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+              }}
             >
-              <FaArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-            </motion.button>
-            <div>
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200">
-                إدارة عروض العناصر
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
-                إنشاء وإدارة الخصومات الخاصة بالعناصر
-              </p>
-            </div>
-          </div>
-          <div className="text-right self-end sm:self-auto">
-            <div className="text-lg sm:text-xl md:text-2xl font-bold text-[#E41E26]">
-              {offers.length} عرض
-            </div>
-            <div className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
-              إجمالاً
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-white/90 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl p-4 sm:p-6 mb-6 sm:mb-8 relative z-30 dark:bg-gray-800/90"
-        >
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1 relative">
-              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 dark:text-gray-500" />
-              <input
-                type="text"
-                placeholder="ابحث في العروض حسب اسم العنصر، الوصف، أو الفرع..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl bg-white text-black focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              <FaArrowLeft
+                size={20}
+                className="group-hover:-translate-x-1 transition-transform"
               />
-            </div>
+            </motion.button>
 
-            <div className="flex gap-2 w-full sm:w-auto">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleAddNewOffer}
-                className="flex items-center gap-2 bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-4 sm:px-5 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base whitespace-nowrap w-full sm:w-auto justify-center"
-              >
-                <FaPlus className="text-sm" />
-                <span className="hidden sm:inline">إنشاء عرض</span>
-                <span className="sm:hidden">إنشاء</span>
-              </motion.button>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center pt-8"
+            >
+              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
+                <FaTag className="text-white text-4xl" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                عروض العناصر
+              </h1>
+              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+                إدارة وتنظيم العروض والخصومات على المنتجات
+              </p>
+            </motion.div>
           </div>
-        </motion.div>
+        </div>
+      </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
-          <div
-            className={`space-y-3 sm:space-y-4 md:space-y-5 ${
-              isAdding ? "xl:col-span-2" : "xl:col-span-3"
-            }`}
-          >
-            <AnimatePresence>
-              {filteredOffers.map((offer, index) => (
-                <motion.div
-                  key={offer.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="bg-white/90 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl p-4 sm:p-6 hover:shadow-2xl transition-all duration-300 dark:bg-gray-800/90"
-                >
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5">
-                        <div className="p-3 sm:p-4 bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] dark:from-gray-700 dark:to-gray-600 rounded-xl sm:rounded-2xl border border-[#FDB913]/30 dark:border-gray-500">
-                          {offer.isPercentage ? (
-                            <FaPercent className="text-[#E41E26] dark:text-[#FDB913] text-xl sm:text-2xl" />
-                          ) : (
-                            <FaMoneyBillWave className="text-[#E41E26] dark:text-[#FDB913] text-xl sm:text-2xl" />
-                          )}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <h3 className="font-bold text-gray-800 dark:text-gray-200 text-xl sm:text-2xl truncate">
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10">
+        {/* Floating Action Button */}
+        <motion.button
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleAddNewOffer}
+          className="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-2 group"
+        >
+          <FaPlus className="text-xl group-hover:rotate-90 transition-transform" />
+          <span className="hidden md:inline font-semibold">إنشاء عرض جديد</span>
+        </motion.button>
+
+        {/* Content Container */}
+        <div className="w-full">
+          {/* Offers List */}
+          <div>
+            {offers.length === 0 ? (
+              <div className="w-full">
+                <div className="bg-white rounded-2xl p-8 text-center shadow-xl">
+                  <div
+                    className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
+                    }}
+                  >
+                    <FaTag className="text-4xl" style={{ color: "#2E3E88" }} />
+                  </div>
+                  <h3
+                    className="text-2xl font-bold mb-3"
+                    style={{ color: "#2E3E88" }}
+                  >
+                    لا توجد عروض حتى الآن
+                  </h3>
+                  <p
+                    className="mb-6 max-w-md mx-auto"
+                    style={{ color: "#32B9CC" }}
+                  >
+                    قم بإنشاء أول عرض للبدء في إدارة الخصومات
+                  </p>
+                  <button
+                    onClick={handleAddNewOffer}
+                    className="px-8 py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                    style={{
+                      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                      color: "white",
+                      boxShadow: "0 10px 25px #2E3E8830",
+                    }}
+                  >
+                    إنشاء أول عرض
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {offers.map((offer, index) => (
+                  <motion.div
+                    key={offer.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col"
+                    style={{
+                      borderTop: "4px solid #2E3E88",
+                    }}
+                  >
+                    <div className="p-6 flex-grow">
+                      {/* Header */}
+                      <div className="flex justify-between items-start mb-6">
+                        <div className="flex items-center gap-3">
+                          <div className="p-3 rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                            {offer.isPercentage ? (
+                              <FaPercent
+                                className="text-2xl"
+                                style={{ color: "#2E3E88" }}
+                              />
+                            ) : (
+                              <FaMoneyBillWave
+                                className="text-2xl"
+                                style={{ color: "#2E3E88" }}
+                              />
+                            )}
+                          </div>
+                          <div>
+                            <h4
+                              className="font-bold text-xl mb-1"
+                              style={{ color: "#2E3E88" }}
+                            >
                               {offer.menuItem?.name ||
                                 `عنصر #${offer.menuItemId}`}
-                            </h3>
-                            <span
-                              className={`px-3 py-1.5 rounded-full text-sm font-semibold ${getStatusColor(
-                                offer,
-                              )} whitespace-nowrap`}
-                            >
-                              {getStatusText(offer)}
-                            </span>
-                          </div>
-                          {offer.menuItem && (
-                            <p className="text-gray-600 dark:text-gray-400 text-base truncate">
-                              {offer.menuItem.description || "لا يوجد وصف"}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="space-y-4 mb-4">
-                        <div className="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-2xl border border-green-200 dark:border-green-700 p-4 sm:p-5">
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="flex items-center gap-3 sm:gap-4">
-                              {offer.isPercentage ? (
-                                <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-xl">
-                                  <FaPercent className="text-green-600 dark:text-green-400 text-2xl" />
-                                </div>
-                              ) : (
-                                <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-xl">
-                                  <FaMoneyBillWave className="text-green-600 dark:text-green-400 text-2xl" />
-                                </div>
+                            </h4>
+                            <div className="flex items-center gap-2">
+                              <span
+                                className="px-3 py-1 rounded-full text-sm font-semibold"
+                                style={{
+                                  background: getStatusColor(offer) + "20",
+                                  color: getStatusColor(offer),
+                                }}
+                              >
+                                {getStatusText(offer)}
+                              </span>
+                              {offer.menuItem?.basePrice === 0 && (
+                                <span
+                                  className="px-3 py-1 rounded-full text-sm font-semibold"
+                                  style={{
+                                    background: "#FF8E5320",
+                                    color: "#FF8E53",
+                                  }}
+                                >
+                                  السعر حسب الطلب
+                                </span>
                               )}
-                              <div>
-                                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                                  قيمة الخصم
-                                </p>
-                                <p className="font-bold text-green-600 dark:text-green-400 text-2xl">
-                                  {offer.isPercentage
-                                    ? `${offer.discountValue}%`
-                                    : `ج.م ${offer.discountValue}`}
-                                </p>
-                              </div>
-                            </div>
-
-                            <div className="flex items-center gap-3 sm:gap-4">
-                              <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl">
-                                <FaHamburger className="text-blue-600 dark:text-blue-400 text-2xl" />
-                              </div>
-                              <div>
-                                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                                  السعر الأصلي
-                                </p>
-                                <p className="font-bold text-blue-600 dark:text-blue-400 text-2xl">
-                                  {offer.menuItem?.basePrice === 0 ? (
-                                    <span className="text-[#E41E26] dark:text-[#FDB913] font-bold">
-                                      السعر حسب الطلب
-                                    </span>
-                                  ) : (
-                                    `ج.م ${
-                                      offer.menuItem?.basePrice || "غير متاح"
-                                    }`
-                                  )}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 rounded-2xl border border-orange-200 dark:border-orange-700 p-4 sm:p-5">
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="flex items-center gap-3 sm:gap-4">
-                              <div className="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-xl">
-                                <FaCalendarAlt className="text-orange-600 dark:text-orange-400 text-2xl" />
-                              </div>
-                              <div>
-                                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                                  تاريخ ووقت البداية
-                                </p>
-                                <p className="font-bold text-orange-600 dark:text-orange-400 text-lg">
-                                  {formatDateTime(offer.startDate)}
-                                </p>
-                              </div>
-                            </div>
-
-                            <div className="flex items-center gap-3 sm:gap-4">
-                              <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-xl">
-                                <FaCalendarAlt className="text-purple-600 dark:text-purple-400 text-2xl" />
-                              </div>
-                              <div>
-                                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                                  تاريخ ووقت النهاية
-                                </p>
-                                <p className="font-bold text-purple-600 dark:text-purple-400 text-lg">
-                                  {formatDateTime(offer.endDate)}
-                                </p>
-                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
 
-                      <div className="mb-4">
-                        <div className="flex items-center gap-2 mb-3">
-                          <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                            <FaStore className="text-blue-600 dark:text-blue-400 text-lg" />
+                      {/* Offer Details */}
+                      <div className="space-y-4 mb-6">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div
+                            className="flex items-center gap-3 p-3 rounded-xl"
+                            style={{
+                              background:
+                                "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                              border: "1px solid #2E3E8820",
+                            }}
+                          >
+                            <div
+                              className="p-2 rounded-lg"
+                              style={{
+                                background:
+                                  "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
+                              }}
+                            >
+                              {offer.isPercentage ? (
+                                <FaPercent
+                                  className="text-lg"
+                                  style={{ color: "#2E3E88" }}
+                                />
+                              ) : (
+                                <FaMoneyBillWave
+                                  className="text-lg"
+                                  style={{ color: "#2E3E88" }}
+                                />
+                              )}
+                            </div>
+                            <div>
+                              <p
+                                className="text-xs mb-1"
+                                style={{ color: "#32B9CC" }}
+                              >
+                                قيمة الخصم
+                              </p>
+                              <p
+                                className="font-bold"
+                                style={{ color: "#2E3E88" }}
+                              >
+                                {offer.isPercentage
+                                  ? `${offer.discountValue}%`
+                                  : `ج.م ${offer.discountValue}`}
+                              </p>
+                            </div>
                           </div>
-                          <p className="text-base font-semibold text-gray-700 dark:text-gray-300">
-                            الفروع المطبق عليها:
+
+                          <div
+                            className="flex items-center gap-3 p-3 rounded-xl"
+                            style={{
+                              background:
+                                "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                              border: "1px solid #2E3E8820",
+                            }}
+                          >
+                            <div
+                              className="p-2 rounded-lg"
+                              style={{
+                                background:
+                                  "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
+                              }}
+                            >
+                              <FaHamburger
+                                className="text-lg"
+                                style={{ color: "#2E3E88" }}
+                              />
+                            </div>
+                            <div>
+                              <p
+                                className="text-xs mb-1"
+                                style={{ color: "#32B9CC" }}
+                              >
+                                السعر الأصلي
+                              </p>
+                              <p
+                                className="font-bold"
+                                style={{ color: "#2E3E88" }}
+                              >
+                                {offer.menuItem?.basePrice === 0 ? (
+                                  <span style={{ color: "#FF8E53" }}>
+                                    حسب الطلب
+                                  </span>
+                                ) : (
+                                  `ج.م ${offer.menuItem?.basePrice || "غير متاح"}`
+                                )}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                          <div
+                            className="p-3 rounded-xl"
+                            style={{
+                              background:
+                                "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                              border: "1px solid #2E3E8820",
+                            }}
+                          >
+                            <div className="flex items-center gap-2 mb-2">
+                              <FaCalendarAlt style={{ color: "#2E3E88" }} />
+                              <p
+                                className="text-xs font-semibold"
+                                style={{ color: "#2E3E88" }}
+                              >
+                                من
+                              </p>
+                            </div>
+                            <p
+                              className="text-sm font-bold"
+                              style={{ color: "#32B9CC" }}
+                            >
+                              {formatDateTime(offer.startDate)}
+                            </p>
+                          </div>
+
+                          <div
+                            className="p-3 rounded-xl"
+                            style={{
+                              background:
+                                "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                              border: "1px solid #2E3E8820",
+                            }}
+                          >
+                            <div className="flex items-center gap-2 mb-2">
+                              <FaCalendarAlt style={{ color: "#2E3E88" }} />
+                              <p
+                                className="text-xs font-semibold"
+                                style={{ color: "#2E3E88" }}
+                              >
+                                إلى
+                              </p>
+                            </div>
+                            <p
+                              className="text-sm font-bold"
+                              style={{ color: "#32B9CC" }}
+                            >
+                              {formatDateTime(offer.endDate)}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Branches */}
+                      <div className="mb-6">
+                        <div className="flex items-center gap-2 mb-3">
+                          <FaStore style={{ color: "#2E3E88" }} />
+                          <p
+                            className="text-sm font-semibold"
+                            style={{ color: "#2E3E88" }}
+                          >
+                            الفروع المطبق عليها
                           </p>
                         </div>
                         {offer.branchNames && offer.branchNames.length > 0 ? (
-                          <div className="flex flex-wrap gap-3">
-                            {offer.branchNames.map((branchName, index) => (
+                          <div className="flex flex-wrap gap-2">
+                            {offer.branchNames
+                              .slice(0, 3)
+                              .map((branchName, index) => (
+                                <span
+                                  key={index}
+                                  className="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1"
+                                  style={{
+                                    background:
+                                      "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
+                                    color: "#2E3E88",
+                                    border: "1px solid #2E3E8820",
+                                  }}
+                                >
+                                  <FaStore
+                                    className="text-xs"
+                                    style={{ color: "#32B9CC" }}
+                                  />
+                                  {branchName}
+                                </span>
+                              ))}
+                            {offer.branchNames.length > 3 && (
                               <span
-                                key={index}
-                                className="px-4 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl text-sm font-medium flex items-center gap-2 shadow-md"
+                                className="px-3 py-1.5 rounded-lg text-xs font-medium"
+                                style={{
+                                  background:
+                                    "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
+                                  color: "#32B9CC",
+                                  border: "1px solid #2E3E8820",
+                                }}
                               >
-                                <FaStore className="text-sm" />
-                                {branchName}
+                                +{offer.branchNames.length - 3} أكثر
                               </span>
-                            ))}
+                            )}
                           </div>
                         ) : (
-                          <div className="text-center py-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
-                            <FaStore className="mx-auto text-3xl text-gray-400 dark:text-gray-500 mb-2" />
-                            <p className="text-gray-600 dark:text-gray-400 font-medium">
-                              لم يتم تحديد فروع
-                            </p>
-                          </div>
+                          <p className="text-sm" style={{ color: "#32B9CC" }}>
+                            جميع الفروع
+                          </p>
                         )}
                       </div>
 
-                      <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2">
-                        <div className="p-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                          <FaClock className="text-gray-400 dark:text-gray-500" />
-                        </div>
-                        <span>
-                          تم الإنشاء: {formatDateTime(offer.createdAt)}
-                        </span>
+                      {/* Actions */}
+                      <div className="flex gap-3 pt-6 border-t border-gray-100">
+                        <button
+                          onClick={(e) => handleToggleActive(offer.id, e)}
+                          className="flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 text-sm"
+                          style={{
+                            background: offer.isEnabled
+                              ? "#FF6B6B10"
+                              : "#4CAF5010",
+                            color: offer.isEnabled ? "#FF6B6B" : "#4CAF50",
+                          }}
+                        >
+                          {offer.isEnabled ? (
+                            <FaTimesCircle />
+                          ) : (
+                            <FaCheckCircle />
+                          )}
+                          {offer.isEnabled ? "تعطيل" : "تفعيل"}
+                        </button>
+                        <button
+                          onClick={() => handleEdit(offer)}
+                          className="flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 text-sm"
+                          style={{
+                            background: "#32B9CC10",
+                            color: "#32B9CC",
+                          }}
+                        >
+                          <FaEdit />
+                          تعديل
+                        </button>
+                        <button
+                          onClick={() => handleDelete(offer.id)}
+                          className="flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 text-sm"
+                          style={{
+                            background: "#FF6B6B10",
+                            color: "#FF6B6B",
+                          }}
+                        >
+                          <FaTrash />
+                          حذف
+                        </button>
                       </div>
                     </div>
-
-                    <div className="flex flex-col sm:flex-col lg:flex-row gap-2 sm:gap-3 justify-end sm:justify-start mt-4 sm:mt-0">
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={(e) => handleToggleActive(offer.id, e)}
-                        className={`flex items-center gap-2 px-4 py-2.5 ${
-                          offer.isEnabled
-                            ? "bg-yellow-50 text-yellow-700 hover:bg-yellow-100 dark:bg-yellow-900/50 dark:text-yellow-300 dark:hover:bg-yellow-800"
-                            : "bg-green-50 text-green-700 hover:bg-green-100 dark:bg-green-900/50 dark:text-green-300 dark:hover:bg-green-800"
-                        } rounded-lg transition-colors duration-200 text-sm font-medium flex-1 sm:flex-none justify-center`}
-                      >
-                        {offer.isEnabled ? (
-                          <>
-                            <FaTimesCircle className="text-sm" />
-                            <span className="whitespace-nowrap">تعطيل</span>
-                          </>
-                        ) : (
-                          <>
-                            <FaCheckCircle className="text-sm" />
-                            <span className="whitespace-nowrap">تفعيل</span>
-                          </>
-                        )}
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => handleEdit(offer)}
-                        className="flex items-center gap-2 px-4 py-2.5 bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-900/50 dark:text-blue-300 dark:hover:bg-blue-800 rounded-lg transition-colors duration-200 text-sm font-medium flex-1 sm:flex-none justify-center"
-                      >
-                        <FaEdit className="text-sm" />
-                        <span className="whitespace-nowrap">تعديل</span>
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => handleDelete(offer.id)}
-                        className="flex items-center gap-2 px-4 py-2.5 bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-900/50 dark:text-red-300 dark:hover:bg-red-800 rounded-lg transition-colors duration-200 text-sm font-medium flex-1 sm:flex-none justify-center"
-                      >
-                        <FaTrash className="text-sm" />
-                        <span className="whitespace-nowrap">حذف</span>
-                      </motion.button>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-
-            {!loading && filteredOffers.length === 0 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-center py-8 sm:py-10 md:py-12 bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-gray-200/50 dark:bg-gray-700/80 dark:border-gray-600"
-              >
-                <FaTag className="mx-auto text-3xl sm:text-4xl md:text-5xl text-gray-400 dark:text-gray-500 mb-3 sm:mb-4" />
-                <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-600 dark:text-gray-400 mb-2 sm:mb-3">
-                  لم يتم العثور على عروض عناصر
-                </h3>
-                <p className="text-gray-500 dark:text-gray-500 text-sm sm:text-base mb-4 sm:mb-6 max-w-xs sm:max-w-sm mx-auto">
-                  {searchTerm
-                    ? "حاول ضبط معايير البحث الخاصة بك"
-                    : "قم بإنشاء أول عرض عنصر للبدء"}
-                </p>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleAddNewOffer}
-                  className="flex items-center gap-2 bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base mx-auto"
-                >
-                  <FaPlus className="text-xs sm:text-sm" />
-                  <span>إنشاء أول عرض</span>
-                </motion.button>
-              </motion.div>
+                  </motion.div>
+                ))}
+              </div>
             )}
           </div>
+        </div>
+      </div>
 
-          <AnimatePresence>
-            {isAdding && (
-              <motion.div
-                id="offer-form"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                className="xl:col-span-1"
+      {/* Add/Edit Offer Modal */}
+      <AnimatePresence>
+        {isAdding && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col"
+            >
+              {/* Modal Header */}
+              <div
+                className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+                style={{
+                  background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                }}
               >
-                <div className="bg-white/90 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl p-4 sm:p-5 lg:p-6 border border-gray-200/50 dark:bg-gray-800/90 dark:border-gray-600 sticky top-4 sm:top-6 transition-colors duration-300">
-                  <div className="flex items-center justify-between mb-3 sm:mb-4">
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-200">
-                      {editingId ? "تعديل العرض" : "إنشاء عرض جديد"}
-                    </h3>
-                    <button
-                      onClick={resetForm}
-                      className="text-gray-500 hover:text-[#E41E26] dark:text-gray-400 dark:hover:text-[#FDB913] transition-colors duration-200 flex-shrink-0 ml-2"
-                    >
-                      <FaTimes size={16} className="sm:size-5" />
-                    </button>
-                  </div>
+                <div className="flex items-center gap-3">
+                  {editingId ? <FaEdit /> : <FaPlus />}
+                  <h3 className="text-lg font-bold text-white">
+                    {editingId ? "تعديل العرض" : "إنشاء عرض جديد"}
+                  </h3>
+                </div>
+                <button
+                  onClick={resetForm}
+                  className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
+                >
+                  <FaTimes size={16} />
+                </button>
+              </div>
 
-                  <form
-                    onSubmit={handleSubmit}
-                    className="space-y-3 sm:space-y-4"
-                  >
-                    <div>
-                      <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                        العنصر *
-                      </label>
-                      <div className="relative">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (editingId) return;
-                            setOpenDropdown(
-                              openDropdown === "menuItem" ? null : "menuItem",
-                            );
-                            if (
-                              !menuItems.length &&
-                              openDropdown !== "menuItem"
-                            ) {
-                              fetchMenuItems();
-                            }
-                          }}
-                          disabled={editingId !== null}
-                          className="w-full flex items-center justify-between border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed text-right"
-                        >
-                          <span className="flex items-center gap-2 truncate">
-                            <FaHamburger className="text-[#E41E26] flex-shrink-0" />
+              {/* Form Content */}
+              <div className="flex-1 overflow-y-auto p-6">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* Menu Item Dropdown */}
+                  <div>
+                    <label
+                      className="block text-sm font-semibold mb-2"
+                      style={{ color: "#2E3E88" }}
+                    >
+                      العنصر
+                    </label>
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (editingId) return;
+                          setOpenDropdown(
+                            openDropdown === "menuItem" ? null : "menuItem",
+                          );
+                          if (
+                            !menuItems.length &&
+                            openDropdown !== "menuItem"
+                          ) {
+                            fetchMenuItems();
+                          }
+                        }}
+                        disabled={editingId !== null}
+                        className="w-full flex items-center justify-between border border-gray-200 rounded-xl px-4 py-3.5 transition-all hover:border-[#2E3E88] group text-right disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                        }}
+                      >
+                        <div className="flex items-center gap-3">
+                          <FaHamburger
+                            className="group-hover:scale-110 transition-transform"
+                            style={{ color: "#2E3E88" }}
+                          />
+                          <span className="font-medium">
                             {formData.menuItemId
                               ? (() => {
                                   const selectedItem = menuItems.find(
@@ -1232,338 +1356,446 @@ export default function ItemOffersManagement() {
                                 })()
                               : "اختر عنصر"}
                           </span>
-                          <motion.div
-                            animate={{
-                              rotate: openDropdown === "menuItem" ? 180 : 0,
-                            }}
-                            transition={{ duration: 0.3 }}
+                        </div>
+                        <motion.div
+                          animate={{
+                            rotate: openDropdown === "menuItem" ? 180 : 0,
+                          }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          {loadingItems ? (
+                            <FaSpinner
+                              className="animate-spin"
+                              style={{ color: "#2E3E88" }}
+                            />
+                          ) : (
+                            <FaChevronDown style={{ color: "#2E3E88" }} />
+                          )}
+                        </motion.div>
+                      </button>
+
+                      <AnimatePresence>
+                        {openDropdown === "menuItem" && (
+                          <motion.ul
+                            initial={{ opacity: 0, y: -5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -5 }}
+                            className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-xl overflow-hidden max-h-64 overflow-y-auto"
                           >
                             {loadingItems ? (
-                              <FaSpinner className="text-[#E41E26] animate-spin" />
+                              <div className="flex items-center justify-center py-4">
+                                <FaSpinner
+                                  className="animate-spin text-lg"
+                                  style={{ color: "#2E3E88" }}
+                                />
+                                <span
+                                  className="mr-2"
+                                  style={{ color: "#2E3E88" }}
+                                >
+                                  جاري تحميل العناصر...
+                                </span>
+                              </div>
+                            ) : menuItems.length === 0 ? (
+                              <div className="px-4 py-3 text-center">
+                                <p
+                                  className="text-sm"
+                                  style={{ color: "#32B9CC" }}
+                                >
+                                  {editingId
+                                    ? "لا يمكن تغيير العنصر أثناء التعديل"
+                                    : "لا توجد عناصر متاحة أو جميع العناصر لديها عروض نشطة بالفعل"}
+                                </p>
+                              </div>
                             ) : (
-                              <FaChevronDown className="text-[#E41E26]" />
-                            )}
-                          </motion.div>
-                        </button>
-
-                        <AnimatePresence>
-                          {openDropdown === "menuItem" && (
-                            <motion.div
-                              initial={{ opacity: 0, y: -5 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              exit={{ opacity: 0, y: -5 }}
-                              transition={{ duration: 0.2 }}
-                              className="absolute z-50 mt-2 w-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 shadow-2xl rounded-xl overflow-hidden max-h-64 overflow-y-auto"
-                            >
-                              {loadingItems ? (
-                                <div className="flex items-center justify-center py-4">
-                                  <FaSpinner className="text-[#E41E26] animate-spin text-lg" />
-                                  <span className="ml-2 text-gray-600 dark:text-gray-400">
-                                    جاري تحميل العناصر...
-                                  </span>
-                                </div>
-                              ) : menuItems.length === 0 ? (
-                                <div className="px-4 py-3 text-center">
-                                  <p className="text-gray-500 dark:text-gray-400 text-sm">
-                                    {editingId
-                                      ? "لا يمكن تغيير العنصر أثناء التعديل"
-                                      : "لا توجد عناصر متاحة أو جميع العناصر لديها عروض نشطة بالفعل"}
-                                  </p>
-                                </div>
-                              ) : (
-                                <div>
-                                  {menuItems.map((item) => (
+                              <div>
+                                {menuItems.map((item) => (
+                                  <li
+                                    key={item.id}
+                                    onClick={() => {
+                                      handleSelectChange(
+                                        "menuItemId",
+                                        item.id.toString(),
+                                      );
+                                      setOpenDropdown(null);
+                                    }}
+                                    className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 cursor-pointer transition-all border-b last:border-b-0 text-right"
+                                  >
                                     <div
-                                      key={item.id}
-                                      onClick={() => {
-                                        handleSelectChange(
-                                          "menuItemId",
-                                          item.id.toString(),
-                                        );
-                                        setOpenDropdown(null);
-                                      }}
-                                      className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] dark:hover:from-gray-600 dark:hover:to-gray-500 cursor-pointer text-gray-700 dark:text-gray-300 transition-all text-sm sm:text-base border-b border-gray-100 dark:border-gray-600 last:border-b-0 flex flex-col text-right"
+                                      className="font-medium"
+                                      style={{ color: "#2E3E88" }}
                                     >
-                                      <div className="font-medium truncate">
-                                        {item.name}
-                                      </div>
-                                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                        {item.basePrice === 0
-                                          ? "السعر حسب الطلب"
-                                          : `ج.م ${item.basePrice}`}
-                                        {item.category &&
-                                          ` • ${item.category.name}`}
-                                      </div>
-                                      {item.description && (
-                                        <div className="text-xs text-gray-600 dark:text-gray-500 truncate mt-1">
-                                          {item.description}
-                                        </div>
-                                      )}
+                                      {item.name}
                                     </div>
-                                  ))}
-                                </div>
-                              )}
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                      {editingId && (
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-right">
-                          لا يمكن تغيير العنصر أثناء تعديل عرض موجود
-                        </p>
-                      )}
-                      {!editingId &&
-                        !loadingItems &&
-                        menuItems.length === 0 && (
-                          <p className="text-xs text-orange-500 dark:text-orange-400 mt-1 text-right">
-                            جميع العناصر لديها عروض نشطة بالفعل. قم بتعطيل
-                            العروض الحالية لإضافة عروض جديدة.
-                          </p>
+                                    <div
+                                      className="text-xs mt-1"
+                                      style={{ color: "#32B9CC" }}
+                                    >
+                                      {item.basePrice === 0
+                                        ? "السعر حسب الطلب"
+                                        : `ج.م ${item.basePrice}`}
+                                      {item.category &&
+                                        ` • ${item.category.name}`}
+                                    </div>
+                                  </li>
+                                ))}
+                              </div>
+                            )}
+                          </motion.ul>
                         )}
+                      </AnimatePresence>
                     </div>
+                    {editingId && (
+                      <p
+                        className="text-xs mt-1 text-right"
+                        style={{ color: "#32B9CC" }}
+                      >
+                        لا يمكن تغيير العنصر أثناء تعديل عرض موجود
+                      </p>
+                    )}
+                  </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                          نوع الخصم
-                        </label>
-                        <div className="space-y-2">
-                          <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                              type="radio"
-                              name="isPercentage"
-                              checked={formData.isPercentage}
-                              onChange={() =>
-                                setFormData({ ...formData, isPercentage: true })
-                              }
-                              className="text-[#E41E26] focus:ring-[#E41E26]"
-                            />
-                            <span className="text-sm text-gray-700 dark:text-gray-300">
-                              نسبة مئوية (%)
-                            </span>
-                          </label>
-                          <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                              type="radio"
-                              name="isPercentage"
-                              checked={!formData.isPercentage}
-                              onChange={() =>
-                                setFormData({
-                                  ...formData,
-                                  isPercentage: false,
-                                })
-                              }
-                              className="text-[#E41E26] focus:ring-[#E41E26]"
-                            />
-                            <span className="text-sm text-gray-700 dark:text-gray-300">
-                              مبلغ ثابت (ج.م)
-                            </span>
-                          </label>
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                          قيمة الخصم *
-                        </label>
-                        <div className="relative group">
-                          {formData.isPercentage ? (
-                            <FaPercent className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm" />
-                          ) : (
-                            <FaMoneyBillWave className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm" />
-                          )}
+                  {/* Discount Type and Value */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label
+                        className="block text-sm font-semibold mb-2"
+                        style={{ color: "#2E3E88" }}
+                      >
+                        نوع الخصم
+                      </label>
+                      <div className="space-y-2">
+                        <label className="flex items-center gap-2 cursor-pointer">
                           <input
-                            type="number"
-                            name="discountValue"
-                            value={formData.discountValue}
-                            onChange={handleInputChange}
-                            required
-                            min="0"
-                            max={formData.isPercentage ? "100" : ""}
-                            step={formData.isPercentage ? "1" : "0.01"}
-                            className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white rounded-lg sm:rounded-xl pl-3 pr-9 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base text-right"
-                            placeholder={
-                              formData.isPercentage ? "0-100" : "0.00"
+                            type="radio"
+                            name="isPercentage"
+                            checked={formData.isPercentage}
+                            onChange={() =>
+                              setFormData({ ...formData, isPercentage: true })
                             }
+                            style={{ accentColor: "#2E3E88" }}
                           />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                          تاريخ البداية *
+                          <span style={{ color: "#2E3E88" }}>
+                            نسبة مئوية (%)
+                          </span>
                         </label>
-                        <div className="relative group">
-                          <FaCalendarAlt className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm" />
+                        <label className="flex items-center gap-2 cursor-pointer">
                           <input
-                            type="date"
-                            name="startDate"
-                            value={formData.startDate}
-                            onChange={handleInputChange}
-                            required
-                            className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white rounded-lg sm:rounded-xl pl-3 pr-9 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                            type="radio"
+                            name="isPercentage"
+                            checked={!formData.isPercentage}
+                            onChange={() =>
+                              setFormData({
+                                ...formData,
+                                isPercentage: false,
+                              })
+                            }
+                            style={{ accentColor: "#2E3E88" }}
                           />
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                          وقت البداية
+                          <span style={{ color: "#2E3E88" }}>
+                            مبلغ ثابت (ج.م)
+                          </span>
                         </label>
-                        <div className="relative group">
-                          <FaClock className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm" />
-                          <input
-                            type="time"
-                            name="startTime"
-                            value={formData.startTime}
-                            onChange={handleInputChange}
-                            className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white rounded-lg sm:rounded-xl pl-3 pr-9 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                          تاريخ النهاية *
-                        </label>
-                        <div className="relative group">
-                          <FaCalendarAlt className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm" />
-                          <input
-                            type="date"
-                            name="endDate"
-                            value={formData.endDate}
-                            onChange={handleInputChange}
-                            required
-                            min={formData.startDate}
-                            className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white rounded-lg sm:rounded-xl pl-3 pr-9 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                          وقت النهاية
-                        </label>
-                        <div className="relative group">
-                          <FaClock className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm" />
-                          <input
-                            type="time"
-                            name="endTime"
-                            value={formData.endTime}
-                            onChange={handleInputChange}
-                            className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white rounded-lg sm:rounded-xl pl-3 pr-9 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
-                          />
-                        </div>
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                        الفروع المطبق عليها *
+                      <label
+                        className="block text-sm font-semibold mb-2"
+                        style={{ color: "#2E3E88" }}
+                      >
+                        قيمة الخصم
                       </label>
-                      <div className="border border-gray-200 dark:border-gray-600 rounded-lg sm:rounded-xl p-3 max-h-48 overflow-y-auto bg-white dark:bg-gray-700">
-                        {branches.length === 0 ? (
-                          <div className="text-center py-4">
-                            <FaStore className="mx-auto text-2xl text-gray-400 dark:text-gray-500 mb-2" />
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                              لا توجد فروع متاحة
-                            </p>
-                          </div>
+                      <div className="relative group">
+                        {formData.isPercentage ? (
+                          <FaPercent
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                            style={{ color: "#2E3E88" }}
+                          />
                         ) : (
-                          <div className="space-y-2">
-                            {branches.map((branch) => (
-                              <label
-                                key={branch.id}
-                                className="flex items-center gap-3 cursor-pointer p-2 hover:bg-gray-50 dark:hover:bg-gray-600 rounded-lg transition-colors duration-200"
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={formData.branchesIds.includes(
-                                    branch.id,
-                                  )}
-                                  onChange={() =>
-                                    handleBranchesChange(branch.id)
-                                  }
-                                  className="text-[#E41E26] focus:ring-[#E41E26] rounded"
-                                />
-                                <div className="flex items-center gap-2 flex-1 justify-between">
-                                  <span className="text-sm text-gray-700 dark:text-gray-300">
-                                    {branch.name}
-                                  </span>
-                                  <FaStore className="text-gray-400 dark:text-gray-500 text-sm" />
-                                </div>
-                              </label>
-                            ))}
-                          </div>
+                          <FaMoneyBillWave
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                            style={{ color: "#2E3E88" }}
+                          />
                         )}
+                        <input
+                          type="number"
+                          name="discountValue"
+                          value={formData.discountValue}
+                          onChange={handleInputChange}
+                          required
+                          min="0"
+                          max={formData.isPercentage ? "100" : ""}
+                          step={formData.isPercentage ? "1" : "0.01"}
+                          className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                          style={{
+                            background:
+                              "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                          }}
+                          placeholder={formData.isPercentage ? "0-100" : "0.00"}
+                          dir="rtl"
+                        />
                       </div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-right">
-                        اختر فرع واحد على الأقل للعرض
-                      </p>
                     </div>
+                  </div>
 
-                    <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] dark:from-gray-700 dark:to-gray-600 rounded-xl border border-[#FDB913]/30 dark:border-gray-500">
-                      <input
-                        type="checkbox"
-                        name="isEnabled"
-                        checked={formData.isEnabled}
-                        onChange={handleInputChange}
-                        className="w-4 h-4 text-[#E41E26] bg-gray-100 border-gray-300 rounded focus:ring-[#E41E26] focus:ring-2"
-                      />
-                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        نشط (متاح للاستخدام)
+                  {/* Start Date and Time */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label
+                        className="block text-sm font-semibold mb-2"
+                        style={{ color: "#2E3E88" }}
+                      >
+                        تاريخ البداية
                       </label>
+                      <div className="relative group">
+                        <FaCalendarAlt
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                          style={{ color: "#2E3E88" }}
+                        />
+                        <input
+                          type="date"
+                          name="startDate"
+                          value={formData.startDate}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                          style={{
+                            background:
+                              "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                          }}
+                          dir="rtl"
+                        />
+                      </div>
                     </div>
+                    <div>
+                      <label
+                        className="block text-sm font-semibold mb-2"
+                        style={{ color: "#2E3E88" }}
+                      >
+                        وقت البداية
+                      </label>
+                      <div className="relative group">
+                        <FaClock
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                          style={{ color: "#2E3E88" }}
+                        />
+                        <input
+                          type="time"
+                          name="startTime"
+                          value={formData.startTime}
+                          onChange={handleInputChange}
+                          className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                          style={{
+                            background:
+                              "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                          }}
+                          dir="rtl"
+                        />
+                      </div>
+                    </div>
+                  </div>
 
-                    <div className="flex gap-2 sm:gap-3 pt-1 sm:pt-2 flex-col sm:flex-row">
-                      <motion.button
-                        type="button"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={resetForm}
-                        className="flex-1 py-2.5 sm:py-3 border-2 border-[#E41E26] text-[#E41E26] rounded-lg sm:rounded-xl font-semibold hover:bg-[#E41E26] hover:text-white transition-all duration-300 text-sm sm:text-base"
+                  {/* End Date and Time */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label
+                        className="block text-sm font-semibold mb-2"
+                        style={{ color: "#2E3E88" }}
                       >
-                        إلغاء
-                      </motion.button>
-                      <motion.button
-                        type="submit"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        disabled={
-                          !isFormValid() ||
-                          formData.branchesIds.length === 0 ||
-                          isSubmitting
-                        }
-                        className={`flex-1 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base flex items-center justify-center gap-1 sm:gap-2 ${
-                          isFormValid() &&
-                          formData.branchesIds.length > 0 &&
-                          !isSubmitting
-                            ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25 cursor-pointer"
-                            : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                        }`}
-                      >
-                        {isSubmitting ? (
-                          <>
-                            <FaSpinner className="animate-spin" />
-                            <span>جاري الحفظ...</span>
-                          </>
-                        ) : (
-                          <>
-                            <FaSave className="text-xs sm:text-sm" />
-                            <span>{editingId ? "تحديث" : "إنشاء"}</span>
-                          </>
-                        )}
-                      </motion.button>
+                        تاريخ النهاية
+                      </label>
+                      <div className="relative group">
+                        <FaCalendarAlt
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                          style={{ color: "#2E3E88" }}
+                        />
+                        <input
+                          type="date"
+                          name="endDate"
+                          value={formData.endDate}
+                          onChange={handleInputChange}
+                          required
+                          min={formData.startDate}
+                          className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                          style={{
+                            background:
+                              "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                          }}
+                          dir="rtl"
+                        />
+                      </div>
                     </div>
-                  </form>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
+                    <div>
+                      <label
+                        className="block text-sm font-semibold mb-2"
+                        style={{ color: "#2E3E88" }}
+                      >
+                        وقت النهاية
+                      </label>
+                      <div className="relative group">
+                        <FaClock
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                          style={{ color: "#2E3E88" }}
+                        />
+                        <input
+                          type="time"
+                          name="endTime"
+                          value={formData.endTime}
+                          onChange={handleInputChange}
+                          className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                          style={{
+                            background:
+                              "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                          }}
+                          dir="rtl"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Branches */}
+                  <div>
+                    <label
+                      className="block text-sm font-semibold mb-2"
+                      style={{ color: "#2E3E88" }}
+                    >
+                      الفروع المطبق عليها
+                    </label>
+                    <div
+                      className="border border-gray-200 rounded-xl p-4 max-h-48 overflow-y-auto"
+                      style={{
+                        background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                      }}
+                    >
+                      {branches.length === 0 ? (
+                        <div className="text-center py-4">
+                          <FaStore
+                            className="mx-auto text-2xl mb-2"
+                            style={{ color: "#2E3E88" }}
+                          />
+                          <p style={{ color: "#32B9CC" }}>لا توجد فروع متاحة</p>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          {branches.map((branch) => (
+                            <label
+                              key={branch.id}
+                              className="flex items-center gap-3 cursor-pointer p-2 hover:bg-gray-50 rounded-lg transition-colors duration-200"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={formData.branchesIds.includes(
+                                  branch.id,
+                                )}
+                                onChange={() => handleBranchesChange(branch.id)}
+                                style={{ accentColor: "#2E3E88" }}
+                              />
+                              <div className="flex items-center gap-2 flex-1 justify-between">
+                                <span style={{ color: "#2E3E88" }}>
+                                  {branch.name}
+                                </span>
+                                <FaStore style={{ color: "#32B9CC" }} />
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <p
+                      className="text-xs mt-1 text-right"
+                      style={{ color: "#32B9CC" }}
+                    >
+                      اختر فرع واحد على الأقل للعرض
+                    </p>
+                  </div>
+
+                  {/* Active Status */}
+                  <div
+                    className="flex items-center gap-3 p-3 rounded-xl"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
+                      border: "1px solid #2E3E8820",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      name="isEnabled"
+                      checked={formData.isEnabled}
+                      onChange={handleInputChange}
+                      style={{ accentColor: "#2E3E88" }}
+                    />
+                    <label style={{ color: "#2E3E88" }}>
+                      نشط (متاح للاستخدام)
+                    </label>
+                  </div>
+
+                  {/* Form Actions */}
+                  <div className="flex gap-3 pt-4">
+                    <motion.button
+                      type="button"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={resetForm}
+                      className="flex-1 py-3.5 border-2 rounded-xl font-semibold transition-all duration-300"
+                      style={{
+                        borderColor: "#2E3E88",
+                        color: "#2E3E88",
+                        background: "transparent",
+                      }}
+                    >
+                      إلغاء
+                    </motion.button>
+                    <motion.button
+                      type="submit"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      disabled={
+                        !isFormValid() ||
+                        formData.branchesIds.length === 0 ||
+                        isSubmitting
+                      }
+                      className={`flex-1 py-3.5 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                        isFormValid() &&
+                        formData.branchesIds.length > 0 &&
+                        !isSubmitting
+                          ? "shadow-lg hover:shadow-xl cursor-pointer"
+                          : "opacity-50 cursor-not-allowed"
+                      }`}
+                      style={
+                        isFormValid() &&
+                        formData.branchesIds.length > 0 &&
+                        !isSubmitting
+                          ? {
+                              background:
+                                "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                              color: "white",
+                            }
+                          : {
+                              background: "#e5e7eb",
+                              color: "#6b7280",
+                            }
+                      }
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <FaSpinner className="animate-spin" />
+                          جاري الحفظ...
+                        </>
+                      ) : (
+                        <>
+                          <FaSave />
+                          {editingId ? "تحديث" : "إنشاء"}
+                        </>
+                      )}
+                    </motion.button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

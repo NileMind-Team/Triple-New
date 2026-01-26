@@ -5,6 +5,8 @@ import {
   FaTruck,
   FaEdit,
   FaTrash,
+  FaCheck,
+  FaTimes,
 } from "react-icons/fa";
 
 export default function DeliveryAreaCard({
@@ -14,103 +16,118 @@ export default function DeliveryAreaCard({
   onDelete,
   onToggleActive,
 }) {
-  const getStatusColor = (isActive) => {
-    return isActive
-      ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
-      : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300";
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
-      className="bg-white/90 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl p-4 sm:p-6 hover:shadow-2xl transition-all duration-300 dark:bg-gray-800/90"
+      className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col h-full"
+      style={{
+        borderTop: area.isActive ? "4px solid #4CAF50" : "4px solid #FF6B6B",
+        minHeight: "250px",
+      }}
     >
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-            <div className="p-2 sm:p-3 bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] dark:from-gray-700 dark:to-gray-600 rounded-xl sm:rounded-2xl border border-[#FDB913]/30 dark:border-gray-500">
-              <FaMapMarkerAlt className="text-[#E41E26] dark:text-[#FDB913] text-lg sm:text-xl" />
+      <div className="p-6 flex-grow">
+        {/* Header */}
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+              <FaMapMarkerAlt
+                className="text-xl"
+                style={{ color: "#2E3E88" }}
+              />
             </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-bold text-gray-800 dark:text-gray-200 text-lg sm:text-xl truncate">
-                  {area.areaName}
-                </h3>
+            <div className="flex-1">
+              <h4
+                className="font-bold text-lg mb-1"
+                style={{ color: "#2E3E88" }}
+              >
+                {area.areaName}
+              </h4>
+              <div className="flex items-center gap-2">
                 <span
-                  className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(
-                    area.isActive
-                  )} whitespace-nowrap`}
+                  className="px-3 py-1 rounded-full text-xs font-semibold"
+                  style={{
+                    background: area.isActive ? "#4CAF5010" : "#FF6B6B10",
+                    color: area.isActive ? "#4CAF50" : "#FF6B6B",
+                  }}
                 >
                   {area.isActive ? "نشط" : "غير نشط"}
                 </span>
-              </div>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">
-                {area.branchName && `الفرع: ${area.branchName} • `}
-                تم الإنشاء{" "}
-                {new Date(area.createdAt).toLocaleDateString("ar-EG")}
-              </p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 sm:gap-4">
-            <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl border border-green-200 dark:border-green-700">
-              <FaMoneyBillWave className="text-green-600 dark:text-green-400 text-lg flex-shrink-0" />
-              <div>
-                <p className="text-xs text-gray-600 dark:text-gray-400">
-                  تكلفة التوصيل
-                </p>
-                <p className="font-bold text-green-600 dark:text-green-400 text-lg">
-                  ج.م {area.deliveryCost.toFixed(2)}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl border border-blue-200 dark:border-blue-700">
-              <FaTruck className="text-blue-600 dark:text-blue-400 text-lg flex-shrink-0" />
-              <div>
-                <p className="text-xs text-gray-600 dark:text-gray-400">
-                  الوقت المتوقع
-                </p>
-                <p className="font-bold text-blue-600 dark:text-blue-400 text-lg">
-                  {area.estimatedTime}
-                </p>
+                {area.branchName && (
+                  <span className="text-sm" style={{ color: "#32B9CC" }}>
+                    {area.branchName}
+                  </span>
+                )}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-row sm:flex-col lg:flex-row gap-1 sm:gap-2 justify-end sm:justify-start">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+        {/* Area Details */}
+        <div className="space-y-4 mb-6">
+          <div className="flex items-start gap-3">
+            <FaMoneyBillWave
+              className="mt-1 flex-shrink-0"
+              style={{ color: "#2E3E88" }}
+            />
+            <div className="flex-1">
+              <span className="text-sm text-gray-500">تكلفة التوصيل</span>
+              <p className="font-bold text-lg" style={{ color: "#2E3E88" }}>
+                ج.م {area.deliveryCost.toFixed(2)}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <FaTruck
+              className="mt-1 flex-shrink-0"
+              style={{ color: "#2E3E88" }}
+            />
+            <div className="flex-1">
+              <span className="text-sm text-gray-500">الوقت المتوقع</span>
+              <p className="font-bold text-lg" style={{ color: "#2E3E88" }}>
+                {area.estimatedTime}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-3 pt-4 border-t border-gray-100 mt-auto">
+          <button
             onClick={(e) => onToggleActive(area.id, e)}
-            className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 ${
-              area.isActive
-                ? "bg-yellow-50 text-yellow-700 hover:bg-yellow-100 dark:bg-yellow-900/50 dark:text-yellow-300 dark:hover:bg-yellow-800"
-                : "bg-green-50 text-green-700 hover:bg-green-100 dark:bg-green-900/50 dark:text-green-300 dark:hover:bg-green-800"
-            } rounded-lg transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center`}
+            className="flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
+            style={{
+              background: area.isActive ? "#FFA72610" : "#4CAF5010",
+              color: area.isActive ? "#FFA726" : "#4CAF50",
+            }}
           >
+            {area.isActive ? <FaTimes /> : <FaCheck />}
             {area.isActive ? "تعطيل" : "تفعيل"}
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          </button>
+          <button
             onClick={() => onEdit(area)}
-            className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-900/50 dark:text-blue-300 dark:hover:bg-blue-800 rounded-lg transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center"
+            className="flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
+            style={{
+              background: "#32B9CC10",
+              color: "#32B9CC",
+            }}
           >
-            <FaEdit className="text-xs sm:text-sm" />
-            <span className="whitespace-nowrap">تعديل</span>
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            <FaEdit />
+            تعديل
+          </button>
+          <button
             onClick={() => onDelete(area.id)}
-            className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-900/50 dark:text-red-300 dark:hover:bg-red-800 rounded-lg transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center"
+            className="flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
+            style={{
+              background: "#FF6B6B10",
+              color: "#FF6B6B",
+            }}
           >
-            <FaTrash className="text-xs sm:text-sm" />
-            <span className="whitespace-nowrap">حذف</span>
-          </motion.button>
+            <FaTrash />
+            حذف
+          </button>
         </div>
       </div>
     </motion.div>

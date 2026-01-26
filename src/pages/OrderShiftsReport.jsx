@@ -10,7 +10,8 @@ import {
   FaChevronRight,
   FaBuilding,
   FaChevronDown,
-  FaCalendar,
+  FaArrowLeft,
+  FaClock,
 } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
@@ -18,6 +19,7 @@ import "react-toastify/dist/ReactToastify.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format, startOfDay, endOfDay, addHours, parseISO } from "date-fns";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "../api/axiosInstance";
 
 const fetchOrderShifts = async (branchId, day) => {
@@ -32,7 +34,7 @@ const fetchOrderShifts = async (branchId, day) => {
     });
 
     const response = await axiosInstance.get(
-      `/api/OrderShifts/GetAll?${params.toString()}`
+      `/api/OrderShifts/GetAll?${params.toString()}`,
     );
     return response.data || [];
   } catch (error) {
@@ -56,7 +58,7 @@ const fetchOrdersWithFilter = async (
   shiftId,
   branchId,
   pageNumber = 1,
-  pageSize = 10
+  pageSize = 10,
 ) => {
   try {
     if (!day || !branchId) {
@@ -79,12 +81,12 @@ const fetchOrdersWithFilter = async (
 
     console.log(
       "Request Body for Orders:",
-      JSON.stringify(requestBody, null, 2)
+      JSON.stringify(requestBody, null, 2),
     );
 
     const response = await axiosInstance.post(
       "/api/Orders/GetAllWithPagination",
-      requestBody
+      requestBody,
     );
 
     if (
@@ -122,7 +124,7 @@ const fetchAllOrdersForPrint = async (day, shiftId, branchId) => {
     console.log(`Shift ID: ${shiftId || "Not provided"}`);
 
     const response = await axiosInstance.get(
-      `/api/Orders/GetAll?${params.toString()}`
+      `/api/Orders/GetAll?${params.toString()}`,
     );
 
     let orders = response.data || [];
@@ -199,7 +201,72 @@ const formatTimeTo12Hour = (timeString) => {
   }
 };
 
+const showMessage = (type, title, text, options = {}) => {
+  if (window.innerWidth < 768 && !options.forceSwal) {
+    const toastOptions = {
+      position: "top-right",
+      autoClose: options.timer || 2500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      style: {
+        width: "70%",
+        margin: "10px",
+        borderRadius: "12px",
+        textAlign: "right",
+        fontSize: "14px",
+        direction: "rtl",
+        background:
+          type === "error"
+            ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
+            : type === "warning"
+              ? "linear-gradient(135deg, #FFA726, #FF9800)"
+              : "linear-gradient(135deg, #2E3E88, #32B9CC)",
+        color: "white",
+      },
+    };
+
+    switch (type) {
+      case "success":
+        toast.success(text, toastOptions);
+        break;
+      case "error":
+        toast.error(text, toastOptions);
+        break;
+      case "warning":
+        toast.warning(text, toastOptions);
+        break;
+      case "info":
+        toast.info(text, toastOptions);
+        break;
+      default:
+        toast(text, toastOptions);
+    }
+  } else {
+    Swal.fire({
+      icon: type,
+      title: title,
+      text: text,
+      timer: options.timer || 2500,
+      showConfirmButton:
+        options.showConfirmButton !== undefined
+          ? options.showConfirmButton
+          : false,
+      background:
+        type === "error"
+          ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
+          : type === "warning"
+            ? "linear-gradient(135deg, #FFA726, #FF9800)"
+            : "linear-gradient(135deg, #2E3E88, #32B9CC)",
+      color: "white",
+      ...options,
+    });
+  }
+};
+
 const OrderShiftsReport = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [day, setDay] = useState(null);
   const [shiftId, setShiftId] = useState("");
@@ -215,8 +282,6 @@ const OrderShiftsReport = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const [openDropdown, setOpenDropdown] = useState(null);
-  const [darkMode, setDarkMode] = useState(false);
-
   useEffect(() => {
     const loadBranches = async () => {
       try {
@@ -224,7 +289,7 @@ const OrderShiftsReport = () => {
         setBranches(branchesData);
       } catch (error) {
         console.error("Error loading branches:", error);
-        toast.error("فشل في تحميل قائمة الفروع");
+        showMessage("error", "خطأ", "فشل في تحميل قائمة الفروع");
       }
     };
 
@@ -233,28 +298,6 @@ const OrderShiftsReport = () => {
     setSummary({
       day: "لم يتم تحديد اليوم",
     });
-
-    const savedDarkMode = localStorage.getItem("darkMode");
-    if (savedDarkMode) {
-      setDarkMode(JSON.parse(savedDarkMode));
-    }
-  }, []);
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const savedDarkMode = localStorage.getItem("darkMode");
-      if (savedDarkMode) {
-        setDarkMode(JSON.parse(savedDarkMode));
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    const interval = setInterval(handleStorageChange, 1000);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-      clearInterval(interval);
-    };
   }, []);
 
   useEffect(() => {
@@ -290,41 +333,21 @@ const OrderShiftsReport = () => {
 
   const handleFilter = async (page = 1) => {
     if (!day) {
-      Swal.fire({
-        icon: "warning",
-        title: "اليوم غير محدد",
-        text: "يرجى تحديد اليوم أولاً",
-        timer: 3000,
-        showConfirmButton: false,
-        background: "#fff",
-        color: "#333",
-      });
+      showMessage("warning", "اليوم غير محدد", "يرجى تحديد اليوم أولاً");
       return;
     }
 
     if (!branchId) {
-      Swal.fire({
-        icon: "warning",
-        title: "الفرع غير محدد",
-        text: "يرجى تحديد الفرع أولاً",
-        timer: 3000,
-        showConfirmButton: false,
-        background: "#fff",
-        color: "#333",
-      });
+      showMessage("warning", "الفرع غير محدد", "يرجى تحديد الفرع أولاً");
       return;
     }
 
     if (!shiftId) {
-      Swal.fire({
-        icon: "warning",
-        title: "الوردية غير محددة",
-        text: "يرجى تحديد اسم الوردية أولاً",
-        timer: 3000,
-        showConfirmButton: false,
-        background: "#fff",
-        color: "#333",
-      });
+      showMessage(
+        "warning",
+        "الوردية غير محددة",
+        "يرجى تحديد اسم الوردية أولاً",
+      );
       return;
     }
 
@@ -335,7 +358,7 @@ const OrderShiftsReport = () => {
         shiftId || null,
         branchId,
         page,
-        10
+        10,
       );
 
       const orders = response.data;
@@ -360,12 +383,7 @@ const OrderShiftsReport = () => {
         shift: selectedShiftName,
       });
 
-      Swal.fire({
-        icon: "success",
-        title: "تم تطبيق الفلترة بنجاح",
-        timer: 1500,
-        showConfirmButton: false,
-      });
+      showMessage("success", "تم بنجاح", "تم تطبيق الفلترة بنجاح");
     } catch (error) {
       console.error("Error fetching report data:", error);
 
@@ -374,13 +392,7 @@ const OrderShiftsReport = () => {
           ? "لا توجد بيانات في اليوم المحدد"
           : "فشل في تحميل بيانات التقرير";
 
-      Swal.fire({
-        icon: "info",
-        title: "لا توجد بيانات",
-        text: errorMessage,
-        timer: 2500,
-        showConfirmButton: false,
-      });
+      showMessage("info", "لا توجد بيانات", errorMessage);
 
       setReportData([]);
       setTotalPrice(0);
@@ -455,13 +467,11 @@ const OrderShiftsReport = () => {
       setIsPrinting(true);
 
       if (!day || !branchId) {
-        Swal.fire({
-          icon: "warning",
-          title: "بيانات غير مكتملة",
-          text: "يرجى تحديد اليوم والفرع أولاً",
-          timer: 2000,
-          showConfirmButton: false,
-        });
+        showMessage(
+          "warning",
+          "بيانات غير مكتملة",
+          "يرجى تحديد اليوم والفرع أولاً",
+        );
         setIsPrinting(false);
         return;
       }
@@ -470,20 +480,18 @@ const OrderShiftsReport = () => {
         const allOrders = await fetchAllOrdersForPrint(day, shiftId, branchId);
 
         if (allOrders.length === 0) {
-          Swal.fire({
-            icon: "warning",
-            title: "لا توجد بيانات",
-            text: "لا توجد بيانات لعرضها في التقرير",
-            timer: 2000,
-            showConfirmButton: false,
-          });
+          showMessage(
+            "warning",
+            "لا توجد بيانات",
+            "لا توجد بيانات لعرضها في التقرير",
+          );
           setIsPrinting(false);
           return;
         }
 
         const printTotalPrice = allOrders.reduce(
           (sum, order) => sum + (order.totalWithFee || 0),
-          0
+          0,
         );
 
         const selectedBranchName = branchId
@@ -695,7 +703,7 @@ const OrderShiftsReport = () => {
   
   .total-row {
     display: flex;
-    justify-content: space-between;
+    justify-between;
     align-items: center;
     margin: 5px 0;
     padding: 3px 8px;
@@ -788,7 +796,7 @@ const OrderShiftsReport = () => {
       <div class="detail-row single-line">
         <span class="detail-label spaced-text">عدد الفواتير:</span>
         <span class="detail-value spaced-text">${formatNumberArabic(
-          allOrders.length
+          allOrders.length,
         )}</span>
       </div>
     </div>
@@ -819,7 +827,7 @@ const OrderShiftsReport = () => {
           <tr class="single-line">
             <td class="bill-number-cell single-line spaced-text">${orderNumberArabic}</td>
             <td class="amount-cell single-line spaced-text">${formatCurrencyArabic(
-              order.totalWithFee || 0
+              order.totalWithFee || 0,
             )}</td>
           </tr>
         `;
@@ -832,13 +840,13 @@ const OrderShiftsReport = () => {
       <div class="total-row single-line">
         <span class="total-label spaced-text">عدد الفواتير:</span>
         <span class="total-value spaced-text">${formatNumberArabic(
-          allOrders.length
+          allOrders.length,
         )}</span>
       </div>
       <div class="total-row single-line">
         <span class="total-label spaced-text">المجموع الكلي:</span>
         <span class="total-value spaced-text">${formatCurrencyArabic(
-          printTotalPrice
+          printTotalPrice,
         )}</span>
       </div>
     </div>
@@ -848,7 +856,7 @@ const OrderShiftsReport = () => {
     <div class="report-footer compact">
       <div class="print-date single-line spaced-text">${formattedDate} - ${formattedTime}</div>
       <div class="single-line spaced-text">Triple S © ${toArabicNumbers(
-        new Date().getFullYear()
+        new Date().getFullYear(),
       )}</div>
     </div>
   </div>
@@ -906,7 +914,7 @@ const OrderShiftsReport = () => {
             closeButton.style.right = "20px";
             closeButton.style.zIndex = "100000";
             closeButton.style.padding = "10px 20px";
-            closeButton.style.background = "#E41E26";
+            closeButton.style.background = "#2E3E88";
             closeButton.style.color = "white";
             closeButton.style.border = "none";
             closeButton.style.borderRadius = "5px";
@@ -923,32 +931,24 @@ const OrderShiftsReport = () => {
 
             document.body.appendChild(closeButton);
 
-            Swal.fire({
-              icon: "info",
-              title: "جاهز للطباعة",
-              text: "تم تحضير التقرير للطباعة. الرجاء استخدام Ctrl+P للطباعة ثم اضغط على زر إغلاق.",
-              showConfirmButton: true,
-              confirmButtonText: "تمت الطباعة",
-            }).then(() => {
-              if (document.body.contains(printFrame)) {
-                document.body.removeChild(printFrame);
-              }
-              if (document.body.contains(closeButton)) {
-                document.body.removeChild(closeButton);
-              }
-              setIsPrinting(false);
-            });
+            showMessage(
+              "info",
+              "جاهز للطباعة",
+              "تم تحضير التقرير للطباعة. الرجاء استخدام Ctrl+P للطباعة ثم اضغط على زر إغلاق.",
+              {
+                showConfirmButton: true,
+                confirmButtonText: "تمت الطباعة",
+              },
+            );
           }
         }, 500);
       } catch (error) {
         console.error("Error in print process:", error);
-        Swal.fire({
-          icon: "error",
-          title: "خطأ في تحميل البيانات",
-          text: "فشل في تحميل بيانات الطباعة. يرجى المحاولة مرة أخرى.",
-          timer: 2000,
-          showConfirmButton: false,
-        });
+        showMessage(
+          "error",
+          "خطأ في تحميل البيانات",
+          "فشل في تحميل بيانات الطباعة. يرجى المحاولة مرة أخرى.",
+        );
         setIsPrinting(false);
       }
     } catch (error) {
@@ -959,107 +959,156 @@ const OrderShiftsReport = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-4">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E41E26]"></div>
+      <div
+        className="min-h-screen flex items-center justify-center px-4"
+        style={{
+          background: "linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)",
+        }}
+      >
+        <div className="text-center">
+          <div
+            className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+            style={{
+              borderTopColor: "#2E3E88",
+              borderRightColor: "#32B9CC",
+              borderBottomColor: "#2E3E88",
+              borderLeftColor: "transparent",
+            }}
+          ></div>
+          <p className="text-lg font-semibold" style={{ color: "#2E3E88" }}>
+            جارٍ تحميل التقرير...
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
     <div
+      className="min-h-screen font-sans relative overflow-x-hidden"
+      style={{
+        background: "linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)",
+        backgroundAttachment: "fixed",
+      }}
       dir="rtl"
-      className="min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-3 sm:px-4 md:px-6 py-6 relative font-sans overflow-hidden transition-colors duration-300"
     >
-      {/* Background decorations */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -left-10 -top-10 w-40 h-40 sm:w-60 sm:h-60 bg-gradient-to-r from-[#E41E26]/10 to-[#FDB913]/10 rounded-full blur-2xl animate-pulse"></div>
-        <div className="absolute -right-10 -bottom-10 w-40 h-40 sm:w-60 sm:h-60 bg-gradient-to-r from-[#FDB913]/10 to-[#E41E26]/10 rounded-full blur-2xl animate-pulse"></div>
-      </div>
+      {/* Header Section */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/80 to-white"></div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, type: "spring" }}
-        className="max-w-7xl mx-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl shadow-xl rounded-2xl sm:rounded-3xl border border-white/50 dark:border-gray-700/50 relative overflow-hidden transition-colors duration-300"
-      >
-        {/* Header */}
-        <div className="bg-gradient-to-r from-[#E41E26] to-[#FDB913] px-6 py-8 relative overflow-hidden">
-          <div className="absolute inset-0 bg-black/10"></div>
-          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="p-3 bg-white/20 backdrop-blur-sm rounded-2xl">
-                <FaChartBar className="text-white text-2xl" />
+        {/* Hero Header */}
+        <div
+          className="relative py-16 px-4"
+          style={{
+            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+          }}
+        >
+          <div className="max-w-7xl mx-auto">
+            {/* زر الرجوع */}
+            <motion.button
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              onClick={() => navigate(-1)}
+              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              style={{
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+              }}
+            >
+              <FaArrowLeft
+                size={20}
+                className="group-hover:-translate-x-1 transition-transform"
+              />
+            </motion.button>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center pt-8"
+            >
+              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
+                <FaChartBar className="text-white text-4xl" />
               </div>
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1">
-                  تقرير الورديات
-                </h1>
-                <p className="text-white/90 text-sm">
-                  تحليل مفصل للطلبات حسب الورديات والفروع
-                </p>
-              </div>
-            </div>
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                تقرير الورديات
+              </h1>
+              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+                تحليل مفصل للطلبات حسب الورديات والفروع
+              </p>
+            </motion.div>
           </div>
         </div>
+      </div>
 
-        {/* Main Content */}
-        <div className="p-4 sm:p-6" dir="rtl">
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10">
+        {/* Content Container */}
+        <div className="w-full">
           {/* Date Filter Section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-700 dark:to-gray-800 border border-gray-200 dark:border-gray-600 rounded-2xl p-4 sm:p-6 mb-6 shadow-lg"
+            className="bg-white rounded-2xl p-6 mb-6 shadow-xl"
           >
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-              <div className="flex items-center gap-2">
-                <FaCalendarAlt className="text-[#E41E26] text-xl" />
-                <h3 className="text-lg font-bold text-gray-800 dark:text-white">
-                  فلترة الورديات
-                </h3>
-              </div>
+            <div className="flex items-center gap-2 mb-6">
+              <FaCalendarAlt className="text-xl" style={{ color: "#2E3E88" }} />
+              <h3 className="text-lg font-bold" style={{ color: "#2E3E88" }}>
+                فلترة الورديات
+              </h3>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4" dir="rtl">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Day Selection */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  className="block text-sm font-semibold mb-2 text-right"
+                  style={{ color: "#2E3E88" }}
+                >
                   اليوم
                 </label>
                 <div className="relative group">
+                  <FaCalendarAlt
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    style={{ color: "#2E3E88" }}
+                  />
                   <DatePicker
                     selected={day}
                     onChange={(date) => setDay(date)}
                     dateFormat="dd/MM/yyyy"
-                    className={`w-full border ${
-                      darkMode
-                        ? "border-gray-600 bg-gray-800 text-white"
-                        : "border-gray-200 bg-white text-black"
-                    } rounded-lg sm:rounded-xl pl-10 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base`}
+                    className="w-full border border-gray-200 rounded-xl pr-10 pl-3 py-2.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-right"
+                    style={{
+                      background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                    }}
                     locale="ar"
                     placeholderText="اختر اليوم"
+                    showPopperArrow={false}
                   />
                 </div>
               </div>
 
               {/* Branch Dropdown */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  className="block text-sm font-semibold mb-2 text-right"
+                  style={{ color: "#2E3E88" }}
+                >
                   الفرع
                 </label>
                 <div className="relative">
                   <button
                     type="button"
                     onClick={() => toggleDropdown("branch")}
-                    className={`w-full flex items-center justify-between border ${
-                      darkMode
-                        ? "border-gray-600 bg-gray-800 text-gray-300 hover:border-[#E41E26]"
-                        : "border-gray-200 bg-white text-gray-600 hover:border-[#E41E26]"
-                    } rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 transition-all group text-sm sm:text-base`}
+                    className="w-full flex items-center justify-between border border-gray-200 rounded-xl px-4 py-2.5 transition-all hover:border-[#2E3E88] group text-right"
+                    style={{
+                      background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                    }}
                   >
                     <div className="flex items-center gap-3">
-                      <FaBuilding className="text-[#E41E26] text-sm" />
-                      <span>
+                      <FaBuilding
+                        className="group-hover:scale-110 transition-transform"
+                        style={{ color: "#2E3E88" }}
+                      />
+                      <span className="font-medium">
                         {branchId
                           ? branches.find((b) => b.id === parseInt(branchId))
                               ?.name || "اختر الفرع"
@@ -1072,7 +1121,7 @@ const OrderShiftsReport = () => {
                       }}
                       transition={{ duration: 0.3 }}
                     >
-                      <FaChevronDown className="text-[#E41E26]" />
+                      <FaChevronDown style={{ color: "#2E3E88" }} />
                     </motion.div>
                   </button>
                   <AnimatePresence>
@@ -1082,11 +1131,7 @@ const OrderShiftsReport = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -5 }}
                         transition={{ duration: 0.2 }}
-                        className={`absolute z-10 mt-2 w-full ${
-                          darkMode
-                            ? "bg-gray-800 border-gray-600"
-                            : "bg-white border-gray-200"
-                        } border shadow-xl rounded-lg sm:rounded-xl overflow-hidden max-h-48 overflow-y-auto`}
+                        className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-xl rounded-xl overflow-hidden max-h-48 overflow-y-auto text-right"
                       >
                         {branches.map((branch) => (
                           <li
@@ -1095,13 +1140,9 @@ const OrderShiftsReport = () => {
                               setBranchId(branch.id.toString());
                               setOpenDropdown(null);
                             }}
-                            className={`px-4 py-2.5 sm:py-3 ${
-                              darkMode
-                                ? "hover:bg-gray-700 text-gray-300 border-gray-600"
-                                : "hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] text-gray-700 border-gray-100"
-                            } cursor-pointer transition-all text-sm sm:text-base border-b last:border-b-0`}
+                            className="px-4 py-2.5 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 cursor-pointer transition-all border-b last:border-b-0 text-right"
                           >
-                            {branch.name}
+                            <span className="text-gray-700">{branch.name}</span>
                           </li>
                         ))}
                       </motion.ul>
@@ -1112,7 +1153,10 @@ const OrderShiftsReport = () => {
 
               {/* Shift Name Dropdown */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  className="block text-sm font-semibold mb-2 text-right"
+                  style={{ color: "#2E3E88" }}
+                >
                   اسم الوردية
                 </label>
                 <div className="relative">
@@ -1120,27 +1164,29 @@ const OrderShiftsReport = () => {
                     type="button"
                     onClick={() => toggleDropdown("shift")}
                     disabled={!day || !branchId || orderShifts.length === 0}
-                    className={`w-full flex items-center justify-between border ${
-                      darkMode
-                        ? "border-gray-600 bg-gray-800 text-gray-300 hover:border-[#E41E26]"
-                        : "border-gray-200 bg-white text-gray-600 hover:border-[#E41E26]"
-                    } ${
+                    className={`w-full flex items-center justify-between border border-gray-200 rounded-xl px-4 py-2.5 transition-all hover:border-[#2E3E88] group text-right ${
                       !day || !branchId || orderShifts.length === 0
                         ? "opacity-50 cursor-not-allowed"
                         : ""
-                    } rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 transition-all group text-sm sm:text-base`}
+                    }`}
+                    style={{
+                      background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                    }}
                   >
                     <div className="flex items-center gap-3">
-                      <FaCalendar className="text-[#E41E26] text-sm" />
-                      <span>
+                      <FaClock
+                        className="group-hover:scale-110 transition-transform"
+                        style={{ color: "#2E3E88" }}
+                      />
+                      <span className="font-medium">
                         {shiftId && orderShifts.length > 0
                           ? orderShifts.find((s) => s.id === parseInt(shiftId))
                               ?.name || "اختر الوردية"
                           : day && branchId
-                          ? orderShifts.length === 0
-                            ? "لا توجد ورديات"
-                            : "اختر الوردية"
-                          : "اختر اليوم والفرع أولاً"}
+                            ? orderShifts.length === 0
+                              ? "لا توجد ورديات"
+                              : "اختر الوردية"
+                            : "اختر اليوم والفرع أولاً"}
                       </span>
                     </div>
                     <motion.div
@@ -1149,7 +1195,7 @@ const OrderShiftsReport = () => {
                       }}
                       transition={{ duration: 0.3 }}
                     >
-                      <FaChevronDown className="text-[#E41E26]" />
+                      <FaChevronDown style={{ color: "#2E3E88" }} />
                     </motion.div>
                   </button>
                   <AnimatePresence>
@@ -1162,11 +1208,7 @@ const OrderShiftsReport = () => {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -5 }}
                           transition={{ duration: 0.2 }}
-                          className={`absolute z-10 mt-2 w-full ${
-                            darkMode
-                              ? "bg-gray-800 border-gray-600"
-                              : "bg-white border-gray-200"
-                          } border shadow-xl rounded-lg sm:rounded-xl overflow-hidden max-h-48 overflow-y-auto`}
+                          className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-xl rounded-xl overflow-hidden max-h-48 overflow-y-auto text-right"
                         >
                           {orderShifts.map((shift, index) => (
                             <li
@@ -1175,20 +1217,24 @@ const OrderShiftsReport = () => {
                                 setShiftId(shift.id.toString());
                                 setOpenDropdown(null);
                               }}
-                              className={`px-4 py-2.5 sm:py-3 ${
-                                darkMode
-                                  ? "hover:bg-gray-700 text-gray-300 border-gray-600"
-                                  : "hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] text-gray-700 border-gray-100"
-                              } cursor-pointer transition-all text-sm sm:text-base border-b last:border-b-0`}
+                              className="px-4 py-2.5 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 cursor-pointer transition-all border-b last:border-b-0 text-right"
                             >
                               <div className="flex justify-between items-center">
-                                <span>{shift.name}</span>
-                                <span className="text-xs text-gray-500 dark:text-gray-400 flex flex-col items-end">
+                                <span className="text-gray-700">
+                                  {shift.name}
+                                </span>
+                                <span
+                                  className="text-xs text-left"
+                                  style={{ color: "#32B9CC" }}
+                                >
                                   {shift.start
                                     ? formatTimeTo12Hour(shift.start)
                                     : "غير محدد"}
                                   {shift.end && (
-                                    <span className="text-[10px] text-gray-400">
+                                    <span
+                                      className="text-[10px] block"
+                                      style={{ color: "#FF8E53" }}
+                                    >
                                       حتى {formatTimeTo12Hour(shift.end)}
                                     </span>
                                   )}
@@ -1205,15 +1251,26 @@ const OrderShiftsReport = () => {
 
             <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
               <motion.button
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => handleFilter(1)}
                 disabled={!day || !branchId || !shiftId}
-                className={`px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 ${
+                className={`flex-1 px-4 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
                   day && branchId && shiftId
-                    ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white cursor-pointer"
-                    : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                    ? "shadow-lg hover:shadow-xl cursor-pointer"
+                    : "opacity-50 cursor-not-allowed"
                 }`}
+                style={
+                  day && branchId && shiftId
+                    ? {
+                        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                        color: "white",
+                      }
+                    : {
+                        background: "#e5e7eb",
+                        color: "#6b7280",
+                      }
+                }
               >
                 <FaFilter />
                 تطبيق الفلترة
@@ -1221,19 +1278,34 @@ const OrderShiftsReport = () => {
 
               {reportData && reportData.length > 0 && (
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handlePrint}
                   disabled={isPrinting}
-                  className={`flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 ${
+                  className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold transition-all duration-300 ${
                     isPrinting
-                      ? "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
-                      : "bg-gradient-to-r from-blue-600 to-cyan-600 text-white cursor-pointer"
+                      ? "opacity-50 cursor-not-allowed"
+                      : "shadow-lg hover:shadow-xl cursor-pointer"
                   }`}
+                  style={
+                    !isPrinting
+                      ? {
+                          background:
+                            "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                          color: "white",
+                        }
+                      : {
+                          background: "#e5e7eb",
+                          color: "#6b7280",
+                        }
+                  }
                 >
                   {isPrinting ? (
                     <>
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      <div
+                        className="animate-spin rounded-full h-5 w-5 border-b-2 mr-2"
+                        style={{ borderColor: "white" }}
+                      ></div>
                       جاري الطباعة...
                     </>
                   ) : (
@@ -1253,71 +1325,120 @@ const OrderShiftsReport = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-lg"
+              className="bg-white rounded-2xl overflow-hidden shadow-xl mb-6"
             >
-              <div className="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+              <div className="px-6 py-4 border-b border-gray-100 text-right">
                 <div className="flex items-center gap-2">
-                  <FaListAlt className="text-[#E41E26] text-xl" />
-                  <h3 className="text-lg font-bold text-gray-800 dark:text-white">
+                  <FaListAlt className="text-xl" style={{ color: "#2E3E88" }} />
+                  <h3
+                    className="text-lg font-bold"
+                    style={{ color: "#2E3E88" }}
+                  >
                     تفاصيل الطلبات حسب الورديات
                   </h3>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
+                  <span className="text-sm" style={{ color: "#32B9CC" }}>
                     ({totalItems} طلب)
                   </span>
                 </div>
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-gray-50 dark:bg-gray-700/50">
+                <table className="w-full text-right">
+                  <thead
+                    className="border-b border-gray-100 text-right"
+                    style={{
+                      background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                    }}
+                  >
                     <tr>
-                      <th className="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">
+                      <th
+                        className="px-4 py-3 font-semibold text-right"
+                        style={{ color: "#2E3E88" }}
+                      >
                         رقم الفاتورة
                       </th>
-                      <th className="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">
+                      <th
+                        className="px-4 py-3 font-semibold text-right"
+                        style={{ color: "#2E3E88" }}
+                      >
                         الإجمالي
                       </th>
-                      <th className="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">
+                      <th
+                        className="px-4 py-3 font-semibold text-right"
+                        style={{ color: "#2E3E88" }}
+                      >
                         اسم الفرع
                       </th>
-                      <th className="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">
-                        اسم الشيفت
+                      <th
+                        className="px-4 py-3 font-semibold text-right"
+                        style={{ color: "#2E3E88" }}
+                      >
+                        اسم الوردية
                       </th>
-                      <th className="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">
-                        بداية الشيفت
+                      <th
+                        className="px-4 py-3 font-semibold text-right"
+                        style={{ color: "#2E3E88" }}
+                      >
+                        بداية الوردية
                       </th>
-                      <th className="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">
-                        نهاية الشيفت
+                      <th
+                        className="px-4 py-3 font-semibold text-right"
+                        style={{ color: "#2E3E88" }}
+                      >
+                        نهاية الوردية
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                  <tbody className="divide-y divide-gray-100 text-right">
                     {reportData.map((order) => (
                       <tr
                         key={order.id}
-                        className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors duration-150"
+                        className="hover:bg-gray-50 transition-colors duration-150"
                       >
-                        <td className="px-4 py-3 text-center font-mono text-sm text-gray-800 dark:text-white font-bold">
+                        <td
+                          className="px-4 py-3 font-mono text-sm font-bold text-right"
+                          style={{ color: "#2E3E88" }}
+                        >
                           {order.orderNumber}
                         </td>
-                        <td className="px-4 py-3 text-center font-bold text-[#E41E26] dark:text-[#FDB913]">
+                        <td
+                          className="px-4 py-3 font-bold text-right"
+                          style={{
+                            background:
+                              "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                            WebkitBackgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                          }}
+                        >
                           {formatCurrency(order.totalWithFee)}
                         </td>
-                        <td className="px-4 py-3 text-center text-sm text-gray-600 dark:text-gray-400">
+                        <td
+                          className="px-4 py-3 text-sm text-right"
+                          style={{ color: "#32B9CC" }}
+                        >
                           {order.branch?.name || "غير محدد"}
                         </td>
-                        <td className="px-4 py-3 text-center text-sm text-gray-600 dark:text-gray-400">
+                        <td
+                          className="px-4 py-3 text-sm text-right"
+                          style={{ color: "#2E3E88" }}
+                        >
                           {order.orderShift?.name || "غير محدد"}
                         </td>
-                        <td className="px-4 py-3 text-center text-sm text-gray-600 dark:text-gray-400">
-                          <div className="flex items-center justify-center gap-1">
+                        <td
+                          className="px-4 py-3 text-sm text-right"
+                          style={{ color: "#32B9CC" }}
+                        >
+                          <div className="flex items-center justify-end gap-1">
                             {order.orderShift?.start
                               ? formatTimeTo12Hour(order.orderShift.start)
                               : "غير محدد"}
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-center text-sm text-gray-600 dark:text-gray-400">
-                          <div className="flex items-center justify-center gap-1">
+                        <td
+                          className="px-4 py-3 text-sm text-right"
+                          style={{ color: "#FF8E53" }}
+                        >
+                          <div className="flex items-center justify-end gap-1">
                             {order.orderShift?.end
                               ? formatTimeTo12Hour(order.orderShift.end)
                               : "غير محدد"}
@@ -1326,15 +1447,29 @@ const OrderShiftsReport = () => {
                       </tr>
                     ))}
 
-                    <tr className="bg-gray-50 dark:bg-gray-700/50 border-t-2 border-gray-200 dark:border-gray-600">
+                    <tr
+                      className="border-t-2 border-gray-100 text-right"
+                      style={{
+                        background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                      }}
+                    >
                       <td
                         colSpan="5"
-                        className="px-4 py-3 text-center font-bold text-gray-800 dark:text-white"
+                        className="px-4 py-3 font-bold text-right"
+                        style={{ color: "#2E3E88" }}
                       >
                         الإجمالي الكلي لجميع الفواتير:
                       </td>
-                      <td className="px-4 py-3 text-center">
-                        <span className="text-xl font-bold text-[#E41E26] dark:text-[#FDB913]">
+                      <td className="px-4 py-3 text-right">
+                        <span
+                          className="text-xl font-bold"
+                          style={{
+                            background:
+                              "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                            WebkitBackgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                          }}
+                        >
                           {formatCurrency(totalPrice)}
                         </span>
                       </td>
@@ -1345,27 +1480,33 @@ const OrderShiftsReport = () => {
 
               {/* Pagination Controls */}
               {totalPages > 1 && (
-                <div className="px-4 sm:px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+                <div className="px-6 py-4 border-t border-gray-100 text-right">
                   <div className="flex items-center justify-center gap-2">
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={handlePrevPage}
                       disabled={currentPage === 1}
-                      className={`p-2 sm:p-3 rounded-xl transition-all ${
+                      className={`p-2 sm:p-3 rounded-xl ${
                         currentPage === 1
-                          ? "bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed"
-                          : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600"
+                          ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                          : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
                       }`}
                     >
-                      <FaChevronRight className="text-sm sm:text-base" />
+                      <FaChevronLeft
+                        className="text-sm sm:text-base"
+                        style={{ color: "#2E3E88" }}
+                      />
                     </motion.button>
 
                     <div className="flex items-center gap-1 sm:gap-2">
                       {getPaginationNumbers().map((pageNum, index) => (
                         <React.Fragment key={index}>
                           {pageNum === "..." ? (
-                            <span className="px-2 sm:px-3 py-1 sm:py-2 text-gray-500">
+                            <span
+                              className="px-2 sm:px-3 py-1 sm:py-2"
+                              style={{ color: "#32B9CC" }}
+                            >
                               ...
                             </span>
                           ) : (
@@ -1373,11 +1514,21 @@ const OrderShiftsReport = () => {
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
                               onClick={() => handlePageChange(pageNum)}
-                              className={`px-3 sm:px-4 py-1 sm:py-2 rounded-xl font-semibold transition-all ${
+                              className={`px-3 sm:px-4 py-1 sm:py-2 rounded-xl font-semibold ${
                                 currentPage === pageNum
-                                  ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white shadow-lg"
-                                  : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600"
+                                  ? "shadow-lg text-white"
+                                  : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
                               }`}
+                              style={
+                                currentPage === pageNum
+                                  ? {
+                                      background:
+                                        "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                                    }
+                                  : {
+                                      color: "#2E3E88",
+                                    }
+                              }
                             >
                               {pageNum}
                             </motion.button>
@@ -1391,13 +1542,16 @@ const OrderShiftsReport = () => {
                       whileTap={{ scale: 0.95 }}
                       onClick={handleNextPage}
                       disabled={currentPage === totalPages}
-                      className={`p-2 sm:p-3 rounded-xl transition-all ${
+                      className={`p-2 sm:p-3 rounded-xl ${
                         currentPage === totalPages
-                          ? "bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed"
-                          : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600"
+                          ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                          : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
                       }`}
                     >
-                      <FaChevronLeft className="text-sm sm:text-base" />
+                      <FaChevronRight
+                        className="text-sm sm:text-base"
+                        style={{ color: "#2E3E88" }}
+                      />
                     </motion.button>
                   </div>
                 </div>
@@ -1411,19 +1565,27 @@ const OrderShiftsReport = () => {
               animate={{ opacity: 1 }}
               className="text-center py-12"
             >
-              <div className="text-5xl mb-4 text-gray-400 dark:text-gray-500">
-                📊
+              <div
+                className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center"
+                style={{
+                  background: "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
+                }}
+              >
+                <FaChartBar className="text-4xl" style={{ color: "#2E3E88" }} />
               </div>
-              <h3 className="text-xl font-bold text-gray-600 dark:text-gray-300 mb-2">
+              <h3
+                className="text-2xl font-bold mb-3"
+                style={{ color: "#2E3E88" }}
+              >
                 لا توجد بيانات لعرضها
               </h3>
-              <p className="text-gray-500 dark:text-gray-400">
+              <p className="mb-6 max-w-md mx-auto" style={{ color: "#32B9CC" }}>
                 يرجى تحديد اليوم والفرع وتطبيق الفلترة لعرض التقرير
               </p>
             </motion.div>
           )}
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };

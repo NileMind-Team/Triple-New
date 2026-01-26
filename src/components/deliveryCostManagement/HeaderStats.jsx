@@ -3,38 +3,34 @@ import { FaArrowLeft } from "react-icons/fa";
 
 export default function HeaderStats({ deliveryAreasCount, navigate }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8"
-    >
-      <div className="text-right self-end sm:self-auto">
-        <div className="text-lg sm:text-xl md:text-2xl font-bold text-[#E41E26]">
+    <div className="flex items-center justify-between mb-6">
+      <div className="text-right">
+        <div className="text-2xl font-bold" style={{ color: "#2E3E88" }}>
           {deliveryAreasCount} منطقة
         </div>
-        <div className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
+        <div className="text-sm" style={{ color: "#32B9CC" }}>
           الإجمالي
         </div>
       </div>
 
-      <div className="flex items-center gap-3 sm:gap-4" dir="ltr">
+      <div className="flex items-center gap-3">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => navigate(-1)}
-          className="bg-white/80 backdrop-blur-md rounded-full p-2 sm:p-3 text-[#E41E26] hover:bg-[#E41E26] hover:text-white transition-all duration-300 shadow-lg dark:bg-gray-800/80 dark:text-gray-200 dark:hover:bg-[#E41E26]"
+          className="bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10 rounded-full p-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/20 hover:to-[#32B9CC]/20 transition-all duration-300 shadow-lg"
         >
-          <FaArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+          <FaArrowLeft style={{ color: "#2E3E88" }} />
         </motion.button>
         <div dir="rtl" className="text-right">
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200">
+          <h1 className="text-xl font-bold" style={{ color: "#2E3E88" }}>
             إدارة تكاليف التوصيل
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
+          <p className="text-sm" style={{ color: "#32B9CC" }}>
             إدارة مناطق وتكاليف التوصيل
           </p>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

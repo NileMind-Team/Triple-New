@@ -5,7 +5,6 @@ import { FaArrowLeft, FaPlus, FaBuilding } from "react-icons/fa";
 import Swal from "sweetalert2";
 import axiosInstance from "../api/axiosInstance";
 import { useBranches } from "../hooks/useBranches";
-import Header from "../components/adminUsers/Header";
 import BranchCard from "../components/adminBranchs/BranchCard";
 import SearchBar from "../components/adminUsers/SearchBar";
 import BranchForm from "../components/adminBranchs/BranchForm";
@@ -191,10 +190,12 @@ const showMobileMessage = (type, title, text) => {
         style: {
           width: "70%",
           margin: "10px",
-          borderRadius: "8px",
+          borderRadius: "12px",
           textAlign: "right",
           fontSize: "14px",
           direction: "rtl",
+          background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+          color: "white",
         },
       });
     } else if (type === "error") {
@@ -208,10 +209,12 @@ const showMobileMessage = (type, title, text) => {
         style: {
           width: "70%",
           margin: "10px",
-          borderRadius: "8px",
+          borderRadius: "12px",
           textAlign: "right",
           fontSize: "14px",
           direction: "rtl",
+          background: "linear-gradient(135deg, #FF6B6B, #FF8E53)",
+          color: "white",
         },
       });
     } else if (type === "info") {
@@ -225,10 +228,12 @@ const showMobileMessage = (type, title, text) => {
         style: {
           width: "70%",
           margin: "10px",
-          borderRadius: "8px",
+          borderRadius: "12px",
           textAlign: "right",
           fontSize: "14px",
           direction: "rtl",
+          background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+          color: "white",
         },
       });
     } else if (type === "warning") {
@@ -240,10 +245,12 @@ const showMobileMessage = (type, title, text) => {
         style: {
           width: "70%",
           margin: "10px",
-          borderRadius: "8px",
+          borderRadius: "12px",
           textAlign: "right",
           fontSize: "14px",
           direction: "rtl",
+          background: "linear-gradient(135deg, #FFA726, #FF9800)",
+          color: "white",
         },
       });
     }
@@ -268,6 +275,8 @@ const showErrorAlert = (errorMessages) => {
               </div>`,
         timer: 2500,
         showConfirmButton: false,
+        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+        color: "white",
       });
       return;
     }
@@ -293,6 +302,8 @@ const showErrorAlert = (errorMessages) => {
               </div>`,
         timer: 2500,
         showConfirmButton: false,
+        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+        color: "white",
       });
       return;
     }
@@ -306,10 +317,11 @@ const showErrorAlert = (errorMessages) => {
         padding-right: 15px;
         position: relative;
         font-weight: semibold;
+        color: white;
       ">
         <span style="position: absolute; right: 0; top: 0;">-</span>
         ${msg}
-      </div>`
+      </div>`,
     );
 
     Swal.fire({
@@ -318,6 +330,8 @@ const showErrorAlert = (errorMessages) => {
       html: htmlMessages.join(""),
       timer: 2500,
       showConfirmButton: false,
+      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+      color: "white",
     });
   }
 };
@@ -381,7 +395,7 @@ export default function AdminBranches() {
           const isMobile = showMobileMessage(
             "error",
             "تم الرفض",
-            "ليس لديك صلاحية للوصول إلى هذه الصفحة."
+            "ليس لديك صلاحية للوصول إلى هذه الصفحة.",
           );
 
           if (!isMobile) {
@@ -389,9 +403,10 @@ export default function AdminBranches() {
               icon: "error",
               title: "تم الرفض",
               text: "ليس لديك صلاحية للوصول إلى هذه الصفحة.",
-              confirmButtonColor: "#E41E26",
               timer: 2500,
               showConfirmButton: false,
+              background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+              color: "white",
             });
           }
 
@@ -411,7 +426,7 @@ export default function AdminBranches() {
         const isMobile = showMobileMessage(
           "error",
           "تم الرفض",
-          errorText || "فشل في التحقق من صلاحياتك."
+          errorText || "فشل في التحقق من صلاحياتك.",
         );
 
         if (!isMobile) {
@@ -419,9 +434,10 @@ export default function AdminBranches() {
             icon: "error",
             title: "تم الرفض",
             text: errorText || "فشل في التحقق من صلاحياتك.",
-            confirmButtonColor: "#E41E26",
             timer: 2500,
             showConfirmButton: false,
+            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+            color: "white",
           });
         }
 
@@ -473,15 +489,6 @@ export default function AdminBranches() {
       managerId: "",
       phoneNumbers: [],
     });
-
-    if (window.innerWidth < 1280) {
-      setTimeout(() => {
-        document.getElementById("branch-form")?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }, 100);
-    }
   };
 
   const handleEdit = (branch) => {
@@ -515,15 +522,6 @@ export default function AdminBranches() {
     });
     setEditingId(branch.id);
     setIsAdding(true);
-
-    if (window.innerWidth < 1280) {
-      setTimeout(() => {
-        document.getElementById("branch-form")?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }, 100);
-    }
   };
 
   const handleToggleActive = async (branchId, currentStatus) => {
@@ -533,7 +531,7 @@ export default function AdminBranches() {
       const isMobile = showMobileMessage(
         "success",
         "تم تحديث الحالة",
-        `تم ${currentStatus ? "تعطيل" : "تفعيل"} الفرع.`
+        `تم ${currentStatus ? "تعطيل" : "تفعيل"} الفرع.`,
       );
 
       if (!isMobile) {
@@ -543,6 +541,8 @@ export default function AdminBranches() {
           text: `تم ${currentStatus ? "تعطيل" : "تفعيل"} الفرع.`,
           timer: 2000,
           showConfirmButton: false,
+          background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+          color: "white",
         });
       }
     } catch (errorMessages) {
@@ -582,7 +582,7 @@ export default function AdminBranches() {
         const isMobile = showMobileMessage(
           "success",
           "تم تحديث الفرع",
-          "تم تحديث الفرع بنجاح."
+          "تم تحديث الفرع بنجاح.",
         );
 
         if (!isMobile) {
@@ -592,6 +592,8 @@ export default function AdminBranches() {
             text: "تم تحديث الفرع بنجاح.",
             timer: 2000,
             showConfirmButton: false,
+            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+            color: "white",
           });
         }
       } else {
@@ -600,7 +602,7 @@ export default function AdminBranches() {
         const isMobile = showMobileMessage(
           "success",
           "تم إضافة الفرع",
-          "تم إضافة الفرع الجديد بنجاح."
+          "تم إضافة الفرع الجديد بنجاح.",
         );
 
         if (!isMobile) {
@@ -610,6 +612,8 @@ export default function AdminBranches() {
             text: "تم إضافة الفرع الجديد بنجاح.",
             timer: 2000,
             showConfirmButton: false,
+            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+            color: "white",
           });
         }
       }
@@ -640,8 +644,26 @@ export default function AdminBranches() {
 
   if (isLoadingAuth || isLoadingData) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-4">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E41E26]"></div>
+      <div
+        className="min-h-screen flex items-center justify-center px-4"
+        style={{
+          background: "linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)",
+        }}
+      >
+        <div className="text-center">
+          <div
+            className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+            style={{
+              borderTopColor: "#2E3E88",
+              borderRightColor: "#32B9CC",
+              borderBottomColor: "#2E3E88",
+              borderLeftColor: "transparent",
+            }}
+          ></div>
+          <p className="text-lg font-semibold" style={{ color: "#2E3E88" }}>
+            جارٍ التحميل...
+          </p>
+        </div>
       </div>
     );
   }
@@ -652,57 +674,83 @@ export default function AdminBranches() {
 
   return (
     <div
-      className="min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-3 sm:px-4 md:px-6 py-3 sm:py-6 relative font-sans overflow-hidden"
-      dir="rtl"
+      className="min-h-screen font-sans relative overflow-x-hidden"
+      style={{
+        background: "linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)",
+        backgroundAttachment: "fixed",
+      }}
     >
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -left-10 sm:-left-20 -top-10 sm:-top-20 w-40 h-40 sm:w-60 sm:h-60 md:w-80 md:h-80 bg-gradient-to-r from-[#E41E26]/10 to-[#FDB913]/10 rounded-full blur-2xl sm:blur-3xl animate-pulse"></div>
-        <div className="absolute -right-10 sm:-right-20 -bottom-10 sm:-bottom-20 w-40 h-40 sm:w-60 sm:h-60 md:w-80 md:h-80 bg-gradient-to-r from-[#FDB913]/10 to-[#E41E26]/10 rounded-full blur-2xl sm:blur-3xl animate-pulse"></div>
+      {/* Header Section */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/80 to-white"></div>
+
+        {/* Hero Header */}
+        <div
+          className="relative py-16 px-4"
+          style={{
+            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+          }}
+        >
+          <div className="max-w-7xl mx-auto">
+            <motion.button
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              onClick={() => navigate(-1)}
+              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              style={{
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+              }}
+            >
+              <FaArrowLeft
+                size={20}
+                className="group-hover:-translate-x-1 transition-transform"
+              />
+            </motion.button>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center pt-8"
+            >
+              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
+                <FaBuilding className="text-white text-4xl" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                إدارة الفروع
+              </h1>
+              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+                إدارة وإضافة وتعديل فروع المطعم بسهولة وأمان
+              </p>
+            </motion.div>
+          </div>
+        </div>
       </div>
 
-      <motion.button
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        onClick={() => navigate(-1)}
-        className="fixed top-3 sm:top-4 left-3 sm:left-4 z-50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md hover:bg-[#E41E26] hover:text-white rounded-full p-2 sm:p-3 text-[#E41E26] dark:text-gray-300 border border-[#E41E26]/30 dark:border-gray-600 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl group"
-      >
-        <FaArrowLeft
-          size={14}
-          className="sm:size-4 group-hover:scale-110 transition-transform"
-        />
-      </motion.button>
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10">
+        {/* Floating Action Button */}
+        <motion.button
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleAddNewBranch}
+          className="fixed bottom-6 right-6 z-40 text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-2 group"
+          style={{
+            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+          }}
+        >
+          <FaPlus className="text-xl group-hover:rotate-90 transition-transform" />
+          <span className="hidden md:inline font-semibold">إضافة فرع جديد</span>
+        </motion.button>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, type: "spring" }}
-        className="max-w-7xl mx-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl shadow-xl sm:shadow-2xl rounded-2xl sm:rounded-3xl border border-white/50 dark:border-gray-700/50 relative overflow-hidden"
-      >
-        <Header title="لوحة التحكم" subtitle="إدارة فروع المطعم" />
-
-        <div className="relative px-3 sm:px-4 md:px-6 lg:px-8 pb-4 sm:pb-6 md:pb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="flex justify-center -mt-6 sm:-mt-7 md:-mt-8 mb-6 sm:mb-8 md:mb-10"
-          >
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleAddNewBranch}
-              className="flex items-center gap-2 bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-4 sm:px-5 md:px-6 py-3 sm:py-3 md:py-4 rounded-xl sm:rounded-2xl font-semibold shadow-2xl sm:shadow-3xl hover:shadow-4xl hover:shadow-[#E41E26]/50 transition-all duration-300 text-sm sm:text-base md:text-lg border-2 border-white whitespace-nowrap transform translate-y-2"
-            >
-              <FaPlus className="text-sm sm:text-base md:text-lg" />
-              <span>إضافة فرع جديد</span>
-            </motion.button>
-          </motion.div>
-
+        {/* Content Container */}
+        <div className="w-full">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="mb-6 sm:mb-8"
+            className="mb-8"
           >
             <SearchBar
               searchTerm={searchTerm}
@@ -711,76 +759,95 @@ export default function AdminBranches() {
             />
           </motion.div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
-            <div
-              className={`space-y-3 sm:space-y-4 md:space-y-5 ${
-                isAdding ? "xl:col-span-2" : "xl:col-span-3"
-              }`}
-            >
-              {filteredBranches.map((branch, index) => (
-                <BranchCard
-                  key={branch.id}
-                  branch={branch}
-                  onEdit={handleEdit}
-                  onToggleActive={handleToggleActive}
-                  getPhoneTypeArabic={getPhoneTypeArabic}
-                  adjustTimeFromBackend={adjustTimeFromBackend}
-                />
-              ))}
+          {/* Branches Grid - 2 branches per row on large screens */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {filteredBranches.map((branch, index) => (
+              <BranchCard
+                key={branch.id}
+                branch={branch}
+                onEdit={handleEdit}
+                onToggleActive={handleToggleActive}
+                getPhoneTypeArabic={getPhoneTypeArabic}
+                adjustTimeFromBackend={adjustTimeFromBackend}
+              />
+            ))}
 
-              {filteredBranches.length === 0 && !isAdding && (
+            {filteredBranches.length === 0 && (
+              <div className="lg:col-span-2">
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="text-center py-8 sm:py-10 md:py-12 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-gray-200/50 dark:border-gray-600/50"
+                  className="bg-white rounded-2xl p-8 text-center shadow-xl"
                 >
-                  <FaBuilding className="mx-auto text-3xl sm:text-4xl md:text-5xl text-gray-400 dark:text-gray-500 mb-3 sm:mb-4" />
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-600 dark:text-gray-400 mb-2 sm:mb-3">
+                  <div
+                    className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
+                    }}
+                  >
+                    <FaBuilding
+                      className="text-4xl"
+                      style={{ color: "#2E3E88" }}
+                    />
+                  </div>
+                  <h3
+                    className="text-2xl font-bold mb-3"
+                    style={{ color: "#2E3E88" }}
+                  >
                     {searchTerm
                       ? "لم يتم العثور على فروع"
-                      : "لم يتم العثور على فروع"}
+                      : "لا توجد فروع حتى الآن"}
                   </h3>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base mb-4 sm:mb-6 max-w-xs sm:max-w-sm mx-auto">
+                  <p
+                    className="mb-6 max-w-md mx-auto"
+                    style={{ color: "#32B9CC" }}
+                  >
                     {searchTerm
                       ? "حاول تعديل مصطلحات البحث"
-                      : "ابدأ بإضافة أول فرع لك"}
+                      : "أضف فرعك الأول للبدء في إدارة فروع المطعم"}
                   </p>
                   {!searchTerm && (
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                    <button
                       onClick={handleAddNewBranch}
-                      className="flex items-center gap-2 bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base mx-auto"
+                      className="px-8 py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                      style={{
+                        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                        color: "white",
+                        boxShadow: "0 10px 25px #2E3E8830",
+                      }}
                     >
-                      <FaPlus className="text-xs sm:text-sm" />
-                      <span>أضف أول فرع لك</span>
-                    </motion.button>
+                      إضافة فرع جديد
+                    </button>
                   )}
                 </motion.div>
-              )}
-            </div>
-
-            <AnimatePresence>
-              {isAdding && (
-                <BranchForm
-                  formData={formData}
-                  setFormData={setFormData}
-                  cities={cities}
-                  managers={managers}
-                  onSubmit={handleSubmit}
-                  onCancel={resetForm}
-                  isEditing={!!editingId}
-                  openDropdown={openDropdown}
-                  setOpenDropdown={setOpenDropdown}
-                  convert24To12HourFormat={convert24To12HourFormat}
-                  convert12To24HourFormat={convert12To24HourFormat}
-                  adjustTimeFromBackend={adjustTimeFromBackend}
-                />
-              )}
-            </AnimatePresence>
+              </div>
+            )}
           </div>
         </div>
-      </motion.div>
+      </div>
+
+      {/* Branch Form Modal */}
+      <AnimatePresence>
+        {isAdding && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <BranchForm
+              formData={formData}
+              setFormData={setFormData}
+              cities={cities}
+              managers={managers}
+              onSubmit={handleSubmit}
+              onCancel={resetForm}
+              isEditing={!!editingId}
+              openDropdown={openDropdown}
+              setOpenDropdown={setOpenDropdown}
+              convert24To12HourFormat={convert24To12HourFormat}
+              convert12To24HourFormat={convert12To24HourFormat}
+              adjustTimeFromBackend={adjustTimeFromBackend}
+            />
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

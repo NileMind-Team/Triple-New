@@ -23,115 +23,125 @@ export default function UserCard({
 }) {
   return (
     <motion.div
-      key={user.id}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
-      className={`bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border-2 transition-all duration-300 ${
-        isCurrentUser(user)
-          ? "border-[#E41E26] shadow-lg hover:shadow-xl"
+      className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2"
+      style={{
+        borderTop: isCurrentUser(user)
+          ? "4px solid #FF6B6B"
           : user.isActive === false
-          ? "border-red-200 shadow-md hover:shadow-lg"
-          : "border-gray-200/50 hover:shadow-lg"
-      } ${user.isActive === false ? "bg-red-50/50" : ""}`}
+            ? "4px solid #FF6B6B"
+            : "4px solid #2E3E88",
+      }}
     >
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
-        <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
-          <div className="flex-shrink-0 relative">
-            {user.imageUrl ? (
-              <img
-                src={`https://restaurant-template.runasp.net/${user.imageUrl}`}
-                alt="صورة المستخدم"
-                className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full object-cover border-2 ${
-                  user.isActive === false
-                    ? "border-red-300 grayscale"
-                    : "border-[#FDB913]"
-                }`}
-              />
-            ) : (
-              <div
-                className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center font-semibold text-base sm:text-lg md:text-xl border-2 ${
-                  user.isActive === false
-                    ? "bg-gray-300 text-gray-500 border-red-300 grayscale"
-                    : "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white border-[#FDB913]"
-                }`}
-              >
-                {user.firstName?.charAt(0).toUpperCase() || "م"}
-              </div>
-            )}
-            {isCurrentUser(user) && (
-              <div className="absolute -top-1 -right-1 bg-[#E41E26] text-white rounded-full p-1 border-2 border-white">
-                <FaUserShield className="text-xs" />
-              </div>
-            )}
-            {user.isActive === false && (
-              <div className="absolute -bottom-1 -right-1 bg-red-500 text-white rounded-full p-1 border-2 border-white">
-                <FaUserSlash className="text-xs" />
-              </div>
-            )}
-          </div>
-
-          <div className="flex-1 min-w-0">
-            <div className="flex flex-col xs:flex-row xs:items-center gap-2 xs:gap-3 mb-2 sm:mb-3">
-              <div className="flex items-center gap-2">
-                <h3
-                  className={`font-bold text-base sm:text-lg md:text-xl truncate ${
-                    user.isActive === false ? "text-gray-500" : "text-gray-800"
+      <div className="p-6">
+        {/* Header */}
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              {user.imageUrl ? (
+                <img
+                  src={`https://restaurant-template.runasp.net/${user.imageUrl}`}
+                  alt="صورة المستخدم"
+                  className={`w-16 h-16 rounded-full object-cover border-4 ${
+                    user.isActive === false
+                      ? "border-gray-300 grayscale"
+                      : "border-white shadow-lg"
                   }`}
+                  style={{
+                    boxShadow: isCurrentUser(user)
+                      ? "0 0 0 3px #FF6B6B"
+                      : user.isActive === false
+                        ? "0 0 0 3px #FF6B6B"
+                        : "0 0 0 3px #2E3E88",
+                  }}
+                />
+              ) : (
+                <div
+                  className={`w-16 h-16 rounded-full flex items-center justify-center font-bold text-2xl border-4 text-white ${
+                    user.isActive === false
+                      ? "bg-gray-400 border-gray-300"
+                      : isCurrentUser(user)
+                        ? "bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] border-white"
+                        : "bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] border-white"
+                  }`}
+                  style={{
+                    boxShadow: isCurrentUser(user)
+                      ? "0 0 0 3px #FF6B6B"
+                      : user.isActive === false
+                        ? "0 0 0 3px #FF6B6B"
+                        : "0 0 0 3px #2E3E88",
+                  }}
                 >
-                  {user.firstName} {user.lastName}
-                </h3>
+                  {user.firstName?.charAt(0).toUpperCase() || "م"}
+                </div>
+              )}
+
+              {isCurrentUser(user) && (
+                <div className="absolute -bottom-1 -right-1 bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] text-white rounded-full p-2 border-2 border-white shadow-lg">
+                  <FaUserShield className="text-sm" />
+                </div>
+              )}
+            </div>
+
+            <div>
+              <h4 className="font-bold text-lg" style={{ color: "#2E3E88" }}>
+                {user.firstName} {user.lastName}
+              </h4>
+              <div className="flex items-center gap-2 mt-1">
+                {getStatusBadge(user)}
                 {isCurrentUser(user) && (
-                  <span className="bg-[#E41E26] text-white px-2 py-1 rounded-full text-xs font-semibold whitespace-nowrap">
+                  <span
+                    className="px-3 py-1 rounded-full text-xs font-semibold text-white"
+                    style={{
+                      background: "linear-gradient(135deg, #FF6B6B, #FF8E53)",
+                    }}
+                  >
                     المستخدم الحالي
                   </span>
                 )}
-                {getStatusBadge(user)}
-              </div>
-              <div className="flex gap-1 flex-wrap">
-                {user.roles?.map((role) => (
-                  <span
-                    key={role}
-                    className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold border ${getRoleBadgeColor(
-                      role
-                    )} ${user.isActive === false ? "opacity-60" : ""}`}
-                  >
-                    {getRoleIcon(role)}
-                    {role}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div
-              className={`space-y-1 sm:space-y-2 text-sm sm:text-base ${
-                user.isActive === false ? "text-gray-500" : "text-gray-700"
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <FaEnvelope
-                  className={`flex-shrink-0 text-xs sm:text-sm ${
-                    user.isActive === false ? "text-gray-400" : "text-[#E41E26]"
-                  }`}
-                />
-                <span className="truncate">{user.email}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <FaPhone
-                  className={`flex-shrink-0 text-xs sm:text-sm ${
-                    user.isActive === false ? "text-gray-400" : "text-[#E41E26]"
-                  }`}
-                />
-                <span>{user.phoneNumber || "غير متوفر"}</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-row sm:flex-col lg:flex-row gap-1 sm:gap-2 justify-end sm:justify-start">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+        {/* User Details */}
+        <div className="space-y-3 mb-6">
+          <div className="flex items-start gap-3">
+            <FaEnvelope
+              className="mt-1 flex-shrink-0"
+              style={{ color: "#2E3E88" }}
+            />
+            <p className="text-gray-700">{user.email}</p>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <FaPhone
+              className="mt-1 flex-shrink-0"
+              style={{ color: "#2E3E88" }}
+            />
+            <p className="text-gray-700">{user.phoneNumber || "غير متوفر"}</p>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <div className="flex flex-wrap gap-2">
+              {user.roles?.map((role) => (
+                <span
+                  key={role}
+                  className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-2 ${getRoleBadgeColor(role)}`}
+                >
+                  {getRoleIcon(role)}
+                  {role}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-3 pt-4 border-t border-gray-100">
+          <button
             onClick={() =>
               setAssigningRole(assigningRole === user.id ? null : user.id)
             }
@@ -139,74 +149,75 @@ export default function UserCard({
               user.isActive === false ||
               getAvailableRolesToAssign(user).length === 0
             }
-            className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center ${
+            className={`flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 ${
               user.isActive === false ||
               getAvailableRolesToAssign(user).length === 0
-                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                : "bg-purple-50 text-purple-700 hover:bg-purple-100"
+                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                : "bg-gradient-to-r from-[#9C27B010] to-[#2E3E8810] text-[#9C27B0]"
             }`}
           >
-            <FaUserTag className="text-xs sm:text-sm" />
-            <span className="whitespace-nowrap">تعيين صلاحية</span>
-          </motion.button>
+            <FaUserTag />
+            تعيين صلاحية
+          </button>
 
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <button
             onClick={() => handleToggleStatus(user)}
             disabled={isCurrentUser(user)}
-            className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center ${
+            className={`flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 ${
               isCurrentUser(user)
-                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                 : user.isActive === false
-                ? "bg-green-50 text-green-700 hover:bg-green-100"
-                : "bg-yellow-50 text-yellow-700 hover:bg-yellow-100"
+                  ? "bg-gradient-to-r from-[#4CAF5010] to-[#2E3E8810] text-[#4CAF50]"
+                  : "bg-gradient-to-r from-[#FF6B6B10] to-[#FF8E5310] text-[#FF6B6B]"
             }`}
           >
             {user.isActive === false ? (
               <>
-                <FaUserCheck className="text-xs sm:text-sm" />
-                <span className="whitespace-nowrap">تفعيل</span>
+                <FaUserCheck />
+                تفعيل
               </>
             ) : (
               <>
-                <FaUserSlash className="text-xs sm:text-sm" />
-                <span className="whitespace-nowrap">تعطيل</span>
+                <FaUserSlash />
+                تعطيل
               </>
             )}
-          </motion.button>
+          </button>
         </div>
-      </div>
 
-      {assigningRole === user.id &&
-        getAvailableRolesToAssign(user).length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200"
-          >
-            <h4 className="text-sm font-semibold text-gray-700 mb-2">
-              تعيين صلاحية إضافية
-            </h4>
-            <div className="flex flex-wrap gap-2">
-              {getAvailableRolesToAssign(user).map((role) => (
-                <motion.button
-                  key={role.id}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => handleAssignRole(user.id, role.name)}
-                  className={`flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold border transition-colors duration-200 ${getRoleBadgeColor(
-                    role.name
-                  )} hover:opacity-80`}
-                >
-                  {getRoleIcon(role.name)}
-                  {role.name}
-                </motion.button>
-              ))}
-            </div>
-          </motion.div>
-        )}
+        {/* Role Assignment Section */}
+        {assigningRole === user.id &&
+          getAvailableRolesToAssign(user).length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mt-4 p-4 rounded-xl border border-gray-100"
+              style={{
+                background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+              }}
+            >
+              <h4
+                className="text-sm font-semibold mb-3"
+                style={{ color: "#2E3E88" }}
+              >
+                تعيين صلاحية إضافية
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {getAvailableRolesToAssign(user).map((role) => (
+                  <button
+                    key={role.id}
+                    onClick={() => handleAssignRole(user.id, role.name)}
+                    className={`px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all duration-300 hover:scale-105 ${getRoleBadgeColor(role.name)}`}
+                  >
+                    {getRoleIcon(role.name)}
+                    {role.name}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+      </div>
     </motion.div>
   );
 }

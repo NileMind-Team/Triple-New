@@ -21,26 +21,36 @@ const isMobile = () => {
 const showMessage = (type, title, text, options = {}) => {
   if (isMobile() && !options.forceSwal) {
     const toastOptions = {
-      position: "top-right",
+      position: "top-left",
       autoClose: options.timer || 2500,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
-      theme: "light",
       style: {
         width: "70vw",
         maxWidth: "none",
         minWidth: "200px",
         fontSize: "14px",
-        borderRadius: "8px",
-        right: "0",
+        borderRadius: "12px",
+        left: "0",
         top: "0",
         margin: "0",
         wordBreak: "break-word",
         overflowWrap: "break-word",
         zIndex: 9999,
+        background:
+          type === "error"
+            ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
+            : type === "warning"
+              ? "linear-gradient(135deg, #FFA726, #FF9800)"
+              : type === "success"
+                ? "linear-gradient(135deg, #2E3E88, #32B9CC)"
+                : "linear-gradient(135deg, #2E3E88, #32B9CC)",
+        color: "white",
+        textAlign: "right",
+        direction: "rtl",
       },
       bodyStyle: {
         padding: "12px 16px",
@@ -73,12 +83,14 @@ const showMessage = (type, title, text, options = {}) => {
       icon: type,
       title: title,
       text: text,
-      confirmButtonColor: options.confirmButtonColor || "#E41E26",
+      confirmButtonColor: options.confirmButtonColor || "#2E3E88",
       timer: options.timer || 2500,
       showConfirmButton:
         options.showConfirmButton !== undefined
           ? options.showConfirmButton
           : false,
+      background: "linear-gradient(135deg, #f0f8ff, #e0f7fa)",
+      color: "#2E3E88",
       ...options,
     });
   }
@@ -135,7 +147,7 @@ const translateErrorMessage = (errorData) => {
       errorData.errors.UserName.forEach((msg) => {
         if (msg.includes("letters, numbers, and underscores")) {
           errorMessages.push(
-            "اسم المستخدم يجب أن يحتوي فقط على أحرف و أرقام وشرطة سفلية"
+            "اسم المستخدم يجب أن يحتوي فقط على أحرف و أرقام وشرطة سفلية",
           );
         } else if (msg.includes("required")) {
           errorMessages.push("اسم المستخدم مطلوب");
@@ -227,13 +239,8 @@ const showErrorAlert = (errorData) => {
       html: translatedMessage,
       showConfirmButton: false,
       timer: 2500,
-      background: "#ffffff",
-      color: "#000000",
-      customClass: {
-        popup: "error-popup",
-        title: "error-title",
-        htmlContainer: "error-message",
-      },
+      background: "linear-gradient(135deg, #f0f8ff, #e0f7fa)",
+      color: "#2E3E88",
     });
   }
 };
@@ -393,8 +400,26 @@ export default function CitiesManagement() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-4">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E41E26]"></div>
+      <div
+        className="min-h-screen flex items-center justify-center px-4"
+        style={{
+          background: "linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)",
+        }}
+      >
+        <div className="text-center">
+          <div
+            className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+            style={{
+              borderTopColor: "#2E3E88",
+              borderRightColor: "#32B9CC",
+              borderBottomColor: "#2E3E88",
+              borderLeftColor: "transparent",
+            }}
+          ></div>
+          <p className="text-lg font-semibold" style={{ color: "#2E3E88" }}>
+            جارٍ التحقق من الصلاحيات...
+          </p>
+        </div>
       </div>
     );
   }
@@ -404,228 +429,318 @@ export default function CitiesManagement() {
   }
 
   return (
-    <>
+    <div
+      className="min-h-screen font-sans relative overflow-x-hidden"
+      dir="rtl"
+      style={{
+        background: "linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)",
+        backgroundAttachment: "fixed",
+      }}
+    >
+      {/* Header Section */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/80 to-white"></div>
 
-      <div className="min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-3 sm:px-4 py-4 sm:py-8 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8"
-          >
-            <div className="flex items-center gap-3 sm:gap-4">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => navigate(-1)}
-                className="bg-white/80 backdrop-blur-md rounded-full p-2 sm:p-3 text-[#E41E26] hover:bg-[#E41E26] hover:text-white transition-all duration-300 shadow-lg dark:bg-gray-800/80 dark:text-gray-200 dark:hover:bg-[#E41E26]"
-              >
-                <FaArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-              </motion.button>
-              <div>
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200">
-                  إدارة المدن
-                </h1>
-                <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
-                  إدارة مدن التوصيل المتاحة
-                </p>
-              </div>
-            </div>
-            <div className="text-right self-end sm:self-auto">
-              <div className="text-lg sm:text-xl md:text-2xl font-bold text-[#E41E26]">
-                {cities.length} مدينة
-              </div>
-              <div className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
-                إجمالي المدن
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Add New City Button */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-white/90 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl p-4 sm:p-6 mb-6 sm:mb-8 relative z-30 dark:bg-gray-800/90"
-          >
-            <div className="flex justify-end">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleAddNewCity}
-                className="flex items-center gap-2 bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-4 sm:px-5 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base whitespace-nowrap"
-              >
-                <FaPlus className="text-sm" />
-                <span className="hidden sm:inline">إضافة مدينة</span>
-                <span className="sm:hidden">إضافة</span>
-              </motion.button>
-            </div>
-          </motion.div>
-
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
-            {/* Cities List */}
-            <div
-              className={`space-y-3 sm:space-y-4 md:space-y-5 ${
-                isAdding ? "xl:col-span-2" : "xl:col-span-3"
-              }`}
+        {/* Hero Header */}
+        <div
+          className="relative py-16 px-4"
+          style={{
+            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+          }}
+        >
+          <div className="max-w-7xl mx-auto">
+            {/* زر الرجوع على الشمال (اليسار) */}
+            <motion.button
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              onClick={() => navigate(-1)}
+              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              style={{
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+              }}
             >
-              {/* Loading State for Data */}
-              {dataLoading ? (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="text-center py-12 bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-gray-200/50 dark:bg-gray-700/80 dark:border-gray-600"
-                >
-                  <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-[#E41E26] mx-auto mb-4"></div>
-                </motion.div>
-              ) : (
-                <>
-                  <AnimatePresence>
-                    {filteredCities.map((city, index) => (
-                      <motion.div
-                        key={city.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="bg-white/90 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl p-4 sm:p-6 hover:shadow-2xl transition-all duration-300 dark:bg-gray-800/90"
-                      >
-                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                              <div className="p-2 sm:p-3 bg-gradient-to-r from-[#fff8e7] to-[#ffe5b4] dark:from-gray-700 dark:to-gray-600 rounded-xl sm:rounded-2xl border border-[#FDB913]/30 dark:border-gray-500">
-                                <FaCity className="text-[#E41E26] dark:text-[#FDB913] text-lg sm:text-xl" />
-                              </div>
-                              <div className="min-w-0 flex-1">
-                                <h3 className="font-bold text-gray-800 dark:text-gray-200 text-lg sm:text-xl">
-                                  {city.name}
-                                </h3>
-                              </div>
-                            </div>
-                          </div>
+              <FaArrowLeft
+                size={20}
+                className="group-hover:-translate-x-1 transition-transform"
+              />
+            </motion.button>
 
-                          <div className="flex flex-row sm:flex-col lg:flex-row gap-1 sm:gap-2 justify-end sm:justify-start">
-                            <motion.button
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                              onClick={() => handleEdit(city)}
-                              className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-900/50 dark:text-blue-300 dark:hover:bg-blue-800 rounded-lg transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center"
-                            >
-                              <FaEdit className="text-xs sm:text-sm" />
-                              <span className="whitespace-nowrap">تعديل</span>
-                            </motion.button>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-
-                  {filteredCities.length === 0 && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="text-center py-8 sm:py-10 md:py-12 bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-gray-200/50 dark:bg-gray-700/80 dark:border-gray-600"
-                    >
-                      <FaCity className="mx-auto text-3xl sm:text-4xl md:text-5xl text-gray-400 dark:text-gray-500 mb-3 sm:mb-4" />
-                      <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-600 dark:text-gray-400 mb-2 sm:mb-3">
-                        لا توجد مدن
-                      </h3>
-                      <p className="text-gray-500 dark:text-gray-500 text-sm sm:text-base mb-4 sm:mb-6 max-w-xs sm:max-w-sm mx-auto">
-                        أضف أول مدينة للبدء
-                      </p>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={handleAddNewCity}
-                        className="flex items-center gap-2 bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base mx-auto"
-                      >
-                        <FaPlus className="text-xs sm:text-sm" />
-                        <span>أضف أول مدينة</span>
-                      </motion.button>
-                    </motion.div>
-                  )}
-                </>
-              )}
-            </div>
-
-            {/* Add/Edit City Form */}
-            <AnimatePresence>
-              {isAdding && (
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  className="xl:col-span-1"
-                >
-                  <div className="bg-white/90 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl p-4 sm:p-5 lg:p-6 border border-gray-200/50 dark:bg-gray-800/90 dark:border-gray-600 sticky top-4 sm:top-6 transition-colors duration-300">
-                    <div className="flex items-center justify-between mb-3 sm:mb-4">
-                      <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-200">
-                        {editingId ? "تعديل المدينة" : "إضافة مدينة جديدة"}
-                      </h3>
-                      <button
-                        onClick={resetForm}
-                        className="text-gray-500 hover:text-[#E41E26] dark:text-gray-400 dark:hover:text-[#FDB913] transition-colors duration-200 flex-shrink-0 ml-2"
-                      >
-                        <FaTimes size={16} className="sm:size-5" />
-                      </button>
-                    </div>
-
-                    <form
-                      onSubmit={handleSubmit}
-                      className="space-y-3 sm:space-y-4"
-                    >
-                      {/* City Name */}
-                      <div>
-                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
-                          اسم المدينة *
-                        </label>
-                        <div className="relative group">
-                          <FaCity className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
-                          <input
-                            type="text"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleInputChange}
-                            required
-                            className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white rounded-lg sm:rounded-xl pl-9 pr-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
-                            placeholder="أدخل اسم المدينة"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex gap-2 sm:gap-3 pt-1 sm:pt-2">
-                        <motion.button
-                          type="button"
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={resetForm}
-                          className="flex-1 py-2.5 sm:py-3 border-2 border-[#E41E26] text-[#E41E26] rounded-lg sm:rounded-xl font-semibold hover:bg-[#E41E26] hover:text-white transition-all duration-300 text-sm sm:text-base"
-                        >
-                          إلغاء
-                        </motion.button>
-                        <motion.button
-                          type="submit"
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          disabled={!isFormValid()}
-                          className={`flex-1 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base flex items-center justify-center gap-1 sm:gap-2 ${
-                            isFormValid()
-                              ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25 cursor-pointer"
-                              : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                          }`}
-                        >
-                          <FaSave className="text-xs sm:text-sm" />
-                          {editingId ? "تحديث" : "حفظ"}
-                        </motion.button>
-                      </div>
-                    </form>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center pt-8"
+            >
+              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
+                <FaCity className="text-white text-4xl" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                إدارة المدن
+              </h1>
+              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+                إدارة مدن التوصيل المتاحة في نظام المطعم
+              </p>
+            </motion.div>
           </div>
         </div>
       </div>
-    </>
+
+      {/* Main Content */}
+      <div
+        className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10"
+        dir="rtl"
+      >
+        {/* Floating Action Button */}
+        <motion.button
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleAddNewCity}
+          className="fixed bottom-6 left-6 z-40 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-2 group"
+        >
+          <FaPlus className="text-xl group-hover:rotate-90 transition-transform" />
+          <span className="hidden md:inline font-semibold">
+            إضافة مدينة جديدة
+          </span>
+        </motion.button>
+
+        {/* Content Container */}
+        <div className="w-full">
+          {/* Cities List */}
+          <div>
+            {cities.length === 0 && !dataLoading ? (
+              <div className="w-full">
+                <div className="bg-white rounded-2xl p-8 text-center shadow-xl">
+                  <div className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                    <FaCity className="text-4xl" style={{ color: "#2E3E88" }} />
+                  </div>
+                  <h3
+                    className="text-2xl font-bold mb-3"
+                    style={{ color: "#2E3E88" }}
+                  >
+                    لا توجد مدن حتى الآن
+                  </h3>
+                  <p
+                    className="mb-6 max-w-md mx-auto"
+                    style={{ color: "#32B9CC" }}
+                  >
+                    أضف أول مدينة للبدء في إدارة مدن التوصيل
+                  </p>
+                  <button
+                    onClick={handleAddNewCity}
+                    className="px-8 py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                    style={{
+                      background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                      color: "white",
+                      boxShadow: `0 10px 25px #2E3E8830`,
+                    }}
+                  >
+                    إضافة مدينة جديدة
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredCities.map((city, index) => (
+                  <motion.div
+                    key={city.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2"
+                    style={{
+                      borderTop: "4px solid #2E3E88",
+                    }}
+                  >
+                    <div className="p-6">
+                      {/* Header */}
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="p-3 rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                            <FaCity
+                              className="text-xl"
+                              style={{ color: "#2E3E88" }}
+                            />
+                          </div>
+                          <div>
+                            <h4
+                              className="font-bold text-lg"
+                              style={{ color: "#2E3E88" }}
+                            >
+                              {city.name}
+                            </h4>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span
+                                className="text-sm"
+                                style={{ color: "#32B9CC" }}
+                              >
+                                مدينة التوصيل
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex gap-3 pt-4 border-t border-gray-100">
+                        <button
+                          onClick={() => handleEdit(city)}
+                          className="flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
+                          style={{
+                            background: "#32B9CC10",
+                            color: "#32B9CC",
+                          }}
+                        >
+                          <FaEdit />
+                          تعديل
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+
+            {dataLoading && (
+              <div className="w-full">
+                <div className="bg-white rounded-2xl p-8 text-center shadow-xl">
+                  <div className="text-center">
+                    <div
+                      className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+                      style={{
+                        borderTopColor: "#2E3E88",
+                        borderRightColor: "#32B9CC",
+                        borderBottomColor: "#2E3E88",
+                        borderLeftColor: "transparent",
+                      }}
+                    ></div>
+                    <p
+                      className="text-lg font-semibold"
+                      style={{ color: "#2E3E88" }}
+                    >
+                      جارٍ تحميل المدن...
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Add/Edit City Form Modal */}
+      <AnimatePresence>
+        {isAdding && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            dir="rtl"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="bg-white rounded-3xl w-full max-w-2xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
+            >
+              {/* Modal Header */}
+              <div
+                className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+                style={{
+                  background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  {editingId ? <FaEdit /> : <FaPlus />}
+                  <h3 className="text-lg font-bold text-white">
+                    {editingId ? "تعديل المدينة" : "إضافة مدينة جديدة"}
+                  </h3>
+                </div>
+                <button
+                  onClick={resetForm}
+                  className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
+                >
+                  <FaTimes size={16} />
+                </button>
+              </div>
+
+              {/* Form Content */}
+              <div className="flex-1 overflow-y-auto p-6">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* City Name */}
+                  <div>
+                    <label
+                      className="block text-sm font-semibold mb-2 text-right"
+                      style={{ color: "#2E3E88" }}
+                    >
+                      اسم المدينة
+                    </label>
+                    <div className="relative group">
+                      <FaCity className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-right"
+                        style={{
+                          background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
+                        }}
+                        placeholder="أدخل اسم المدينة"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Form Actions */}
+                  <div className="flex gap-3 pt-4">
+                    <motion.button
+                      type="button"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={resetForm}
+                      className="flex-1 py-3.5 border-2 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center"
+                      style={{
+                        borderColor: "#2E3E88",
+                        color: "#2E3E88",
+                        background: "transparent",
+                      }}
+                    >
+                      إلغاء
+                    </motion.button>
+                    <motion.button
+                      type="submit"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      disabled={!isFormValid()}
+                      className={`flex-1 py-3.5 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                        isFormValid()
+                          ? "shadow-lg hover:shadow-xl cursor-pointer"
+                          : "opacity-50 cursor-not-allowed"
+                      }`}
+                      style={
+                        isFormValid()
+                          ? {
+                              background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                              color: "white",
+                            }
+                          : {
+                              background: "#e5e7eb",
+                              color: "#6b7280",
+                            }
+                      }
+                    >
+                      <FaSave />
+                      {editingId ? "تحديث المدينة" : "حفظ المدينة"}
+                    </motion.button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }

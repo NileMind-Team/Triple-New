@@ -45,115 +45,153 @@ const BranchCard = ({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border-2 border-gray-200/50 dark:border-gray-600/50 hover:shadow-lg transition-all duration-300"
+      className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2"
+      style={{
+        borderTop: branch.isActive ? "4px solid #2E3E88" : "4px solid #FF6B6B",
+      }}
     >
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
-        <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
-          <div className="flex-shrink-0">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white flex items-center justify-center font-semibold text-base sm:text-lg md:text-xl border-2 border-[#FDB913]">
-              <FaBuilding className="text-sm sm:text-base md:text-lg" />
+      <div className="p-6">
+        {/* Header */}
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex items-center gap-3">
+            <div
+              className="p-3 rounded-xl"
+              style={{
+                background: "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
+              }}
+            >
+              <FaBuilding className="text-xl" style={{ color: "#2E3E88" }} />
             </div>
-          </div>
-
-          <div className="flex-1 min-w-0">
-            <div className="flex flex-col xs:flex-row xs:items-center gap-2 xs:gap-3 mb-2 sm:mb-3">
-              <h3 className="font-bold text-gray-800 dark:text-white text-base sm:text-lg md:text-xl truncate">
+            <div>
+              <h4 className="font-bold text-lg" style={{ color: "#2E3E88" }}>
                 {branch.name}
-              </h3>
-              <div className="flex flex-wrap items-center gap-2">
-                <div
-                  className={`px-2 py-1 rounded-full text-xs font-medium ${
+              </h4>
+              <div className="flex items-center gap-2 mt-1">
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-semibold ${
                     branch.isActive
-                      ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
-                      : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+                      ? "bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white"
+                      : "bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] text-white"
                   }`}
                 >
                   {branch.isActive ? "نشط" : "غير نشط"}
-                </div>
-                <div
-                  className={`px-2 py-1 rounded-full text-xs font-medium ${
+                </span>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-semibold ${
                     branch.status === "Open"
-                      ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-                      : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300"
+                      ? "bg-gradient-to-r from-[#4CAF50] to-[#2E3E88] text-white"
+                      : "bg-gradient-to-r from-[#FFA726] to-[#FF9800] text-white"
                   }`}
                 >
                   {branch.status === "Open" ? "مفتوح" : "مغلق"}
-                </div>
+                </span>
                 {branch.supportsShifts && (
-                  <div className="px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300 flex items-center gap-1">
-                    <FaUsers className="text-xs" />
+                  <span
+                    className="px-3 py-1 rounded-full text-xs font-semibold text-white"
+                    style={{
+                      background: "linear-gradient(135deg, #9C27B0, #2E3E88)",
+                    }}
+                  >
+                    <FaUsers className="inline ml-1" />
                     يدعم الشفتات
-                  </div>
+                  </span>
                 )}
               </div>
-            </div>
-
-            <div className="space-y-1 sm:space-y-2 text-gray-700 dark:text-gray-300 text-sm sm:text-base">
-              <div className="flex items-center gap-2">
-                <FaMapMarkerAlt className="text-[#E41E26] flex-shrink-0 text-xs sm:text-sm" />
-                <span className="truncate">{branch.address}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <FaEnvelope className="text-[#E41E26] flex-shrink-0 text-xs sm:text-sm" />
-                <span className="truncate">{branch.email}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <FaClock className="text-[#E41E26] flex-shrink-0 text-xs sm:text-sm" />
-                <span>
-                  {displayOpeningTime} - {displayClosingTime}
-                </span>
-              </div>
-              {branch.city && (
-                <div className="flex items-center gap-2">
-                  <FaCity className="text-[#E41E26] flex-shrink-0 text-xs sm:text-sm" />
-                  <span>{branch.city.name}</span>
-                </div>
-              )}
-              {branch.phoneNumbers && branch.phoneNumbers.length > 0 && (
-                <div className="flex flex-wrap items-center gap-2 mt-2">
-                  <FaPhone className="text-[#E41E26] flex-shrink-0 text-xs sm:text-sm" />
-                  {branch.phoneNumbers.map((phone, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center gap-1 bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded-lg text-xs"
-                    >
-                      <span>{phone.phone}</span>
-                      <span className="text-gray-500">
-                        ({getPhoneTypeArabic(phone.type)})
-                      </span>
-                      {phone.isWhatsapp && (
-                        <FaWhatsapp className="text-green-500 text-xs" />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
           </div>
         </div>
 
-        <div className="flex flex-row sm:flex-col lg:flex-row gap-1 sm:gap-2 justify-end sm:justify-start">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+        {/* Branch Details */}
+        <div className="space-y-3 mb-6">
+          <div className="flex items-start gap-3">
+            <FaMapMarkerAlt
+              className="mt-1 flex-shrink-0"
+              style={{ color: "#2E3E88" }}
+            />
+            <p className="text-gray-700">{branch.address}</p>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <FaEnvelope
+              className="mt-1 flex-shrink-0"
+              style={{ color: "#2E3E88" }}
+            />
+            <p className="text-gray-700">{branch.email}</p>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <FaClock
+              className="mt-1 flex-shrink-0"
+              style={{ color: "#2E3E88" }}
+            />
+            <p className="text-gray-700">
+              {displayOpeningTime} - {displayClosingTime}
+            </p>
+          </div>
+
+          {branch.city && (
+            <div className="flex items-start gap-3">
+              <FaCity
+                className="mt-1 flex-shrink-0"
+                style={{ color: "#2E3E88" }}
+              />
+              <p className="text-gray-700">{branch.city.name}</p>
+            </div>
+          )}
+
+          {branch.phoneNumbers && branch.phoneNumbers.length > 0 && (
+            <div className="flex items-start gap-3">
+              <FaPhone
+                className="mt-1 flex-shrink-0"
+                style={{ color: "#2E3E88" }}
+              />
+              <div className="flex flex-wrap gap-2">
+                {branch.phoneNumbers.map((phone, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center gap-2 px-3 py-1 rounded-lg text-sm"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
+                    }}
+                  >
+                    <span style={{ color: "#2E3E88" }}>{phone.phone}</span>
+                    <span className="text-xs" style={{ color: "#32B9CC" }}>
+                      ({getPhoneTypeArabic(phone.type)})
+                    </span>
+                    {phone.isWhatsapp && (
+                      <FaWhatsapp className="text-green-500" />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-3 pt-4 border-t border-gray-100">
+          <button
             onClick={() => onEdit(branch)}
-            className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center"
+            className="flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
+            style={{
+              background: "#32B9CC10",
+              color: "#32B9CC",
+            }}
           >
-            <FaEdit className="text-xs sm:text-sm" />
-            <span className="whitespace-nowrap">تعديل</span>
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            <FaEdit />
+            تعديل
+          </button>
+          <button
             onClick={() => onToggleActive(branch.id, branch.isActive)}
-            className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors duration-200 text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center ${
+            className={`flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 ${
               branch.isActive
-                ? "bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 hover:bg-yellow-100 dark:hover:bg-yellow-900/50"
-                : "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/50"
+                ? "bg-gradient-to-r from-[#FF6B6B10] to-[#FF8E5310] text-[#FF6B6B]"
+                : "bg-gradient-to-r from-[#4CAF5010] to-[#2E3E8810] text-[#4CAF50]"
             }`}
           >
             {branch.isActive ? "تعطيل" : "تفعيل"}
-          </motion.button>
+          </button>
         </div>
       </div>
     </motion.div>

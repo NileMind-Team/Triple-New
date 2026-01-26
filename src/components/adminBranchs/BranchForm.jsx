@@ -89,100 +89,140 @@ const BranchForm = ({
 
   return (
     <motion.div
-      id="branch-form"
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 20 }}
-      className="xl:col-span-1"
+      initial={{ opacity: 0, scale: 0.9, y: 20 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.9, y: 20 }}
+      className="bg-white rounded-3xl w-full max-w-2xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
     >
-      <div className="bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 border border-gray-200/50 dark:border-gray-600/50 shadow-lg sticky top-4 sm:top-6">
-        <div className="flex items-center justify-between mb-3 sm:mb-4">
-          <h3 className="text-base sm:text-lg md:text-xl font-bold text-gray-800 dark:text-white truncate">
+      {/* Modal Header */}
+      <div
+        className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+        style={{
+          background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+        }}
+      >
+        <div className="flex items-center gap-3">
+          {isEditing ? <FaBuilding /> : <FaBuilding />}
+          <h3 className="text-lg font-bold text-white">
             {isEditing ? "تعديل الفرع" : "إضافة فرع جديد"}
           </h3>
-          <button
-            onClick={onCancel}
-            className="text-gray-500 dark:text-gray-400 hover:text-[#E41E26] transition-colors duration-200 flex-shrink-0 ml-2"
-          >
-            <FaTimes size={16} className="sm:size-5" />
-          </button>
         </div>
+        <button
+          onClick={onCancel}
+          className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
+        >
+          <FaTimes size={16} />
+        </button>
+      </div>
 
-        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+      {/* Form Content */}
+      <div className="flex-1 overflow-y-auto p-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+            <label
+              className="block text-sm font-semibold mb-2"
+              style={{ color: "#2E3E88" }}
+            >
               اسم الفرع *
             </label>
             <div className="relative group">
-              <FaBuilding className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
+              <FaBuilding className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
                 required
-                className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-600 text-black dark:text-white rounded-lg sm:rounded-xl pr-9 pl-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                style={{
+                  background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                }}
                 placeholder="اسم الفرع"
+                dir="rtl"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+            <label
+              className="block text-sm font-semibold mb-2"
+              style={{ color: "#2E3E88" }}
+            >
               البريد الإلكتروني *
             </label>
             <div className="relative group">
-              <FaEnvelope className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
+              <FaEnvelope className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
                 required
-                className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-600 text-black dark:text-white rounded-lg sm:rounded-xl pr-9 pl-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                style={{
+                  background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                }}
                 placeholder="البريد الإلكتروني"
+                dir="rtl"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+            <label
+              className="block text-sm font-semibold mb-2"
+              style={{ color: "#2E3E88" }}
+            >
               العنوان *
             </label>
             <div className="relative group">
-              <FaMapMarkerAlt className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
+              <FaMapMarkerAlt className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
               <input
                 type="text"
                 name="address"
                 value={formData.address}
                 onChange={handleInputChange}
                 required
-                className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-600 text-black dark:text-white rounded-lg sm:rounded-xl pr-9 pl-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                style={{
+                  background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                }}
                 placeholder="العنوان الكامل"
+                dir="rtl"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+            <label
+              className="block text-sm font-semibold mb-2"
+              style={{ color: "#2E3E88" }}
+            >
               رابط الموقع
             </label>
             <div className="relative group">
-              <FaGlobe className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
+              <FaGlobe className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
               <input
                 type="url"
                 name="locationUrl"
                 value={formData.locationUrl}
                 onChange={handleInputChange}
-                className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-600 text-black dark:text-white rounded-lg sm:rounded-xl pr-9 pl-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                style={{
+                  background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                }}
                 placeholder="رابط خرائط جوجل (اختياري)"
+                dir="rtl"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: "#2E3E88" }}
+              >
                 المدينة *
               </label>
               <div className="relative">
@@ -190,42 +230,44 @@ const BranchForm = ({
                   type="button"
                   onClick={() =>
                     setLocalOpenDropdown(
-                      currentDropdown === "city" ? null : "city"
+                      currentDropdown === "city" ? null : "city",
                     )
                   }
-                  className="w-full flex items-center justify-between border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-600 text-black dark:text-white rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                  className="w-full flex items-center justify-between border border-gray-200 rounded-xl px-4 py-3.5 transition-all hover:border-[#2E3E88] group text-right"
+                  style={{
+                    background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                  }}
                 >
-                  <span className="flex items-center gap-2">
-                    <FaCity className="text-[#E41E26]" />
-                    {formData.cityId
-                      ? cities.find((c) => c.id === formData.cityId)?.name
-                      : "اختر المدينة"}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <FaCity className="text-[#2E3E88] group-hover:scale-110 transition-transform" />
+                    <span className="font-medium">
+                      {formData.cityId
+                        ? cities.find((c) => c.id === formData.cityId)?.name
+                        : "اختر المدينة"}
+                    </span>
+                  </div>
                   <motion.div
                     animate={{
                       rotate: currentDropdown === "city" ? 180 : 0,
                     }}
                     transition={{ duration: 0.3 }}
                   >
-                    <FaChevronDown className="text-[#E41E26]" />
+                    <FaChevronDown className="text-[#2E3E88]" />
                   </motion.div>
                 </button>
-
                 <AnimatePresence>
                   {currentDropdown === "city" && (
                     <motion.ul
                       initial={{ opacity: 0, y: -5 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -5 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute z-50 mt-2 w-full bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto"
-                      dir="rtl"
+                      className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto"
                     >
                       {cities.map((city) => (
                         <li
                           key={city.id}
                           onClick={() => handleSelectChange("cityId", city.id)}
-                          className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] dark:hover:from-gray-500 dark:hover:to-gray-400 cursor-pointer text-gray-700 dark:text-gray-300 transition-all text-sm sm:text-base border-b border-gray-100 dark:border-gray-500 last:border-b-0 text-right"
+                          className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b last:border-b-0"
                         >
                           {city.name}
                         </li>
@@ -236,7 +278,10 @@ const BranchForm = ({
               </div>
             </div>
             <div>
-              <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: "#2E3E88" }}
+              >
                 المدير *
               </label>
               <div className="relative">
@@ -244,40 +289,42 @@ const BranchForm = ({
                   type="button"
                   onClick={() =>
                     setLocalOpenDropdown(
-                      currentDropdown === "manager" ? null : "manager"
+                      currentDropdown === "manager" ? null : "manager",
                     )
                   }
-                  className="w-full flex items-center justify-between border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-600 text-black dark:text-white rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                  className="w-full flex items-center justify-between border border-gray-200 rounded-xl px-4 py-3.5 transition-all hover:border-[#2E3E88] group text-right"
+                  style={{
+                    background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                  }}
                 >
-                  <span className="flex items-center gap-2">
-                    <FaUser className="text-[#E41E26]" />
-                    {formData.managerId
-                      ? managers.find((m) => m.id === formData.managerId)
-                          ?.firstName +
-                        " " +
-                        managers.find((m) => m.id === formData.managerId)
-                          ?.lastName
-                      : "اختر المدير"}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <FaUser className="text-[#2E3E88] group-hover:scale-110 transition-transform" />
+                    <span className="font-medium">
+                      {formData.managerId
+                        ? managers.find((m) => m.id === formData.managerId)
+                            ?.firstName +
+                          " " +
+                          managers.find((m) => m.id === formData.managerId)
+                            ?.lastName
+                        : "اختر المدير"}
+                    </span>
+                  </div>
                   <motion.div
                     animate={{
                       rotate: currentDropdown === "manager" ? 180 : 0,
                     }}
                     transition={{ duration: 0.3 }}
                   >
-                    <FaChevronDown className="text-[#E41E26]" />
+                    <FaChevronDown className="text-[#2E3E88]" />
                   </motion.div>
                 </button>
-
                 <AnimatePresence>
                   {currentDropdown === "manager" && (
                     <motion.ul
                       initial={{ opacity: 0, y: -5 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -5 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute z-50 mt-2 w-full bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto"
-                      dir="rtl"
+                      className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto"
                     >
                       {managers.map((manager) => (
                         <li
@@ -285,7 +332,7 @@ const BranchForm = ({
                           onClick={() =>
                             handleSelectChange("managerId", manager.id)
                           }
-                          className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] dark:hover:from-gray-500 dark:hover:to-gray-400 cursor-pointer text-gray-700 dark:text-gray-300 transition-all text-sm sm:text-base border-b border-gray-100 dark:border-gray-500 last:border-b-0 text-right"
+                          className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b last:border-b-0"
                         >
                           {manager.firstName} {manager.lastName} (
                           {manager.email})
@@ -299,7 +346,10 @@ const BranchForm = ({
           </div>
 
           <div>
-            <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+            <label
+              className="block text-sm font-semibold mb-2"
+              style={{ color: "#2E3E88" }}
+            >
               الحالة *
             </label>
             <div className="relative">
@@ -307,37 +357,41 @@ const BranchForm = ({
                 type="button"
                 onClick={() =>
                   setLocalOpenDropdown(
-                    currentDropdown === "status" ? null : "status"
+                    currentDropdown === "status" ? null : "status",
                   )
                 }
-                className="w-full flex items-center justify-between border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-600 text-black dark:text-white rounded-lg sm:rounded-xl px-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                className="w-full flex items-center justify-between border border-gray-200 rounded-xl px-4 py-3.5 transition-all hover:border-[#2E3E88] group text-right"
+                style={{
+                  background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                }}
               >
-                <span>{formData.status === "Open" ? "مفتوح" : "مغلق"}</span>
+                <div className="flex items-center gap-3">
+                  <span className="font-medium">
+                    {formData.status === "Open" ? "مفتوح" : "مغلق"}
+                  </span>
+                </div>
                 <motion.div
                   animate={{
                     rotate: currentDropdown === "status" ? 180 : 0,
                   }}
                   transition={{ duration: 0.3 }}
                 >
-                  <FaChevronDown className="text-[#E41E26]" />
+                  <FaChevronDown className="text-[#2E3E88]" />
                 </motion.div>
               </button>
-
               <AnimatePresence>
                 {currentDropdown === "status" && (
                   <motion.ul
                     initial={{ opacity: 0, y: -5 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -5 }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute z-50 mt-2 w-full bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto"
-                    dir="rtl"
+                    className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto"
                   >
                     {["Open", "Closed"].map((status) => (
                       <li
                         key={status}
                         onClick={() => handleSelectChange("status", status)}
-                        className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#fff8e7] hover:to-[#ffe5b4] dark:hover:from-gray-500 dark:hover:to-gray-400 cursor-pointer text-gray-700 dark:text-gray-300 transition-all text-sm sm:text-base border-b border-gray-100 dark:border-gray-500 last:border-b-0 text-right"
+                        className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b last:border-b-0"
                       >
                         {status === "Open" ? "مفتوح" : "مغلق"}
                       </li>
@@ -348,36 +402,50 @@ const BranchForm = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: "#2E3E88" }}
+              >
                 وقت الفتح *
               </label>
               <div className="relative group">
-                <FaClock className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
+                <FaClock className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
                 <input
                   type="time"
                   name="openingTime"
                   value={formData.openingTime || ""}
                   onChange={handleInputChange}
                   required
-                  className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-600 text-black dark:text-white rounded-lg sm:rounded-xl pr-9 pl-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                  className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                  style={{
+                    background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                  }}
+                  dir="rtl"
                 />
               </div>
             </div>
             <div>
-              <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+              <label
+                className="block text-sm font-semibold mb-2"
+                style={{ color: "#2E3E88" }}
+              >
                 وقت الإغلاق *
               </label>
               <div className="relative group">
-                <FaClock className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E41E26] text-sm transition-all duration-300 group-focus-within:scale-110" />
+                <FaClock className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
                 <input
                   type="time"
                   name="closingTime"
                   value={formData.closingTime || ""}
                   onChange={handleInputChange}
                   required
-                  className="w-full border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-600 text-black dark:text-white rounded-lg sm:rounded-xl pr-9 pl-3 py-2.5 sm:py-3 outline-none focus:ring-2 focus:ring-[#E41E26] focus:border-transparent transition-all duration-200 text-sm sm:text-base"
+                  className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                  style={{
+                    background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                  }}
+                  dir="rtl"
                 />
               </div>
             </div>
@@ -390,7 +458,7 @@ const BranchForm = ({
             }
           />
 
-          <div className="space-y-2 sm:space-y-3 sm:pt-2 border-t border-gray-200/50 dark:border-gray-600/50 pt-3">
+          <div className="space-y-3 pt-4 border-t border-gray-200">
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
@@ -398,13 +466,14 @@ const BranchForm = ({
                 name="isActive"
                 checked={formData.isActive}
                 onChange={handleInputChange}
-                className="w-4 h-4 text-[#E41E26] bg-gray-100 border-gray-300 rounded focus:ring-[#E41E26] focus:ring-2"
+                className="w-4 h-4 text-[#2E3E88] bg-gray-100 border-gray-300 rounded focus:ring-[#2E3E88] focus:ring-2"
               />
               <label
                 htmlFor="isActive"
-                className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1"
+                className="text-sm font-semibold flex items-center gap-1"
+                style={{ color: "#2E3E88" }}
               >
-                <FaCheck className="text-green-500" />
+                <FaCheck className="text-[#4CAF50]" />
                 فرع نشط
               </label>
             </div>
@@ -416,25 +485,31 @@ const BranchForm = ({
                 name="supportsShifts"
                 checked={formData.supportsShifts || false}
                 onChange={handleInputChange}
-                className="w-4 h-4 text-[#E41E26] bg-gray-100 border-gray-300 rounded focus:ring-[#E41E26] focus:ring-2"
+                className="w-4 h-4 text-[#2E3E88] bg-gray-100 border-gray-300 rounded focus:ring-[#2E3E88] focus:ring-2"
               />
               <label
                 htmlFor="supportsShifts"
-                className="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1"
+                className="text-sm font-semibold flex items-center gap-1"
+                style={{ color: "#2E3E88" }}
               >
-                <FaUsers className="text-blue-500" />
+                <FaUsers className="text-[#32B9CC]" />
                 يدعم الشفتات
               </label>
             </div>
           </div>
 
-          <div className="flex gap-2 sm:gap-3 pt-1 sm:pt-2">
+          <div className="flex gap-3 pt-4">
             <motion.button
               type="button"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={onCancel}
-              className="flex-1 py-2.5 sm:py-3 border-2 border-[#E41E26] text-[#E41E26] dark:text-[#FDB913] dark:border-[#FDB913] rounded-lg sm:rounded-xl font-semibold hover:bg-[#E41E26] dark:hover:bg-[#FDB913] hover:text-white transition-all duration-300 text-sm sm:text-base"
+              className="flex-1 py-3.5 border-2 rounded-xl font-semibold transition-all duration-300"
+              style={{
+                borderColor: "#2E3E88",
+                color: "#2E3E88",
+                background: "transparent",
+              }}
             >
               إلغاء
             </motion.button>
@@ -443,13 +518,24 @@ const BranchForm = ({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               disabled={!isFormValid()}
-              className={`flex-1 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base flex items-center justify-center gap-1 sm:gap-2 ${
+              className={`flex-1 py-3.5 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
                 isFormValid()
-                  ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25"
-                  : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                  ? "shadow-lg hover:shadow-xl cursor-pointer"
+                  : "opacity-50 cursor-not-allowed"
               }`}
+              style={
+                isFormValid()
+                  ? {
+                      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                      color: "white",
+                    }
+                  : {
+                      background: "#e5e7eb",
+                      color: "#6b7280",
+                    }
+              }
             >
-              <FaCheck className="text-xs sm:text-sm" />
+              <FaCheck />
               {isEditing ? "تحديث الفرع" : "إضافة الفرع"}
             </motion.button>
           </div>

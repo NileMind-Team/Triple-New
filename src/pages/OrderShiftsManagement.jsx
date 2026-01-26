@@ -7,6 +7,8 @@ import {
   FaStop,
   FaPause,
   FaPlayCircle,
+  FaBusinessTime,
+  FaClock,
 } from "react-icons/fa";
 import Swal from "sweetalert2";
 import axiosInstance from "../api/axiosInstance";
@@ -27,27 +29,20 @@ const showMessage = (type, title, text, options = {}) => {
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
-      theme: "light",
       style: {
-        width: "70vw",
-        maxWidth: "none",
-        minWidth: "200px",
-        fontSize: "14px",
-        borderRadius: "8px",
-        right: "0",
-        top: "0",
-        margin: "0",
-        wordBreak: "break-word",
-        overflowWrap: "break-word",
-        zIndex: 9999,
-      },
-      bodyStyle: {
-        padding: "12px 16px",
+        width: "70%",
+        margin: "10px",
+        borderRadius: "12px",
         textAlign: "right",
+        fontSize: "14px",
         direction: "rtl",
-        width: "100%",
-        overflow: "hidden",
-        margin: 0,
+        background:
+          type === "error"
+            ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
+            : type === "warning"
+              ? "linear-gradient(135deg, #FFA726, #FF9800)"
+              : "linear-gradient(135deg, #2E3E88, #32B9CC)",
+        color: "white",
       },
     };
 
@@ -72,12 +67,18 @@ const showMessage = (type, title, text, options = {}) => {
       icon: type,
       title: title,
       text: text,
-      confirmButtonColor: options.confirmButtonColor || "#E41E26",
       timer: options.timer || 2500,
       showConfirmButton:
         options.showConfirmButton !== undefined
           ? options.showConfirmButton
           : false,
+      background:
+        type === "error"
+          ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
+          : type === "warning"
+            ? "linear-gradient(135deg, #FFA726, #FF9800)"
+            : "linear-gradient(135deg, #2E3E88, #32B9CC)",
+      color: "white",
       ...options,
     });
   }
@@ -262,7 +263,7 @@ const addTwoHoursAndFormatTo12Hour = (timeString) => {
 
     const formattedHours = convertToArabicNumbers(displayHours);
     const formattedMinutes = convertToArabicNumbers(
-      minutes.toString().padStart(2, "0")
+      minutes.toString().padStart(2, "0"),
     );
 
     return `${dateText} الساعة ${formattedHours}:${formattedMinutes} ${period}`;
@@ -291,12 +292,12 @@ export default function OrderShiftsManagement() {
   const checkActiveShift = async () => {
     try {
       const response = await axiosInstance.get(
-        "/api/OrderShifts/GetAvailableShifts"
+        "/api/OrderShifts/GetAvailableShifts",
       );
 
       if (response.data && response.data.length > 0) {
         const activeShiftData = response.data.find(
-          (shift) => shift.end === null
+          (shift) => shift.end === null,
         );
 
         if (activeShiftData) {
@@ -372,7 +373,7 @@ export default function OrderShiftsManagement() {
         {
           timer: 2000,
           showConfirmButton: false,
-        }
+        },
       );
       return;
     }
@@ -409,15 +410,17 @@ export default function OrderShiftsManagement() {
       text: "هل أنت متأكد من إنهاء الوردية الحالية؟",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#E41E26",
+      confirmButtonColor: "#2E3E88",
       cancelButtonColor: "#6B7280",
       confirmButtonText: "نعم، أنهِ الوردية",
       cancelButtonText: "إلغاء",
+      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+      color: "white",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
           await axiosInstance.put(
-            `/api/OrderShifts/EndShift/${activeShift.id}`
+            `/api/OrderShifts/EndShift/${activeShift.id}`,
           );
 
           await checkActiveShift();
@@ -447,15 +450,17 @@ export default function OrderShiftsManagement() {
       text: confirmText,
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#E41E26",
+      confirmButtonColor: "#2E3E88",
       cancelButtonColor: "#6B7280",
       confirmButtonText: `نعم، ${action}`,
       cancelButtonText: "إلغاء",
+      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+      color: "white",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
           await axiosInstance.put(
-            `/api/OrderShifts/ChangeStatus/${activeShift.id}`
+            `/api/OrderShifts/ChangeStatus/${activeShift.id}`,
           );
 
           await checkActiveShift();
@@ -489,61 +494,148 @@ export default function OrderShiftsManagement() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-4">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E41E26]"></div>
+      <div
+        className="min-h-screen flex items-center justify-center px-4"
+        style={{
+          background: "linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)",
+        }}
+      >
+        <div className="text-center">
+          <div
+            className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+            style={{
+              borderTopColor: "#2E3E88",
+              borderRightColor: "#32B9CC",
+              borderBottomColor: "#2E3E88",
+              borderLeftColor: "transparent",
+            }}
+          ></div>
+          <p className="text-lg font-semibold" style={{ color: "#2E3E88" }}>
+            جارٍ التحميل...
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-[#fff8e7] to-[#ffe5b4] dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 px-3 sm:px-4 py-4 sm:py-8 transition-colors duration-300">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8"
-        >
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => navigate(-1)}
-            className="bg-white/80 backdrop-blur-md rounded-full p-2 sm:p-3 text-[#E41E26] hover:bg-[#E41E26] hover:text-white transition-all duration-300 shadow-lg dark:bg-gray-800/80 dark:text-gray-200 dark:hover:bg-[#E41E26]"
-          >
-            <FaArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-          </motion.button>
-          <div>
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-200">
-              الورديات
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
-              إدارة ورديات الطلبات
-            </p>
-          </div>
-        </motion.div>
+    <div
+      className="min-h-screen font-sans relative overflow-x-hidden"
+      style={{
+        background: "linear-gradient(135deg, #f0f8ff 0%, #e0f7fa 100%)",
+        backgroundAttachment: "fixed",
+      }}
+    >
+      {/* Header Section */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/80 to-white"></div>
 
+        {/* Hero Header */}
+        <div
+          className="relative py-16 px-4"
+          style={{
+            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+          }}
+        >
+          <div className="max-w-7xl mx-auto">
+            {/* زر الرجوع */}
+            <motion.button
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              onClick={() => navigate(-1)}
+              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              style={{
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+              }}
+            >
+              <FaArrowLeft
+                size={20}
+                className="group-hover:-translate-x-1 transition-transform"
+              />
+            </motion.button>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center pt-8"
+            >
+              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
+                <FaBusinessTime className="text-white text-4xl" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                إدارة الورديات
+              </h1>
+              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+                إدارة ورديات الطلبات بشكل فعال ومنظم
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-4xl mx-auto px-4 py-8 -mt-10 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white/90 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl p-4 sm:p-5 lg:p-6 border border-gray-200/50 dark:bg-gray-800/90 dark:border-gray-600 transition-colors duration-300"
+          className="bg-white rounded-2xl overflow-hidden shadow-xl"
         >
-          <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-200">
-              {activeShift ? "تفاصيل الوردية الحالية" : "بدء وردية جديدة"}
-            </h3>
+          {/* Card Header */}
+          <div
+            className="px-6 py-4 border-b border-gray-100 flex items-center justify-between"
+            style={{
+              background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+            }}
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className="p-3 rounded-xl"
+                style={{
+                  background: "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
+                }}
+              >
+                <FaClock className="text-xl" style={{ color: "#2E3E88" }} />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold" style={{ color: "#2E3E88" }}>
+                  {activeShift ? "تفاصيل الوردية الحالية" : "بدء وردية جديدة"}
+                </h3>
+                <p className="text-sm" style={{ color: "#32B9CC" }}>
+                  {activeShift
+                    ? "الوردية قيد التشغيل"
+                    : "ابدأ وردية جديدة للطلبات"}
+                </p>
+              </div>
+            </div>
             {activeShift && (
               <div className="flex items-center gap-2">
                 <span
-                  className={`px-2 sm:px-3 py-1 bg-gradient-to-r ${
+                  className="px-3 py-1 rounded-full text-xs font-semibold"
+                  style={
                     activeShift.isActive
-                      ? "from-green-500 to-emerald-500"
-                      : "from-yellow-500 to-orange-500"
-                  } text-white text-xs sm:text-sm rounded-full`}
+                      ? {
+                          background:
+                            "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                          color: "white",
+                        }
+                      : {
+                          background:
+                            "linear-gradient(135deg, #FF6B6B, #FF8E53)",
+                          color: "white",
+                        }
+                  }
                 >
                   {activeShift.isActive ? "نشطة" : "معطلة"}
                 </span>
                 {!activeShift.isActive && (
-                  <span className="px-2 sm:px-3 py-1 bg-gradient-to-r from-gray-500 to-gray-600 text-white text-xs sm:text-sm rounded-full">
+                  <span
+                    className="px-3 py-1 rounded-full text-xs font-semibold"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
+                      color: "#2E3E88",
+                    }}
+                  >
                     غير مفعلة
                   </span>
                 )}
@@ -551,175 +643,267 @@ export default function OrderShiftsManagement() {
             )}
           </div>
 
-          {activeShift ? (
-            <div className="space-y-4">
-              <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-800 rounded-xl border border-green-200 dark:border-green-900">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      اسم الوردية
-                    </p>
-                    <p className="text-lg font-bold text-gray-800 dark:text-gray-200">
-                      {activeShift.name}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      بدأت منذ
-                    </p>
-                    <p className="text-lg font-bold text-gray-800 dark:text-gray-200">
-                      {addTwoHoursAndFormatTo12Hour(activeShift.start)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      حالة الوردية
-                    </p>
-                    <p className="text-lg font-bold text-gray-800 dark:text-gray-200">
-                      {activeShift.isActive ? "مفعلة" : "معطلة"}
-                    </p>
+          {/* Card Content */}
+          <div className="p-6">
+            {activeShift ? (
+              <div className="space-y-6">
+                <div
+                  className="p-6 rounded-xl"
+                  style={{
+                    background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                    border: "1px solid #2E3E8820",
+                  }}
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <p className="text-sm mb-2" style={{ color: "#32B9CC" }}>
+                        اسم الوردية
+                      </p>
+                      <p
+                        className="text-xl font-bold"
+                        style={{ color: "#2E3E88" }}
+                      >
+                        {activeShift.name}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm mb-2" style={{ color: "#32B9CC" }}>
+                        بدأت منذ
+                      </p>
+                      <p
+                        className="text-xl font-bold"
+                        style={{ color: "#2E3E88" }}
+                      >
+                        {addTwoHoursAndFormatTo12Hour(activeShift.start)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm mb-2" style={{ color: "#32B9CC" }}>
+                        حالة الوردية
+                      </p>
+                      <p
+                        className="text-xl font-bold"
+                        style={{ color: "#2E3E88" }}
+                      >
+                        {activeShift.isActive ? "مفعلة" : "معطلة"}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="space-y-3">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleToggleShiftStatus}
-                  className={`w-full py-3 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base flex items-center justify-center gap-2 ${
-                    activeShift.isActive
-                      ? "bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:shadow-xl hover:shadow-yellow-500/25"
-                      : "bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:shadow-xl hover:shadow-green-500/25"
-                  } cursor-pointer`}
-                >
-                  {activeShift.isActive ? (
-                    <>
-                      <FaPause className="text-sm" />
-                      تعطيل الوردية
-                    </>
-                  ) : (
-                    <>
-                      <FaPlayCircle className="text-sm" />
-                      تفعيل الوردية
-                    </>
-                  )}
-                </motion.button>
+                <div className="space-y-4">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleToggleShiftStatus}
+                    className={`w-full py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-3 ${
+                      activeShift.isActive
+                        ? "shadow-lg hover:shadow-xl cursor-pointer"
+                        : "shadow-lg hover:shadow-xl cursor-pointer"
+                    }`}
+                    style={
+                      activeShift.isActive
+                        ? {
+                            background:
+                              "linear-gradient(135deg, #FF6B6B, #FF8E53)",
+                            color: "white",
+                          }
+                        : {
+                            background:
+                              "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                            color: "white",
+                          }
+                    }
+                  >
+                    {activeShift.isActive ? (
+                      <>
+                        <FaPause />
+                        تعطيل الوردية
+                      </>
+                    ) : (
+                      <>
+                        <FaPlayCircle />
+                        تفعيل الوردية
+                      </>
+                    )}
+                  </motion.button>
 
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleEndShift}
-                  className="w-full py-3 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base flex items-center justify-center gap-2 bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25 cursor-pointer"
-                >
-                  <FaStop className="text-sm" />
-                  إنهاء الوردية الحالية
-                </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleEndShift}
+                    className="w-full py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl cursor-pointer"
+                    style={{
+                      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                      color: "white",
+                    }}
+                  >
+                    <FaStop />
+                    إنهاء الوردية الحالية
+                  </motion.button>
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  نوع الوردية *
-                </label>
-                <div className="space-y-3">
-                  <div className="grid grid-cols-2 gap-2">
-                    {shiftTypes.map((type) => (
+            ) : (
+              <div className="space-y-6">
+                <div>
+                  <label
+                    className="block text-sm font-semibold mb-4"
+                    style={{ color: "#2E3E88" }}
+                  >
+                    نوع الوردية
+                  </label>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      {shiftTypes.map((type) => (
+                        <button
+                          key={type.value}
+                          type="button"
+                          onClick={() =>
+                            setFormData({
+                              ...formData,
+                              name: type.value,
+                              customName: "",
+                            })
+                          }
+                          className={`p-4 rounded-xl border transition-all duration-200 ${
+                            formData.name === type.value
+                              ? "shadow-lg"
+                              : "hover:shadow-md"
+                          }`}
+                          style={
+                            formData.name === type.value
+                              ? {
+                                  background:
+                                    "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                                  color: "white",
+                                  border: "none",
+                                }
+                              : {
+                                  background:
+                                    "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                                  border: "1px solid #2E3E8820",
+                                  color: "#2E3E88",
+                                }
+                          }
+                        >
+                          {type.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div>
                       <button
-                        key={type.value}
                         type="button"
                         onClick={() =>
                           setFormData({
                             ...formData,
-                            name: type.value,
-                            customName: "",
+                            name: "custom",
+                            customName: formData.customName || "",
                           })
                         }
-                        className={`p-3 rounded-lg border transition-all duration-200 ${
-                          formData.name === type.value
-                            ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white border-transparent"
-                            : "bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-[#E41E26] cursor-pointer"
+                        className={`w-full p-4 rounded-xl border transition-all duration-200 ${
+                          formData.name === "custom"
+                            ? "shadow-lg"
+                            : "hover:shadow-md"
                         }`}
+                        style={
+                          formData.name === "custom"
+                            ? {
+                                background:
+                                  "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                                color: "white",
+                                border: "none",
+                              }
+                            : {
+                                background:
+                                  "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                                border: "1px solid #2E3E8820",
+                                color: "#2E3E88",
+                              }
+                        }
                       >
-                        {type.label}
+                        اسم مخصص
                       </button>
-                    ))}
-                  </div>
 
-                  <div>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setFormData({
-                          ...formData,
-                          name: "custom",
-                          customName: formData.customName || "",
-                        })
-                      }
-                      className={`w-full p-3 rounded-lg border transition-all duration-200 ${
-                        formData.name === "custom"
-                          ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white border-transparent"
-                          : "bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-[#E41E26] cursor-pointer"
-                      }`}
-                    >
-                      اسم مخصص
-                    </button>
-
-                    {formData.name === "custom" && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        transition={{ duration: 0.3 }}
-                        className="mt-3"
-                      >
-                        <div className="relative group">
-                          <input
-                            type="text"
-                            name="customName"
-                            value={formData.customName}
-                            onChange={handleInputChange}
-                            required
-                            className="w-full border bg-white dark:bg-gray-700 text-black dark:text-white rounded-lg px-4 py-3 outline-none transition-all duration-200 border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-[#E41E26] focus:border-transparent"
-                            placeholder="أدخل اسم الوردية المخصص"
-                          />
-                        </div>
-                      </motion.div>
-                    )}
+                      {formData.name === "custom" && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          transition={{ duration: 0.3 }}
+                          className="mt-4"
+                        >
+                          <div className="relative group">
+                            <input
+                              type="text"
+                              name="customName"
+                              value={formData.customName}
+                              onChange={handleInputChange}
+                              required
+                              className="w-full rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 border"
+                              style={{
+                                background:
+                                  "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                                border: "1px solid #2E3E8820",
+                                color: "#2E3E88",
+                              }}
+                              placeholder="أدخل اسم الوردية المخصص"
+                              dir="rtl"
+                            />
+                          </div>
+                        </motion.div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="flex gap-3 pt-2">
-                <motion.button
-                  type="button"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={resetForm}
-                  className="flex-1 py-3 border-2 border-[#E41E26] text-[#E41E26] rounded-lg font-semibold hover:bg-[#E41E26] hover:text-white transition-all duration-300"
-                >
-                  إلغاء
-                </motion.button>
-                <motion.button
-                  type="button"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleStartShift}
-                  disabled={!isFormValid() || !canUserStartShift}
-                  className={`flex-1 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
-                    isFormValid() && canUserStartShift
-                      ? "bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white hover:shadow-xl hover:shadow-[#E41E26]/25 cursor-pointer"
-                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  }`}
-                >
-                  <FaPlay className="text-sm" />
-                  {!canUserStartShift
-                    ? "غير مسموح ببدء الوردية"
-                    : "بدء الوردية"}
-                </motion.button>
+                <div className="flex gap-4 pt-2">
+                  <motion.button
+                    type="button"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={resetForm}
+                    className="flex-1 py-3.5 rounded-xl font-semibold transition-all duration-300 border-2"
+                    style={{
+                      borderColor: "#2E3E88",
+                      color: "#2E3E88",
+                      background: "transparent",
+                    }}
+                  >
+                    إلغاء
+                  </motion.button>
+                  <motion.button
+                    type="button"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleStartShift}
+                    disabled={!isFormValid() || !canUserStartShift}
+                    className={`flex-1 py-3.5 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                      isFormValid() && canUserStartShift
+                        ? "shadow-lg hover:shadow-xl cursor-pointer"
+                        : "opacity-50 cursor-not-allowed"
+                    }`}
+                    style={
+                      isFormValid() && canUserStartShift
+                        ? {
+                            background:
+                              "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                            color: "white",
+                          }
+                        : {
+                            background: "#e5e7eb",
+                            color: "#6b7280",
+                          }
+                    }
+                  >
+                    <FaPlay />
+                    {!canUserStartShift
+                      ? "غير مسموح ببدء الوردية"
+                      : "بدء الوردية"}
+                  </motion.button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </motion.div>
       </div>
     </div>

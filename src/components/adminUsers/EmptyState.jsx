@@ -6,29 +6,39 @@ export default function EmptyState({ searchTerm, handleAddNewUser }) {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="text-center py-8 sm:py-10 md:py-12 bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-gray-200/50"
+      className="bg-white rounded-2xl p-8 text-center shadow-xl"
     >
-      <FaUserShield className="mx-auto text-3xl sm:text-4xl md:text-5xl text-gray-400 mb-3 sm:mb-4" />
-      <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-600 mb-2 sm:mb-3">
+      <div
+        className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center"
+        style={{
+          background: "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
+        }}
+      >
+        <FaUserShield className="text-4xl" style={{ color: "#2E3E88" }} />
+      </div>
+      <h3 className="text-2xl font-bold mb-3" style={{ color: "#2E3E88" }}>
         {searchTerm
           ? "لم يتم العثور على مستخدمين"
-          : "لم يتم العثور على مستخدمين"}
+          : "لا توجد مستخدمين حتى الآن"}
       </h3>
-      <p className="text-gray-500 text-sm sm:text-base mb-4 sm:mb-6 max-w-xs sm:max-w-sm mx-auto">
+      <p className="mb-6 max-w-md mx-auto" style={{ color: "#32B9CC" }}>
         {searchTerm
-          ? "حاول تعديل مصطلحات البحث الخاصة بك"
-          : "ابدأ بإضافة أول مستخدم لك"}
+          ? "حاول تعديل مصطلحات البحث"
+          : "أضف مستخدمك الأول للبدء في إدارة النظام"}
       </p>
       {!searchTerm && (
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+        <button
           onClick={handleAddNewUser}
-          className="flex items-center gap-2 bg-gradient-to-r from-[#E41E26] to-[#FDB913] text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base mx-auto"
+          className="px-8 py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+          style={{
+            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
+            color: "white",
+            boxShadow: "0 10px 25px #2E3E8830",
+          }}
         >
-          <FaPlus className="text-xs sm:text-sm" />
-          <span>أضف أول مستخدم</span>
-        </motion.button>
+          <FaPlus className="inline ml-2" />
+          إضافة مستخدم جديد
+        </button>
       )}
     </motion.div>
   );
