@@ -150,10 +150,10 @@ const HeroSwipper = () => {
   if (loading) {
     return (
       <div className="relative w-full pt-8 pr-4 pl-4">
-        <div className="h-[500px] overflow-hidden rounded-3xl shadow-2xl bg-gradient-to-br from-[#f0f8ff] via-white to-[#e0f7fa] flex items-center justify-center">
+        <div className="h-[400px] overflow-hidden rounded-3xl shadow-2xl bg-gradient-to-br from-[#f0f8ff] via-white to-[#e0f7fa] flex items-center justify-center">
           <div className="text-center">
             <div
-              className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+              className="animate-spin rounded-full h-16 w-16 border-4 mx-auto mb-4"
               style={{
                 borderTopColor: "#2E3E88",
                 borderRightColor: "#32B9CC",
@@ -161,7 +161,7 @@ const HeroSwipper = () => {
                 borderLeftColor: "transparent",
               }}
             ></div>
-            <p className="text-xl font-semibold" style={{ color: "#2E3E88" }}>
+            <p className="text-lg font-semibold" style={{ color: "#2E3E88" }}>
               جارٍ تحميل العروض المميزة...
             </p>
           </div>
@@ -173,23 +173,20 @@ const HeroSwipper = () => {
   if (error) {
     return (
       <div className="relative w-full pt-8 pr-4 pl-4">
-        <div className="h-[500px] overflow-hidden rounded-3xl shadow-2xl bg-gradient-to-br from-[#f0f8ff] via-white to-[#e0f7fa] flex items-center justify-center">
+        <div className="h-[400px] overflow-hidden rounded-3xl shadow-2xl bg-gradient-to-br from-[#f0f8ff] via-white to-[#e0f7fa] flex items-center justify-center">
           <div className="text-center px-4">
             <div
-              className="p-6 rounded-3xl inline-block mb-6"
+              className="p-5 rounded-3xl inline-block mb-4"
               style={{
                 background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
               }}
             >
-              <FaFire className="text-white text-5xl mx-auto" />
+              <FaFire className="text-white text-4xl mx-auto" />
             </div>
-            <h3
-              className="text-2xl font-bold mb-3"
-              style={{ color: "#2E3E88" }}
-            >
+            <h3 className="text-xl font-bold mb-2" style={{ color: "#2E3E88" }}>
               {error}
             </h3>
-            <p className="text-lg mb-6" style={{ color: "#32B9CC" }}>
+            <p className="text-base mb-4" style={{ color: "#32B9CC" }}>
               سيتم عرض المنتجات العادية أدناه
             </p>
           </div>
@@ -201,23 +198,20 @@ const HeroSwipper = () => {
   if (slides.length === 0) {
     return (
       <div className="relative w-full pt-8 pr-4 pl-4">
-        <div className="h-[500px] overflow-hidden rounded-3xl shadow-2xl bg-gradient-to-br from-[#f0f8ff] via-white to-[#e0f7fa] flex items-center justify-center">
+        <div className="h-[400px] overflow-hidden rounded-3xl shadow-2xl bg-gradient-to-br from-[#f0f8ff] via-white to-[#e0f7fa] flex items-center justify-center">
           <div className="text-center px-4">
             <div
-              className="p-6 rounded-3xl inline-block mb-6"
+              className="p-5 rounded-3xl inline-block mb-4"
               style={{
                 background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
               }}
             >
-              <FaFire className="text-white text-5xl" />
+              <FaFire className="text-white text-4xl" />
             </div>
-            <h3
-              className="text-2xl font-bold mb-3"
-              style={{ color: "#2E3E88" }}
-            >
+            <h3 className="text-xl font-bold mb-2" style={{ color: "#2E3E88" }}>
               لا توجد عروض خاصة حالياً
             </h3>
-            <p className="text-lg" style={{ color: "#32B9CC" }}>
+            <p className="text-base" style={{ color: "#32B9CC" }}>
               تصفح قائمة المنتجات لدينا للعثور على ما تبحث عنه
             </p>
           </div>
@@ -229,22 +223,22 @@ const HeroSwipper = () => {
   const currentSlideData = slides[currentSlide];
 
   return (
-    <div className="relative w-full pt-8 pr-4 pl-4" dir="rtl">
+    <div className="relative w-full pt-6 pr-4 pl-4" dir="rtl">
       {/* Main Hero Section */}
-      <div className="relative w-full h-[500px] overflow-hidden rounded-3xl shadow-2xl">
+      <div className="relative w-full h-[400px] overflow-hidden rounded-3xl shadow-2xl">
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#2E3E88]/5 via-[#32B9CC]/3 to-transparent"></div>
 
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-20 -right-20 w-60 h-60 bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-gradient-to-r from-[#32B9CC]/10 to-[#2E3E88]/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute -top-16 -right-16 w-48 h-48 bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-gradient-to-r from-[#32B9CC]/10 to-[#2E3E88]/10 rounded-full blur-3xl animate-pulse"></div>
         </div>
 
         {/* Main Content Container */}
         <div className="relative z-10 h-full flex items-center">
-          <div className="max-w-7xl mx-auto px-6 w-full">
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
               {/* Left Side - Text Content */}
               <motion.div
                 key={currentSlide}
@@ -252,52 +246,52 @@ const HeroSwipper = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 30 }}
                 transition={{ duration: 0.5 }}
-                className="lg:w-1/2 text-right space-y-6"
+                className="lg:w-1/2 text-right space-y-4"
               >
                 {/* Badges */}
-                <div className="flex flex-wrap gap-3">
-                  <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white px-4 py-2 rounded-full shadow-lg">
-                    <FaTag className="text-sm" />
-                    <span className="font-semibold text-sm">
+                <div className="flex flex-wrap gap-2">
+                  <div className="inline-flex items-center gap-1 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white px-3 py-1.5 rounded-full shadow-lg">
+                    <FaTag className="text-xs" />
+                    <span className="font-semibold text-xs">
                       {currentSlideData.category}
                     </span>
                   </div>
 
                   {currentSlideData.hasOffer && (
-                    <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] text-white px-4 py-2 rounded-full shadow-lg animate-pulse">
-                      <FaBolt className="text-sm" />
-                      <span className="font-bold text-sm">عرض محدود!</span>
+                    <div className="inline-flex items-center gap-1 bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] text-white px-3 py-1.5 rounded-full shadow-lg animate-pulse">
+                      <FaBolt className="text-xs" />
+                      <span className="font-bold text-xs">عرض محدود!</span>
                     </div>
                   )}
                 </div>
 
                 {/* Title */}
                 <h1
-                  className="text-4xl md:text-5xl lg:text-6xl font-bold"
+                  className="text-3xl sm:text-4xl md:text-5xl font-bold"
                   style={{ color: "#2E3E88" }}
                 >
                   {currentSlideData.title}
                 </h1>
 
                 {/* Description */}
-                <p className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-2xl">
+                <p className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-2xl">
                   {currentSlideData.description}
                 </p>
 
                 {/* Features */}
-                <div className="flex flex-wrap gap-4">
+                <div className="flex flex-wrap gap-3">
                   {currentSlideData.preparationTime && (
-                    <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-xl shadow-md">
+                    <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-xl shadow-md">
                       <FaClock className="text-[#32B9CC]" />
-                      <span className="font-medium text-gray-700">
+                      <span className="font-medium text-gray-700 text-sm">
                         {currentSlideData.preparationTime}
                       </span>
                     </div>
                   )}
 
-                  <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-xl shadow-md">
+                  <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-xl shadow-md">
                     <FaStar className="text-yellow-500" />
-                    <span className="font-medium text-gray-700">
+                    <span className="font-medium text-gray-700 text-sm">
                       {currentSlideData.rating} ({currentSlideData.reviews}{" "}
                       تقييم)
                     </span>
@@ -305,11 +299,11 @@ const HeroSwipper = () => {
                 </div>
 
                 {/* Price Section - All in ONE LINE */}
-                <div className="flex items-center gap-4 flex-wrap">
+                <div className="flex items-center gap-3 flex-wrap">
                   {/* Discount Price - MAIN LARGE PRICE */}
                   <div className="flex items-center gap-2">
                     <span
-                      className="text-4xl md:text-5xl font-bold"
+                      className="text-3xl md:text-4xl font-bold"
                       style={{ color: "#2E3E88" }}
                     >
                       {formatPrice(currentSlideData.discountPrice)} ج.م
@@ -317,7 +311,7 @@ const HeroSwipper = () => {
 
                     {/* Original Price (if offer) - INLINE */}
                     {currentSlideData.hasOffer && (
-                      <span className="text-xl md:text-2xl text-gray-400 line-through font-semibold">
+                      <span className="text-lg md:text-xl text-gray-400 line-through font-semibold">
                         {formatPrice(currentSlideData.originalPrice)} ج.م
                       </span>
                     )}
@@ -326,9 +320,9 @@ const HeroSwipper = () => {
                   {/* Discount Badge - INLINE */}
                   {currentSlideData.hasOffer &&
                     currentSlideData.discountType !== "none" && (
-                      <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] text-white px-4 py-2 rounded-xl shadow-lg">
-                        <FaFire className="text-sm" />
-                        <span className="font-bold">
+                      <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] text-white px-3 py-1.5 rounded-xl shadow-lg">
+                        <FaFire className="text-xs" />
+                        <span className="font-bold text-sm">
                           خصم {currentSlideData.discountText}
                         </span>
                       </div>
@@ -341,7 +335,7 @@ const HeroSwipper = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
                   onClick={() => handleOrderNow(currentSlideData)}
-                  className="group relative bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 transform flex items-center gap-3 overflow-hidden mt-6"
+                  className="group relative bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white px-6 py-3 rounded-2xl font-bold text-base hover:shadow-2xl hover:scale-105 transition-all duration-300 transform flex items-center gap-2 overflow-hidden mt-4"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <span className="relative z-10">
@@ -362,7 +356,7 @@ const HeroSwipper = () => {
                 <div className="relative">
                   {/* Main Image Container */}
                   <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                    <div className="relative h-72 md:h-80 lg:h-96">
+                    <div className="relative h-56 sm:h-64 md:h-72">
                       <img
                         src={currentSlideData.image}
                         alt={currentSlideData.title}
@@ -379,13 +373,13 @@ const HeroSwipper = () => {
                       initial={{ y: 20, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ delay: 0.4 }}
-                      className="absolute -top-4 -right-4 bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] text-white px-6 py-3 rounded-2xl shadow-xl"
+                      className="absolute -top-3 -right-3 bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] text-white px-4 py-2 rounded-2xl shadow-xl"
                     >
-                      <div className="flex items-center gap-2">
-                        <FaFire className="text-xl" />
+                      <div className="flex items-center gap-1">
+                        <FaFire className="text-base" />
                         <div className="text-center">
-                          <div className="font-bold text-lg">عرض خاص!</div>
-                          <div className="text-sm font-semibold">
+                          <div className="font-bold text-sm">عرض خاص!</div>
+                          <div className="text-xs font-semibold">
                             لفترة محدودة
                           </div>
                         </div>
@@ -394,8 +388,8 @@ const HeroSwipper = () => {
                   )}
 
                   {/* Decorative Elements */}
-                  <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-gradient-to-r from-[#2E3E88]/20 to-[#32B9CC]/20 rounded-2xl blur-xl"></div>
-                  <div className="absolute top-1/2 -right-6 w-12 h-12 bg-gradient-to-r from-[#32B9CC] to-[#2E3E88] rounded-full"></div>
+                  <div className="absolute -bottom-3 -left-3 w-16 h-16 bg-gradient-to-r from-[#2E3E88]/20 to-[#32B9CC]/20 rounded-2xl blur-xl"></div>
+                  <div className="absolute top-1/2 -right-4 w-8 h-8 bg-gradient-to-r from-[#32B9CC] to-[#2E3E88] rounded-full"></div>
                 </div>
               </motion.div>
             </div>
@@ -410,9 +404,9 @@ const HeroSwipper = () => {
               onClick={prevSlide}
               onMouseEnter={() => setAutoSlide(false)}
               onMouseLeave={() => setAutoSlide(true)}
-              className="absolute left-6 top-1/2 transform -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm text-[#2E3E88] rounded-full p-3 hover:scale-110 transition-all duration-300 shadow-2xl hover:shadow-3xl flex items-center justify-center group"
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm text-[#2E3E88] rounded-full p-2 hover:scale-110 transition-all duration-300 shadow-2xl hover:shadow-3xl flex items-center justify-center group"
             >
-              <FaChevronLeft className="text-xl group-hover:-translate-x-1 transition-transform" />
+              <FaChevronLeft className="text-lg group-hover:-translate-x-1 transition-transform" />
             </button>
 
             {/* Next Button */}
@@ -420,16 +414,16 @@ const HeroSwipper = () => {
               onClick={nextSlide}
               onMouseEnter={() => setAutoSlide(false)}
               onMouseLeave={() => setAutoSlide(true)}
-              className="absolute right-6 top-1/2 transform -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm text-[#2E3E88] rounded-full p-3 hover:scale-110 transition-all duration-300 shadow-2xl hover:shadow-3xl flex items-center justify-center group"
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm text-[#2E3E88] rounded-full p-2 hover:scale-110 transition-all duration-300 shadow-2xl hover:shadow-3xl flex items-center justify-center group"
             >
-              <FaChevronRight className="text-xl group-hover:translate-x-1 transition-transform" />
+              <FaChevronRight className="text-lg group-hover:translate-x-1 transition-transform" />
             </button>
           </>
         )}
 
         {/* Slide Indicators */}
         {slides.length > 1 && (
-          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 flex gap-3">
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-20 flex gap-2">
             {slides.map((_, index) => (
               <button
                 key={index}
@@ -438,9 +432,9 @@ const HeroSwipper = () => {
                 onMouseLeave={() => setAutoSlide(true)}
                 className={`relative overflow-hidden rounded-full transition-all duration-300 ${
                   currentSlide === index
-                    ? "w-12 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC]"
-                    : "w-3 bg-gray-300 hover:bg-gray-400"
-                } h-3`}
+                    ? "w-8 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC]"
+                    : "w-2 bg-gray-300 hover:bg-gray-400"
+                } h-2`}
               >
                 {currentSlide === index && (
                   <motion.div
@@ -456,13 +450,13 @@ const HeroSwipper = () => {
         )}
 
         {/* Bottom Gradient */}
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white via-white/80 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white via-white/80 to-transparent"></div>
       </div>
 
       {/* Thumbnails Carousel */}
       {slides.length > 1 && (
-        <div className="mt-8 pr-4 pl-4">
-          <div className="flex gap-4 overflow-x-auto p-4 scrollbar-hide">
+        <div className="mt-6 pr-4 pl-4">
+          <div className="flex gap-3 overflow-x-auto p-3 scrollbar-hide">
             {slides.map((slide, index) => (
               <motion.button
                 key={slide.id}
@@ -471,14 +465,14 @@ const HeroSwipper = () => {
                 onMouseLeave={() => setAutoSlide(true)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className={`flex-shrink-0 relative rounded-2xl overflow-hidden shadow-lg transition-all duration-300 ${
+                className={`flex-shrink-0 relative rounded-xl overflow-hidden shadow-lg transition-all duration-300 ${
                   currentSlide === index
-                    ? "ring-4 ring-[#2E3E88] ring-offset-2"
+                    ? "ring-3 ring-[#2E3E88] ring-offset-1"
                     : "opacity-70 hover:opacity-100"
                 }`}
                 style={{
-                  width: "200px",
-                  height: "120px",
+                  width: "160px",
+                  height: "96px",
                 }}
               >
                 <img
@@ -490,18 +484,18 @@ const HeroSwipper = () => {
 
                 {/* Active Indicator */}
                 {currentSlide === index && (
-                  <div className="absolute top-2 right-2 w-3 h-3 bg-green-500 rounded-full"></div>
+                  <div className="absolute top-1.5 right-1.5 w-2 h-2 bg-green-500 rounded-full"></div>
                 )}
 
                 {/* Offer Badge */}
                 {slide.hasOffer && (
-                  <div className="absolute top-2 left-2 bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] text-white px-2 py-1 rounded-lg text-xs font-bold">
+                  <div className="absolute top-1.5 left-1.5 bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] text-white px-1.5 py-0.5 rounded text-xs font-bold">
                     عرض
                   </div>
                 )}
 
-                <div className="absolute bottom-2 right-2 left-2">
-                  <p className="text-white text-sm font-semibold truncate">
+                <div className="absolute bottom-1.5 right-1.5 left-1.5">
+                  <p className="text-white text-xs font-semibold truncate">
                     {slide.title}
                   </p>
                   <p className="text-white/90 text-xs truncate">

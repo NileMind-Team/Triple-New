@@ -282,6 +282,7 @@ const OrderShiftsReport = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const [openDropdown, setOpenDropdown] = useState(null);
+
   useEffect(() => {
     const loadBranches = async () => {
       try {
@@ -703,7 +704,7 @@ const OrderShiftsReport = () => {
   
   .total-row {
     display: flex;
-    justify-between;
+    justify-content: space-between;
     align-items: center;
     margin: 5px 0;
     padding: 3px 8px;
@@ -998,7 +999,7 @@ const OrderShiftsReport = () => {
 
         {/* Hero Header */}
         <div
-          className="relative py-16 px-4"
+          className="relative py-8 md:py-16 px-4"
           style={{
             background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
           }}
@@ -1009,13 +1010,13 @@ const OrderShiftsReport = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               onClick={() => navigate(-1)}
-              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              className="absolute top-4 left-4 md:top-6 md:left-6 bg-white/20 backdrop-blur-sm rounded-full p-2 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
               style={{
                 boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
               }}
             >
               <FaArrowLeft
-                size={20}
+                size={18}
                 className="group-hover:-translate-x-1 transition-transform"
               />
             </motion.button>
@@ -1023,15 +1024,15 @@ const OrderShiftsReport = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center pt-8"
+              className="text-center pt-6 md:pt-8"
             >
-              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
-                <FaChartBar className="text-white text-4xl" />
+              <div className="inline-flex items-center justify-center p-3 md:p-4 rounded-xl md:rounded-2xl bg-white/20 backdrop-blur-sm mb-4 md:mb-6">
+                <FaChartBar className="text-white text-2xl md:text-4xl" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-2 md:mb-4">
                 تقرير الورديات
               </h1>
-              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+              <p className="text-white/80 text-sm md:text-lg lg:text-xl max-w-2xl mx-auto px-2">
                 تحليل مفصل للطلبات حسب الورديات والفروع
               </p>
             </motion.div>
@@ -1040,7 +1041,7 @@ const OrderShiftsReport = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6 md:py-8 -mt-8 md:-mt-10 relative z-10">
         {/* Content Container */}
         <div className="w-full">
           {/* Date Filter Section */}
@@ -1048,34 +1049,40 @@ const OrderShiftsReport = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white rounded-2xl p-6 mb-6 shadow-xl"
+            className="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 mb-4 md:mb-6 shadow-lg md:shadow-xl"
           >
-            <div className="flex items-center gap-2 mb-6">
-              <FaCalendarAlt className="text-xl" style={{ color: "#2E3E88" }} />
-              <h3 className="text-lg font-bold" style={{ color: "#2E3E88" }}>
+            <div className="flex items-center gap-2 mb-4 md:mb-6">
+              <FaCalendarAlt
+                className="text-lg md:text-xl"
+                style={{ color: "#2E3E88" }}
+              />
+              <h3
+                className="text-base md:text-lg font-bold"
+                style={{ color: "#2E3E88" }}
+              >
                 فلترة الورديات
               </h3>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
               {/* Day Selection */}
               <div>
                 <label
-                  className="block text-sm font-semibold mb-2 text-right"
+                  className="block text-xs md:text-sm font-semibold mb-1 md:mb-2 text-right"
                   style={{ color: "#2E3E88" }}
                 >
                   اليوم
                 </label>
                 <div className="relative group">
                   <FaCalendarAlt
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm md:text-base"
                     style={{ color: "#2E3E88" }}
                   />
                   <DatePicker
                     selected={day}
                     onChange={(date) => setDay(date)}
                     dateFormat="dd/MM/yyyy"
-                    className="w-full border border-gray-200 rounded-xl pr-10 pl-3 py-2.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-right"
+                    className="w-full text-xs md:text-sm border border-gray-200 rounded-lg md:rounded-xl pr-9 md:pr-10 pl-3 py-2 md:py-2.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-right"
                     style={{
                       background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
                     }}
@@ -1089,7 +1096,7 @@ const OrderShiftsReport = () => {
               {/* Branch Dropdown */}
               <div>
                 <label
-                  className="block text-sm font-semibold mb-2 text-right"
+                  className="block text-xs md:text-sm font-semibold mb-1 md:mb-2 text-right"
                   style={{ color: "#2E3E88" }}
                 >
                   الفرع
@@ -1098,17 +1105,17 @@ const OrderShiftsReport = () => {
                   <button
                     type="button"
                     onClick={() => toggleDropdown("branch")}
-                    className="w-full flex items-center justify-between border border-gray-200 rounded-xl px-4 py-2.5 transition-all hover:border-[#2E3E88] group text-right"
+                    className="w-full flex items-center justify-between border border-gray-200 rounded-lg md:rounded-xl px-3 md:px-4 py-2 md:py-2.5 transition-all hover:border-[#2E3E88] group text-right"
                     style={{
                       background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
                     }}
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 md:gap-3">
                       <FaBuilding
-                        className="group-hover:scale-110 transition-transform"
+                        className="group-hover:scale-110 transition-transform text-sm md:text-base"
                         style={{ color: "#2E3E88" }}
                       />
-                      <span className="font-medium">
+                      <span className="text-xs md:text-sm font-medium truncate">
                         {branchId
                           ? branches.find((b) => b.id === parseInt(branchId))
                               ?.name || "اختر الفرع"
@@ -1121,7 +1128,10 @@ const OrderShiftsReport = () => {
                       }}
                       transition={{ duration: 0.3 }}
                     >
-                      <FaChevronDown style={{ color: "#2E3E88" }} />
+                      <FaChevronDown
+                        className="text-xs md:text-sm"
+                        style={{ color: "#2E3E88" }}
+                      />
                     </motion.div>
                   </button>
                   <AnimatePresence>
@@ -1131,7 +1141,7 @@ const OrderShiftsReport = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -5 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-xl rounded-xl overflow-hidden max-h-48 overflow-y-auto text-right"
+                        className="absolute z-10 mt-1 md:mt-2 w-full bg-white border border-gray-200 shadow-xl rounded-lg md:rounded-xl overflow-hidden max-h-40 md:max-h-48 overflow-y-auto text-right"
                       >
                         {branches.map((branch) => (
                           <li
@@ -1140,9 +1150,11 @@ const OrderShiftsReport = () => {
                               setBranchId(branch.id.toString());
                               setOpenDropdown(null);
                             }}
-                            className="px-4 py-2.5 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 cursor-pointer transition-all border-b last:border-b-0 text-right"
+                            className="px-3 md:px-4 py-2 md:py-2.5 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 cursor-pointer transition-all border-b last:border-b-0 text-right"
                           >
-                            <span className="text-gray-700">{branch.name}</span>
+                            <span className="text-xs md:text-sm text-gray-700 truncate">
+                              {branch.name}
+                            </span>
                           </li>
                         ))}
                       </motion.ul>
@@ -1152,9 +1164,9 @@ const OrderShiftsReport = () => {
               </div>
 
               {/* Shift Name Dropdown */}
-              <div>
+              <div className="md:col-span-2 lg:col-span-1">
                 <label
-                  className="block text-sm font-semibold mb-2 text-right"
+                  className="block text-xs md:text-sm font-semibold mb-1 md:mb-2 text-right"
                   style={{ color: "#2E3E88" }}
                 >
                   اسم الوردية
@@ -1164,7 +1176,7 @@ const OrderShiftsReport = () => {
                     type="button"
                     onClick={() => toggleDropdown("shift")}
                     disabled={!day || !branchId || orderShifts.length === 0}
-                    className={`w-full flex items-center justify-between border border-gray-200 rounded-xl px-4 py-2.5 transition-all hover:border-[#2E3E88] group text-right ${
+                    className={`w-full flex items-center justify-between border border-gray-200 rounded-lg md:rounded-xl px-3 md:px-4 py-2 md:py-2.5 transition-all hover:border-[#2E3E88] group text-right ${
                       !day || !branchId || orderShifts.length === 0
                         ? "opacity-50 cursor-not-allowed"
                         : ""
@@ -1173,12 +1185,12 @@ const OrderShiftsReport = () => {
                       background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
                     }}
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 md:gap-3">
                       <FaClock
-                        className="group-hover:scale-110 transition-transform"
+                        className="group-hover:scale-110 transition-transform text-sm md:text-base"
                         style={{ color: "#2E3E88" }}
                       />
-                      <span className="font-medium">
+                      <span className="text-xs md:text-sm font-medium truncate">
                         {shiftId && orderShifts.length > 0
                           ? orderShifts.find((s) => s.id === parseInt(shiftId))
                               ?.name || "اختر الوردية"
@@ -1195,7 +1207,10 @@ const OrderShiftsReport = () => {
                       }}
                       transition={{ duration: 0.3 }}
                     >
-                      <FaChevronDown style={{ color: "#2E3E88" }} />
+                      <FaChevronDown
+                        className="text-xs md:text-sm"
+                        style={{ color: "#2E3E88" }}
+                      />
                     </motion.div>
                   </button>
                   <AnimatePresence>
@@ -1208,7 +1223,7 @@ const OrderShiftsReport = () => {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -5 }}
                           transition={{ duration: 0.2 }}
-                          className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-xl rounded-xl overflow-hidden max-h-48 overflow-y-auto text-right"
+                          className="absolute z-10 mt-1 md:mt-2 w-full bg-white border border-gray-200 shadow-xl rounded-lg md:rounded-xl overflow-hidden max-h-40 md:max-h-48 overflow-y-auto text-right"
                         >
                           {orderShifts.map((shift, index) => (
                             <li
@@ -1217,28 +1232,30 @@ const OrderShiftsReport = () => {
                                 setShiftId(shift.id.toString());
                                 setOpenDropdown(null);
                               }}
-                              className="px-4 py-2.5 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 cursor-pointer transition-all border-b last:border-b-0 text-right"
+                              className="px-3 md:px-4 py-2 md:py-2.5 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 cursor-pointer transition-all border-b last:border-b-0 text-right"
                             >
                               <div className="flex justify-between items-center">
-                                <span className="text-gray-700">
+                                <span className="text-xs md:text-sm text-gray-700 truncate">
                                   {shift.name}
                                 </span>
-                                <span
-                                  className="text-xs text-left"
-                                  style={{ color: "#32B9CC" }}
-                                >
-                                  {shift.start
-                                    ? formatTimeTo12Hour(shift.start)
-                                    : "غير محدد"}
+                                <div className="text-left ml-2">
+                                  <span
+                                    className="text-xs block whitespace-nowrap"
+                                    style={{ color: "#32B9CC" }}
+                                  >
+                                    {shift.start
+                                      ? formatTimeTo12Hour(shift.start)
+                                      : "غير محدد"}
+                                  </span>
                                   {shift.end && (
                                     <span
-                                      className="text-[10px] block"
+                                      className="text-[10px] block whitespace-nowrap"
                                       style={{ color: "#FF8E53" }}
                                     >
                                       حتى {formatTimeTo12Hour(shift.end)}
                                     </span>
                                   )}
-                                </span>
+                                </div>
                               </div>
                             </li>
                           ))}
@@ -1249,13 +1266,13 @@ const OrderShiftsReport = () => {
               </div>
             </div>
 
-            <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="mt-4 md:mt-6 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => handleFilter(1)}
                 disabled={!day || !branchId || !shiftId}
-                className={`flex-1 px-4 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                className={`flex-1 px-3 md:px-4 py-2.5 md:py-3 rounded-lg md:rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 text-sm md:text-base ${
                   day && branchId && shiftId
                     ? "shadow-lg hover:shadow-xl cursor-pointer"
                     : "opacity-50 cursor-not-allowed"
@@ -1272,7 +1289,7 @@ const OrderShiftsReport = () => {
                       }
                 }
               >
-                <FaFilter />
+                <FaFilter className="text-sm md:text-base" />
                 تطبيق الفلترة
               </motion.button>
 
@@ -1282,7 +1299,7 @@ const OrderShiftsReport = () => {
                   whileTap={{ scale: 0.95 }}
                   onClick={handlePrint}
                   disabled={isPrinting}
-                  className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                  className={`flex-1 flex items-center justify-center gap-2 px-3 md:px-4 py-2.5 md:py-3 rounded-lg md:rounded-xl font-semibold transition-all duration-300 text-sm md:text-base ${
                     isPrinting
                       ? "opacity-50 cursor-not-allowed"
                       : "shadow-lg hover:shadow-xl cursor-pointer"
@@ -1303,14 +1320,14 @@ const OrderShiftsReport = () => {
                   {isPrinting ? (
                     <>
                       <div
-                        className="animate-spin rounded-full h-5 w-5 border-b-2 mr-2"
+                        className="animate-spin rounded-full h-4 w-4 md:h-5 md:w-5 border-b-2 mr-2"
                         style={{ borderColor: "white" }}
                       ></div>
                       جاري الطباعة...
                     </>
                   ) : (
                     <>
-                      <FaPrint />
+                      <FaPrint className="text-sm md:text-base" />
                       طباعة التقرير
                     </>
                   )}
@@ -1325,186 +1342,197 @@ const OrderShiftsReport = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-white rounded-2xl overflow-hidden shadow-xl mb-6"
+              className="bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-lg md:shadow-xl mb-4 md:mb-6"
             >
-              <div className="px-6 py-4 border-b border-gray-100 text-right">
-                <div className="flex items-center gap-2">
-                  <FaListAlt className="text-xl" style={{ color: "#2E3E88" }} />
-                  <h3
-                    className="text-lg font-bold"
-                    style={{ color: "#2E3E88" }}
+              <div className="px-3 md:px-6 py-3 md:py-4 border-b border-gray-100 text-right">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                  <div className="flex items-center gap-2">
+                    <FaListAlt
+                      className="text-lg md:text-xl"
+                      style={{ color: "#2E3E88" }}
+                    />
+                    <h3
+                      className="text-base md:text-lg font-bold"
+                      style={{ color: "#2E3E88" }}
+                    >
+                      تفاصيل الطلبات حسب الورديات
+                    </h3>
+                  </div>
+                  <span
+                    className="text-xs md:text-sm mr-0 sm:mr-auto"
+                    style={{ color: "#32B9CC" }}
                   >
-                    تفاصيل الطلبات حسب الورديات
-                  </h3>
-                  <span className="text-sm" style={{ color: "#32B9CC" }}>
                     ({totalItems} طلب)
                   </span>
                 </div>
               </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-right">
-                  <thead
-                    className="border-b border-gray-100 text-right"
-                    style={{
-                      background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
-                    }}
-                  >
-                    <tr>
-                      <th
-                        className="px-4 py-3 font-semibold text-right"
-                        style={{ color: "#2E3E88" }}
-                      >
-                        رقم الفاتورة
-                      </th>
-                      <th
-                        className="px-4 py-3 font-semibold text-right"
-                        style={{ color: "#2E3E88" }}
-                      >
-                        الإجمالي
-                      </th>
-                      <th
-                        className="px-4 py-3 font-semibold text-right"
-                        style={{ color: "#2E3E88" }}
-                      >
-                        اسم الفرع
-                      </th>
-                      <th
-                        className="px-4 py-3 font-semibold text-right"
-                        style={{ color: "#2E3E88" }}
-                      >
-                        اسم الوردية
-                      </th>
-                      <th
-                        className="px-4 py-3 font-semibold text-right"
-                        style={{ color: "#2E3E88" }}
-                      >
-                        بداية الوردية
-                      </th>
-                      <th
-                        className="px-4 py-3 font-semibold text-right"
-                        style={{ color: "#2E3E88" }}
-                      >
-                        نهاية الوردية
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100 text-right">
-                    {reportData.map((order) => (
-                      <tr
-                        key={order.id}
-                        className="hover:bg-gray-50 transition-colors duration-150"
-                      >
-                        <td
-                          className="px-4 py-3 font-mono text-sm font-bold text-right"
-                          style={{ color: "#2E3E88" }}
-                        >
-                          {order.orderNumber}
-                        </td>
-                        <td
-                          className="px-4 py-3 font-bold text-right"
-                          style={{
-                            background:
-                              "linear-gradient(135deg, #2E3E88, #32B9CC)",
-                            WebkitBackgroundClip: "text",
-                            WebkitTextFillColor: "transparent",
-                          }}
-                        >
-                          {formatCurrency(order.totalWithFee)}
-                        </td>
-                        <td
-                          className="px-4 py-3 text-sm text-right"
-                          style={{ color: "#32B9CC" }}
-                        >
-                          {order.branch?.name || "غير محدد"}
-                        </td>
-                        <td
-                          className="px-4 py-3 text-sm text-right"
-                          style={{ color: "#2E3E88" }}
-                        >
-                          {order.orderShift?.name || "غير محدد"}
-                        </td>
-                        <td
-                          className="px-4 py-3 text-sm text-right"
-                          style={{ color: "#32B9CC" }}
-                        >
-                          <div className="flex items-center justify-end gap-1">
-                            {order.orderShift?.start
-                              ? formatTimeTo12Hour(order.orderShift.start)
-                              : "غير محدد"}
-                          </div>
-                        </td>
-                        <td
-                          className="px-4 py-3 text-sm text-right"
-                          style={{ color: "#FF8E53" }}
-                        >
-                          <div className="flex items-center justify-end gap-1">
-                            {order.orderShift?.end
-                              ? formatTimeTo12Hour(order.orderShift.end)
-                              : "غير محدد"}
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-
-                    <tr
-                      className="border-t-2 border-gray-100 text-right"
+              <div className="overflow-x-auto -mx-3 md:mx-0">
+                <div className="min-w-[800px] md:min-w-0">
+                  <table className="w-full text-right">
+                    <thead
+                      className="border-b border-gray-100 text-right"
                       style={{
                         background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
                       }}
                     >
-                      <td
-                        colSpan="5"
-                        className="px-4 py-3 font-bold text-right"
-                        style={{ color: "#2E3E88" }}
-                      >
-                        الإجمالي الكلي لجميع الفواتير:
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <span
-                          className="text-xl font-bold"
-                          style={{
-                            background:
-                              "linear-gradient(135deg, #2E3E88, #32B9CC)",
-                            WebkitBackgroundClip: "text",
-                            WebkitTextFillColor: "transparent",
-                          }}
+                      <tr>
+                        <th
+                          className="px-2 md:px-4 py-2 md:py-3 font-semibold text-right text-xs md:text-sm"
+                          style={{ color: "#2E3E88" }}
                         >
-                          {formatCurrency(totalPrice)}
-                        </span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                          رقم الفاتورة
+                        </th>
+                        <th
+                          className="px-2 md:px-4 py-2 md:py-3 font-semibold text-right text-xs md:text-sm"
+                          style={{ color: "#2E3E88" }}
+                        >
+                          الإجمالي
+                        </th>
+                        <th
+                          className="px-2 md:px-4 py-2 md:py-3 font-semibold text-right text-xs md:text-sm"
+                          style={{ color: "#2E3E88" }}
+                        >
+                          اسم الفرع
+                        </th>
+                        <th
+                          className="px-2 md:px-4 py-2 md:py-3 font-semibold text-right text-xs md:text-sm"
+                          style={{ color: "#2E3E88" }}
+                        >
+                          اسم الوردية
+                        </th>
+                        <th
+                          className="px-2 md:px-4 py-2 md:py-3 font-semibold text-right text-xs md:text-sm"
+                          style={{ color: "#2E3E88" }}
+                        >
+                          بداية الوردية
+                        </th>
+                        <th
+                          className="px-2 md:px-4 py-2 md:py-3 font-semibold text-right text-xs md:text-sm"
+                          style={{ color: "#2E3E88" }}
+                        >
+                          نهاية الوردية
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100 text-right">
+                      {reportData.map((order) => (
+                        <tr
+                          key={order.id}
+                          className="hover:bg-gray-50 transition-colors duration-150"
+                        >
+                          <td
+                            className="px-2 md:px-4 py-2 md:py-3 font-mono text-xs md:text-sm font-bold text-right whitespace-nowrap"
+                            style={{ color: "#2E3E88" }}
+                          >
+                            {order.orderNumber}
+                          </td>
+                          <td
+                            className="px-2 md:px-4 py-2 md:py-3 font-bold text-right text-xs md:text-sm whitespace-nowrap"
+                            style={{
+                              background:
+                                "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                              WebkitBackgroundClip: "text",
+                              WebkitTextFillColor: "transparent",
+                            }}
+                          >
+                            {formatCurrency(order.totalWithFee)}
+                          </td>
+                          <td
+                            className="px-2 md:px-4 py-2 md:py-3 text-xs md:text-sm text-right truncate max-w-[100px]"
+                            style={{ color: "#32B9CC" }}
+                          >
+                            {order.branch?.name || "غير محدد"}
+                          </td>
+                          <td
+                            className="px-2 md:px-4 py-2 md:py-3 text-xs md:text-sm text-right truncate max-w-[100px]"
+                            style={{ color: "#2E3E88" }}
+                          >
+                            {order.orderShift?.name || "غير محدد"}
+                          </td>
+                          <td
+                            className="px-2 md:px-4 py-2 md:py-3 text-xs md:text-sm text-right whitespace-nowrap"
+                            style={{ color: "#32B9CC" }}
+                          >
+                            <div className="flex items-center justify-end gap-1">
+                              {order.orderShift?.start
+                                ? formatTimeTo12Hour(order.orderShift.start)
+                                : "غير محدد"}
+                            </div>
+                          </td>
+                          <td
+                            className="px-2 md:px-4 py-2 md:py-3 text-xs md:text-sm text-right whitespace-nowrap"
+                            style={{ color: "#FF8E53" }}
+                          >
+                            <div className="flex items-center justify-end gap-1">
+                              {order.orderShift?.end
+                                ? formatTimeTo12Hour(order.orderShift.end)
+                                : "غير محدد"}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+
+                      <tr
+                        className="border-t-2 border-gray-100 text-right"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #f8f9ff, #ffffff)",
+                        }}
+                      >
+                        <td
+                          colSpan="5"
+                          className="px-2 md:px-4 py-2 md:py-3 font-bold text-right text-xs md:text-sm"
+                          style={{ color: "#2E3E88" }}
+                        >
+                          الإجمالي الكلي لجميع الفواتير:
+                        </td>
+                        <td className="px-2 md:px-4 py-2 md:py-3 text-right">
+                          <span
+                            className="text-sm md:text-xl font-bold whitespace-nowrap"
+                            style={{
+                              background:
+                                "linear-gradient(135deg, #2E3E88, #32B9CC)",
+                              WebkitBackgroundClip: "text",
+                              WebkitTextFillColor: "transparent",
+                            }}
+                          >
+                            {formatCurrency(totalPrice)}
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
 
               {/* Pagination Controls */}
               {totalPages > 1 && (
-                <div className="px-6 py-4 border-t border-gray-100 text-right">
-                  <div className="flex items-center justify-center gap-2">
+                <div className="px-3 md:px-6 py-3 md:py-4 border-t border-gray-100 text-right">
+                  <div className="flex items-center justify-center gap-1 md:gap-2">
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={handlePrevPage}
                       disabled={currentPage === 1}
-                      className={`p-2 sm:p-3 rounded-xl ${
+                      className={`p-1.5 md:p-2 lg:p-3 rounded-lg md:rounded-xl ${
                         currentPage === 1
                           ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                           : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
                       }`}
                     >
                       <FaChevronLeft
-                        className="text-sm sm:text-base"
+                        className="text-xs md:text-sm lg:text-base"
                         style={{ color: "#2E3E88" }}
                       />
                     </motion.button>
 
-                    <div className="flex items-center gap-1 sm:gap-2">
+                    <div className="flex items-center gap-0.5 md:gap-1 lg:gap-2">
                       {getPaginationNumbers().map((pageNum, index) => (
                         <React.Fragment key={index}>
                           {pageNum === "..." ? (
                             <span
-                              className="px-2 sm:px-3 py-1 sm:py-2"
+                              className="px-1 md:px-2 lg:px-3 py-0.5 md:py-1 lg:py-2 text-xs md:text-sm"
                               style={{ color: "#32B9CC" }}
                             >
                               ...
@@ -1514,7 +1542,7 @@ const OrderShiftsReport = () => {
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
                               onClick={() => handlePageChange(pageNum)}
-                              className={`px-3 sm:px-4 py-1 sm:py-2 rounded-xl font-semibold ${
+                              className={`px-2 md:px-3 lg:px-4 py-0.5 md:py-1 lg:py-2 rounded-lg md:rounded-xl font-semibold text-xs md:text-sm ${
                                 currentPage === pageNum
                                   ? "shadow-lg text-white"
                                   : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
@@ -1542,14 +1570,14 @@ const OrderShiftsReport = () => {
                       whileTap={{ scale: 0.95 }}
                       onClick={handleNextPage}
                       disabled={currentPage === totalPages}
-                      className={`p-2 sm:p-3 rounded-xl ${
+                      className={`p-1.5 md:p-2 lg:p-3 rounded-lg md:rounded-xl ${
                         currentPage === totalPages
                           ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                           : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
                       }`}
                     >
                       <FaChevronRight
-                        className="text-sm sm:text-base"
+                        className="text-xs md:text-sm lg:text-base"
                         style={{ color: "#2E3E88" }}
                       />
                     </motion.button>
@@ -1563,23 +1591,29 @@ const OrderShiftsReport = () => {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-center py-12"
+              className="text-center py-8 md:py-12"
             >
               <div
-                className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center"
+                className="w-16 h-16 md:w-24 md:h-24 rounded-full mx-auto mb-4 md:mb-6 flex items-center justify-center"
                 style={{
                   background: "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
                 }}
               >
-                <FaChartBar className="text-4xl" style={{ color: "#2E3E88" }} />
+                <FaChartBar
+                  className="text-2xl md:text-4xl"
+                  style={{ color: "#2E3E88" }}
+                />
               </div>
               <h3
-                className="text-2xl font-bold mb-3"
+                className="text-xl md:text-2xl font-bold mb-2 md:mb-3"
                 style={{ color: "#2E3E88" }}
               >
                 لا توجد بيانات لعرضها
               </h3>
-              <p className="mb-6 max-w-md mx-auto" style={{ color: "#32B9CC" }}>
+              <p
+                className="mb-4 md:mb-6 max-w-md mx-auto px-2 text-sm md:text-base"
+                style={{ color: "#32B9CC" }}
+              >
                 يرجى تحديد اليوم والفرع وتطبيق الفلترة لعرض التقرير
               </p>
             </motion.div>

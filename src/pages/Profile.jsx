@@ -491,7 +491,7 @@ export default function Profile() {
   }
 
   const fieldClass =
-    "w-full border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-right";
+    "w-full border border-gray-200 rounded-xl px-4 py-3 md:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-right text-sm md:text-base";
 
   return (
     <div
@@ -507,7 +507,7 @@ export default function Profile() {
 
         {/* Hero Header */}
         <div
-          className="relative py-16 px-4"
+          className="relative py-8 md:py-16 px-4"
           style={{
             background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
           }}
@@ -518,29 +518,29 @@ export default function Profile() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               onClick={() => navigate(-1)}
-              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              className="absolute top-4 md:top-6 left-4 md:left-6 bg-white/20 backdrop-blur-sm rounded-full p-2 md:p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
               style={{
                 boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
               }}
             >
               <FaArrowLeft
-                size={20}
-                className="group-hover:-translate-x-1 transition-transform"
+                size={16}
+                className="md:w-5 md:h-5 group-hover:-translate-x-1 transition-transform"
               />
             </motion.button>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center pt-8"
+              className="text-center pt-6 md:pt-8"
             >
-              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
-                <FaUser className="text-white text-4xl" />
+              <div className="inline-flex items-center justify-center p-3 md:p-4 rounded-xl md:rounded-2xl bg-white/20 backdrop-blur-sm mb-4 md:mb-6">
+                <FaUser className="text-white text-2xl md:text-4xl" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-2 md:mb-4">
                 الملف الشخصي
               </h1>
-              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+              <p className="text-white/80 text-sm md:text-lg lg:text-xl max-w-2xl mx-auto px-2">
                 إدارة معلومات حسابك وإعدادات الأمان
               </p>
             </motion.div>
@@ -549,34 +549,34 @@ export default function Profile() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6 md:py-8 -mt-8 md:-mt-10 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
           {/* Left Column - User Info */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="lg:col-span-1 space-y-4 md:space-y-6">
             {/* User Card */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white rounded-3xl shadow-xl overflow-hidden"
+              className="bg-white rounded-2xl md:rounded-3xl shadow-xl overflow-hidden"
             >
               <div
-                className="relative h-32"
+                className="relative h-24 md:h-32"
                 style={{
                   background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
                 }}
               >
-                <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2">
+                <div className="absolute -bottom-12 md:-bottom-16 left-1/2 transform -translate-x-1/2">
                   <div className="relative group">
                     {user.avatar ? (
                       <img
                         src={user.avatar}
                         alt="الصورة الشخصية"
-                        className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-2xl"
+                        className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover border-4 border-white shadow-xl md:shadow-2xl"
                       />
                     ) : (
                       <div
-                        className="w-32 h-32 rounded-full text-white flex items-center justify-center text-5xl font-bold border-4 border-white shadow-2xl"
+                        className="w-24 h-24 md:w-32 md:h-32 rounded-full text-white flex items-center justify-center text-4xl md:text-5xl font-bold border-4 border-white shadow-xl md:shadow-2xl"
                         style={{
                           background:
                             "linear-gradient(135deg, #2E3E88, #32B9CC)",
@@ -588,7 +588,7 @@ export default function Profile() {
 
                     {isEditingProfile && activeTab === "profile" && (
                       <label
-                        className="absolute bottom-2 right-2 bg-white p-3 rounded-full shadow-2xl cursor-pointer transition-all duration-300 hover:scale-110 group-hover:scale-110"
+                        className="absolute bottom-1 right-1 md:bottom-2 md:right-2 bg-white p-2 md:p-3 rounded-full shadow-xl md:shadow-2xl cursor-pointer transition-all duration-300 hover:scale-110 group-hover:scale-110"
                         style={{
                           background:
                             "linear-gradient(135deg, #2E3E88, #32B9CC)",
@@ -601,21 +601,24 @@ export default function Profile() {
                           onChange={handleAvatarChange}
                           accept="image/*"
                         />
-                        <FaCamera size={16} />
+                        <FaCamera size={14} className="md:w-4 md:h-4" />
                       </label>
                     )}
                   </div>
                 </div>
               </div>
 
-              <div className="pt-20 pb-6 px-6 text-center">
+              <div className="pt-16 md:pt-20 pb-4 md:pb-6 px-4 md:px-6 text-center">
                 <h2
-                  className="text-2xl font-bold mb-2"
+                  className="text-xl md:text-2xl font-bold mb-1 md:mb-2 truncate px-2"
                   style={{ color: "#2E3E88" }}
                 >
                   {user.firstName} {user.lastName}
                 </h2>
-                <p className="mb-6" style={{ color: "#32B9CC" }}>
+                <p
+                  className="mb-4 md:mb-6 text-sm md:text-base truncate px-2"
+                  style={{ color: "#32B9CC" }}
+                >
                   {user.email}
                 </p>
 
@@ -624,13 +627,13 @@ export default function Profile() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setIsEditingProfile(true)}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                    className="w-full flex items-center justify-center gap-2 px-3 md:px-4 py-2.5 md:py-3 rounded-lg md:rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm md:text-base"
                     style={{
                       background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
                       color: "white",
                     }}
                   >
-                    <FaEdit />
+                    <FaEdit className="md:w-4 md:h-4" />
                     <span>تعديل الملف الشخصي</span>
                   </motion.button>
                 ) : (
@@ -640,7 +643,7 @@ export default function Profile() {
                       whileTap={{ scale: 0.95 }}
                       onClick={handleSaveProfile}
                       disabled={!hasChanges}
-                      className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 ${
+                      className={`w-full flex items-center justify-center gap-2 px-3 md:px-4 py-2.5 md:py-3 rounded-lg md:rounded-xl font-semibold shadow-lg transition-all duration-300 text-sm md:text-base ${
                         hasChanges
                           ? "shadow-lg hover:shadow-xl cursor-pointer"
                           : "opacity-50 cursor-not-allowed"
@@ -658,7 +661,7 @@ export default function Profile() {
                             }
                       }
                     >
-                      <FaSave />
+                      <FaSave className="md:w-4 md:h-4" />
                       <span>حفظ التغييرات</span>
                     </motion.button>
                   )
@@ -668,21 +671,21 @@ export default function Profile() {
           </div>
 
           {/* Right Column - Content */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 md:space-y-6">
             {/* Navigation Menu */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-white rounded-3xl shadow-xl p-6"
+              className="bg-white rounded-2xl md:rounded-3xl shadow-xl p-4 md:p-6"
             >
               <h3
-                className="text-xl font-bold mb-4"
+                className="text-lg md:text-xl font-bold mb-3 md:mb-4"
                 style={{ color: "#2E3E88" }}
               >
                 القائمة الرئيسية
               </h3>
-              <div className="grid grid-cols-2 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2 md:gap-3">
                 {menuItems.map((item) => (
                   <motion.button
                     key={item.id}
@@ -694,7 +697,7 @@ export default function Profile() {
                         setIsEditingProfile(false);
                       }
                     }}
-                    className={`flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-300 ${
+                    className={`flex flex-col items-center justify-center p-3 md:p-4 rounded-lg md:rounded-xl transition-all duration-300 ${
                       activeTab === item.id ? "shadow-lg" : "hover:shadow-md"
                     }`}
                     style={
@@ -711,9 +714,11 @@ export default function Profile() {
                           }
                     }
                   >
-                    <item.icon className="text-2xl mb-2" />
-                    <span className="font-semibold">{item.label}</span>
-                    <span className="text-xs mt-1 opacity-80">
+                    <item.icon className="text-xl md:text-2xl mb-1 md:mb-2" />
+                    <span className="font-semibold text-sm md:text-base">
+                      {item.label}
+                    </span>
+                    <span className="text-xs mt-0.5 md:mt-1 opacity-80">
                       {item.description}
                     </span>
                   </motion.button>
@@ -729,26 +734,29 @@ export default function Profile() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="bg-white rounded-3xl shadow-xl overflow-hidden"
+                  className="bg-white rounded-2xl md:rounded-3xl shadow-xl overflow-hidden"
                 >
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-6">
+                  <div className="p-4 md:p-6">
+                    <div className="flex items-center justify-between mb-4 md:mb-6">
                       <h3
-                        className="text-xl font-bold"
+                        className="text-lg md:text-xl font-bold"
                         style={{ color: "#2E3E88" }}
                       >
                         المعلومات الشخصية
                       </h3>
                       <div className="flex items-center gap-2">
-                        <FaUser style={{ color: "#2E3E88" }} />
+                        <FaUser
+                          className="md:w-5 md:h-5"
+                          style={{ color: "#2E3E88" }}
+                        />
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                       {/* First Name */}
                       <div>
                         <label
-                          className="block text-sm font-semibold mb-2 text-right"
+                          className="block text-xs md:text-sm font-semibold mb-1 md:mb-2 text-right"
                           style={{ color: "#2E3E88" }}
                         >
                           الاسم الأول
@@ -770,7 +778,7 @@ export default function Profile() {
                             />
                           ) : (
                             <div
-                              className="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-right"
+                              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 md:py-3.5 text-right truncate"
                               style={{
                                 background:
                                   "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -786,7 +794,7 @@ export default function Profile() {
                       {/* Last Name */}
                       <div>
                         <label
-                          className="block text-sm font-semibold mb-2 text-right"
+                          className="block text-xs md:text-sm font-semibold mb-1 md:mb-2 text-right"
                           style={{ color: "#2E3E88" }}
                         >
                           الاسم الأخير
@@ -808,7 +816,7 @@ export default function Profile() {
                             />
                           ) : (
                             <div
-                              className="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-right"
+                              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 md:py-3.5 text-right truncate"
                               style={{
                                 background:
                                   "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -824,14 +832,14 @@ export default function Profile() {
                       {/* Email */}
                       <div className="md:col-span-2">
                         <label
-                          className="block text-sm font-semibold mb-2 text-right"
+                          className="block text-xs md:text-sm font-semibold mb-1 md:mb-2 text-right"
                           style={{ color: "#2E3E88" }}
                         >
                           البريد الإلكتروني
                         </label>
                         <div className="relative">
                           <div
-                            className="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-right truncate"
+                            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 md:py-3.5 text-right truncate"
                             style={{
                               background:
                                 "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -846,7 +854,7 @@ export default function Profile() {
                       {/* Phone Number */}
                       <div className="md:col-span-2">
                         <label
-                          className="block text-sm font-semibold mb-2 text-right"
+                          className="block text-xs md:text-sm font-semibold mb-1 md:mb-2 text-right"
                           style={{ color: "#2E3E88" }}
                         >
                           رقم الهاتف
@@ -868,7 +876,7 @@ export default function Profile() {
                             />
                           ) : (
                             <div
-                              className="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-right"
+                              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 md:py-3.5 text-right truncate"
                               style={{
                                 background:
                                   "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -891,26 +899,29 @@ export default function Profile() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="bg-white rounded-3xl shadow-xl overflow-hidden"
+                  className="bg-white rounded-2xl md:rounded-3xl shadow-xl overflow-hidden"
                 >
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-6">
+                  <div className="p-4 md:p-6">
+                    <div className="flex items-center justify-between mb-4 md:mb-6">
                       <h3
-                        className="text-xl font-bold"
+                        className="text-lg md:text-xl font-bold"
                         style={{ color: "#2E3E88" }}
                       >
                         إعدادات الأمان
                       </h3>
                       <div className="flex items-center gap-2">
-                        <FaShieldAlt style={{ color: "#2E3E88" }} />
+                        <FaShieldAlt
+                          className="md:w-5 md:h-5"
+                          style={{ color: "#2E3E88" }}
+                        />
                       </div>
                     </div>
 
-                    <div className="space-y-6">
+                    <div className="space-y-4 md:space-y-6">
                       {/* Current Password */}
                       <div>
                         <label
-                          className="block text-sm font-semibold mb-2 text-right"
+                          className="block text-xs md:text-sm font-semibold mb-1 md:mb-2 text-right"
                           style={{ color: "#2E3E88" }}
                         >
                           كلمة المرور الحالية
@@ -922,7 +933,7 @@ export default function Profile() {
                             placeholder="أدخل كلمة المرور الحالية"
                             value={passwordData.oldPassword}
                             onChange={handlePasswordChange}
-                            className={fieldClass + " pr-12"}
+                            className={fieldClass + " pr-10 md:pr-12"}
                             dir="rtl"
                             style={{
                               background:
@@ -936,10 +947,14 @@ export default function Profile() {
                                 old: !showPassword.old,
                               })
                             }
-                            className="absolute left-4 top-1/2 transform -translate-y-1/2 cursor-pointer transition-all duration-200 hover:scale-110"
+                            className="absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 cursor-pointer transition-all duration-200 hover:scale-110"
                             style={{ color: "#2E3E88" }}
                           >
-                            {showPassword.old ? <FaEyeSlash /> : <FaEye />}
+                            {showPassword.old ? (
+                              <FaEyeSlash className="w-4 h-4 md:w-5 md:h-5" />
+                            ) : (
+                              <FaEye className="w-4 h-4 md:w-5 md:h-5" />
+                            )}
                           </button>
                         </div>
                       </div>
@@ -947,7 +962,7 @@ export default function Profile() {
                       {/* New Password */}
                       <div>
                         <label
-                          className="block text-sm font-semibold mb-2 text-right"
+                          className="block text-xs md:text-sm font-semibold mb-1 md:mb-2 text-right"
                           style={{ color: "#2E3E88" }}
                         >
                           كلمة المرور الجديدة
@@ -959,7 +974,7 @@ export default function Profile() {
                             placeholder="أدخل كلمة المرور الجديدة"
                             value={passwordData.newPassword}
                             onChange={handlePasswordChange}
-                            className={fieldClass + " pr-12"}
+                            className={fieldClass + " pr-10 md:pr-12"}
                             dir="rtl"
                             style={{
                               background:
@@ -973,17 +988,21 @@ export default function Profile() {
                                 new: !showPassword.new,
                               })
                             }
-                            className="absolute left-4 top-1/2 transform -translate-y-1/2 cursor-pointer transition-all duration-200 hover:scale-110"
+                            className="absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 cursor-pointer transition-all duration-200 hover:scale-110"
                             style={{ color: "#2E3E88" }}
                           >
-                            {showPassword.new ? <FaEyeSlash /> : <FaEye />}
+                            {showPassword.new ? (
+                              <FaEyeSlash className="w-4 h-4 md:w-5 md:h-5" />
+                            ) : (
+                              <FaEye className="w-4 h-4 md:w-5 md:h-5" />
+                            )}
                           </button>
                         </div>
                       </div>
 
                       {/* Password Requirements */}
                       <div
-                        className="p-4 rounded-xl"
+                        className="p-3 md:p-4 rounded-lg md:rounded-xl"
                         style={{
                           background:
                             "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -991,12 +1010,12 @@ export default function Profile() {
                         }}
                       >
                         <p
-                          className="text-sm font-semibold mb-3 text-right"
+                          className="text-xs md:text-sm font-semibold mb-2 md:mb-3 text-right"
                           style={{ color: "#2E3E88" }}
                         >
                           متطلبات كلمة المرور:
                         </p>
-                        <div className="grid grid-cols-2 gap-2 text-right">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-right">
                           {getValidationItem(
                             passwordValidations.length,
                             "8 أحرف على الأقل",
@@ -1023,7 +1042,7 @@ export default function Profile() {
                         disabled={
                           !allPasswordValid || !passwordData.oldPassword
                         }
-                        className={`w-full font-semibold py-3.5 rounded-xl transition-all duration-300 text-lg ${
+                        className={`w-full font-semibold py-2.5 md:py-3.5 rounded-lg md:rounded-xl transition-all duration-300 text-sm md:text-lg ${
                           allPasswordValid && passwordData.oldPassword
                             ? "shadow-lg hover:shadow-xl cursor-pointer"
                             : "opacity-50 cursor-not-allowed"

@@ -443,18 +443,18 @@ export default function CitiesManagement() {
 
         {/* Hero Header */}
         <div
-          className="relative py-16 px-4"
+          className="relative py-12 px-4 md:py-16"
           style={{
             background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
           }}
         >
           <div className="max-w-7xl mx-auto">
-            {/* زر الرجوع على الشمال (اليسار) */}
+            {/* زر الرجوع - موحد لجميع الشاشات */}
             <motion.button
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               onClick={() => navigate(-1)}
-              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              className="absolute top-4 left-4 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
               style={{
                 boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
               }}
@@ -468,15 +468,15 @@ export default function CitiesManagement() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center pt-8"
+              className="text-center pt-8 md:pt-8"
             >
-              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
-                <FaCity className="text-white text-4xl" />
+              <div className="inline-flex items-center justify-center p-3 md:p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-4 md:mb-6">
+                <FaCity className="text-white text-2xl md:text-4xl" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-3 md:mb-4">
                 إدارة المدن
               </h1>
-              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+              <p className="text-white/80 text-sm md:text-lg lg:text-xl max-w-2xl mx-auto px-2">
                 إدارة مدن التوصيل المتاحة في نظام المطعم
               </p>
             </motion.div>
@@ -486,7 +486,7 @@ export default function CitiesManagement() {
 
       {/* Main Content */}
       <div
-        className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10"
+        className="max-w-7xl mx-auto px-3 md:px-4 py-6 md:py-8 -mt-6 md:-mt-10 relative z-10"
         dir="rtl"
       >
         {/* Floating Action Button */}
@@ -496,9 +496,9 @@ export default function CitiesManagement() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleAddNewCity}
-          className="fixed bottom-6 left-6 z-40 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-2 group"
+          className="fixed bottom-6 left-6 z-40 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white p-3 md:p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-2 group"
         >
-          <FaPlus className="text-xl group-hover:rotate-90 transition-transform" />
+          <FaPlus className="text-lg md:text-xl group-hover:rotate-90 transition-transform" />
           <span className="hidden md:inline font-semibold">
             إضافة مدينة جديدة
           </span>
@@ -510,25 +510,28 @@ export default function CitiesManagement() {
           <div>
             {cities.length === 0 && !dataLoading ? (
               <div className="w-full">
-                <div className="bg-white rounded-2xl p-8 text-center shadow-xl">
-                  <div className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
-                    <FaCity className="text-4xl" style={{ color: "#2E3E88" }} />
+                <div className="bg-white rounded-2xl p-6 md:p-8 text-center shadow-xl">
+                  <div className="w-20 h-20 md:w-24 md:h-24 rounded-full mx-auto mb-4 md:mb-6 flex items-center justify-center bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                    <FaCity
+                      className="text-3xl md:text-4xl"
+                      style={{ color: "#2E3E88" }}
+                    />
                   </div>
                   <h3
-                    className="text-2xl font-bold mb-3"
+                    className="text-xl md:text-2xl font-bold mb-3"
                     style={{ color: "#2E3E88" }}
                   >
                     لا توجد مدن حتى الآن
                   </h3>
                   <p
-                    className="mb-6 max-w-md mx-auto"
+                    className="mb-6 max-w-md mx-auto text-sm md:text-base"
                     style={{ color: "#32B9CC" }}
                   >
                     أضف أول مدينة للبدء في إدارة مدن التوصيل
                   </p>
                   <button
                     onClick={handleAddNewCity}
-                    className="px-8 py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                    className="px-6 md:px-8 py-2.5 md:py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl text-sm md:text-base"
                     style={{
                       background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                       color: "white",
@@ -540,7 +543,7 @@ export default function CitiesManagement() {
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 {filteredCities.map((city, index) => (
                   <motion.div
                     key={city.id}
@@ -552,26 +555,26 @@ export default function CitiesManagement() {
                       borderTop: "4px solid #2E3E88",
                     }}
                   >
-                    <div className="p-6">
+                    <div className="p-4 md:p-6">
                       {/* Header */}
                       <div className="flex justify-between items-start mb-4">
                         <div className="flex items-center gap-3">
-                          <div className="p-3 rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                          <div className="p-2 md:p-3 rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
                             <FaCity
-                              className="text-xl"
+                              className="text-lg md:text-xl"
                               style={{ color: "#2E3E88" }}
                             />
                           </div>
                           <div>
                             <h4
-                              className="font-bold text-lg"
+                              className="font-bold text-base md:text-lg"
                               style={{ color: "#2E3E88" }}
                             >
                               {city.name}
                             </h4>
                             <div className="flex items-center gap-2 mt-1">
                               <span
-                                className="text-sm"
+                                className="text-xs md:text-sm"
                                 style={{ color: "#32B9CC" }}
                               >
                                 مدينة التوصيل
@@ -585,13 +588,13 @@ export default function CitiesManagement() {
                       <div className="flex gap-3 pt-4 border-t border-gray-100">
                         <button
                           onClick={() => handleEdit(city)}
-                          className="flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
+                          className="flex-1 py-2 md:py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 text-xs md:text-sm"
                           style={{
                             background: "#32B9CC10",
                             color: "#32B9CC",
                           }}
                         >
-                          <FaEdit />
+                          <FaEdit className="text-xs md:text-sm" />
                           تعديل
                         </button>
                       </div>
@@ -603,10 +606,10 @@ export default function CitiesManagement() {
 
             {dataLoading && (
               <div className="w-full">
-                <div className="bg-white rounded-2xl p-8 text-center shadow-xl">
+                <div className="bg-white rounded-2xl p-6 md:p-8 text-center shadow-xl">
                   <div className="text-center">
                     <div
-                      className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+                      className="animate-spin rounded-full h-16 md:h-20 w-16 md:w-20 border-4 mx-auto mb-4"
                       style={{
                         borderTopColor: "#2E3E88",
                         borderRightColor: "#32B9CC",
@@ -615,7 +618,7 @@ export default function CitiesManagement() {
                       }}
                     ></div>
                     <p
-                      className="text-lg font-semibold"
+                      className="text-base md:text-lg font-semibold"
                       style={{ color: "#2E3E88" }}
                     >
                       جارٍ تحميل المدن...
@@ -635,56 +638,63 @@ export default function CitiesManagement() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm"
             dir="rtl"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-white rounded-3xl w-full max-w-2xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
+              className="bg-white rounded-xl md:rounded-2xl lg:rounded-3xl w-full max-w-sm sm:max-w-md md:max-w-2xl max-h-[85vh] sm:max-h-[90vh] overflow-hidden shadow-2xl flex flex-col"
             >
               {/* Modal Header */}
               <div
-                className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+                className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
                 style={{
                   background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                 }}
               >
-                <div className="flex items-center gap-3">
-                  {editingId ? <FaEdit /> : <FaPlus />}
-                  <h3 className="text-lg font-bold text-white">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  {editingId ? (
+                    <FaEdit className="text-sm sm:text-base" />
+                  ) : (
+                    <FaPlus className="text-sm sm:text-base" />
+                  )}
+                  <h3 className="text-sm sm:text-base md:text-lg font-bold text-white">
                     {editingId ? "تعديل المدينة" : "إضافة مدينة جديدة"}
                   </h3>
                 </div>
                 <button
                   onClick={resetForm}
-                  className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
+                  className="p-1 sm:p-2 rounded-full hover:bg-white/20 text-white transition-colors"
                 >
-                  <FaTimes size={16} />
+                  <FaTimes size={14} className="sm:size-16" />
                 </button>
               </div>
 
               {/* Form Content */}
-              <div className="flex-1 overflow-y-auto p-6">
-                <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6">
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-3 sm:space-y-4"
+                >
                   {/* City Name */}
                   <div>
                     <label
-                      className="block text-sm font-semibold mb-2 text-right"
+                      className="block text-xs sm:text-sm font-semibold mb-2 text-right"
                       style={{ color: "#2E3E88" }}
                     >
                       اسم المدينة
                     </label>
                     <div className="relative group">
-                      <FaCity className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
+                      <FaCity className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110 text-sm sm:text-base" />
                       <input
                         type="text"
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
                         required
-                        className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-right"
+                        className="w-full border border-gray-200 rounded-lg md:rounded-xl pr-10 sm:pr-12 pl-3 sm:pl-4 py-2.5 sm:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-right text-sm sm:text-base"
                         style={{
                           background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
                         }}
@@ -694,13 +704,13 @@ export default function CitiesManagement() {
                   </div>
 
                   {/* Form Actions */}
-                  <div className="flex gap-3 pt-4">
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-4">
                     <motion.button
                       type="button"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={resetForm}
-                      className="flex-1 py-3.5 border-2 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center"
+                      className="flex-1 py-2.5 sm:py-3.5 border-2 rounded-lg md:rounded-xl font-semibold transition-all duration-300 flex items-center justify-center text-sm sm:text-base"
                       style={{
                         borderColor: "#2E3E88",
                         color: "#2E3E88",
@@ -714,7 +724,7 @@ export default function CitiesManagement() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       disabled={!isFormValid()}
-                      className={`flex-1 py-3.5 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                      className={`flex-1 py-2.5 sm:py-3.5 rounded-lg md:rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base ${
                         isFormValid()
                           ? "shadow-lg hover:shadow-xl cursor-pointer"
                           : "opacity-50 cursor-not-allowed"
@@ -731,7 +741,7 @@ export default function CitiesManagement() {
                             }
                       }
                     >
-                      <FaSave />
+                      <FaSave className="text-sm sm:text-base" />
                       {editingId ? "تحديث المدينة" : "حفظ المدينة"}
                     </motion.button>
                   </div>

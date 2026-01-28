@@ -728,9 +728,9 @@ export default function Addresses() {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/80 to-white"></div>
 
         {/* Hero Header */}
-        <div className="relative bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] py-16 px-4">
+        <div className="relative bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] py-12 px-4 md:py-16">
           <div className="max-w-7xl mx-auto">
-            {/* زر الرجوع */}
+            {/* زر الرجوع - موحد لجميع الشاشات */}
             <motion.button
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -741,7 +741,7 @@ export default function Addresses() {
                   navigate(-1);
                 }
               }}
-              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              className="absolute top-4 left-4 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
               style={{
                 boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
               }}
@@ -755,15 +755,15 @@ export default function Addresses() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center pt-8"
+              className="text-center pt-8 md:pt-8"
             >
-              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
-                <FaMapMarkerAlt className="text-white text-4xl" />
+              <div className="inline-flex items-center justify-center p-3 md:p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-4 md:mb-6">
+                <FaMapMarkerAlt className="text-white text-2xl md:text-4xl" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-3 md:mb-4">
                 عناويني
               </h1>
-              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+              <p className="text-white/80 text-sm md:text-lg lg:text-xl max-w-2xl mx-auto px-2">
                 إدارة عناوين التوصيل الخاصة بك بسهولة وأمان
               </p>
             </motion.div>
@@ -772,7 +772,7 @@ export default function Addresses() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10">
+      <div className="max-w-7xl mx-auto px-3 md:px-4 py-6 md:py-8 -mt-6 md:-mt-10 relative z-10">
         {/* Floating Action Button */}
         <motion.button
           initial={{ opacity: 0, scale: 0 }}
@@ -780,10 +780,10 @@ export default function Addresses() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleAddNewAddress}
-          className="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-2 group"
+          className="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white p-3 md:p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-2 group"
         >
-          <FaPlus className="text-xl group-hover:rotate-90 transition-transform" />
-          <span className="hidden md:inline font-semibold">
+          <FaPlus className="text-lg md:text-xl group-hover:rotate-90 transition-transform" />
+          <span className="hidden sm:inline font-semibold">
             إضافة عنوان جديد
           </span>
         </motion.button>
@@ -794,28 +794,28 @@ export default function Addresses() {
           <div>
             {addresses.length === 0 ? (
               <div className="w-full">
-                <div className="bg-white rounded-2xl p-8 text-center shadow-xl">
-                  <div className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                <div className="bg-white rounded-2xl p-6 md:p-8 text-center shadow-xl">
+                  <div className="w-20 h-20 md:w-24 md:h-24 rounded-full mx-auto mb-4 md:mb-6 flex items-center justify-center bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
                     <FaMapMarkerAlt
-                      className="text-4xl"
+                      className="text-3xl md:text-4xl"
                       style={{ color: "#2E3E88" }}
                     />
                   </div>
                   <h3
-                    className="text-2xl font-bold mb-3"
+                    className="text-xl md:text-2xl font-bold mb-3"
                     style={{ color: "#2E3E88" }}
                   >
                     لا توجد عناوين حتى الآن
                   </h3>
                   <p
-                    className="mb-6 max-w-md mx-auto"
+                    className="mb-6 max-w-md mx-auto text-sm md:text-base"
                     style={{ color: "#32B9CC" }}
                   >
                     أضف عنوانك الأول للبدء في استلام طلباتك
                   </p>
                   <button
                     onClick={handleAddNewAddress}
-                    className="px-8 py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                    className="px-6 md:px-8 py-2.5 md:py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl text-sm md:text-base"
                     style={{
                       background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                       color: "white",
@@ -827,7 +827,7 @@ export default function Addresses() {
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
                 {addresses.map((address, index) => (
                   <motion.div
                     key={address.id}
@@ -839,34 +839,34 @@ export default function Addresses() {
                       borderTop: address.isDefaultLocation
                         ? "4px solid #2E3E88"
                         : "4px solid transparent",
-                      minHeight: "400px",
+                      minHeight: "380px",
                     }}
                   >
-                    <div className="p-6 flex-grow">
+                    <div className="p-4 md:p-6 flex-grow">
                       {/* Header */}
                       <div className="flex justify-between items-start mb-4">
                         <div className="flex items-center gap-3">
-                          <div className="p-3 rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                          <div className="p-2 md:p-3 rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
                             <FaMapMarkerAlt
-                              className="text-xl"
+                              className="text-lg md:text-xl"
                               style={{ color: "#2E3E88" }}
                             />
                           </div>
                           <div>
                             <h4
-                              className="font-bold text-lg"
+                              className="font-bold text-base md:text-lg"
                               style={{ color: "#2E3E88" }}
                             >
                               {address.city.name}
                             </h4>
-                            <div className="flex items-center gap-2 mt-1">
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mt-1">
                               {address.isDefaultLocation && (
-                                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white">
+                                <span className="px-2 md:px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white inline-block w-fit">
                                   افتراضي
                                 </span>
                               )}
                               <span
-                                className="text-sm"
+                                className="text-xs md:text-sm"
                                 style={{ color: "#32B9CC" }}
                               >
                                 {address.phoneNumber}
@@ -880,41 +880,45 @@ export default function Addresses() {
                       <div className="space-y-3 mb-6">
                         <div className="flex items-start gap-3">
                           <FaRoad
-                            className="mt-1 flex-shrink-0"
+                            className="mt-1 flex-shrink-0 text-sm md:text-base"
                             style={{ color: "#2E3E88" }}
                           />
-                          <p className="text-gray-700">{address.streetName}</p>
+                          <p className="text-gray-700 text-sm md:text-base">
+                            {address.streetName}
+                          </p>
                         </div>
 
-                        <div className="flex items-start gap-3">
-                          <FaBuildingIcon
-                            className="mt-1 flex-shrink-0"
-                            style={{ color: "#2E3E88" }}
-                          />
-                          <div className="flex gap-4">
-                            <div>
-                              <span className="text-sm text-gray-500">
-                                المبنى
-                              </span>
-                              <p className="font-medium">
-                                {address.buildingNumber}
-                              </p>
-                            </div>
-                            <div>
-                              <span className="text-sm text-gray-500">
-                                الدور
-                              </span>
-                              <p className="font-medium">
-                                {address.floorNumber}
-                              </p>
-                            </div>
-                            <div>
-                              <span className="text-sm text-gray-500">
-                                الشقة
-                              </span>
-                              <p className="font-medium">
-                                {address.flatNumber}
-                              </p>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                          <div className="flex items-start gap-3 sm:w-auto w-full">
+                            <FaBuildingIcon
+                              className="mt-1 flex-shrink-0 text-sm md:text-base"
+                              style={{ color: "#2E3E88" }}
+                            />
+                            <div className="flex gap-2 md:gap-4 flex-wrap">
+                              <div className="min-w-[70px]">
+                                <span className="text-xs md:text-sm text-gray-500">
+                                  المبنى
+                                </span>
+                                <p className="font-medium text-sm md:text-base">
+                                  {address.buildingNumber}
+                                </p>
+                              </div>
+                              <div className="min-w-[70px]">
+                                <span className="text-xs md:text-sm text-gray-500">
+                                  الدور
+                                </span>
+                                <p className="font-medium text-sm md:text-base">
+                                  {address.floorNumber}
+                                </p>
+                              </div>
+                              <div className="min-w-[70px]">
+                                <span className="text-xs md:text-sm text-gray-500">
+                                  الشقة
+                                </span>
+                                <p className="font-medium text-sm md:text-base">
+                                  {address.flatNumber}
+                                </p>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -922,10 +926,10 @@ export default function Addresses() {
                         {address.detailedDescription && (
                           <div className="flex items-start gap-3">
                             <FaTag
-                              className="mt-1 flex-shrink-0"
+                              className="mt-1 flex-shrink-0 text-sm md:text-base"
                               style={{ color: "#2E3E88" }}
                             />
-                            <p className="text-gray-700">
+                            <p className="text-gray-700 text-sm md:text-base">
                               {address.detailedDescription}
                             </p>
                           </div>
@@ -942,7 +946,7 @@ export default function Addresses() {
                               toggleMapVisibility(address.id)
                             }
                             disabled={!address.locationUrl}
-                            className={`flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl font-medium transition-all duration-300 ${
+                            className={`flex items-center justify-center gap-2 w-full px-3 md:px-4 py-2.5 md:py-3 rounded-xl font-medium transition-all duration-300 text-sm md:text-base ${
                               address.locationUrl
                                 ? expandedMaps[address.id]
                                   ? "bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white hover:shadow-md"
@@ -954,20 +958,26 @@ export default function Addresses() {
                               <>
                                 {expandedMaps[address.id] ? (
                                   <>
-                                    <FaEyeSlash />
-                                    إخفاء الخريطة
+                                    <FaEyeSlash className="text-sm md:text-base" />
+                                    <span className="hidden xs:inline">
+                                      إخفاء الخريطة
+                                    </span>
+                                    <span className="xs:hidden">إخفاء</span>
                                   </>
                                 ) : (
                                   <>
-                                    <FaEye />
-                                    عرض الخريطة
+                                    <FaEye className="text-sm md:text-base" />
+                                    <span className="hidden xs:inline">
+                                      عرض الخريطة
+                                    </span>
+                                    <span className="xs:hidden">عرض</span>
                                   </>
                                 )}
                               </>
                             ) : (
                               <>
-                                <FaMap />
-                                لا توجد خريطة
+                                <FaMap className="text-sm md:text-base" />
+                                <span>لا توجد خريطة</span>
                               </>
                             )}
                           </button>
@@ -984,7 +994,7 @@ export default function Addresses() {
                               <iframe
                                 src={address.locationUrl}
                                 width="100%"
-                                height="200"
+                                height="180"
                                 style={{ border: 0 }}
                                 allowFullScreen=""
                                 loading="lazy"
@@ -997,41 +1007,41 @@ export default function Addresses() {
                         </AnimatePresence>
 
                         {/* Action Buttons */}
-                        <div className="flex gap-3 pt-4 border-t border-gray-100">
+                        <div className="flex flex-wrap gap-2 md:gap-3 pt-4 border-t border-gray-100">
                           {!address.isDefaultLocation && (
                             <button
                               onClick={() => handleSetDefault(address.id)}
-                              className="flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
+                              className="flex-1 min-w-[calc(50%-0.5rem)] sm:min-w-0 sm:flex-none py-2 md:py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-1 md:gap-2 text-xs md:text-sm"
                               style={{
                                 background: "#2E3E8810",
                                 color: "#2E3E88",
                               }}
                             >
-                              <FaStar />
-                              تعيين افتراضي
+                              <FaStar className="text-xs md:text-sm" />
+                              <span>تعيين افتراضي</span>
                             </button>
                           )}
                           <button
                             onClick={() => handleEdit(address)}
-                            className="flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
+                            className="flex-1 min-w-[calc(50%-0.5rem)] sm:min-w-0 sm:flex-none py-2 md:py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-1 md:gap-2 text-xs md:text-sm"
                             style={{
                               background: "#32B9CC10",
                               color: "#32B9CC",
                             }}
                           >
-                            <FaEdit />
-                            تعديل
+                            <FaEdit className="text-xs md:text-sm" />
+                            <span>تعديل</span>
                           </button>
                           <button
                             onClick={() => handleDelete(address.id)}
-                            className="flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
+                            className="flex-1 min-w-[calc(50%-0.5rem)] sm:min-w-0 sm:flex-none py-2 md:py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-1 md:gap-2 text-xs md:text-sm"
                             style={{
                               background: "#FF6B6B10",
                               color: "#FF6B6B",
                             }}
                           >
-                            <FaTrashAlt />
-                            حذف
+                            <FaTrashAlt className="text-xs md:text-sm" />
+                            <span>حذف</span>
                           </button>
                         </div>
                       </div>
@@ -1051,42 +1061,49 @@ export default function Addresses() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-white rounded-3xl w-full max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
+              className="bg-white rounded-xl md:rounded-2xl lg:rounded-3xl w-full max-w-sm sm:max-w-md md:max-w-2xl lg:max-w-4xl max-h-[85vh] sm:max-h-[90vh] overflow-hidden shadow-2xl flex flex-col"
             >
               {/* Modal Header */}
               <div
-                className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+                className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
                 style={{
                   background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                 }}
               >
-                <div className="flex items-center gap-3">
-                  {editingId ? <FaEdit /> : <FaPlus />}
-                  <h3 className="text-lg font-bold text-white">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  {editingId ? (
+                    <FaEdit className="text-sm sm:text-base" />
+                  ) : (
+                    <FaPlus className="text-sm sm:text-base" />
+                  )}
+                  <h3 className="text-sm sm:text-base md:text-lg font-bold text-white">
                     {editingId ? "تعديل العنوان" : "إضافة عنوان جديد"}
                   </h3>
                 </div>
                 <button
                   onClick={resetForm}
-                  className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
+                  className="p-1 sm:p-2 rounded-full hover:bg-white/20 text-white transition-colors"
                 >
-                  <FaTimes size={16} />
+                  <FaTimes size={14} className="sm:size-16" />
                 </button>
               </div>
 
               {/* Form Content */}
-              <div className="flex-1 overflow-y-auto p-6">
-                <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6">
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-3 sm:space-y-4"
+                >
                   {/* City Dropdown */}
                   <div>
                     <label
-                      className="block text-sm font-semibold mb-2"
+                      className="block text-xs sm:text-sm font-semibold mb-2"
                       style={{ color: "#2E3E88" }}
                     >
                       المدينة
@@ -1095,14 +1112,14 @@ export default function Addresses() {
                       <button
                         type="button"
                         onClick={() => toggleDropdown("city")}
-                        className="w-full flex items-center justify-between border border-gray-200 rounded-xl px-4 py-3.5 transition-all hover:border-[#2E3E88] group text-right"
+                        className="w-full flex items-center justify-between border border-gray-200 rounded-lg md:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3.5 transition-all hover:border-[#2E3E88] group text-right text-sm sm:text-base"
                         style={{
                           background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
                         }}
                       >
-                        <div className="flex items-center gap-3">
-                          <FaCity className="text-[#2E3E88] group-hover:scale-110 transition-transform" />
-                          <span className="font-medium">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <FaCity className="text-[#2E3E88] group-hover:scale-110 transition-transform text-sm sm:text-base" />
+                          <span className="font-medium truncate">
                             {formData.cityId
                               ? cities.find(
                                   (c) => c.id.toString() === formData.cityId,
@@ -1137,7 +1154,7 @@ export default function Addresses() {
                                   });
                                   setOpenDropdown(null);
                                 }}
-                                className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b last:border-b-0"
+                                className="px-3 sm:px-4 py-2 sm:py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b last:border-b-0 text-sm sm:text-base"
                               >
                                 {city.name}
                               </li>
@@ -1151,13 +1168,13 @@ export default function Addresses() {
                   {/* Phone Number */}
                   <div>
                     <label
-                      className="block text-sm font-semibold mb-2"
+                      className="block text-xs sm:text-sm font-semibold mb-2"
                       style={{ color: "#2E3E88" }}
                     >
                       رقم الهاتف
                     </label>
                     <div className="relative group">
-                      <FaPhone className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
+                      <FaPhone className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110 text-sm sm:text-base" />
                       <input
                         type="tel"
                         name="phoneNumber"
@@ -1166,7 +1183,7 @@ export default function Addresses() {
                         required
                         inputMode="tel"
                         pattern="[0-9٠-٩]*"
-                        className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                        className="w-full border border-gray-200 rounded-lg md:rounded-xl pr-10 sm:pr-12 pl-3 sm:pl-4 py-2.5 sm:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm sm:text-base"
                         style={{
                           background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
                         }}
@@ -1179,20 +1196,20 @@ export default function Addresses() {
                   {/* Street Name */}
                   <div>
                     <label
-                      className="block text-sm font-semibold mb-2"
+                      className="block text-xs sm:text-sm font-semibold mb-2"
                       style={{ color: "#2E3E88" }}
                     >
                       اسم الشارع
                     </label>
                     <div className="relative group">
-                      <FaRoad className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
+                      <FaRoad className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110 text-sm sm:text-base" />
                       <input
                         type="text"
                         name="streetName"
                         value={formData.streetName}
                         onChange={handleInputChange}
                         required
-                        className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                        className="w-full border border-gray-200 rounded-lg md:rounded-xl pr-10 sm:pr-12 pl-3 sm:pl-4 py-2.5 sm:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm sm:text-base"
                         style={{
                           background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
                         }}
@@ -1203,16 +1220,16 @@ export default function Addresses() {
                   </div>
 
                   {/* Building, Floor, Flat Numbers */}
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-3 gap-2 sm:gap-3">
                     <div>
                       <label
-                        className="block text-sm font-semibold mb-2"
+                        className="block text-xs sm:text-sm font-semibold mb-2"
                         style={{ color: "#2E3E88" }}
                       >
                         المبنى
                       </label>
                       <div className="relative group">
-                        <FaBuildingIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
+                        <FaBuildingIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110 text-sm sm:text-base" />
                         <input
                           type="text"
                           inputMode="numeric"
@@ -1221,7 +1238,7 @@ export default function Addresses() {
                           value={formData.buildingNumber}
                           onChange={handleInputChange}
                           required
-                          className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-center"
+                          className="w-full border border-gray-200 rounded-lg md:rounded-xl pr-10 sm:pr-12 pl-3 sm:pl-4 py-2.5 sm:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-center text-sm sm:text-base"
                           style={{
                             background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
                           }}
@@ -1232,13 +1249,13 @@ export default function Addresses() {
                     </div>
                     <div>
                       <label
-                        className="block text-sm font-semibold mb-2"
+                        className="block text-xs sm:text-sm font-semibold mb-2"
                         style={{ color: "#2E3E88" }}
                       >
                         الدور
                       </label>
                       <div className="relative group">
-                        <FaTag className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
+                        <FaTag className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110 text-sm sm:text-base" />
                         <input
                           type="text"
                           inputMode="numeric"
@@ -1247,7 +1264,7 @@ export default function Addresses() {
                           value={formData.floorNumber}
                           onChange={handleInputChange}
                           required
-                          className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-center"
+                          className="w-full border border-gray-200 rounded-lg md:rounded-xl pr-10 sm:pr-12 pl-3 sm:pl-4 py-2.5 sm:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-center text-sm sm:text-base"
                           style={{
                             background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
                           }}
@@ -1258,13 +1275,13 @@ export default function Addresses() {
                     </div>
                     <div>
                       <label
-                        className="block text-sm font-semibold mb-2"
+                        className="block text-xs sm:text-sm font-semibold mb-2"
                         style={{ color: "#2E3E88" }}
                       >
                         الشقة
                       </label>
                       <div className="relative group">
-                        <FaTag className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110" />
+                        <FaTag className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#2E3E88] transition-all duration-300 group-focus-within:scale-110 text-sm sm:text-base" />
                         <input
                           type="text"
                           inputMode="numeric"
@@ -1273,7 +1290,7 @@ export default function Addresses() {
                           value={formData.flatNumber}
                           onChange={handleInputChange}
                           required
-                          className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-center"
+                          className="w-full border border-gray-200 rounded-lg md:rounded-xl pr-10 sm:pr-12 pl-3 sm:pl-4 py-2.5 sm:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-center text-sm sm:text-base"
                           style={{
                             background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
                           }}
@@ -1287,7 +1304,7 @@ export default function Addresses() {
                   {/* Additional Details */}
                   <div>
                     <label
-                      className="block text-sm font-semibold mb-2"
+                      className="block text-xs sm:text-sm font-semibold mb-2"
                       style={{ color: "#2E3E88" }}
                     >
                       تفاصيل إضافية
@@ -1298,7 +1315,7 @@ export default function Addresses() {
                       onChange={handleInputChange}
                       required
                       rows="3"
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 resize-none"
+                      className="w-full border border-gray-200 rounded-lg md:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 resize-none text-sm sm:text-base"
                       style={{
                         background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
                       }}
@@ -1310,7 +1327,7 @@ export default function Addresses() {
                   {/* Map Selection */}
                   <div>
                     <label
-                      className="block text-sm font-semibold mb-2"
+                      className="block text-xs sm:text-sm font-semibold mb-2"
                       style={{ color: "#2E3E88" }}
                     >
                       تحديد الموقع على الخريطة
@@ -1320,14 +1337,14 @@ export default function Addresses() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={openMapModal}
-                      className="w-full flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl font-semibold mb-3 transition-all duration-300 hover:shadow-lg"
+                      className="w-full flex items-center justify-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3.5 rounded-xl font-semibold mb-3 transition-all duration-300 hover:shadow-lg text-sm sm:text-base"
                       style={{
                         background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                         color: "white",
                       }}
                     >
                       <FaMap />
-                      <span>اختيار الموقع من الخريطة</span>
+                      <span className="truncate">اختيار الموقع من الخريطة</span>
                       <FaExternalLinkAlt />
                     </motion.button>
 
@@ -1337,26 +1354,29 @@ export default function Addresses() {
                       value={formData.locationUrl}
                       onChange={handleInputChange}
                       disabled
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3.5 outline-none transition-all duration-200 bg-gray-50 text-gray-500 cursor-not-allowed"
+                      className="w-full border border-gray-200 rounded-lg md:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3.5 outline-none transition-all duration-200 bg-gray-50 text-gray-500 cursor-not-allowed text-xs sm:text-sm"
                       placeholder="سيتم تعبئته تلقائياً عند اختيار موقع من الخريطة"
                       dir="rtl"
                     />
 
                     {formData.locationUrl && (
-                      <p className="text-sm mt-2" style={{ color: "#32B9CC" }}>
+                      <p
+                        className="text-xs sm:text-sm mt-2"
+                        style={{ color: "#32B9CC" }}
+                      >
                         ✓ تم إضافة رابط الخريطة بنجاح
                       </p>
                     )}
                   </div>
 
                   {/* Form Actions */}
-                  <div className="flex gap-3 pt-4">
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-4">
                     <motion.button
                       type="button"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={resetForm}
-                      className="flex-1 py-3.5 border-2 rounded-xl font-semibold transition-all duration-300"
+                      className="flex-1 py-2.5 sm:py-3.5 border-2 rounded-lg md:rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base"
                       style={{
                         borderColor: "#2E3E88",
                         color: "#2E3E88",
@@ -1370,7 +1390,7 @@ export default function Addresses() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       disabled={!isFormValid()}
-                      className={`flex-1 py-3.5 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                      className={`flex-1 py-2.5 sm:py-3.5 rounded-lg md:rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base ${
                         isFormValid()
                           ? "shadow-lg hover:shadow-xl cursor-pointer"
                           : "opacity-50 cursor-not-allowed"
@@ -1405,50 +1425,50 @@ export default function Addresses() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-[60] flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-white rounded-3xl w-full max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
+              className="bg-white rounded-xl md:rounded-2xl lg:rounded-3xl w-full max-w-sm sm:max-w-md md:max-w-2xl lg:max-w-4xl max-h-[85vh] sm:max-h-[90vh] overflow-hidden shadow-2xl flex flex-col"
             >
               {/* Modal Header */}
               <div
-                className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+                className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
                 style={{
                   background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                 }}
               >
-                <div className="flex items-center gap-3">
-                  <FaGlobeAmericas className="text-white text-xl" />
-                  <h3 className="text-lg font-bold text-white">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <FaGlobeAmericas className="text-white text-lg sm:text-xl" />
+                  <h3 className="text-sm sm:text-base md:text-lg font-bold text-white">
                     اختر موقعك من الخريطة
                   </h3>
                 </div>
                 <button
                   onClick={closeMapModal}
-                  className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
+                  className="p-1 sm:p-2 rounded-full hover:bg-white/20 text-white transition-colors"
                 >
-                  <FaTimes size={16} />
+                  <FaTimes size={14} className="sm:size-16" />
                 </button>
               </div>
 
               {/* Modal Content */}
               <div className="flex-1 overflow-y-auto">
-                <div className="p-6">
-                  <div className="mb-6">
-                    <p className="text-gray-600">
+                <div className="p-3 sm:p-4 md:p-6">
+                  <div className="mb-4 md:mb-6">
+                    <p className="text-gray-600 text-sm sm:text-base">
                       انقر على الخريطة لتحديد موقعك بدقة
                     </p>
                   </div>
 
                   {/* Map Loading State */}
                   {!mapLoaded && (
-                    <div className="flex items-center justify-center h-64 bg-gradient-to-r from-[#f0f8ff] to-[#e0f7fa] rounded-2xl">
+                    <div className="flex items-center justify-center h-48 sm:h-64 bg-gradient-to-r from-[#f0f8ff] to-[#e0f7fa] rounded-xl md:rounded-2xl">
                       <div className="text-center">
                         <div
-                          className="animate-spin rounded-full h-16 w-16 border-4 mx-auto mb-4"
+                          className="animate-spin rounded-full h-12 sm:h-16 w-12 sm:w-16 border-4 mx-auto mb-4"
                           style={{
                             borderTopColor: "#2E3E88",
                             borderRightColor: "#32B9CC",
@@ -1456,7 +1476,9 @@ export default function Addresses() {
                             borderLeftColor: "transparent",
                           }}
                         ></div>
-                        <p className="text-gray-600">جاري تحميل الخريطة...</p>
+                        <p className="text-gray-600 text-sm sm:text-base">
+                          جاري تحميل الخريطة...
+                        </p>
                       </div>
                     </div>
                   )}
@@ -1472,9 +1494,12 @@ export default function Addresses() {
                     }}
                   >
                     {mapLoaded && (
-                      <div className="rounded-2xl overflow-hidden border border-gray-200">
+                      <div className="rounded-xl md:rounded-2xl overflow-hidden border border-gray-200">
                         <GoogleMap
-                          mapContainerStyle={mapContainerStyle}
+                          mapContainerStyle={{
+                            ...mapContainerStyle,
+                            height: "300px",
+                          }}
                           center={selectedLocation || defaultCenter}
                           zoom={15}
                           onClick={handleMapClick}
@@ -1521,21 +1546,21 @@ export default function Addresses() {
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="mt-6 p-4 rounded-xl"
+                      className="mt-4 md:mt-6 p-3 md:p-4 rounded-xl"
                       style={{
                         background: `linear-gradient(135deg, #2E3E88/10, #32B9CC/10)`,
                         border: "1px solid #2E3E8820",
                       }}
                     >
-                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
                           <p
-                            className="font-semibold mb-2"
+                            className="font-semibold mb-1 text-sm sm:text-base"
                             style={{ color: "#2E3E88" }}
                           >
                             ✓ الموقع المختار
                           </p>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-xs sm:text-sm text-gray-600">
                             خط العرض: {selectedLocation.lat.toFixed(6)} | خط
                             الطول: {selectedLocation.lng.toFixed(6)}
                           </p>
@@ -1544,7 +1569,7 @@ export default function Addresses() {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={confirmLocation}
-                          className="px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg"
+                          className="px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg text-sm sm:text-base"
                           style={{
                             background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                             color: "white",

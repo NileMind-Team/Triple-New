@@ -497,7 +497,7 @@ export default function Cart() {
   const formatPriceDisplay = (product) => {
     if (product.isPriceBasedOnRequest) {
       return (
-        <div className="text-[#2E3E88] font-bold text-base sm:text-lg">
+        <div className="text-[#2E3E88] font-bold text-sm sm:text-base lg:text-lg">
           السعر حسب الطلب
         </div>
       );
@@ -506,10 +506,10 @@ export default function Cart() {
     if (product.hasDiscount) {
       return (
         <>
-          <span className="text-gray-500 text-sm line-through">
+          <span className="text-gray-500 text-xs sm:text-sm line-through">
             {toArabicNumbers(product.price.toFixed(2))} ج.م
           </span>
-          <span className="text-[#2E3E88] font-bold text-base sm:text-lg">
+          <span className="text-[#2E3E88] font-bold text-sm sm:text-base lg:text-lg">
             {toArabicNumbers(product.finalPrice.toFixed(2))} ج.م
           </span>
         </>
@@ -517,7 +517,7 @@ export default function Cart() {
     }
 
     return (
-      <div className="text-[#2E3E88] font-bold text-base sm:text-lg">
+      <div className="text-[#2E3E88] font-bold text-sm sm:text-base lg:text-lg">
         {toArabicNumbers(product.price.toFixed(2))} ج.م
       </div>
     );
@@ -526,7 +526,7 @@ export default function Cart() {
   const formatPriceInModal = (product) => {
     if (product.basePrice === 0) {
       return (
-        <span className="text-base sm:text-xl font-bold text-[#2E3E88]">
+        <span className="text-sm sm:text-base lg:text-xl font-bold text-[#2E3E88]">
           السعر حسب الطلب
         </span>
       );
@@ -540,10 +540,10 @@ export default function Cart() {
 
       return (
         <>
-          <span className="text-gray-500 text-xs sm:text-sm line-through">
+          <span className="text-gray-500 text-xs line-through">
             {toArabicNumbers(product.basePrice)} ج.م
           </span>
-          <span className="text-base sm:text-xl font-bold text-[#2E3E88]">
+          <span className="text-sm sm:text-base lg:text-xl font-bold text-[#2E3E88]">
             {toArabicNumbers(priceAfterDiscount.toFixed(2))} ج.م
           </span>
         </>
@@ -551,7 +551,7 @@ export default function Cart() {
     }
 
     return (
-      <span className="text-base sm:text-xl font-bold text-[#2E3E88]">
+      <span className="text-sm sm:text-base lg:text-xl font-bold text-[#2E3E88]">
         {toArabicNumbers(product.basePrice)} ج.م
       </span>
     );
@@ -564,29 +564,29 @@ export default function Cart() {
   const renderAddressSection = () => {
     if (loadingAddresses) {
       return (
-        <div className="mb-4 sm:mb-6">
-          <div className="animate-pulse bg-gray-200 rounded-xl h-12"></div>
+        <div className="mb-4 md:mb-6">
+          <div className="animate-pulse bg-gray-200 rounded-lg md:rounded-xl h-10 md:h-12"></div>
         </div>
       );
     }
 
     if (userAddresses.length === 0) {
       return (
-        <div className="p-4 bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10 rounded-xl border border-[#2E3E88]/30 mb-4 sm:mb-6">
+        <div className="p-3 md:p-4 bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10 rounded-lg md:rounded-xl border border-[#2E3E88]/30 mb-4 md:mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-[#2E3E88]/20 to-[#32B9CC]/20 rounded-full flex items-center justify-center">
-              <FaMapMarker className="text-[#2E3E88]" />
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-r from-[#2E3E88]/20 to-[#32B9CC]/20 rounded-full flex items-center justify-center">
+              <FaMapMarker className="text-[#2E3E88] text-sm md:text-base" />
             </div>
             <div className="flex-1">
-              <h4 className="font-bold text-[#2E3E88] text-sm sm:text-base">
+              <h4 className="font-bold text-[#2E3E88] text-sm md:text-base">
                 لا توجد عناوين
               </h4>
-              <p className="text-[#32B9CC] text-xs sm:text-sm mb-2">
+              <p className="text-[#32B9CC] text-xs md:text-sm mb-2">
                 يجب إضافة عنوان للتوصيل أولاً
               </p>
               <button
                 onClick={handleAddAddress}
-                className="bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white px-4 py-2 rounded-lg font-semibold text-sm hover:shadow-lg transition-all flex items-center gap-2"
+                className="bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-semibold text-xs md:text-sm hover:shadow-lg transition-all flex items-center gap-2"
               >
                 <FaPlusCircle />
                 إضافة عنوان جديد
@@ -598,25 +598,25 @@ export default function Cart() {
     }
 
     return (
-      <div className="mb-4 sm:mb-6">
+      <div className="mb-4 md:mb-6">
         <div className="flex items-center justify-between mb-2">
-          <label className="block text-sm font-semibold text-gray-700">
+          <label className="block text-xs md:text-sm font-semibold text-gray-700">
             عنوان التوصيل
           </label>
           <button
             onClick={openAddressesPage}
-            className="text-[#2E3E88] text-sm font-semibold hover:underline flex items-center gap-1"
+            className="text-[#2E3E88] text-xs md:text-sm font-semibold hover:underline flex items-center gap-1"
           >
             <FaExchangeAlt className="text-xs" />
             تغيير
           </button>
         </div>
 
-        <div className="bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-xl border border-[#2E3E88]/20 p-4">
+        <div className="bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-lg md:rounded-xl border border-[#2E3E88]/20 p-3 md:p-4">
           <div className="flex items-start gap-3">
             <div className="mt-1">
               <div
-                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center 
+                className={`w-4 h-4 md:w-5 md:h-5 rounded-full border-2 flex items-center justify-center 
                 ${
                   selectedAddress?.isDefaultLocation
                     ? "bg-[#2E3E88] border-[#2E3E88]"
@@ -630,11 +630,11 @@ export default function Cart() {
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <span className="font-semibold text-gray-800">
+                <span className="font-semibold text-gray-800 text-sm md:text-base">
                   {selectedAddress?.city?.name || "عنوان"}
                 </span>
                 {selectedAddress?.isDefaultLocation && (
-                  <span className="text-xs bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white px-2 py-0.5 rounded-full">
+                  <span className="text-xs bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white px-1.5 py-0.5 md:px-2 md:py-0.5 rounded-full">
                     افتراضي
                   </span>
                 )}
@@ -1022,15 +1022,15 @@ export default function Cart() {
       if (response.status === 200 || response.status === 201) {
         Swal.fire({
           title:
-            '<h2 class="text-2xl font-bold text-white">تم تأكيد الطلب!</h2>',
+            '<h2 class="text-xl md:text-2xl font-bold text-white">تم تأكيد الطلب!</h2>',
           html: `
             <div class="text-center">
-              <div class="w-20 h-20 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] rounded-full flex items-center justify-center mb-4 mx-auto">
-                <FaCheckCircle class="w-10 h-10 text-white" />
+              <div class="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] rounded-full flex items-center justify-center mb-4 mx-auto">
+                <FaCheckCircle class="w-8 h-8 md:w-10 md:h-10 text-white" />
               </div>
-              <p class="text-lg text-white/80 mb-4">تم تقديم طلبك بنجاح!</p>
+              <p class="text-base md:text-lg text-white/80 mb-4">تم تقديم طلبك بنجاح!</p>
               <div class="bg-gradient-to-r from-[#2E3E88]/20 to-[#32B9CC]/20 rounded-xl p-4 border border-[#2E3E88]/30">
-                <p class="text-sm text-white/90 mt-1">
+                <p class="text-xs md:text-sm text-white/90 mt-1">
                   سيتم تجهيز طلبك في فرع ${selectedBranch.name}
                   ${
                     deliveryType === "delivery"
@@ -1151,7 +1151,7 @@ export default function Cart() {
       >
         <div className="text-center">
           <div
-            className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+            className="animate-spin rounded-full h-16 w-16 md:h-20 md:w-20 border-4 mx-auto mb-4"
             style={{
               borderTopColor: "#2E3E88",
               borderRightColor: "#32B9CC",
@@ -1159,7 +1159,10 @@ export default function Cart() {
               borderLeftColor: "transparent",
             }}
           ></div>
-          <p className="text-lg font-semibold" style={{ color: "#2E3E88" }}>
+          <p
+            className="text-base md:text-lg font-semibold"
+            style={{ color: "#2E3E88" }}
+          >
             جارٍ تحميل السلة...
           </p>
         </div>
@@ -1182,13 +1185,13 @@ export default function Cart() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6"
+            className="bg-white rounded-xl md:rounded-2xl shadow-2xl w-full max-w-md p-4 md:p-6"
             dir="rtl"
           >
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <FaPhone className="text-[#2E3E88] text-xl" />
-                <h3 className="text-xl font-bold text-gray-800">
+            <div className="flex items-center justify-between mb-4 md:mb-6">
+              <div className="flex items-center gap-2 md:gap-3">
+                <FaPhone className="text-[#2E3E88] text-lg md:text-xl" />
+                <h3 className="text-lg md:text-xl font-bold text-gray-800">
                   تحديث رقم الهاتف
                 </h3>
               </div>
@@ -1196,19 +1199,19 @@ export default function Cart() {
                 onClick={() => setShowPhoneInputModal(false)}
                 className="text-gray-500 hover:text-gray-700 transition-colors"
               >
-                <FaTimes className="text-lg" />
+                <FaTimes className="text-base md:text-lg" />
               </button>
             </div>
 
-            <div className="mb-6">
-              <div className="p-4 bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10 rounded-xl border border-[#2E3E88]/30 mb-4">
-                <p className="text-[#2E3E88] text-sm">
+            <div className="mb-4 md:mb-6">
+              <div className="p-3 md:p-4 bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10 rounded-lg md:rounded-xl border border-[#2E3E88]/30 mb-3 md:mb-4">
+                <p className="text-[#2E3E88] text-xs md:text-sm">
                   الرجاء إدخال رقم هاتفك لتتمكن من إكمال عملية الدفع.
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-xs md:text-sm font-semibold text-gray-700 mb-2">
                   رقم الهاتف
                 </label>
                 <input
@@ -1216,7 +1219,7 @@ export default function Cart() {
                   value={newPhoneNumber}
                   onChange={(e) => setNewPhoneNumber(e.target.value)}
                   placeholder="أدخل رقم الهاتف"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2E3E88] focus:border-transparent"
+                  className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2E3E88] focus:border-transparent"
                   dir="ltr"
                 />
                 <p className="text-xs text-gray-500 mt-1">
@@ -1225,17 +1228,17 @@ export default function Cart() {
               </div>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-2 md:gap-3">
               <button
                 onClick={() => setShowPhoneInputModal(false)}
-                className="flex-1 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
+                className="flex-1 py-2 md:py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-sm"
               >
                 إلغاء
               </button>
               <button
                 onClick={updatePhoneNumber}
                 disabled={loadingProfile || !newPhoneNumber.trim()}
-                className="flex-1 py-3 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="flex-1 py-2 md:py-3 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
               >
                 {loadingProfile ? (
                   <>
@@ -1260,13 +1263,13 @@ export default function Cart() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6"
+            className="bg-white rounded-xl md:rounded-2xl shadow-2xl w-full max-w-md p-4 md:p-6"
             dir="rtl"
           >
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <FaInfoCircle className="text-[#2E3E88] text-xl" />
-                <h3 className="text-xl font-bold text-gray-800">
+            <div className="flex items-center justify-between mb-4 md:mb-6">
+              <div className="flex items-center gap-2 md:gap-3">
+                <FaInfoCircle className="text-[#2E3E88] text-lg md:text-xl" />
+                <h3 className="text-lg md:text-xl font-bold text-gray-800">
                   معلومات ناقصة
                 </h3>
               </div>
@@ -1274,20 +1277,20 @@ export default function Cart() {
                 onClick={() => setShowMissingInfoModal(false)}
                 className="text-gray-500 hover:text-gray-700 transition-colors"
               >
-                <FaTimes className="text-lg" />
+                <FaTimes className="text-base md:text-lg" />
               </button>
             </div>
 
-            <div className="mb-6">
-              <div className="p-4 bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10 rounded-xl border border-[#2E3E88]/30 mb-4">
-                <p className="text-[#2E3E88] text-sm">
+            <div className="mb-4 md:mb-6">
+              <div className="p-3 md:p-4 bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10 rounded-lg md:rounded-xl border border-[#2E3E88]/30 mb-3 md:mb-4">
+                <p className="text-[#2E3E88] text-xs md:text-sm">
                   يرجى إضافة رقم هاتف أو عنوان افتراضي للمتابعة في عملية الدفع.
                 </p>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3 md:space-y-4">
                 <div className="text-center">
-                  <p className="text-sm text-gray-600 mb-3">
+                  <p className="text-xs md:text-sm text-gray-600 mb-2 md:mb-3">
                     اختر أحد الخيارات التالية:
                   </p>
                 </div>
@@ -1297,16 +1300,16 @@ export default function Cart() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={openPhoneInputModal}
-                  className="w-full p-4 bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-xl border-2 border-[#2E3E88]/30 hover:border-[#2E3E88] transition-all duration-300 flex items-center justify-center gap-3"
+                  className="w-full p-3 md:p-4 bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-lg md:rounded-xl border-2 border-[#2E3E88]/30 hover:border-[#2E3E88] transition-all duration-300 flex items-center justify-center gap-2 md:gap-3"
                 >
-                  <div className="w-12 h-12 bg-gradient-to-r from-[#2E3E88]/20 to-[#32B9CC]/20 rounded-full flex items-center justify-center">
-                    <FaPhone className="text-[#2E3E88] text-xl" />
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-[#2E3E88]/20 to-[#32B9CC]/20 rounded-full flex items-center justify-center">
+                    <FaPhone className="text-[#2E3E88] text-lg md:text-xl" />
                   </div>
                   <div className="text-right">
-                    <h4 className="font-bold text-[#2E3E88] text-base">
+                    <h4 className="font-bold text-[#2E3E88] text-sm md:text-base">
                       إضافة رقم هاتف
                     </h4>
-                    <p className="text-[#32B9CC] text-sm">
+                    <p className="text-[#32B9CC] text-xs md:text-sm">
                       أضف رقم هاتف للتواصل معك بشأن الطلب
                     </p>
                   </div>
@@ -1317,16 +1320,16 @@ export default function Cart() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleAddAddress}
-                  className="w-full p-4 bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-xl border-2 border-[#2E3E88]/30 hover:border-[#2E3E88] transition-all duration-300 flex items-center justify-center gap-3"
+                  className="w-full p-3 md:p-4 bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-lg md:rounded-xl border-2 border-[#2E3E88]/30 hover:border-[#2E3E88] transition-all duration-300 flex items-center justify-center gap-2 md:gap-3"
                 >
-                  <div className="w-12 h-12 bg-gradient-to-r from-[#2E3E88]/20 to-[#32B9CC]/20 rounded-full flex items-center justify-center">
-                    <FaMapPin className="text-[#2E3E88] text-xl" />
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-[#2E3E88]/20 to-[#32B9CC]/20 rounded-full flex items-center justify-center">
+                    <FaMapPin className="text-[#2E3E88] text-lg md:text-xl" />
                   </div>
                   <div className="text-right">
-                    <h4 className="font-bold text-[#2E3E88] text-base">
+                    <h4 className="font-bold text-[#2E3E88] text-sm md:text-base">
                       إضافة عنوان
                     </h4>
-                    <p className="text-[#32B9CC] text-sm">
+                    <p className="text-[#32B9CC] text-xs md:text-sm">
                       أضف عنوان افتراضي لتوصيل الطلب
                     </p>
                   </div>
@@ -1334,10 +1337,10 @@ export default function Cart() {
               </div>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-2 md:gap-3">
               <button
                 onClick={() => setShowMissingInfoModal(false)}
-                className="flex-1 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
+                className="flex-1 py-2 md:py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-sm"
               >
                 إلغاء الطلب
               </button>
@@ -1346,7 +1349,7 @@ export default function Cart() {
                   setShowMissingInfoModal(false);
                   navigate("/");
                 }}
-                className="flex-1 py-3 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white rounded-lg font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                className="flex-1 py-2 md:py-3 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white rounded-lg font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2 text-sm"
               >
                 مواصلة التسوق
               </button>
@@ -1361,14 +1364,14 @@ export default function Cart() {
             ref={notesModalRef}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6"
+            className="bg-white rounded-xl md:rounded-2xl shadow-2xl w-full max-w-md p-4 md:p-6"
             dir="rtl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <FaStickyNote className="text-[#2E3E88] text-xl" />
-                <h3 className="text-xl font-bold text-gray-800">
+            <div className="flex items-center justify-between mb-4 md:mb-6">
+              <div className="flex items-center gap-2 md:gap-3">
+                <FaStickyNote className="text-[#2E3E88] text-lg md:text-xl" />
+                <h3 className="text-lg md:text-xl font-bold text-gray-800">
                   تعليمات إضافية
                 </h3>
               </div>
@@ -1376,18 +1379,20 @@ export default function Cart() {
                 onClick={handleCloseNotesModal}
                 className="text-gray-500 hover:text-gray-700 transition-colors"
               >
-                <FaTimes className="text-lg" />
+                <FaTimes className="text-base md:text-lg" />
               </button>
             </div>
 
-            <div className="mb-6">
-              <p className="text-gray-600 text-sm mb-4">اكتب أي ملاحظات</p>
+            <div className="mb-4 md:mb-6">
+              <p className="text-gray-600 text-xs md:text-sm mb-3 md:mb-4">
+                اكتب أي ملاحظات
+              </p>
 
               <textarea
                 value={itemNotes}
                 onChange={(e) => setItemNotes(e.target.value)}
                 placeholder="اكتب تعليماتك هنا..."
-                className="w-full h-40 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2E3E88] focus:border-transparent resize-none"
+                className="w-full h-32 md:h-40 px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2E3E88] focus:border-transparent resize-none"
                 dir="rtl"
                 maxLength={500}
                 autoFocus
@@ -1405,25 +1410,25 @@ export default function Cart() {
               </div>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-2 md:gap-3">
               <button
                 onClick={handleClearNotes}
-                className="flex-1 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition-colors flex items-center justify-center gap-2"
+                className="flex-1 py-2 md:py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition-colors flex items-center justify-center gap-2 text-sm"
               >
-                <FaTrash className="text-sm" />
+                <FaTrash className="text-xs" />
                 مسح
               </button>
               <button
                 onClick={handleCloseNotesModal}
-                className="flex-1 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
+                className="flex-1 py-2 md:py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-sm"
               >
                 إلغاء
               </button>
               <button
                 onClick={handleSaveNotes}
-                className="flex-1 py-3 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white rounded-lg font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                className="flex-1 py-2 md:py-3 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white rounded-lg font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2 text-sm"
               >
-                <FaSave className="text-sm" />
+                <FaSave className="text-xs" />
                 حفظ
               </button>
             </div>
@@ -1438,15 +1443,15 @@ export default function Cart() {
             ref={productDetailsModalRef}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className={`bg-white rounded-3xl shadow-2xl w-full ${
+            className={`bg-white rounded-xl md:rounded-3xl shadow-2xl w-full ${
               isMobile() ? "max-w-full h-full" : "max-w-2xl max-h-[90vh]"
             } overflow-hidden relative z-50 flex flex-col`}
             dir="rtl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="p-4 sm:p-6 border-b border-gray-200 flex items-center justify-between flex-shrink-0">
-              <div className="flex items-center gap-3 sm:gap-4">
+            <div className="p-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0">
+              <div className="flex items-center gap-2 md:gap-4">
                 <div className="relative">
                   <img
                     src={
@@ -1455,21 +1460,21 @@ export default function Cart() {
                         : "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&h=300&fit=crop"
                     }
                     alt={productDetails.name}
-                    className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg sm:rounded-xl object-cover"
+                    className="w-12 h-12 md:w-16 md:h-16 rounded-lg md:rounded-xl object-cover"
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-base sm:text-xl font-bold text-gray-800 truncate">
+                  <h3 className="text-sm md:text-lg lg:text-xl font-bold text-gray-800 truncate">
                     {productDetails.name}
                   </h3>
-                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-1 sm:mt-2">
-                    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                  <div className="flex flex-wrap items-center gap-1 md:gap-3 mt-1 md:mt-2">
+                    <div className="flex flex-wrap items-center gap-1 md:gap-3">
                       {formatPriceInModal(productDetails)}
                     </div>
 
                     {productDetails.itemOffer?.isEnabled &&
                       productDetails.basePrice !== 0 && (
-                        <div className="bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded-md sm:rounded-lg font-bold shadow text-xs sm:text-sm flex items-center gap-1">
+                        <div className="bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white px-2 py-1 md:px-3 md:py-1.5 rounded-md md:rounded-lg font-bold shadow text-xs md:text-sm flex items-center gap-1">
                           <span>خصم</span>
                           <span>
                             {toArabicNumbers(
@@ -1487,27 +1492,27 @@ export default function Cart() {
               </div>
               <button
                 onClick={closeProductDetailsModal}
-                className="text-gray-500 hover:text-gray-700 transition-colors p-1 sm:p-2 hover:bg-gray-100 rounded-full flex-shrink-0"
+                className="text-gray-500 hover:text-gray-700 transition-colors p-1 md:p-2 hover:bg-gray-100 rounded-full flex-shrink-0"
               >
-                <FaTimes className="text-base sm:text-lg" />
+                <FaTimes className="text-base md:text-lg" />
               </button>
             </div>
 
             {/* Content - Scrollable */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-5 lg:p-6">
+            <div className="flex-1 overflow-y-auto p-3 md:p-5 lg:p-6">
               {/* Calories and Prep Time */}
-              <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-4 sm:mb-5">
+              <div className="flex flex-wrap items-center gap-2 md:gap-4 mb-3 md:mb-5">
                 {productDetails.calories && (
-                  <span className="flex items-center gap-1 text-gray-600 text-xs sm:text-sm">
-                    <FaFire className="text-orange-500 text-xs sm:text-sm" />
+                  <span className="flex items-center gap-1 text-gray-600 text-xs md:text-sm">
+                    <FaFire className="text-orange-500 text-xs md:text-sm" />
                     {toArabicNumbers(productDetails.calories)} كالوري
                   </span>
                 )}
 
                 {productDetails.preparationTimeStart !== null &&
                   productDetails.preparationTimeEnd !== null && (
-                    <span className="flex items-center gap-1 text-gray-600 text-xs sm:text-sm">
-                      <FaClock className="text-[#2E3E88] text-xs sm:text-sm" />
+                    <span className="flex items-center gap-1 text-gray-600 text-xs md:text-sm">
+                      <FaClock className="text-[#2E3E88] text-xs md:text-sm" />
                       {toArabicNumbers(productDetails.preparationTimeStart)}
                       {productDetails.preparationTimeEnd !== null &&
                         `-${toArabicNumbers(
@@ -1520,11 +1525,11 @@ export default function Cart() {
 
               {/* Description */}
               {productDetails.description && (
-                <div className="mb-4 sm:mb-5 lg:mb-6">
-                  <h4 className="text-sm sm:text-base font-semibold text-gray-800 mb-1 sm:mb-2">
+                <div className="mb-3 md:mb-5 lg:mb-6">
+                  <h4 className="text-sm md:text-base font-semibold text-gray-800 mb-1 md:mb-2">
                     الوصف
                   </h4>
-                  <p className="text-gray-600 leading-relaxed text-xs sm:text-sm">
+                  <p className="text-gray-600 leading-relaxed text-xs md:text-sm">
                     {productDetails.description}
                   </p>
                 </div>
@@ -1532,35 +1537,35 @@ export default function Cart() {
 
               {/* Addons */}
               {productAddons.length > 0 && (
-                <div className="space-y-3 sm:space-y-5 lg:space-y-6 mb-4 sm:mb-5 lg:mb-6">
+                <div className="space-y-2 md:space-y-5 lg:space-y-6 mb-3 md:mb-5 lg:mb-6">
                   {productAddons.map((addon) => {
                     const selectedOptionIds = selectedAddons[addon.id] || [];
 
                     return (
                       <div
                         key={addon.id}
-                        className="bg-gray-50 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-gray-200"
+                        className="bg-gray-50 rounded-lg md:rounded-xl p-2 md:p-4 border border-gray-200"
                         dir="rtl"
                       >
-                        <div className="flex items-center justify-between mb-2 sm:mb-3">
-                          <div className="flex flex-wrap items-center gap-1 sm:gap-2">
-                            <h4 className="font-semibold text-sm sm:text-base text-gray-800">
+                        <div className="flex items-center justify-between mb-1 md:mb-3">
+                          <div className="flex flex-wrap items-center gap-1 md:gap-2">
+                            <h4 className="font-semibold text-xs md:text-base text-gray-800">
                               {addon.title}
                             </h4>
                             {addon.isSelectionRequired && (
-                              <span className="text-xs bg-red-100 text-red-600 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full">
+                              <span className="text-xs bg-red-100 text-red-600 px-1.5 py-0.5 md:px-2 md:py-1 rounded-full">
                                 مطلوب
                               </span>
                             )}
                             {addon.canSelectMultipleOptions && (
-                              <span className="text-xs bg-[#2E3E88]/10 text-[#2E3E88] px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full">
+                              <span className="text-xs bg-[#2E3E88]/10 text-[#2E3E88] px-1.5 py-0.5 md:px-2 md:py-1 rounded-full">
                                 متعدد
                               </span>
                             )}
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                           {addon.options.map((option) => {
                             const isSelected = selectedOptionIds.includes(
                               option.id,
@@ -1577,7 +1582,7 @@ export default function Cart() {
                                     addon.type,
                                   )
                                 }
-                                className={`w-full p-2 rounded-md sm:rounded-lg border-2 transition-all duration-200 flex items-center justify-between ${
+                                className={`w-full p-2 rounded-md md:rounded-lg border-2 transition-all duration-200 flex items-center justify-between ${
                                   isSelected
                                     ? "border-[#2E3E88] bg-[#2E3E88]/5"
                                     : "border-gray-200 bg-white hover:border-gray-300"
@@ -1586,7 +1591,7 @@ export default function Cart() {
                               >
                                 <div className="flex items-center gap-1">
                                   <span
-                                    className={`font-medium text-xs sm:text-sm ${
+                                    className={`font-medium text-xs md:text-sm ${
                                       isSelected
                                         ? "text-[#2E3E88]"
                                         : "text-gray-700"
@@ -1616,43 +1621,43 @@ export default function Cart() {
 
               <div
                 onClick={handleOpenNotesModal}
-                className={`w-full rounded-lg sm:rounded-xl p-3 sm:p-4 text-center transition-all duration-300 mb-4 sm:mb-5 lg:mb-6 cursor-pointer ${
+                className={`w-full rounded-lg md:rounded-xl p-2 md:p-4 text-center transition-all duration-300 mb-3 md:mb-5 lg:mb-6 cursor-pointer ${
                   itemNotes
                     ? "bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 border-2 border-solid border-[#2E3E88]/30 hover:border-[#2E3E88]"
                     : "bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 border-2 border-dashed border-[#2E3E88]/30 hover:border-solid hover:border-[#2E3E88]"
                 }`}
                 dir="rtl"
               >
-                <div className="flex flex-col items-center justify-center gap-2">
+                <div className="flex flex-col items-center justify-center gap-1 md:gap-2">
                   <div
-                    className={`p-1.5 sm:p-2 rounded-full ${
+                    className={`p-1 md:p-2 rounded-full ${
                       itemNotes ? "bg-[#2E3E88]/10" : "bg-[#2E3E88]/10"
                     }`}
                   >
                     <FaStickyNote
-                      className={`text-lg sm:text-xl ${
+                      className={`text-base md:text-xl ${
                         itemNotes ? "text-[#2E3E88]" : "text-[#2E3E88]"
                       }`}
                     />
                   </div>
                   <div>
                     <h4
-                      className={`font-semibold text-sm sm:text-base ${
+                      className={`font-semibold text-xs md:text-base ${
                         itemNotes ? "text-[#2E3E88]" : "text-[#2E3E88]"
                       }`}
                     >
                       {itemNotes ? "تعليمات إضافية" : "إضافة تعليمات إضافية"}
                     </h4>
                     <p
-                      className={`text-xs mt-0.5 sm:mt-1 ${
+                      className={`text-xs mt-0.5 md:mt-1 ${
                         itemNotes ? "text-[#32B9CC]" : "text-[#32B9CC]"
                       }`}
                     >
                       {itemNotes
                         ? `انقر لتعديل التعليمات: ${itemNotes.substring(
                             0,
-                            60,
-                          )}${itemNotes.length > 60 ? "..." : ""}`
+                            40,
+                          )}${itemNotes.length > 40 ? "..." : ""}`
                         : "انقر لإضافة تعليمات إضافية"}
                     </p>
                   </div>
@@ -1661,12 +1666,12 @@ export default function Cart() {
             </div>
 
             {/* Footer - Quantity and Actions */}
-            <div className="border-t border-gray-200 p-4 sm:p-5 lg:p-6 bg-gray-50 flex-shrink-0">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4">
+            <div className="border-t border-gray-200 p-3 md:p-5 lg:p-6 bg-gray-50 flex-shrink-0">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4">
                 {/* Quantity Controls */}
-                <div className="flex items-center justify-between w-full md:w-auto gap-3 sm:gap-4">
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-gray-700 text-sm">
+                <div className="flex items-center justify-between w-full md:w-auto gap-2 md:gap-4">
+                  <div className="flex items-center gap-1 md:gap-2">
+                    <span className="font-semibold text-gray-700 text-xs md:text-sm">
                       الكمية:
                     </span>
                     <div className="flex items-center bg-white rounded-lg p-1 shadow">
@@ -1676,32 +1681,32 @@ export default function Cart() {
                             prev > 1 ? prev - 1 : 1,
                           )
                         }
-                        className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 flex items-center justify-center rounded-md hover:bg-gray-100 transition-colors"
+                        className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 flex items-center justify-center rounded-md hover:bg-gray-100 transition-colors"
                       >
                         <FaMinus className="text-[#2E3E88] text-xs" />
                       </button>
-                      <span className="font-bold text-gray-800 min-w-8 sm:min-w-10 text-center text-sm sm:text-base">
+                      <span className="font-bold text-gray-800 min-w-6 md:min-w-8 text-center text-xs md:text-sm">
                         {toArabicNumbers(productQuantity)}
                       </span>
                       <button
                         onClick={() => setProductQuantity((prev) => prev + 1)}
-                        className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 flex items-center justify-center rounded-md hover:bg-gray-100 transition-colors"
+                        className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 flex items-center justify-center rounded-md hover:bg-gray-100 transition-colors"
                       >
                         <FaPlus className="text-[#2E3E88] text-xs" />
                       </button>
                     </div>
                   </div>
-                  <div className="text-base sm:text-lg lg:text-xl font-bold text-[#2E3E88]">
+                  <div className="text-sm md:text-lg lg:text-xl font-bold text-[#2E3E88]">
                     {toArabicNumbers(calculateProductTotalPrice().toFixed(2))}{" "}
                     ج.م
                   </div>
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex items-center gap-2 sm:gap-3 w-full md:w-auto">
+                <div className="flex items-center gap-1 md:gap-3 w-full md:w-auto">
                   <button
                     onClick={closeProductDetailsModal}
-                    className="flex-1 md:flex-none px-4 py-2 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-sm"
+                    className="flex-1 md:flex-none px-3 py-1.5 md:px-4 md:py-2 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-xs md:text-sm"
                   >
                     إلغاء
                   </button>
@@ -1710,11 +1715,11 @@ export default function Cart() {
                     whileTap={{ scale: 0.95 }}
                     onClick={updateCartItem}
                     disabled={updatingCart}
-                    className="flex-1 md:flex-none px-4 py-2 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
+                    className="flex-1 md:flex-none px-3 py-1.5 md:px-4 md:py-2 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1 md:gap-2 text-xs md:text-sm"
                   >
                     {updatingCart ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
+                        <div className="animate-spin rounded-full h-3 w-3 md:h-4 md:w-4 border-t-2 border-b-2 border-white"></div>
                         تحديث...
                       </>
                     ) : (
@@ -1736,20 +1741,20 @@ export default function Cart() {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/80 to-white"></div>
 
         {/* Hero Header */}
-        <div className="relative bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] py-16 px-4">
+        <div className="relative bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] py-12 md:py-16 px-4">
           <div className="max-w-7xl mx-auto">
-            {/* زر الرجوع */}
+            {/* زر الرجوع - تم تعديل الحجم */}
             <motion.button
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               onClick={() => navigate(-1)}
-              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              className="absolute top-4 left-4 md:top-6 md:left-6 bg-white/20 backdrop-blur-sm rounded-full p-2 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
               style={{
                 boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
               }}
             >
               <FaArrowLeft
-                size={20}
+                size={18}
                 className="group-hover:-translate-x-1 transition-transform"
               />
             </motion.button>
@@ -1757,15 +1762,15 @@ export default function Cart() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center pt-8"
+              className="text-center pt-6 md:pt-8"
             >
-              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
-                <FaShoppingCart className="text-white text-4xl" />
+              <div className="inline-flex items-center justify-center p-3 md:p-4 rounded-xl md:rounded-2xl bg-white/20 backdrop-blur-sm mb-4 md:mb-6">
+                <FaShoppingCart className="text-white text-2xl md:text-4xl" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-2 md:mb-4">
                 سلة التسوق
               </h1>
-              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+              <p className="text-white/80 text-sm md:text-lg lg:text-xl max-w-2xl mx-auto">
                 راجع طلبك و تابع للدفع
               </p>
             </motion.div>
@@ -1774,46 +1779,46 @@ export default function Cart() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10">
+      <div className="max-w-7xl mx-auto px-3 md:px-4 py-4 md:py-8 -mt-8 md:-mt-10 relative z-10">
         <div className="w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
             {/* Cart Items Section */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-2xl overflow-hidden shadow-xl mb-6">
-                <div className="p-6">
+              <div className="bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-lg md:shadow-xl mb-4 md:mb-6">
+                <div className="p-4 md:p-6">
                   <h2
-                    className="text-2xl font-bold mb-6 flex items-center gap-3"
+                    className="text-lg md:text-2xl font-bold mb-4 md:mb-6 flex items-center gap-2 md:gap-3"
                     style={{ color: "#2E3E88" }}
                   >
                     <FaShoppingCart className="text-[#2E3E88]" />
                     عناصر الطلب ({cartItems.length})
                   </h2>
 
-                  <div className="space-y-4">
+                  <div className="space-y-3 md:space-y-4">
                     <AnimatePresence>
                       {cartItems.length === 0 ? (
-                        <div className="text-center py-8">
-                          <div className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                        <div className="text-center py-6 md:py-8">
+                          <div className="w-16 h-16 md:w-24 md:h-24 rounded-full mx-auto mb-4 md:mb-6 flex items-center justify-center bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
                             <FaShoppingCart
-                              className="text-4xl"
+                              className="text-2xl md:text-4xl"
                               style={{ color: "#2E3E88" }}
                             />
                           </div>
                           <h3
-                            className="text-2xl font-bold mb-3"
+                            className="text-xl md:text-2xl font-bold mb-2 md:mb-3"
                             style={{ color: "#2E3E88" }}
                           >
                             سلة التسوق فارغة
                           </h3>
                           <p
-                            className="mb-6 max-w-md mx-auto"
+                            className="mb-4 md:mb-6 max-w-md mx-auto text-sm md:text-base"
                             style={{ color: "#32B9CC" }}
                           >
                             لم تقم بإضافة أي منتجات إلى سلة التسوق بعد
                           </p>
                           <button
                             onClick={() => navigate("/")}
-                            className="px-8 py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                            className="px-6 py-2 md:px-8 md:py-3 rounded-lg md:rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl text-sm md:text-base"
                             style={{
                               background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                               color: "white",
@@ -1830,19 +1835,19 @@ export default function Cart() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.1 }}
-                            className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1 border border-gray-100"
+                            className="bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-md md:shadow-lg hover:shadow-lg md:hover:shadow-xl transition-all duration-500 transform hover:-translate-y-0.5 md:hover:-translate-y-1 border border-gray-100"
                           >
-                            <div className="p-6">
-                              <div className="flex gap-4">
-                                <div className="relative">
+                            <div className="p-3 md:p-6">
+                              <div className="flex gap-3 md:gap-4">
+                                <div className="relative flex-shrink-0">
                                   <img
                                     src={item.image}
                                     alt={item.name}
-                                    className="w-24 h-24 rounded-xl object-cover flex-shrink-0"
+                                    className="w-20 h-20 md:w-24 md:h-24 rounded-lg md:rounded-xl object-cover"
                                   />
                                   {item.hasDiscount &&
                                     !item.isPriceBasedOnRequest && (
-                                      <div className="absolute -top-2 -right-2 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white px-2 py-1 rounded-lg text-xs font-bold shadow-lg">
+                                      <div className="absolute -top-2 -right-2 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white px-1.5 py-1 md:px-2 md:py-1 rounded-md md:rounded-lg text-xs font-bold shadow-md md:shadow-lg">
                                         خصم{" "}
                                         {toArabicNumbers(
                                           item.discountValue.toFixed(2),
@@ -1852,9 +1857,9 @@ export default function Cart() {
                                     )}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <div className="mb-2">
-                                    <div className="flex items-center gap-2">
-                                      <h3 className="font-bold text-gray-800 text-lg">
+                                  <div className="mb-1 md:mb-2">
+                                    <div className="flex items-center gap-1 md:gap-2">
+                                      <h3 className="font-bold text-gray-800 text-sm md:text-lg">
                                         {item.name}
                                       </h3>
                                       <button
@@ -1863,22 +1868,22 @@ export default function Cart() {
                                         }
                                         className="p-1 hover:bg-gray-100 rounded-full transition-colors"
                                       >
-                                        <FaInfoCircle className="text-[#32B9CC]" />
+                                        <FaInfoCircle className="text-[#32B9CC] text-xs md:text-sm" />
                                       </button>
                                     </div>
                                   </div>
 
-                                  <div className="flex items-center gap-2 mb-2">
+                                  <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2">
                                     {formatPriceDisplay(item)}
                                   </div>
 
-                                  <p className="text-gray-600 text-sm mb-2 line-clamp-2">
+                                  <p className="text-gray-600 text-xs md:text-sm mb-1 md:mb-2 line-clamp-2">
                                     {item.description}
                                   </p>
 
                                   {/* Prep Time */}
                                   {item.prepTime && (
-                                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                                    <div className="flex items-center gap-1 md:gap-2 text-xs md:text-sm text-gray-600">
                                       <FaClock className="text-[#2E3E88]" />
                                       <span>{item.prepTime}</span>
                                     </div>
@@ -1886,12 +1891,12 @@ export default function Cart() {
 
                                   {/* Notes */}
                                   {item.note && (
-                                    <div className="flex items-start gap-2 text-sm text-green-600 mt-2 bg-green-50 px-3 py-2 rounded-lg">
-                                      <FaStickyNote className="text-green-500 mt-0.5" />
+                                    <div className="flex items-start gap-1 md:gap-2 text-xs md:text-sm text-green-600 mt-1 md:mt-2 bg-green-50 px-2 py-1 md:px-3 md:py-2 rounded-lg">
+                                      <FaStickyNote className="text-green-500 mt-0.5 text-xs" />
                                       <span className="font-medium">
                                         ملاحظة:
                                       </span>
-                                      <span className="flex-1 break-words max-w-[150px] line-clamp-2">
+                                      <span className="flex-1 break-words max-w-[120px] md:max-w-[150px] line-clamp-2">
                                         {item.note}
                                       </span>
                                     </div>
@@ -1900,9 +1905,9 @@ export default function Cart() {
                               </div>
 
                               {/* Quantity Controls and Total Price */}
-                              <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-                                <div className="flex items-center gap-4">
-                                  <div className="flex items-center gap-2 bg-gray-50 rounded-lg p-2">
+                              <div className="flex items-center justify-between mt-3 md:mt-4 pt-3 md:pt-4 border-t border-gray-100">
+                                <div className="flex items-center gap-2 md:gap-4">
+                                  <div className="flex items-center gap-1 md:gap-2 bg-gray-50 rounded-lg p-1 md:p-2">
                                     <button
                                       onClick={() =>
                                         updateQuantity(
@@ -1910,12 +1915,12 @@ export default function Cart() {
                                           item.quantity - 1,
                                         )
                                       }
-                                      className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors"
+                                      className="w-6 h-6 md:w-8 md:h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors"
                                       style={{ color: "#2E3E88" }}
                                     >
-                                      <FaMinus />
+                                      <FaMinus className="text-xs" />
                                     </button>
-                                    <span className="font-bold text-gray-800 min-w-8 text-center">
+                                    <span className="font-bold text-gray-800 min-w-6 md:min-w-8 text-center text-sm">
                                       {item.quantity}
                                     </span>
                                     <button
@@ -1925,14 +1930,14 @@ export default function Cart() {
                                           item.quantity + 1,
                                         )
                                       }
-                                      className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors"
+                                      className="w-6 h-6 md:w-8 md:h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors"
                                       style={{ color: "#2E3E88" }}
                                     >
-                                      <FaPlus />
+                                      <FaPlus className="text-xs" />
                                     </button>
                                   </div>
                                   <div className="text-right">
-                                    <div className="font-bold text-gray-800 text-lg">
+                                    <div className="font-bold text-gray-800 text-sm md:text-lg">
                                       {toArabicNumbers(
                                         item.totalPrice.toFixed(2),
                                       )}{" "}
@@ -1951,9 +1956,9 @@ export default function Cart() {
                                 </div>
                                 <button
                                   onClick={() => removeItem(item.id)}
-                                  className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                  className="p-1 md:p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                                 >
-                                  <FaTrash />
+                                  <FaTrash className="text-sm" />
                                 </button>
                               </div>
                             </div>
@@ -1966,10 +1971,10 @@ export default function Cart() {
               </div>
 
               {/* Delivery Options */}
-              <div className="bg-white rounded-2xl overflow-hidden shadow-xl">
-                <div className="p-6">
+              <div className="bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-lg md:shadow-xl">
+                <div className="p-4 md:p-6">
                   <h2
-                    className="text-2xl font-bold mb-6 flex items-center gap-3"
+                    className="text-lg md:text-2xl font-bold mb-4 md:mb-6 flex items-center gap-2 md:gap-3"
                     style={{ color: "#2E3E88" }}
                   >
                     <FaMapMarkerAlt className="text-[#2E3E88]" />
@@ -1979,19 +1984,19 @@ export default function Cart() {
 
                   {deliveryType === "delivery" && renderAddressSection()}
 
-                  <div className="mb-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div className="mb-4 md:mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-3 md:mb-4">
                       <div
-                        className={`p-4 bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-xl border-2 cursor-pointer hover:shadow-lg transition-all duration-300 ${
+                        className={`p-3 md:p-4 bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-lg md:rounded-xl border-2 cursor-pointer hover:shadow-md md:hover:shadow-lg transition-all duration-300 ${
                           deliveryType === "delivery"
                             ? "border-[#2E3E88]"
                             : "border-gray-200"
                         }`}
                         onClick={() => setDeliveryType("delivery")}
                       >
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 md:gap-3">
                           <div
-                            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                            className={`w-5 h-5 md:w-6 md:h-6 rounded-full border-2 flex items-center justify-center ${
                               deliveryType === "delivery"
                                 ? "bg-[#2E3E88] border-[#2E3E88]"
                                 : "border-gray-300"
@@ -2002,28 +2007,28 @@ export default function Cart() {
                             )}
                           </div>
                           <div className="flex-1">
-                            <div className="font-bold text-gray-800 text-base">
+                            <div className="font-bold text-gray-800 text-sm md:text-base">
                               التوصيل للمنزل
                             </div>
-                            <div className="text-gray-600 text-sm">
+                            <div className="text-gray-600 text-xs md:text-sm">
                               توصيل الطلب إلى عنوانك
                             </div>
                           </div>
-                          <FaMapMarkerAlt className="text-[#2E3E88] text-lg" />
+                          <FaMapMarkerAlt className="text-[#2E3E88] text-base md:text-lg" />
                         </div>
                       </div>
 
                       <div
-                        className={`p-4 bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-xl border-2 cursor-pointer hover:shadow-lg transition-all duration-300 ${
+                        className={`p-3 md:p-4 bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-lg md:rounded-xl border-2 cursor-pointer hover:shadow-md md:hover:shadow-lg transition-all duration-300 ${
                           deliveryType === "pickup"
                             ? "border-[#2E3E88]"
                             : "border-gray-200"
                         }`}
                         onClick={() => setDeliveryType("pickup")}
                       >
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 md:gap-3">
                           <div
-                            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                            className={`w-5 h-5 md:w-6 md:h-6 rounded-full border-2 flex items-center justify-center ${
                               deliveryType === "pickup"
                                 ? "bg-[#2E3E88] border-[#2E3E88]"
                                 : "border-gray-300"
@@ -2034,25 +2039,25 @@ export default function Cart() {
                             )}
                           </div>
                           <div className="flex-1">
-                            <div className="font-bold text-gray-800 text-base">
+                            <div className="font-bold text-gray-800 text-sm md:text-base">
                               الاستلام من المطعم
                             </div>
-                            <div className="text-gray-600 text-sm">
+                            <div className="text-gray-600 text-xs md:text-sm">
                               استلام الطلب من الفرع
                             </div>
                           </div>
-                          <FaStore className="text-[#2E3E88] text-lg" />
+                          <FaStore className="text-[#2E3E88] text-base md:text-lg" />
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="mb-6">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <div className="mb-4 md:mb-6">
+                    <label className="block text-xs md:text-sm font-semibold text-gray-700 mb-2">
                       اختر الفرع
                     </label>
                     {loadingBranches ? (
-                      <div className="animate-pulse bg-gray-200 rounded-xl h-12"></div>
+                      <div className="animate-pulse bg-gray-200 rounded-lg md:rounded-xl h-10 md:h-12"></div>
                     ) : (
                       <div className="relative">
                         <button
@@ -2062,9 +2067,9 @@ export default function Cart() {
                               openDropdown === "branch" ? null : "branch",
                             )
                           }
-                          className="w-full flex items-center justify-between border border-gray-200 bg-white text-black rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88] focus:border-transparent transition-all duration-200 cursor-pointer"
+                          className="w-full flex items-center justify-between border border-gray-200 bg-white text-black rounded-lg md:rounded-xl px-3 py-2.5 md:px-4 md:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88] focus:border-transparent transition-all duration-200 cursor-pointer"
                         >
-                          <span className="flex items-center gap-2">
+                          <span className="flex items-center gap-1 md:gap-2 text-sm md:text-base">
                             <FaStore className="text-[#2E3E88]" />
                             {selectedBranch
                               ? selectedBranch.name
@@ -2086,7 +2091,7 @@ export default function Cart() {
                               initial={{ opacity: 0, y: -5 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: -5 }}
-                              className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto"
+                              className="absolute z-[100] mt-1 md:mt-2 w-full bg-white border border-gray-200 shadow-xl md:shadow-2xl rounded-lg md:rounded-xl overflow-hidden max-h-40 md:max-h-48 overflow-y-auto"
                             >
                               {branches.map((branch) => (
                                 <li
@@ -2095,7 +2100,7 @@ export default function Cart() {
                                     setSelectedBranch(branch);
                                     setOpenDropdown(null);
                                   }}
-                                  className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b last:border-b-0"
+                                  className="px-3 py-2 md:px-4 md:py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b last:border-b-0 text-sm md:text-base"
                                 >
                                   {branch.name}
                                 </li>
@@ -2108,12 +2113,12 @@ export default function Cart() {
                   </div>
 
                   {deliveryType === "delivery" && (
-                    <div className="mb-6">
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <div className="mb-4 md:mb-6">
+                      <label className="block text-xs md:text-sm font-semibold text-gray-700 mb-2">
                         اختر منطقة التوصيل
                       </label>
                       {loadingAreas ? (
-                        <div className="animate-pulse bg-gray-200 rounded-xl h-12"></div>
+                        <div className="animate-pulse bg-gray-200 rounded-lg md:rounded-xl h-10 md:h-12"></div>
                       ) : deliveryAreas.length > 0 ? (
                         <div className="relative">
                           <button
@@ -2123,9 +2128,9 @@ export default function Cart() {
                                 openDropdown === "area" ? null : "area",
                               )
                             }
-                            className="w-full flex items-center justify-between border border-gray-200 bg-white text-black rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88] focus:border-transparent transition-all duration-200 cursor-pointer"
+                            className="w-full flex items-center justify-between border border-gray-200 bg-white text-black rounded-lg md:rounded-xl px-3 py-2.5 md:px-4 md:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88] focus:border-transparent transition-all duration-200 cursor-pointer"
                           >
-                            <span className="flex items-center gap-2">
+                            <span className="flex items-center gap-1 md:gap-2 text-sm md:text-base">
                               <FaMapMarkerAlt className="text-[#2E3E88]" />
                               {selectedArea
                                 ? `${selectedArea.areaName} - ${selectedArea.fee} ج.م`
@@ -2147,7 +2152,7 @@ export default function Cart() {
                                 initial={{ opacity: 0, y: -5 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -5 }}
-                                className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto"
+                                className="absolute z-[100] mt-1 md:mt-2 w-full bg-white border border-gray-200 shadow-xl md:shadow-2xl rounded-lg md:rounded-xl overflow-hidden max-h-40 md:max-h-48 overflow-y-auto"
                               >
                                 {deliveryAreas.map((area) => (
                                   <li
@@ -2156,10 +2161,10 @@ export default function Cart() {
                                       setSelectedArea(area);
                                       setOpenDropdown(null);
                                     }}
-                                    className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b last:border-b-0"
+                                    className="px-3 py-2 md:px-4 md:py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b last:border-b-0 text-sm"
                                   >
                                     <div>
-                                      <div className="font-medium">
+                                      <div className="font-medium text-xs md:text-sm">
                                         {area.areaName}
                                       </div>
                                       <div className="text-xs text-gray-500">
@@ -2175,8 +2180,8 @@ export default function Cart() {
                           </AnimatePresence>
                         </div>
                       ) : (
-                        <div className="p-4 bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10 rounded-xl border border-[#2E3E88]/30 text-center">
-                          <p className="text-[#2E3E88]">
+                        <div className="p-3 md:p-4 bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10 rounded-lg md:rounded-xl border border-[#2E3E88]/30 text-center">
+                          <p className="text-[#2E3E88] text-sm">
                             لا توجد مناطق توصيل متاحة لهذا الفرع حالياً
                           </p>
                         </div>
@@ -2185,19 +2190,19 @@ export default function Cart() {
                   )}
 
                   {deliveryType === "pickup" && (
-                    <div className="p-4 bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-xl border border-[#2E3E88]/30 mb-6">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-r from-[#2E3E88]/20 to-[#32B9CC]/20 rounded-full flex items-center justify-center">
+                    <div className="p-3 md:p-4 bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-lg md:rounded-xl border border-[#2E3E88]/30 mb-4 md:mb-6">
+                      <div className="flex items-center gap-2 md:gap-3">
+                        <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-r from-[#2E3E88]/20 to-[#32B9CC]/20 rounded-full flex items-center justify-center">
                           <FaStore className="text-[#2E3E88]" />
                         </div>
                         <div>
-                          <h4 className="font-bold text-[#2E3E88] text-base">
+                          <h4 className="font-bold text-[#2E3E88] text-sm md:text-base">
                             الاستلام من المطعم
                           </h4>
-                          <p className="text-[#32B9CC] text-sm">
+                          <p className="text-[#32B9CC] text-xs md:text-sm">
                             {selectedBranch?.name || "المطعم"}
                           </p>
-                          <p className="text-[#2E3E88] text-xs mt-1">
+                          <p className="text-[#2E3E88] text-xs mt-0.5 md:mt-1">
                             رسوم الاستلام: {getDeliveryFee().toFixed(2)} ج.م
                           </p>
                         </div>
@@ -2210,37 +2215,37 @@ export default function Cart() {
 
             {/* Order Summary */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-2xl overflow-hidden shadow-xl sticky top-6">
-                <div className="p-6">
+              <div className="bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-lg md:shadow-xl sticky top-4 md:top-6">
+                <div className="p-4 md:p-6">
                   <h2
-                    className="text-2xl font-bold mb-6"
+                    className="text-lg md:text-2xl font-bold mb-4 md:mb-6"
                     style={{ color: "#2E3E88" }}
                   >
                     ملخص الطلب
                   </h2>
 
                   {/* User Info */}
-                  <div className="mb-6">
-                    <div className="bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-xl p-4 border border-[#2E3E88]/30">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="w-8 h-8 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] rounded-full flex items-center justify-center">
-                          <FaUser className="text-white text-sm" />
+                  <div className="mb-4 md:mb-6">
+                    <div className="bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-lg md:rounded-xl p-3 md:p-4 border border-[#2E3E88]/30">
+                      <div className="flex items-center gap-2 md:gap-3 mb-1 md:mb-2">
+                        <div className="w-6 h-6 md:w-8 md:h-8 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] rounded-full flex items-center justify-center">
+                          <FaUser className="text-white text-xs md:text-sm" />
                         </div>
-                        <h4 className="font-bold text-gray-800 text-base">
+                        <h4 className="font-bold text-gray-800 text-sm md:text-base">
                           معلومات العميل
                         </h4>
                       </div>
-                      <div className="text-sm">
+                      <div className="text-xs md:text-sm">
                         {deliveryType === "delivery" && selectedAddress ? (
                           <div>
                             <div className="font-medium text-gray-700">
                               {selectedAddress.city?.name || "عنوان"}
                             </div>
-                            <div className="text-gray-600 text-xs mt-1">
+                            <div className="text-gray-600 text-xs mt-0.5 md:mt-1">
                               {formatAddressText(selectedAddress)}
                             </div>
                             {selectedAddress.phoneNumber && (
-                              <div className="text-gray-600 text-xs mt-1">
+                              <div className="text-gray-600 text-xs mt-0.5 md:mt-1">
                                 📞 {selectedAddress.phoneNumber}
                               </div>
                             )}
@@ -2251,11 +2256,11 @@ export default function Cart() {
                           </div>
                         ) : deliveryType === "delivery" &&
                           userAddresses.length === 0 ? (
-                          <div className="text-[#2E3E88] text-sm">
+                          <div className="text-[#2E3E88] text-xs md:text-sm">
                             يجب إضافة عنوان للتوصيل
                           </div>
                         ) : (
-                          <div className="text-[#2E3E88] text-sm">
+                          <div className="text-[#2E3E88] text-xs md:text-sm">
                             لم يتم اختيار عنوان التوصيل
                           </div>
                         )}
@@ -2264,20 +2269,22 @@ export default function Cart() {
                   </div>
 
                   {/* Price Breakdown */}
-                  <div className="space-y-4 mb-6">
+                  <div className="space-y-3 md:space-y-4 mb-4 md:mb-6">
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">المجموع الفرعي</span>
-                      <span className="font-semibold text-gray-800">
+                      <span className="text-gray-600 text-xs md:text-sm">
+                        المجموع الفرعي
+                      </span>
+                      <span className="font-semibold text-gray-800 text-sm md:text-base">
                         {calculateSubtotal().toFixed(2)} ج.م
                       </span>
                     </div>
 
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">
+                      <span className="text-gray-600 text-xs md:text-sm">
                         رسوم{" "}
                         {deliveryType === "delivery" ? "التوصيل" : "الاستلام"}
                       </span>
-                      <span className="font-semibold text-gray-800">
+                      <span className="font-semibold text-gray-800 text-sm md:text-base">
                         {getDeliveryFee().toFixed(2)} ج.م
                       </span>
                     </div>
@@ -2289,12 +2296,12 @@ export default function Cart() {
                       </div>
                     )}
 
-                    <div className="border-t border-gray-200 pt-4">
+                    <div className="border-t border-gray-200 pt-3 md:pt-4">
                       <div className="flex justify-between items-center">
-                        <span className="font-bold text-gray-800 text-lg">
+                        <span className="font-bold text-gray-800 text-base md:text-lg">
                           الإجمالي
                         </span>
-                        <span className="font-bold text-[#2E3E88] text-xl">
+                        <span className="font-bold text-[#2E3E88] text-lg md:text-xl">
                           {calculateTotal().toFixed(2)} ج.م
                         </span>
                       </div>
@@ -2302,15 +2309,15 @@ export default function Cart() {
                   </div>
 
                   {/* Branch and Area Info */}
-                  <div className="mb-6">
-                    <div className="bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-xl p-4 border border-[#2E3E88]/30">
-                      <h4 className="font-bold text-gray-800 text-base mb-2">
+                  <div className="mb-4 md:mb-6">
+                    <div className="bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-lg md:rounded-xl p-3 md:p-4 border border-[#2E3E88]/30">
+                      <h4 className="font-bold text-gray-800 text-sm md:text-base mb-1 md:mb-2">
                         معلومات{" "}
                         {deliveryType === "delivery" ? "التوصيل" : "الاستلام"}
                       </h4>
 
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-sm">
+                      <div className="space-y-1 md:space-y-2">
+                        <div className="flex justify-between text-xs md:text-sm">
                           <span className="text-gray-600">
                             طريقة{" "}
                             {deliveryType === "delivery"
@@ -2325,7 +2332,7 @@ export default function Cart() {
                           </span>
                         </div>
 
-                        <div className="flex justify-between text-sm">
+                        <div className="flex justify-between text-xs md:text-sm">
                           <span className="text-gray-600">الفرع:</span>
                           <span className="font-semibold text-gray-800">
                             {selectedBranch ? selectedBranch.name : "غير محدد"}
@@ -2334,7 +2341,7 @@ export default function Cart() {
 
                         {deliveryType === "delivery" && selectedArea && (
                           <>
-                            <div className="flex justify-between text-sm">
+                            <div className="flex justify-between text-xs md:text-sm">
                               <span className="text-gray-600">
                                 منطقة التوصيل:
                               </span>
@@ -2342,7 +2349,7 @@ export default function Cart() {
                                 {selectedArea.areaName}
                               </span>
                             </div>
-                            <div className="flex justify-between text-sm">
+                            <div className="flex justify-between text-xs md:text-sm">
                               <span className="text-gray-600">
                                 رسوم التوصيل:
                               </span>
@@ -2355,7 +2362,7 @@ export default function Cart() {
 
                         {deliveryType === "pickup" && (
                           <>
-                            <div className="flex justify-between text-sm">
+                            <div className="flex justify-between text-xs md:text-sm">
                               <span className="text-gray-600">
                                 رسوم الاستلام:
                               </span>
@@ -2382,7 +2389,7 @@ export default function Cart() {
                         userAddresses.length === 0) ||
                       (deliveryType === "delivery" && !selectedAddress)
                     }
-                    className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center gap-2 ${
+                    className={`w-full py-3 md:py-4 rounded-lg md:rounded-xl font-bold text-sm md:text-lg transition-all duration-300 flex items-center justify-center gap-1 md:gap-2 ${
                       cartItems.length === 0 ||
                       !selectedBranch ||
                       (deliveryType === "delivery" && !selectedArea) ||
@@ -2390,7 +2397,7 @@ export default function Cart() {
                         userAddresses.length === 0) ||
                       (deliveryType === "delivery" && !selectedAddress)
                         ? "bg-gray-400 cursor-not-allowed text-white"
-                        : "bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white hover:shadow-xl"
+                        : "bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white hover:shadow-lg md:hover:shadow-xl"
                     }`}
                   >
                     <FaLocationArrow />
@@ -2402,7 +2409,7 @@ export default function Cart() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => navigate("/")}
-                    className="w-full mt-4 border-2 border-[#2E3E88] text-[#2E3E88] py-3 rounded-xl font-semibold text-base hover:bg-[#2E3E88] hover:text-white transition-all duration-300"
+                    className="w-full mt-3 md:mt-4 border-2 border-[#2E3E88] text-[#2E3E88] py-2 md:py-3 rounded-lg md:rounded-xl font-semibold text-xs md:text-base hover:bg-[#2E3E88] hover:text-white transition-all duration-300"
                   >
                     مواصلة التسوق
                   </motion.button>

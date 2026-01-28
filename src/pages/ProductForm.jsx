@@ -1036,7 +1036,7 @@ const ProductForm = () => {
 
         {/* Hero Header */}
         <div
-          className="relative py-16 px-4"
+          className="relative py-12 md:py-16 px-4 sm:px-6"
           style={{
             background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
           }}
@@ -1046,29 +1046,29 @@ const ProductForm = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               onClick={() => navigate(-1)}
-              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              className="absolute top-4 md:top-6 left-4 md:left-6 bg-white/20 backdrop-blur-sm rounded-full p-2 md:p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
               style={{
                 boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
               }}
             >
               <FaArrowLeft
-                size={20}
-                className="group-hover:-translate-x-1 transition-transform"
+                size={18}
+                className="md:w-5 md:h-5 group-hover:-translate-x-1 transition-transform"
               />
             </motion.button>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center pt-8"
+              className="text-center pt-6 md:pt-8"
             >
-              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
-                <FaClock className="text-white text-4xl" />
+              <div className="inline-flex items-center justify-center p-3 md:p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-4 md:mb-6">
+                <FaClock className="text-white text-3xl md:text-4xl" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 md:mb-4">
                 {isEditing ? "تعديل المنتج" : "منتج جديد"}
               </h1>
-              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+              <p className="text-white/80 text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-2">
                 {isEditing
                   ? "قم بتحديث معلومات المنتج"
                   : "قم بإنشاء عنصر قائمة جديد"}
@@ -1079,23 +1079,23 @@ const ProductForm = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 md:py-8 -mt-8 md:-mt-10 relative z-10">
         {/* Content Container */}
         <div className="w-full">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-2xl overflow-hidden shadow-xl"
+            className="bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-lg md:shadow-xl"
           >
             {/* Form Content */}
-            <div className="p-6">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div className="space-y-6">
+            <div className="p-4 sm:p-5 md:p-6">
+              <form onSubmit={handleSubmit} className="space-y-5 md:space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 md:gap-6">
+                  <div className="space-y-4 sm:space-y-5 md:space-y-6">
                     {/* اسم المنتج */}
                     <div>
                       <label
-                        className="block text-sm font-semibold mb-2"
+                        className="block text-sm font-semibold mb-1.5 md:mb-2"
                         style={{ color: "#2E3E88" }}
                       >
                         اسم المنتج *
@@ -1105,7 +1105,7 @@ const ProductForm = () => {
                         name="Name"
                         value={formData.Name}
                         onChange={handleInputChange}
-                        className="w-full border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                        className="w-full border border-gray-200 rounded-lg md:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm sm:text-base"
                         style={{
                           background:
                             "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -1118,17 +1118,17 @@ const ProductForm = () => {
                     {/* الفئة */}
                     <div>
                       <label
-                        className="block text-sm font-semibold mb-2"
+                        className="block text-sm font-semibold mb-1.5 md:mb-2"
                         style={{ color: "#2E3E88" }}
                       >
                         الفئة *
                       </label>
                       {isLoadingCategories ? (
-                        <div className="text-center py-4 text-gray-500">
+                        <div className="text-center py-3 md:py-4 text-gray-500 text-sm sm:text-base">
                           جاري تحميل الفئات...
                         </div>
                       ) : (
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-2 gap-2 sm:gap-3">
                           {categories
                             .filter((category) => category.isActive)
                             .map((category) => (
@@ -1143,13 +1143,13 @@ const ProductForm = () => {
                                     CategoryId: category.id,
                                   })
                                 }
-                                className={`flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all duration-200 ${
+                                className={`flex flex-col items-center gap-1 sm:gap-2 p-2 sm:p-3 rounded-lg md:rounded-xl border-2 transition-all duration-200 ${
                                   formData.CategoryId === category.id
                                     ? "border-[#2E3E88] bg-gradient-to-r from-[#f8f9ff] to-[#e0f7fa] text-[#2E3E88]"
                                     : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
                                 }`}
                               >
-                                <span className="text-sm font-medium text-center leading-tight">
+                                <span className="text-xs sm:text-sm font-medium text-center leading-tight truncate w-full px-1">
                                   {category.name}
                                 </span>
                               </motion.button>
@@ -1159,28 +1159,28 @@ const ProductForm = () => {
                     </div>
 
                     {/* نوع السعر */}
-                    <div className="space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
                       <div>
                         <label
-                          className="block text-sm font-semibold mb-2"
+                          className="block text-sm font-semibold mb-1.5 md:mb-2"
                           style={{ color: "#2E3E88" }}
                         >
                           نوع السعر *
                         </label>
-                        <div className="grid grid-cols-2 gap-3 mb-3">
+                        <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-2 sm:mb-3">
                           <motion.button
                             type="button"
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={() => handlePriceTypeChange("fixed")}
-                            className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all duration-200 ${
+                            className={`flex items-center justify-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 rounded-lg md:rounded-xl border-2 transition-all duration-200 ${
                               !formData.IsPriceBasedOnRequest
                                 ? "border-[#2E3E88] bg-white text-[#2E3E88] shadow-md"
                                 : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
                             }`}
                           >
-                            <FaDollarSign />
-                            <span className="text-sm font-medium">
+                            <FaDollarSign className="text-sm sm:text-base" />
+                            <span className="text-xs sm:text-sm font-medium">
                               سعر ثابت
                             </span>
                           </motion.button>
@@ -1190,14 +1190,14 @@ const ProductForm = () => {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={() => handlePriceTypeChange("request")}
-                            className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all duration-200 ${
+                            className={`flex items-center justify-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 rounded-lg md:rounded-xl border-2 transition-all duration-200 ${
                               formData.IsPriceBasedOnRequest
                                 ? "border-[#2E3E88] bg-white text-[#2E3E88] shadow-md"
                                 : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
                             }`}
                           >
-                            <FaQuestionCircle />
-                            <span className="text-sm font-medium">
+                            <FaQuestionCircle className="text-sm sm:text-base" />
+                            <span className="text-xs sm:text-sm font-medium">
                               حسب الطلب
                             </span>
                           </motion.button>
@@ -1208,7 +1208,7 @@ const ProductForm = () => {
                       {!formData.IsPriceBasedOnRequest && (
                         <div>
                           <label
-                            className="block text-sm font-semibold mb-2"
+                            className="block text-sm font-semibold mb-1.5 md:mb-2"
                             style={{ color: "#2E3E88" }}
                           >
                             السعر (جنيه) *
@@ -1221,7 +1221,7 @@ const ProductForm = () => {
                             step="0.01"
                             min="0.01"
                             onWheel={(e) => e.target.blur()}
-                            className="w-full border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                            className="w-full border border-gray-200 rounded-lg md:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm sm:text-base"
                             style={{
                               background:
                                 "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -1233,7 +1233,7 @@ const ProductForm = () => {
                             !isEditing &&
                             hasRequiredOptionTypes() && (
                               <div
-                                className="mt-2 p-3 rounded-xl"
+                                className="mt-1.5 sm:mt-2 p-2.5 sm:p-3 rounded-lg md:rounded-xl"
                                 style={{
                                   background:
                                     "linear-gradient(135deg, #FFFBEB, #FEF3C7)",
@@ -1255,7 +1255,7 @@ const ProductForm = () => {
 
                       {formData.IsPriceBasedOnRequest && (
                         <div
-                          className="p-4 rounded-xl"
+                          className="p-3 sm:p-4 rounded-lg md:rounded-xl"
                           style={{
                             background:
                               "linear-gradient(135deg, #EFF6FF, #DBEAFE)",
@@ -1263,16 +1263,19 @@ const ProductForm = () => {
                           }}
                         >
                           <div className="flex items-start gap-2">
-                            <FaQuestionCircle style={{ color: "#2E3E88" }} />
+                            <FaQuestionCircle
+                              className="text-sm sm:text-base"
+                              style={{ color: "#2E3E88" }}
+                            />
                             <div>
                               <p
-                                className="text-sm font-semibold"
+                                className="text-xs sm:text-sm font-semibold"
                                 style={{ color: "#2E3E88" }}
                               >
                                 السعر حسب الطلب
                               </p>
                               <p
-                                className="text-xs mt-1"
+                                className="text-xs mt-0.5 sm:mt-1"
                                 style={{ color: "#32B9CC" }}
                               >
                                 سيتم تحديد السعر بناءً على اختيارات العميل من
@@ -1289,14 +1292,14 @@ const ProductForm = () => {
                     {/* السعرات الحرارية */}
                     <div>
                       <label
-                        className="block text-sm font-semibold mb-2"
+                        className="block text-sm font-semibold mb-1.5 md:mb-2"
                         style={{ color: "#2E3E88" }}
                       >
                         السعرات الحرارية
                       </label>
                       <div className="relative group">
                         <FaFire
-                          className="absolute right-3 top-1/2 transform -translate-y-1/2 transition-all duration-300 group-focus-within:scale-110"
+                          className="absolute right-2.5 sm:right-3 top-1/2 transform -translate-y-1/2 transition-all duration-300 group-focus-within:scale-110 text-sm sm:text-base"
                           style={{ color: "#2E3E88" }}
                         />
                         <input
@@ -1306,7 +1309,7 @@ const ProductForm = () => {
                           onChange={handleNumberInputChange}
                           min="0"
                           onWheel={(e) => e.target.blur()}
-                          className="w-full border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 pr-10"
+                          className="w-full border border-gray-200 rounded-lg md:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm sm:text-base pr-8 sm:pr-10"
                           style={{
                             background:
                               "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -1319,15 +1322,15 @@ const ProductForm = () => {
                     {/* وقت التحضير */}
                     <div>
                       <label
-                        className="block text-sm font-semibold mb-2"
+                        className="block text-sm font-semibold mb-1.5 md:mb-2"
                         style={{ color: "#2E3E88" }}
                       >
                         وقت التحضير (بالدقائق)
                       </label>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-2 gap-2 sm:gap-3">
                         <div className="relative group">
                           <FaClock
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 transition-all duration-300 group-focus-within:scale-110"
+                            className="absolute right-2.5 sm:right-3 top-1/2 transform -translate-y-1/2 transition-all duration-300 group-focus-within:scale-110 text-sm sm:text-base"
                             style={{ color: "#2E3E88" }}
                           />
                           <input
@@ -1337,7 +1340,7 @@ const ProductForm = () => {
                             onChange={handlePreparationTimeChange}
                             min="0"
                             onWheel={(e) => e.target.blur()}
-                            className="w-full border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 pr-10"
+                            className="w-full border border-gray-200 rounded-lg md:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm sm:text-base pr-8 sm:pr-10"
                             style={{
                               background:
                                 "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -1347,7 +1350,7 @@ const ProductForm = () => {
                         </div>
                         <div className="relative group">
                           <FaClock
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 transition-all duration-300 group-focus-within:scale-110"
+                            className="absolute right-2.5 sm:right-3 top-1/2 transform -translate-y-1/2 transition-all duration-300 group-focus-within:scale-110 text-sm sm:text-base"
                             style={{ color: "#2E3E88" }}
                           />
                           <input
@@ -1357,7 +1360,7 @@ const ProductForm = () => {
                             onChange={handlePreparationTimeChange}
                             min="0"
                             onWheel={(e) => e.target.blur()}
-                            className="w-full border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 pr-10"
+                            className="w-full border border-gray-200 rounded-lg md:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm sm:text-base pr-8 sm:pr-10"
                             style={{
                               background:
                                 "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -1380,19 +1383,19 @@ const ProductForm = () => {
                     {/* الحالة */}
                     <div>
                       <label
-                        className="block text-sm font-semibold mb-2"
+                        className="block text-sm font-semibold mb-1.5 md:mb-2"
                         style={{ color: "#2E3E88" }}
                       >
                         الحالة *
                       </label>
                       <div
-                        className="flex gap-3 rounded-xl p-3 border border-gray-200"
+                        className="flex gap-2 sm:gap-3 rounded-lg md:rounded-xl p-2.5 sm:p-3 border border-gray-200"
                         style={{
                           background:
                             "linear-gradient(135deg, #f8f9ff, #ffffff)",
                         }}
                       >
-                        <label className="flex-1 flex items-center justify-center gap-2 cursor-pointer p-3 rounded-lg transition-all duration-200 border-2 border-transparent hover:border-[#2E3E88]/30">
+                        <label className="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer p-2 sm:p-3 rounded-md md:rounded-lg transition-all duration-200 border-2 border-transparent hover:border-[#2E3E88]/30">
                           <div className="relative">
                             <input
                               type="radio"
@@ -1405,25 +1408,25 @@ const ProductForm = () => {
                               required
                             />
                             <div
-                              className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                              className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
                                 formData.IsActive === true
                                   ? "border-[#2E3E88] bg-[#2E3E88]"
                                   : "border-gray-400 bg-white"
                               }`}
                             >
                               {formData.IsActive === true && (
-                                <div className="w-2 h-2 bg-white rounded-full"></div>
+                                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"></div>
                               )}
                             </div>
                           </div>
                           <span
-                            className="text-sm font-medium"
+                            className="text-xs sm:text-sm font-medium"
                             style={{ color: "#2E3E88" }}
                           >
                             نشط
                           </span>
                         </label>
-                        <label className="flex-1 flex items-center justify-center gap-2 cursor-pointer p-3 rounded-lg transition-all duration-200 border-2 border-transparent hover:border-[#2E3E88]/30">
+                        <label className="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer p-2 sm:p-3 rounded-md md:rounded-lg transition-all duration-200 border-2 border-transparent hover:border-[#2E3E88]/30">
                           <div className="relative">
                             <input
                               type="radio"
@@ -1436,19 +1439,19 @@ const ProductForm = () => {
                               required
                             />
                             <div
-                              className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                              className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
                                 formData.IsActive === false
                                   ? "border-[#2E3E88] bg-[#2E3E88]"
                                   : "border-gray-400 bg-white"
                               }`}
                             >
                               {formData.IsActive === false && (
-                                <div className="w-2 h-2 bg-white rounded-full"></div>
+                                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"></div>
                               )}
                             </div>
                           </div>
                           <span
-                            className="text-sm font-medium"
+                            className="text-xs sm:text-sm font-medium"
                             style={{ color: "#2E3E88" }}
                           >
                             غير نشط
@@ -1460,19 +1463,19 @@ const ProductForm = () => {
                     {/* عرض في السلايدر */}
                     <div>
                       <label
-                        className="block text-sm font-semibold mb-2"
+                        className="block text-sm font-semibold mb-1.5 md:mb-2"
                         style={{ color: "#2E3E88" }}
                       >
                         عرض في السلايدر
                       </label>
                       <div
-                        className="flex gap-3 rounded-xl p-3 border border-gray-200"
+                        className="flex gap-2 sm:gap-3 rounded-lg md:rounded-xl p-2.5 sm:p-3 border border-gray-200"
                         style={{
                           background:
                             "linear-gradient(135deg, #f8f9ff, #ffffff)",
                         }}
                       >
-                        <label className="flex-1 flex items-center justify-center gap-2 cursor-pointer p-3 rounded-lg transition-all duration-200 border-2 border-transparent hover:border-[#2E3E88]/30">
+                        <label className="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer p-2 sm:p-3 rounded-md md:rounded-lg transition-all duration-200 border-2 border-transparent hover:border-[#2E3E88]/30">
                           <div className="relative">
                             <input
                               type="radio"
@@ -1484,28 +1487,31 @@ const ProductForm = () => {
                               className="sr-only"
                             />
                             <div
-                              className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                              className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
                                 formData.ShowInSlider === true
                                   ? "border-[#2E3E88] bg-[#2E3E88]"
                                   : "border-gray-400 bg-white"
                               }`}
                             >
                               {formData.ShowInSlider === true && (
-                                <div className="w-2 h-2 bg-white rounded-full"></div>
+                                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"></div>
                               )}
                             </div>
                           </div>
-                          <div className="flex items-center gap-1.5">
-                            <FaSlidersH style={{ color: "#2E3E88" }} />
+                          <div className="flex items-center gap-1 sm:gap-1.5">
+                            <FaSlidersH
+                              className="text-sm sm:text-base"
+                              style={{ color: "#2E3E88" }}
+                            />
                             <span
-                              className="text-sm font-medium"
+                              className="text-xs sm:text-sm font-medium"
                               style={{ color: "#2E3E88" }}
                             >
                               عرض
                             </span>
                           </div>
                         </label>
-                        <label className="flex-1 flex items-center justify-center gap-2 cursor-pointer p-3 rounded-lg transition-all duration-200 border-2 border-transparent hover:border-[#2E3E88]/30">
+                        <label className="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer p-2 sm:p-3 rounded-md md:rounded-lg transition-all duration-200 border-2 border-transparent hover:border-[#2E3E88]/30">
                           <div className="relative">
                             <input
                               type="radio"
@@ -1520,21 +1526,21 @@ const ProductForm = () => {
                               className="sr-only"
                             />
                             <div
-                              className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                              className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
                                 formData.ShowInSlider === false
                                   ? "border-[#2E3E88] bg-[#2E3E88]"
                                   : "border-gray-400 bg-white"
                               }`}
                             >
                               {formData.ShowInSlider === false && (
-                                <div className="w-2 h-2 bg-white rounded-full"></div>
+                                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"></div>
                               )}
                             </div>
                           </div>
-                          <div className="flex items-center gap-1.5">
-                            <FaTimes className="text-gray-500" />
+                          <div className="flex items-center gap-1 sm:gap-1.5">
+                            <FaTimes className="text-gray-500 text-sm sm:text-base" />
                             <span
-                              className="text-sm font-medium"
+                              className="text-xs sm:text-sm font-medium"
                               style={{ color: "#2E3E88" }}
                             >
                               إخفاء
@@ -1545,51 +1551,55 @@ const ProductForm = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-6">
+                  <div className="space-y-4 sm:space-y-5 md:space-y-6">
                     {/* صورة المنتج */}
                     <div>
                       <label
-                        className="block text-sm font-semibold mb-2"
+                        className="block text-sm font-semibold mb-1.5 md:mb-2"
                         style={{ color: "#2E3E88" }}
                       >
                         صورة المنتج *
                       </label>
 
                       {/* Switch between upload modes */}
-                      <div className="flex gap-3 mb-4">
+                      <div className="flex gap-2 sm:gap-3 mb-3 sm:mb-4">
                         <motion.button
                           type="button"
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => setImageInputMode("upload")}
-                          className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all duration-200 ${
+                          className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 rounded-lg md:rounded-xl border-2 transition-all duration-200 ${
                             imageInputMode === "upload"
                               ? "border-[#2E3E88] bg-white text-[#2E3E88] shadow-md"
                               : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
                           }`}
                         >
-                          <FaUpload />
-                          <span className="text-sm font-medium">رفع صورة</span>
+                          <FaUpload className="text-sm sm:text-base" />
+                          <span className="text-xs sm:text-sm font-medium">
+                            رفع صورة
+                          </span>
                         </motion.button>
                         <motion.button
                           type="button"
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => setImageInputMode("url")}
-                          className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border-2 transition-all duration-200 ${
+                          className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 rounded-lg md:rounded-xl border-2 transition-all duration-200 ${
                             imageInputMode === "url"
                               ? "border-[#2E3E88] bg-white text-[#2E3E88] shadow-md"
                               : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
                           }`}
                         >
-                          <FaLink />
-                          <span className="text-sm font-medium">رابط صورة</span>
+                          <FaLink className="text-sm sm:text-base" />
+                          <span className="text-xs sm:text-sm font-medium">
+                            رابط صورة
+                          </span>
                         </motion.button>
                       </div>
 
                       {imageInputMode === "upload" ? (
                         <div
-                          className="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center hover:border-[#2E3E88] transition-colors duration-200 cursor-pointer"
+                          className="border-2 border-dashed border-gray-300 rounded-lg md:rounded-xl p-3 sm:p-4 text-center hover:border-[#2E3E88] transition-colors duration-200 cursor-pointer"
                           onClick={handleUploadAreaClick}
                           style={{
                             background:
@@ -1601,26 +1611,32 @@ const ProductForm = () => {
                               <img
                                 src={imagePreview}
                                 alt="Preview"
-                                className="w-full h-64 object-contain rounded-xl mb-3"
+                                className="w-full h-48 sm:h-56 md:h-64 object-contain rounded-lg md:rounded-xl mb-2 sm:mb-3"
                               />
                               <button
                                 type="button"
                                 onClick={handleRemoveImage}
-                                className="absolute top-2 left-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors"
+                                className="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 bg-red-500 text-white p-1.5 sm:p-2 rounded-full hover:bg-red-600 transition-colors"
                               >
-                                <FaTimes size={14} />
+                                <FaTimes
+                                  size={12}
+                                  className="sm:w-3.5 sm:h-3.5"
+                                />
                               </button>
                             </div>
                           ) : (
-                            <div className="py-12">
+                            <div className="py-8 sm:py-10 md:py-12">
                               <FaUpload
-                                className="mx-auto text-4xl mb-4"
+                                className="mx-auto text-3xl sm:text-4xl mb-3 sm:mb-4"
                                 style={{ color: "#32B9CC" }}
                               />
-                              <p className="mb-3" style={{ color: "#2E3E88" }}>
+                              <p
+                                className="mb-2 sm:mb-3 text-sm sm:text-base"
+                                style={{ color: "#2E3E88" }}
+                              >
                                 انقر لرفع الصورة
                               </p>
-                              <p className="text-gray-500 text-sm">
+                              <p className="text-gray-500 text-xs sm:text-sm px-2">
                                 الصيغ المدعومة: JPG, JPEG, PNG, JFIF, HEIF/HEIC,
                                 WebP (الحد الأقصى 5MB)
                               </p>
@@ -1636,29 +1652,29 @@ const ProductForm = () => {
                           />
                         </div>
                       ) : (
-                        <div className="space-y-4">
+                        <div className="space-y-3 sm:space-y-4">
                           <div
-                            className="rounded-xl p-4"
+                            className="rounded-lg md:rounded-xl p-3 sm:p-4"
                             style={{
                               background:
                                 "linear-gradient(135deg, #f8f9ff, #ffffff)",
                               border: "1px solid #2E3E8820",
                             }}
                           >
-                            <div className="mb-4">
+                            <div className="mb-3 sm:mb-4">
                               <label
-                                className="block text-sm font-semibold mb-2"
+                                className="block text-sm font-semibold mb-1.5 sm:mb-2"
                                 style={{ color: "#2E3E88" }}
                               >
                                 رابط الصورة
                               </label>
-                              <div className="flex gap-2">
+                              <div className="flex flex-col sm:flex-row gap-2">
                                 <input
                                   type="url"
                                   value={imageUrl}
                                   onChange={(e) => setImageUrl(e.target.value)}
                                   placeholder="أدخل رابط الصورة"
-                                  className="flex-1 border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                                  className="flex-1 border border-gray-200 rounded-lg md:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm sm:text-base"
                                   style={{
                                     background:
                                       "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -1672,7 +1688,7 @@ const ProductForm = () => {
                                   disabled={
                                     isDownloadingImage || !imageUrl.trim()
                                   }
-                                  className={`px-4 py-3.5 rounded-xl font-semibold transition-all duration-300 flex items-center gap-2 ${
+                                  className={`px-3 sm:px-4 py-2.5 sm:py-3.5 rounded-lg md:rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base ${
                                     imageUrl.trim() && !isDownloadingImage
                                       ? "shadow-lg hover:shadow-xl cursor-pointer"
                                       : "opacity-50 cursor-not-allowed"
@@ -1693,20 +1709,20 @@ const ProductForm = () => {
                                   {isDownloadingImage ? (
                                     <>
                                       <div
-                                        className="animate-spin h-4 w-4 border-t-2 border-b-2 rounded-full"
+                                        className="animate-spin h-3.5 w-3.5 sm:h-4 sm:w-4 border-t-2 border-b-2 rounded-full"
                                         style={{ borderColor: "white" }}
                                       ></div>
                                       <span>جاري التحميل...</span>
                                     </>
                                   ) : (
                                     <>
-                                      <FaDownload />
+                                      <FaDownload className="text-sm sm:text-base" />
                                       <span>تحميل</span>
                                     </>
                                   )}
                                 </motion.button>
                               </div>
-                              <p className="text-gray-500 text-xs mt-2">
+                              <p className="text-gray-500 text-xs mt-1.5 sm:mt-2">
                                 الصيغ المدعومة: JPG, JPEG, PNG, JFIF, HEIF/HEIC,
                                 WebP (الحد الأقصى 5MB)
                               </p>
@@ -1717,24 +1733,27 @@ const ProductForm = () => {
                                 <img
                                   src={imagePreview}
                                   alt="Preview"
-                                  className="w-full h-64 object-contain rounded-xl mb-3"
+                                  className="w-full h-48 sm:h-56 md:h-64 object-contain rounded-lg md:rounded-xl mb-2 sm:mb-3"
                                 />
                                 <button
                                   type="button"
                                   onClick={handleRemoveImage}
-                                  className="absolute top-2 left-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors"
+                                  className="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 bg-red-500 text-white p-1.5 sm:p-2 rounded-full hover:bg-red-600 transition-colors"
                                 >
-                                  <FaTimes size={14} />
+                                  <FaTimes
+                                    size={12}
+                                    className="sm:w-3.5 sm:h-3.5"
+                                  />
                                 </button>
                               </div>
                             ) : (
-                              <div className="py-8 text-center">
+                              <div className="py-6 sm:py-8 text-center">
                                 <FaImage
-                                  className="mx-auto text-4xl mb-4"
+                                  className="mx-auto text-3xl sm:text-4xl mb-3 sm:mb-4"
                                   style={{ color: "#32B9CC" }}
                                 />
                                 <p
-                                  className="mb-3"
+                                  className="mb-2 sm:mb-3 text-sm sm:text-base"
                                   style={{ color: "#2E3E88" }}
                                 >
                                   سيظهر معاينة الصورة هنا بعد التحميل
@@ -1749,7 +1768,7 @@ const ProductForm = () => {
                     {/* الوصف */}
                     <div>
                       <label
-                        className="block text-sm font-semibold mb-2"
+                        className="block text-sm font-semibold mb-1.5 md:mb-2"
                         style={{ color: "#2E3E88" }}
                       >
                         الوصف *
@@ -1758,8 +1777,8 @@ const ProductForm = () => {
                         name="Description"
                         value={formData.Description}
                         onChange={handleInputChange}
-                        rows="4"
-                        className="w-full border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 resize-none"
+                        rows="3"
+                        className="w-full border border-gray-200 rounded-lg md:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 resize-none text-sm sm:text-base"
                         style={{
                           background:
                             "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -1776,25 +1795,28 @@ const ProductForm = () => {
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="rounded-2xl p-6 border"
+                    className="rounded-xl md:rounded-2xl p-4 sm:p-5 md:p-6 border"
                     style={{
                       background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
                       border: "1px solid #2E3E8820",
                     }}
                   >
-                    <div className="flex items-center gap-3 mb-4">
+                    <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
                       <FaList
-                        style={{ color: "#2E3E88", fontSize: "1.25rem" }}
+                        style={{
+                          color: "#2E3E88",
+                          fontSize: "1.1rem sm:1.25rem",
+                        }}
                       />
                       <h3
-                        className="text-lg font-bold"
+                        className="text-base sm:text-lg font-bold"
                         style={{ color: "#2E3E88" }}
                       >
                         الإضافات (خيارات المنتج)
                       </h3>
                       {formData.IsPriceBasedOnRequest && (
                         <div
-                          className="ml-auto px-3 py-1 rounded-full text-xs font-semibold"
+                          className="ml-auto px-2.5 sm:px-3 py-1 rounded-full text-xs font-semibold"
                           style={{
                             background:
                               "linear-gradient(135deg, #FFFBEB, #FEF3C7)",
@@ -1806,7 +1828,7 @@ const ProductForm = () => {
                       )}
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
                       {menuItemOptions.map((optionType, typeIndex) => {
                         const optionTypeData = optionTypes.find(
                           (type) => type.id === optionType.typeId,
@@ -1816,7 +1838,7 @@ const ProductForm = () => {
                         return (
                           <div
                             key={optionType.id}
-                            className="rounded-xl p-4 border"
+                            className="rounded-lg md:rounded-xl p-3 sm:p-4 border"
                             style={{
                               background:
                                 "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -1826,17 +1848,17 @@ const ProductForm = () => {
                                   : "1px solid #2E3E8820",
                             }}
                           >
-                            <div className="flex items-center justify-between mb-4">
-                              <div className="flex items-center gap-2">
+                            <div className="flex items-center justify-between mb-3 sm:mb-4">
+                              <div className="flex items-center gap-1.5 sm:gap-2">
                                 <h4
-                                  className="text-sm font-semibold"
+                                  className="text-xs sm:text-sm font-semibold"
                                   style={{ color: "#2E3E88" }}
                                 >
                                   نوع الإضافة {typeIndex + 1}
                                 </h4>
                                 {isRequired && (
                                   <span
-                                    className="px-2 py-1 rounded-full text-xs"
+                                    className="px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs"
                                     style={{
                                       background:
                                         "linear-gradient(135deg, #FEE2E2, #FECACA)",
@@ -1852,13 +1874,16 @@ const ProductForm = () => {
                                 onClick={() =>
                                   removeMenuItemOption(optionType.id)
                                 }
-                                className="text-red-500 hover:text-red-700 transition-colors"
+                                className="text-red-500 hover:text-red-700 transition-colors p-0.5"
                               >
-                                <FaTrash size={14} />
+                                <FaTrash
+                                  size={12}
+                                  className="sm:w-3.5 sm:h-3.5"
+                                />
                               </button>
                             </div>
 
-                            <div className="mb-4">
+                            <div className="mb-3 sm:mb-4">
                               <label
                                 className="block text-xs font-semibold mb-1"
                                 style={{ color: "#2E3E88" }}
@@ -1875,7 +1900,7 @@ const ProductForm = () => {
                                         : optionType.id,
                                     )
                                   }
-                                  className="w-full flex items-center justify-between border border-gray-200 rounded-xl px-4 py-3 text-right focus:ring-2 focus:ring-[#2E3E88] transition-all duration-200"
+                                  className="w-full flex items-center justify-between border border-gray-200 rounded-lg md:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-right focus:ring-2 focus:ring-[#2E3E88] transition-all duration-200 text-sm"
                                   style={{
                                     background:
                                       "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -1900,7 +1925,8 @@ const ProductForm = () => {
                                     transition={{ duration: 0.3 }}
                                   >
                                     <FaChevronDown
-                                      size={14}
+                                      size={12}
+                                      className="sm:w-3.5 sm:h-3.5"
                                       style={{ color: "#2E3E88" }}
                                     />
                                   </motion.div>
@@ -1912,7 +1938,7 @@ const ProductForm = () => {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -5 }}
                                     transition={{ duration: 0.2 }}
-                                    className="absolute z-50 mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto"
+                                    className="absolute z-50 mt-1 sm:mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-lg md:rounded-xl overflow-hidden max-h-40 sm:max-h-48 overflow-y-auto"
                                   >
                                     {optionTypes.map((type) => (
                                       <li
@@ -1925,13 +1951,16 @@ const ProductForm = () => {
                                           );
                                           setOptionTypesDropdownOpen(null);
                                         }}
-                                        className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 cursor-pointer transition-all border-b last:border-b-0"
+                                        className="px-3 sm:px-4 py-2 sm:py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 cursor-pointer transition-all border-b last:border-b-0"
                                       >
                                         <div className="flex flex-col">
-                                          <span style={{ color: "#2E3E88" }}>
+                                          <span
+                                            className="text-sm"
+                                            style={{ color: "#2E3E88" }}
+                                          >
                                             {type.name}
                                           </span>
-                                          <div className="flex gap-2 mt-1">
+                                          <div className="flex gap-1.5 sm:gap-2 mt-0.5 sm:mt-1">
                                             <span
                                               className="text-xs"
                                               style={{ color: "#32B9CC" }}
@@ -1957,11 +1986,11 @@ const ProductForm = () => {
                               </div>
                             </div>
 
-                            <div className="space-y-4">
+                            <div className="space-y-3 sm:space-y-4">
                               {optionType.options.map((option, optionIndex) => (
                                 <div
                                   key={option.id}
-                                  className="grid grid-cols-1 md:grid-cols-3 gap-3 p-4 rounded-lg"
+                                  className="grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-3 p-3 sm:p-4 rounded-md md:rounded-lg"
                                   style={{
                                     background:
                                       "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -1986,7 +2015,7 @@ const ProductForm = () => {
                                           e.target.value,
                                         )
                                       }
-                                      className="w-full border border-gray-200 rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm"
+                                      className="w-full border border-gray-200 rounded-lg md:rounded-xl px-2.5 sm:px-3 py-1.5 sm:py-2 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-xs sm:text-sm"
                                       style={{
                                         background:
                                           "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -2016,7 +2045,7 @@ const ProductForm = () => {
                                       }
                                       step="0.01"
                                       min="0"
-                                      className="w-full border border-gray-200 rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm"
+                                      className="w-full border border-gray-200 rounded-lg md:rounded-xl px-2.5 sm:px-3 py-1.5 sm:py-2 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-xs sm:text-sm"
                                       style={{
                                         background:
                                           "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -2026,9 +2055,9 @@ const ProductForm = () => {
                                     />
                                   </div>
 
-                                  <div className="flex items-end gap-2">
+                                  <div className="flex items-end gap-1.5 sm:gap-2">
                                     <div className="flex-1">
-                                      <div className="flex items-center gap-2">
+                                      <div className="flex items-center gap-1.5 sm:gap-2">
                                         <label className="flex items-center gap-1 cursor-pointer">
                                           <input
                                             type="checkbox"
@@ -2041,7 +2070,7 @@ const ProductForm = () => {
                                                 e.target.checked,
                                               )
                                             }
-                                            className="text-[#2E3E88] focus:ring-[#2E3E88]"
+                                            className="text-[#2E3E88] focus:ring-[#2E3E88] w-3.5 h-3.5 sm:w-4 sm:h-4"
                                           />
                                           <span
                                             className="text-xs"
@@ -2062,7 +2091,7 @@ const ProductForm = () => {
                                                 e.target.checked,
                                               )
                                             }
-                                            className="text-[#2E3E88] focus:ring-[#2E3E88]"
+                                            className="text-[#2E3E88] focus:ring-[#2E3E88] w-3.5 h-3.5 sm:w-4 sm:h-4"
                                           />
                                           <span
                                             className="text-xs"
@@ -2082,9 +2111,12 @@ const ProductForm = () => {
                                             option.id,
                                           )
                                         }
-                                        className="text-red-500 hover:text-red-700 transition-colors p-1"
+                                        className="text-red-500 hover:text-red-700 transition-colors p-0.5 sm:p-1"
                                       >
-                                        <FaTrash size={12} />
+                                        <FaTrash
+                                          size={10}
+                                          className="sm:w-3 sm:h-3"
+                                        />
                                       </button>
                                     )}
                                   </div>
@@ -2097,13 +2129,13 @@ const ProductForm = () => {
                               whileHover={{ scale: 1.02 }}
                               whileTap={{ scale: 0.98 }}
                               onClick={() => addOptionToType(optionType.id)}
-                              className="mt-4 w-full py-3 border border-dashed border-gray-300 rounded-xl font-semibold hover:border-[#2E3E88] hover:text-[#2E3E88] transition-all duration-300 text-sm flex items-center justify-center gap-2"
+                              className="mt-3 sm:mt-4 w-full py-2 sm:py-3 border border-dashed border-gray-300 rounded-lg md:rounded-xl font-semibold hover:border-[#2E3E88] hover:text-[#2E3E88] transition-all duration-300 text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2"
                               style={{
                                 background:
                                   "linear-gradient(135deg, #f8f9ff, #ffffff)",
                               }}
                             >
-                              <FaPlus size={12} />
+                              <FaPlus size={10} className="sm:w-3 sm:h-3" />
                               إضافة خيار جديد لهذا النوع
                             </motion.button>
                           </div>
@@ -2116,26 +2148,29 @@ const ProductForm = () => {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={addMenuItemOption}
-                      className="mt-6 w-full py-3 border-2 border-dashed border-gray-300 rounded-xl font-semibold hover:border-[#2E3E88] hover:text-[#2E3E88] transition-all duration-300 text-sm flex items-center justify-center gap-2"
+                      className="mt-4 sm:mt-6 w-full py-2.5 sm:py-3 border-2 border-dashed border-gray-300 rounded-lg md:rounded-xl font-semibold hover:border-[#2E3E88] hover:text-[#2E3E88] transition-all duration-300 text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2"
                       style={{
                         background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
                       }}
                     >
-                      <FaPlus size={14} />
+                      <FaPlus size={12} className="sm:w-3.5 sm:h-3.5" />
                       إضافة نوع إضافة جديد
                     </motion.button>
 
                     {formData.IsPriceBasedOnRequest &&
                       !hasRequiredOptionTypes() && (
                         <div
-                          className="mt-4 p-4 rounded-xl"
+                          className="mt-3 sm:mt-4 p-3 sm:p-4 rounded-lg md:rounded-xl"
                           style={{
                             background:
                               "linear-gradient(135deg, #FEE2E2, #FECACA)",
                             border: "1px solid #DC2626",
                           }}
                         >
-                          <p className="text-sm" style={{ color: "#DC2626" }}>
+                          <p
+                            className="text-xs sm:text-sm"
+                            style={{ color: "#DC2626" }}
+                          >
                             <span className="font-semibold">تنبيه:</span> المنتج
                             بسعر حسب الطلب يجب أن يحتوي على أنواع إضافات مطلوبة
                             للاختيار.
@@ -2146,21 +2181,21 @@ const ProductForm = () => {
                 )}
 
                 {/* أزرار الحفظ */}
-                <div className="flex gap-3 pt-6 border-t border-gray-100">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-4 sm:pt-5 md:pt-6 border-t border-gray-100">
                   <motion.button
                     type="button"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => navigate("/")}
-                    className="flex-1 py-3.5 border-2 rounded-xl font-semibold transition-all duration-300"
+                    className="flex-1 py-2.5 sm:py-3.5 border-2 rounded-lg md:rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base"
                     style={{
                       borderColor: "#2E3E88",
                       color: "#2E3E88",
                       background: "transparent",
                     }}
                   >
-                    <div className="flex items-center justify-center gap-2">
-                      <FaTimes />
+                    <div className="flex items-center justify-center gap-1.5 sm:gap-2">
+                      <FaTimes className="text-sm sm:text-base" />
                       إلغاء
                     </div>
                   </motion.button>
@@ -2176,7 +2211,7 @@ const ProductForm = () => {
                         formData.IsPriceBasedOnRequest &&
                         !hasRequiredOptionTypes())
                     }
-                    className={`flex-1 py-3.5 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                    className={`flex-1 py-2.5 sm:py-3.5 rounded-lg md:rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base ${
                       isFormValid() &&
                       !isLoading &&
                       (!isEditing || hasChanges) &&
@@ -2204,7 +2239,7 @@ const ProductForm = () => {
                           }
                     }
                   >
-                    <FaSave />
+                    <FaSave className="text-sm sm:text-base" />
                     {isLoading
                       ? "جاري الحفظ..."
                       : isEditing
@@ -2225,13 +2260,13 @@ const ProductForm = () => {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={handleOpenOptionTypesManager}
-        className="fixed bottom-6 left-6 z-40 rounded-full p-4 shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-2 group"
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 rounded-full p-3 sm:p-4 shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center justify-center group"
         style={{
           background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
           color: "white",
         }}
       >
-        <FaCog className="text-xl group-hover:rotate-90 transition-transform" />
+        <FaCog className="text-lg sm:text-xl group-hover:rotate-90 transition-transform" />
       </motion.button>
 
       {/* Modal إدارة أنواع الإضافات */}
@@ -2242,74 +2277,77 @@ const ProductForm = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+              className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm"
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="bg-white rounded-3xl w-full max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
+                className="bg-white rounded-xl md:rounded-2xl lg:rounded-3xl w-full max-w-4xl max-h-[90vh] sm:max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
               >
                 {/* Modal Header */}
                 <div
-                  className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+                  className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
                   style={{
                     background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
                   }}
                 >
-                  <div className="flex items-center gap-3">
-                    <FaCog className="text-white text-xl" />
-                    <h3 className="text-lg font-bold text-white">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <FaCog className="text-white text-lg sm:text-xl" />
+                    <h3 className="text-base sm:text-lg font-bold text-white">
                       إدارة أنواع الإضافات
                     </h3>
                   </div>
                   <button
                     onClick={handleCloseOptionTypesManager}
-                    className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
+                    className="p-1.5 sm:p-2 rounded-full hover:bg-white/20 text-white transition-colors"
                   >
-                    <FaTimes size={16} />
+                    <FaTimes size={14} className="sm:w-4 sm:h-4" />
                   </button>
                 </div>
 
                 {/* Modal Content */}
-                <div className="flex-1 overflow-y-auto p-6">
+                <div className="flex-1 overflow-y-auto p-4 sm:p-5 md:p-6">
                   {/* إضافة نوع جديد */}
                   <div
-                    className="rounded-2xl p-6 mb-6 border"
+                    className="rounded-lg md:rounded-xl lg:rounded-2xl p-4 sm:p-5 md:p-6 mb-4 sm:mb-5 md:mb-6 border"
                     style={{
                       background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
                       border: "1px solid #2E3E8820",
                     }}
                   >
-                    <div className="flex items-center gap-3 mb-6">
+                    <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
                       <div
-                        className="p-3 rounded-xl"
+                        className="p-2 sm:p-3 rounded-lg md:rounded-xl"
                         style={{
                           background:
                             "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
                         }}
                       >
-                        <FaPlus style={{ color: "#2E3E88" }} />
+                        <FaPlus
+                          style={{ color: "#2E3E88" }}
+                          className="text-sm sm:text-base"
+                        />
                       </div>
                       <h3
-                        className="text-lg font-bold"
+                        className="text-base sm:text-lg font-bold"
                         style={{ color: "#2E3E88" }}
                       >
                         إضافة نوع إضافة جديد
                       </h3>
                     </div>
 
-                    <div className="space-y-6">
+                    <div className="space-y-4 sm:space-y-5 md:space-y-6">
                       <div>
                         <label
-                          className="block text-sm font-semibold mb-2"
+                          className="block text-sm font-semibold mb-1.5 sm:mb-2"
                           style={{ color: "#2E3E88" }}
                         >
                           اسم نوع الإضافة
                         </label>
                         <div className="relative">
                           <FaTag
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                            className="absolute right-2.5 sm:right-3 top-1/2 transform -translate-y-1/2 text-sm sm:text-base"
                             style={{ color: "#2E3E88" }}
                           />
                           <input
@@ -2322,7 +2360,7 @@ const ProductForm = () => {
                               })
                             }
                             placeholder="أدخل اسم نوع الإضافة الجديد..."
-                            className="w-full border border-gray-200 rounded-xl px-4 py-3.5 pr-10 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-right"
+                            className="w-full border border-gray-200 rounded-lg md:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3.5 pr-8 sm:pr-10 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm sm:text-base text-right"
                             style={{
                               background:
                                 "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -2331,10 +2369,10 @@ const ProductForm = () => {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                         <div>
                           <label
-                            className="flex items-center gap-3 cursor-pointer p-4 rounded-xl hover:bg-gray-50 transition-colors duration-200"
+                            className="flex items-center gap-2 sm:gap-3 cursor-pointer p-3 sm:p-4 rounded-lg md:rounded-xl hover:bg-gray-50 transition-colors duration-200"
                             style={{
                               background:
                                 "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -2354,26 +2392,26 @@ const ProductForm = () => {
                                 className="sr-only"
                               />
                               <div
-                                className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-200 ${
+                                className={`w-5 h-5 sm:w-6 sm:h-6 rounded-md sm:rounded-lg border-2 flex items-center justify-center transition-all duration-200 ${
                                   newOptionType.canSelectMultipleOptions
                                     ? "bg-[#2E3E88] border-[#2E3E88]"
                                     : "bg-white border-gray-300"
                                 }`}
                               >
                                 {newOptionType.canSelectMultipleOptions && (
-                                  <FaCheck className="text-white text-sm" />
+                                  <FaCheck className="text-white text-xs sm:text-sm" />
                                 )}
                               </div>
                             </div>
                             <div>
                               <span
-                                className="font-semibold block"
+                                className="font-semibold block text-sm"
                                 style={{ color: "#2E3E88" }}
                               >
                                 اختيار متعدد
                               </span>
                               <span
-                                className="text-sm"
+                                className="text-xs sm:text-sm"
                                 style={{ color: "#32B9CC" }}
                               >
                                 يسمح باختيار أكثر من خيار
@@ -2384,7 +2422,7 @@ const ProductForm = () => {
 
                         <div>
                           <label
-                            className="flex items-center gap-3 cursor-pointer p-4 rounded-xl hover:bg-gray-50 transition-colors duration-200"
+                            className="flex items-center gap-2 sm:gap-3 cursor-pointer p-3 sm:p-4 rounded-lg md:rounded-xl hover:bg-gray-50 transition-colors duration-200"
                             style={{
                               background:
                                 "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -2404,26 +2442,26 @@ const ProductForm = () => {
                                 className="sr-only"
                               />
                               <div
-                                className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-200 ${
+                                className={`w-5 h-5 sm:w-6 sm:h-6 rounded-md sm:rounded-lg border-2 flex items-center justify-center transition-all duration-200 ${
                                   newOptionType.isSelectionRequired
                                     ? "bg-[#2E3E88] border-[#2E3E88]"
                                     : "bg-white border-gray-300"
                                 }`}
                               >
                                 {newOptionType.isSelectionRequired && (
-                                  <FaCheck className="text-white text-sm" />
+                                  <FaCheck className="text-white text-xs sm:text-sm" />
                                 )}
                               </div>
                             </div>
                             <div>
                               <span
-                                className="font-semibold block"
+                                className="font-semibold block text-sm"
                                 style={{ color: "#2E3E88" }}
                               >
                                 اختيار مطلوب
                               </span>
                               <span
-                                className="text-sm"
+                                className="text-xs sm:text-sm"
                                 style={{ color: "#32B9CC" }}
                               >
                                 يجب على العميل اختيار خيار واحد على الأقل
@@ -2434,19 +2472,19 @@ const ProductForm = () => {
                       </div>
                     </div>
 
-                    <div className="flex justify-start mt-6">
+                    <div className="flex justify-start mt-4 sm:mt-5 md:mt-6">
                       <motion.button
                         whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={handleAddOptionType}
-                        className="py-3 px-6 rounded-xl font-bold hover:shadow-lg transition-all flex items-center gap-3 shadow-lg"
+                        className="py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg md:rounded-xl font-bold hover:shadow-lg transition-all flex items-center gap-2 sm:gap-3 shadow-lg text-sm sm:text-base"
                         style={{
                           background:
                             "linear-gradient(135deg, #2E3E88, #32B9CC)",
                           color: "white",
                         }}
                       >
-                        <FaPlus />
+                        <FaPlus className="text-sm sm:text-base" />
                         إضافة نوع إضافة جديد
                       </motion.button>
                     </div>
@@ -2454,31 +2492,34 @@ const ProductForm = () => {
 
                   {/* أنواع الإضافات الحالية */}
                   <div>
-                    <div className="flex items-center gap-3 mb-6">
+                    <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
                       <div
-                        className="p-3 rounded-xl"
+                        className="p-2 sm:p-3 rounded-lg md:rounded-xl"
                         style={{
                           background:
                             "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
                         }}
                       >
-                        <FaList style={{ color: "#2E3E88" }} />
+                        <FaList
+                          style={{ color: "#2E3E88" }}
+                          className="text-sm sm:text-base"
+                        />
                       </div>
                       <h3
-                        className="text-lg font-bold"
+                        className="text-base sm:text-lg font-bold"
                         style={{ color: "#2E3E88" }}
                       >
                         أنواع الإضافات الحالية ({optionTypes.length})
                       </h3>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
                       {optionTypes.map((optionType) => (
                         <motion.div
                           key={optionType.id}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
-                          className="rounded-2xl p-6 border hover:shadow-lg transition-all duration-300 group"
+                          className="rounded-lg md:rounded-xl lg:rounded-2xl p-4 sm:p-5 md:p-6 border hover:shadow-lg transition-all duration-300 group"
                           style={{
                             background:
                               "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -2488,11 +2529,11 @@ const ProductForm = () => {
                           {editingOptionType &&
                           editingOptionType.id === optionType.id ? (
                             // Edit Mode
-                            <div className="space-y-6">
-                              <div className="space-y-6">
+                            <div className="space-y-4 sm:space-y-5 md:space-y-6">
+                              <div className="space-y-4 sm:space-y-5 md:space-y-6">
                                 <div>
                                   <label
-                                    className="block text-sm font-semibold mb-2"
+                                    className="block text-sm font-semibold mb-1.5 sm:mb-2"
                                     style={{ color: "#2E3E88" }}
                                   >
                                     اسم نوع الإضافة
@@ -2506,7 +2547,7 @@ const ProductForm = () => {
                                         name: e.target.value,
                                       })
                                     }
-                                    className="w-full border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-right"
+                                    className="w-full border border-gray-200 rounded-lg md:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm sm:text-base text-right"
                                     style={{
                                       background:
                                         "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -2516,10 +2557,10 @@ const ProductForm = () => {
                                 </div>
                               </div>
 
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                                 <div>
                                   <label
-                                    className="flex items-center gap-3 cursor-pointer p-4 rounded-xl hover:bg-gray-50 transition-colors duration-200"
+                                    className="flex items-center gap-2 sm:gap-3 cursor-pointer p-3 sm:p-4 rounded-lg md:rounded-xl hover:bg-gray-50 transition-colors duration-200"
                                     style={{
                                       background:
                                         "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -2542,26 +2583,26 @@ const ProductForm = () => {
                                         className="sr-only"
                                       />
                                       <div
-                                        className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-200 ${
+                                        className={`w-5 h-5 sm:w-6 sm:h-6 rounded-md sm:rounded-lg border-2 flex items-center justify-center transition-all duration-200 ${
                                           editingOptionType.canSelectMultipleOptions
                                             ? "bg-[#2E3E88] border-[#2E3E88]"
                                             : "bg-white border-gray-300"
                                         }`}
                                       >
                                         {editingOptionType.canSelectMultipleOptions && (
-                                          <FaCheck className="text-white text-sm" />
+                                          <FaCheck className="text-white text-xs sm:text-sm" />
                                         )}
                                       </div>
                                     </div>
                                     <div>
                                       <span
-                                        className="font-semibold block"
+                                        className="font-semibold block text-sm"
                                         style={{ color: "#2E3E88" }}
                                       >
                                         اختيار متعدد
                                       </span>
                                       <span
-                                        className="text-sm"
+                                        className="text-xs sm:text-sm"
                                         style={{ color: "#32B9CC" }}
                                       >
                                         يسمح باختيار أكثر من خيار
@@ -2572,7 +2613,7 @@ const ProductForm = () => {
 
                                 <div>
                                   <label
-                                    className="flex items-center gap-3 cursor-pointer p-4 rounded-xl hover:bg-gray-50 transition-colors duration-200"
+                                    className="flex items-center gap-2 sm:gap-3 cursor-pointer p-3 sm:p-4 rounded-lg md:rounded-xl hover:bg-gray-50 transition-colors duration-200"
                                     style={{
                                       background:
                                         "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -2595,26 +2636,26 @@ const ProductForm = () => {
                                         className="sr-only"
                                       />
                                       <div
-                                        className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-200 ${
+                                        className={`w-5 h-5 sm:w-6 sm:h-6 rounded-md sm:rounded-lg border-2 flex items-center justify-center transition-all duration-200 ${
                                           editingOptionType.isSelectionRequired
                                             ? "bg-[#2E3E88] border-[#2E3E88]"
                                             : "bg-white border-gray-300"
                                         }`}
                                       >
                                         {editingOptionType.isSelectionRequired && (
-                                          <FaCheck className="text-white text-sm" />
+                                          <FaCheck className="text-white text-xs sm:text-sm" />
                                         )}
                                       </div>
                                     </div>
                                     <div>
                                       <span
-                                        className="font-semibold block"
+                                        className="font-semibold block text-sm"
                                         style={{ color: "#2E3E88" }}
                                       >
                                         اختيار مطلوب
                                       </span>
                                       <span
-                                        className="text-sm"
+                                        className="text-xs sm:text-sm"
                                         style={{ color: "#32B9CC" }}
                                       >
                                         يجب على العميل اختيار خيار واحد على
@@ -2625,12 +2666,12 @@ const ProductForm = () => {
                                 </div>
                               </div>
 
-                              <div className="flex gap-3 justify-start pt-4 border-t border-gray-200">
+                              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-start pt-3 sm:pt-4 border-t border-gray-200">
                                 <motion.button
                                   whileHover={{ scale: 1.02 }}
                                   whileTap={{ scale: 0.98 }}
                                   onClick={() => setEditingOptionType(null)}
-                                  className="px-6 py-3 rounded-xl font-semibold border-2 text-gray-700 hover:bg-gray-50 transition-all"
+                                  className="px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg md:rounded-xl font-semibold border-2 text-gray-700 hover:bg-gray-50 transition-all text-sm sm:text-base"
                                   style={{
                                     borderColor: "#2E3E88",
                                     color: "#2E3E88",
@@ -2642,34 +2683,37 @@ const ProductForm = () => {
                                   whileHover={{ scale: 1.02, y: -2 }}
                                   whileTap={{ scale: 0.98 }}
                                   onClick={handleSaveOptionType}
-                                  className="py-3 px-6 rounded-xl font-bold hover:shadow-lg transition-all flex items-center gap-2 shadow-lg"
+                                  className="py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg md:rounded-xl font-bold hover:shadow-lg transition-all flex items-center justify-center gap-1.5 sm:gap-2 shadow-lg text-sm sm:text-base"
                                   style={{
                                     background:
                                       "linear-gradient(135deg, #2E3E88, #32B9CC)",
                                     color: "white",
                                   }}
                                 >
-                                  <FaSave />
+                                  <FaSave className="text-sm sm:text-base" />
                                   حفظ التغييرات
                                 </motion.button>
                               </div>
                             </div>
                           ) : (
                             // View Mode
-                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                              <div className="flex items-center gap-4">
+                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-4">
+                              <div className="flex items-center gap-3 sm:gap-4">
                                 <div
-                                  className="p-3 rounded-xl"
+                                  className="p-2.5 sm:p-3 rounded-lg md:rounded-xl"
                                   style={{
                                     background:
                                       "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
                                   }}
                                 >
-                                  <FaCog style={{ color: "#2E3E88" }} />
+                                  <FaCog
+                                    style={{ color: "#2E3E88" }}
+                                    className="text-sm sm:text-base"
+                                  />
                                 </div>
                                 <div>
                                   <h4
-                                    className="font-bold text-base mb-1"
+                                    className="font-bold text-sm sm:text-base mb-0.5 sm:mb-1"
                                     style={{ color: "#2E3E88" }}
                                     dir={
                                       isArabic(optionType.name) ? "rtl" : "ltr"
@@ -2677,9 +2721,9 @@ const ProductForm = () => {
                                   >
                                     {optionType.name}
                                   </h4>
-                                  <div className="flex gap-3 mt-2">
+                                  <div className="flex flex-col sm:flex-row gap-1.5 sm:gap-2 mt-1.5 sm:mt-2">
                                     <div
-                                      className="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5"
+                                      className="px-2 sm:px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 sm:gap-1.5"
                                       style={
                                         optionType.canSelectMultipleOptions
                                           ? {
@@ -2707,7 +2751,7 @@ const ProductForm = () => {
                                       )}
                                     </div>
                                     <div
-                                      className="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5"
+                                      className="px-2 sm:px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 sm:gap-1.5"
                                       style={
                                         optionType.isSelectionRequired
                                           ? {
@@ -2738,14 +2782,14 @@ const ProductForm = () => {
                                 </div>
                               </div>
 
-                              <div className="flex gap-2 justify-start md:justify-start">
+                              <div className="flex gap-1.5 sm:gap-2 justify-start md:justify-start mt-3 sm:mt-4 md:mt-0">
                                 <motion.button
                                   whileHover={{ scale: 1.1, y: -2 }}
                                   whileTap={{ scale: 0.9 }}
                                   onClick={() =>
                                     handleEditOptionType(optionType)
                                   }
-                                  className="p-3 rounded-xl hover:shadow-lg transition-all shadow-md"
+                                  className="p-2.5 sm:p-3 rounded-lg md:rounded-xl hover:shadow-lg transition-all shadow-md"
                                   style={{
                                     background:
                                       "linear-gradient(135deg, #2E3E88, #32B9CC)",
@@ -2753,7 +2797,7 @@ const ProductForm = () => {
                                   }}
                                   title="تعديل نوع الإضافة"
                                 >
-                                  <FaEdit size={16} />
+                                  <FaEdit size={14} className="sm:w-4 sm:h-4" />
                                 </motion.button>
                                 <motion.button
                                   whileHover={{ scale: 1.1, y: -2 }}
@@ -2761,7 +2805,7 @@ const ProductForm = () => {
                                   onClick={() =>
                                     handleDeleteOptionType(optionType.id)
                                   }
-                                  className="p-3 rounded-xl hover:shadow-lg transition-all shadow-md"
+                                  className="p-2.5 sm:p-3 rounded-lg md:rounded-xl hover:shadow-lg transition-all shadow-md"
                                   style={{
                                     background:
                                       "linear-gradient(135deg, #DC2626, #EF4444)",
@@ -2769,7 +2813,10 @@ const ProductForm = () => {
                                   }}
                                   title="حذف نوع الإضافة"
                                 >
-                                  <FaTrash size={16} />
+                                  <FaTrash
+                                    size={14}
+                                    className="sm:w-4 sm:h-4"
+                                  />
                                 </motion.button>
                               </div>
                             </div>

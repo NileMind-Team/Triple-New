@@ -171,7 +171,7 @@ export default function AdminUsers() {
     if (user.isActive === false) {
       return (
         <span
-          className="px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1"
+          className="px-2 sm:px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1"
           style={{
             background: "linear-gradient(135deg, #FF6B6B, #FF8E53)",
             color: "white",
@@ -184,7 +184,7 @@ export default function AdminUsers() {
     }
     return (
       <span
-        className="px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1"
+        className="px-2 sm:px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1"
         style={{
           background: "linear-gradient(135deg, #4CAF50, #2E3E88)",
           color: "white",
@@ -220,7 +220,7 @@ export default function AdminUsers() {
       >
         <div className="text-center">
           <div
-            className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+            className="animate-spin rounded-full h-16 sm:h-20 w-16 sm:w-20 border-4 mx-auto mb-4"
             style={{
               borderTopColor: "#2E3E88",
               borderRightColor: "#32B9CC",
@@ -228,7 +228,10 @@ export default function AdminUsers() {
               borderLeftColor: "transparent",
             }}
           ></div>
-          <p className="text-lg font-semibold" style={{ color: "#2E3E88" }}>
+          <p
+            className="text-base sm:text-lg font-semibold"
+            style={{ color: "#2E3E88" }}
+          >
             جارٍ التحميل...
           </p>
         </div>
@@ -256,7 +259,7 @@ export default function AdminUsers() {
 
         {/* Hero Header */}
         <div
-          className="relative py-16 px-4"
+          className="relative py-12 sm:py-16 px-4"
           style={{
             background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
           }}
@@ -266,29 +269,29 @@ export default function AdminUsers() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               onClick={() => navigate(-1)}
-              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              className="absolute top-4 sm:top-6 left-4 sm:left-6 bg-white/20 backdrop-blur-sm rounded-full p-2 sm:p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
               style={{
                 boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
               }}
             >
               <FaArrowLeft
-                size={20}
-                className="group-hover:-translate-x-1 transition-transform"
+                size={16}
+                className="sm:w-5 sm:h-5 group-hover:-translate-x-1 transition-transform"
               />
             </motion.button>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center pt-8"
+              className="text-center pt-6 sm:pt-8"
             >
-              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
-                <FaUserShield className="text-white text-4xl" />
+              <div className="inline-flex items-center justify-center p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-sm mb-4 sm:mb-6">
+                <FaUserShield className="text-white text-2xl sm:text-3xl md:text-4xl" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 px-4">
                 إدارة المستخدمين
               </h1>
-              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+              <p className="text-white/80 text-sm sm:text-base md:text-lg lg:text-xl max-w-2xl mx-auto px-4">
                 إدارة وإضافة وتعديل مستخدمي النظام بسهولة وأمان
               </p>
             </motion.div>
@@ -297,7 +300,7 @@ export default function AdminUsers() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-8 -mt-6 sm:-mt-8 md:-mt-10 relative z-10">
         {/* Floating Action Button */}
         <motion.button
           initial={{ opacity: 0, scale: 0 }}
@@ -305,13 +308,13 @@ export default function AdminUsers() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleAddNewUser}
-          className="fixed bottom-6 right-6 z-40 text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-2 group"
+          className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-40 text-white p-3 sm:p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-2 group"
           style={{
             background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
           }}
         >
-          <FaPlus className="text-xl group-hover:rotate-90 transition-transform" />
-          <span className="hidden md:inline font-semibold">
+          <FaPlus className="text-lg sm:text-xl group-hover:rotate-90 transition-transform" />
+          <span className="hidden sm:inline font-semibold">
             إضافة مستخدم جديد
           </span>
         </motion.button>
@@ -322,13 +325,13 @@ export default function AdminUsers() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="mb-8"
+            className="mb-6 sm:mb-8 px-2 sm:px-0"
           >
             <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
           </motion.div>
 
-          {/* Users Grid - 2 users per row on large screens */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Users Grid - Responsive grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 sm:gap-6 px-2 sm:px-0">
             {sortedUsers.length > 0 ? (
               sortedUsers.map((user, index) => (
                 <UserCard
@@ -347,7 +350,7 @@ export default function AdminUsers() {
                 />
               ))
             ) : (
-              <div className="lg:col-span-2">
+              <div className="col-span-1 sm:col-span-2 lg:col-span-2 xl:col-span-2">
                 <EmptyState
                   searchTerm={searchTerm}
                   handleAddNewUser={handleAddNewUser}
@@ -361,7 +364,7 @@ export default function AdminUsers() {
       {/* User Form Modal */}
       <AnimatePresence>
         {isAdding && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm">
             <UserForm
               formData={formData}
               setFormData={setFormData}

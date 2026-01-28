@@ -25,7 +25,6 @@ import {
   FaChartBar,
   FaCalendarAlt,
   FaClock,
-  FaBars,
   FaTruck,
   FaClipboardCheck,
   FaBox,
@@ -297,8 +296,6 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
   const mainNavItems = [
     { path: "/", icon: FaHome, label: "الصفحة الرئيسية", tabName: "home" },
     { path: "/branches", icon: FaMap, label: "فروعنا", tabName: "branches" },
-    // تم إزالة: { path: "/menu", icon: FaListAlt, label: "قائمة الطعام", tabName: "menu" },
-    // تم إزالة: { path: "/offers", icon: FaPercent, label: "العروض", tabName: "offers" },
   ];
 
   const userNavItems = [
@@ -379,33 +376,33 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
     <>
       {/* Modern Glassmorphism Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-5 lg:px-6 xl:px-8">
+          <div className="flex items-center justify-between h-16 sm:h-18 md:h-20">
             {/* Logo Section */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center space-x-4 rtl:space-x-reverse"
+              className="flex items-center space-x-2 sm:space-x-3 md:space-x-4 rtl:space-x-reverse"
             >
               <Link
                 to="/"
                 className="group relative"
                 onClick={() => setActiveTab("home")}
               >
-                <div className="flex items-center space-x-3 rtl:space-x-reverse">
+                <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-3 rtl:space-x-reverse">
                   <div className="relative">
-                    <div className="absolute -inset-2 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] rounded-2xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
+                    <div className="absolute -inset-1 sm:-inset-1.5 md:-inset-2 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] rounded-xl sm:rounded-2xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
                     <img
                       src={logo}
                       alt="Triple S Logo"
-                      className="relative h-12 w-auto transform group-hover:scale-105 transition-transform duration-300"
+                      className="relative h-8 sm:h-10 md:h-12 w-auto transform group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
-                  <div className="hidden lg:block">
-                    <h1 className="text-2xl font-bold bg-gradient-to-r from-[#2E3E88] via-[#32B9CC] to-[#2E3E88] bg-clip-text text-transparent animate-gradient">
+                  <div className="hidden sm:block">
+                    <h1 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-[#2E3E88] via-[#32B9CC] to-[#2E3E88] bg-clip-text text-transparent animate-gradient">
                       Triple S
                     </h1>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 hidden md:block">
                       تجربة طعام استثنائية
                     </p>
                   </div>
@@ -414,7 +411,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
             </motion.div>
 
             {/* Main Navigation - Desktop */}
-            <div className="hidden lg:flex items-center space-x-4 rtl:space-x-reverse">
+            <div className="hidden lg:flex items-center space-x-2 md:space-x-3 lg:space-x-4 rtl:space-x-reverse">
               {mainNavItems.map((item) => (
                 <motion.div
                   key={item.path}
@@ -424,24 +421,26 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                   <Link
                     to={item.path}
                     onClick={() => setActiveTab(item.tabName)}
-                    className={`relative px-6 py-3 rounded-xl transition-all duration-300 flex items-center space-x-2 rtl:space-x-reverse ${
+                    className={`relative px-4 md:px-5 lg:px-6 py-2 md:py-2.5 lg:py-3 rounded-xl transition-all duration-300 flex items-center space-x-2 rtl:space-x-reverse ${
                       activeTab === item.tabName
                         ? "bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white shadow-lg"
                         : "text-gray-700 hover:bg-gradient-to-r hover:from-[#2E3E88]/10 hover:to-[#32B9CC]/10"
                     }`}
                   >
                     <item.icon
-                      className={
+                      className={`${
                         activeTab === item.tabName
                           ? "text-white"
                           : "text-[#2E3E88]"
-                      }
+                      } text-sm md:text-base`}
                     />
-                    <span className="font-medium">{item.label}</span>
+                    <span className="font-medium text-sm md:text-base">
+                      {item.label}
+                    </span>
                     {activeTab === item.tabName && (
                       <motion.div
                         layoutId="activeTab"
-                        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-white rounded-full"
+                        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 md:w-10 lg:w-12 h-0.5 md:h-1 bg-white rounded-full"
                       />
                     )}
                   </Link>
@@ -450,16 +449,16 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
             </div>
 
             {/* Right Section */}
-            <div className="flex items-center space-x-4 rtl:space-x-reverse">
+            <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4 rtl:space-x-reverse">
               {/* Cart Icon */}
               {isLoggedIn && (
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={() => navigateTo("/cart", "cart")}
-                  className="relative p-3 rounded-xl bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 hover:from-[#2E3E88]/10 hover:to-[#32B9CC]/10 transition-all duration-300 group"
+                  className="relative p-2 sm:p-2.5 md:p-3 rounded-xl bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 hover:from-[#2E3E88]/10 hover:to-[#32B9CC]/10 transition-all duration-300 group"
                 >
-                  <FaShoppingCart className="text-2xl text-[#2E3E88] group-hover:text-[#32B9CC] transition-colors" />
+                  <FaShoppingCart className="text-lg sm:text-xl md:text-2xl text-[#2E3E88] group-hover:text-[#32B9CC] transition-colors" />
                 </motion.button>
               )}
 
@@ -468,39 +467,48 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                 whileHover={{ scale: 1.1, rotate: 15 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={toggleDarkMode}
-                className="p-3 rounded-xl bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 hover:from-[#2E3E88]/10 hover:to-[#32B9CC]/10 transition-all duration-300"
+                className="p-2 sm:p-2.5 md:p-3 rounded-xl bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 hover:from-[#2E3E88]/10 hover:to-[#32B9CC]/10 transition-all duration-300"
                 aria-label="تبديل الوضع"
               >
                 {darkMode ? (
-                  <FaSun className="text-2xl text-[#FF8E53]" />
+                  <FaSun className="text-lg sm:text-xl md:text-2xl text-[#FF8E53]" />
                 ) : (
-                  <FaMoon className="text-2xl text-[#2E3E88]" />
+                  <FaMoon className="text-lg sm:text-xl md:text-2xl text-[#2E3E88]" />
                 )}
               </motion.button>
 
               {/* User Menu / Auth */}
               {isLoggedIn ? (
                 <div className="relative" ref={userMenuRef}>
+                  {/* زر صورة المستخدم - يظهر القائمة الجانبية على الجوال والدروب داون على سطح المكتب */}
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="flex items-center space-x-3 rtl:space-x-reverse p-2 rounded-2xl bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 hover:from-[#2E3E88]/10 hover:to-[#32B9CC]/10 transition-all duration-300 border border-white/20"
+                    onClick={() => {
+                      // على الجوال: يفتح القائمة الجانبية
+                      if (window.innerWidth < 1024) {
+                        setIsSidebarOpen(true);
+                      } else {
+                        // على سطح المكتب: يفتح الدروب داون
+                        setIsUserMenuOpen(!isUserMenuOpen);
+                      }
+                    }}
+                    className="flex items-center space-x-2 sm:space-x-3 md:space-x-3 rtl:space-x-reverse p-1.5 sm:p-2 md:p-2 rounded-2xl bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 hover:from-[#2E3E88]/10 hover:to-[#32B9CC]/10 transition-all duration-300 border border-white/20"
                   >
                     {userData.avatar ? (
                       <img
                         src={userData.avatar}
                         alt="صورة المستخدم"
-                        className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-lg"
+                        className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full object-cover border-2 border-white shadow-lg"
                       />
                     ) : (
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white flex items-center justify-center font-semibold text-xl shadow-lg">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white flex items-center justify-center font-semibold text-sm sm:text-lg md:text-xl shadow-lg">
                         {getInitial(userData.firstName)}
                       </div>
                     )}
 
-                    <div className="text-right hidden lg:block">
-                      <p className="font-semibold text-gray-800">
+                    <div className="text-right hidden md:block">
+                      <p className="font-semibold text-gray-800 text-sm md:text-base">
                         {userData.firstName || "مستخدم"}
                       </p>
                       <span className="text-xs text-gray-500">
@@ -514,15 +522,17 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                       </span>
                     </div>
 
+                    {/* السهم - يظهر فقط على سطح المكتب */}
                     <motion.div
                       animate={{ rotate: isUserMenuOpen ? 180 : 0 }}
                       transition={{ duration: 0.2 }}
+                      className="hidden lg:block"
                     >
-                      <FaChevronDown className="text-[#2E3E88]" />
+                      <FaChevronDown className="text-[#2E3E88] text-sm md:text-base" />
                     </motion.div>
                   </motion.button>
 
-                  {/* User Dropdown Menu */}
+                  {/* User Dropdown Menu - يظهر فقط على سطح المكتب */}
                   <AnimatePresence>
                     {isUserMenuOpen && (
                       <motion.div
@@ -530,39 +540,39 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute left-0 rtl:right-0 rtl:left-auto mt-3 w-80 bg-white/95 backdrop-blur-xl shadow-2xl rounded-2xl border border-white/20 overflow-hidden z-50"
+                        className="absolute left-0 rtl:right-0 rtl:left-auto mt-2 md:mt-3 w-64 sm:w-72 md:w-80 bg-white shadow-2xl rounded-xl md:rounded-2xl border border-gray-100 overflow-hidden z-50 hidden lg:block"
                         style={{
-                          background:
-                            "linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,249,255,0.95))",
+                          left: "-100px", // تم التعديل هنا: نقل الدروب داون لليسار
+                          right: "auto", // تم التعديل هنا
                         }}
                       >
                         {/* User Header */}
-                        <div className="p-6 bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5">
-                          <div className="flex items-center space-x-4 rtl:space-x-reverse">
+                        <div className="p-4 md:p-6 bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5">
+                          <div className="flex items-center space-x-3 md:space-x-4 rtl:space-x-reverse">
                             {userData.avatar ? (
                               <img
                                 src={userData.avatar}
                                 alt="صورة المستخدم"
-                                className="w-16 h-16 rounded-full object-cover border-4 border-white shadow-lg"
+                                className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full object-cover border-4 border-white shadow-lg"
                               />
                             ) : (
-                              <div className="w-16 h-16 rounded-full bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white flex items-center justify-center font-semibold text-2xl shadow-lg">
+                              <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white flex items-center justify-center font-semibold text-xl sm:text-2xl md:text-2xl shadow-lg">
                                 {getInitial(userData.firstName)}
                               </div>
                             )}
 
                             <div className="flex-1">
-                              <h3 className="font-bold text-lg text-gray-800">
+                              <h3 className="font-bold text-gray-800 text-sm sm:text-base md:text-lg">
                                 {userData.firstName} {userData.lastName}
                               </h3>
-                              <p className="text-sm text-gray-600">
+                              <p className="text-xs sm:text-sm text-gray-600 truncate">
                                 {userData.email}
                               </p>
 
                               {/* User Roles */}
-                              <div className="flex flex-wrap gap-1 mt-2">
+                              <div className="flex flex-wrap gap-1 mt-1 md:mt-2">
                                 {hasRole("Admin") && (
-                                  <div className="flex items-center gap-1 bg-[#2E3E88]/10 px-2 py-1 rounded-full">
+                                  <div className="flex items-center gap-1 bg-[#2E3E88]/10 px-1.5 py-0.5 md:px-2 md:py-1 rounded-full">
                                     <FaUserShield className="text-[#2E3E88] text-xs" />
                                     <span className="text-xs font-semibold text-[#2E3E88]">
                                       مدير
@@ -570,7 +580,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                                   </div>
                                 )}
                                 {hasRole("Restaurant") && (
-                                  <div className="flex items-center gap-1 bg-[#32B9CC]/10 px-2 py-1 rounded-full">
+                                  <div className="flex items-center gap-1 bg-[#32B9CC]/10 px-1.5 py-0.5 md:px-2 md:py-1 rounded-full">
                                     <FaStore className="text-[#32B9CC] text-xs" />
                                     <span className="text-xs font-semibold text-[#32B9CC]">
                                       مطعم
@@ -578,7 +588,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                                   </div>
                                 )}
                                 {hasRole("Branch") && (
-                                  <div className="flex items-center gap-1 bg-[#4CAF50]/10 px-2 py-1 rounded-full">
+                                  <div className="flex items-center gap-1 bg-[#4CAF50]/10 px-1.5 py-0.5 md:px-2 md:py-1 rounded-full">
                                     <FaCodeBranch className="text-[#4CAF50] text-xs" />
                                     <span className="text-xs font-semibold text-[#4CAF50]">
                                       فرع
@@ -586,7 +596,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                                   </div>
                                 )}
                                 {hasRole("User") && (
-                                  <div className="flex items-center gap-1 bg-[#9C27B0]/10 px-2 py-1 rounded-full">
+                                  <div className="flex items-center gap-1 bg-[#9C27B0]/10 px-1.5 py-0.5 md:px-2 md:py-1 rounded-full">
                                     <FaUserCircle className="text-[#9C27B0] text-xs" />
                                     <span className="text-xs font-semibold text-[#9C27B0]">
                                       مستخدم
@@ -599,7 +609,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                         </div>
 
                         {/* Menu Items */}
-                        <div className="p-2 max-h-96 overflow-y-auto">
+                        <div className="p-2 max-h-80 sm:max-h-96 overflow-y-auto">
                           <div className="space-y-1">
                             {userNavItems.map((item) => (
                               <motion.button
@@ -608,10 +618,10 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                                 onClick={() =>
                                   navigateTo(item.path, item.tabName)
                                 }
-                                className="w-full text-right flex items-center justify-between gap-3 px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 transition-all duration-200 font-medium rounded-lg group"
+                                className="w-full text-right flex items-center justify-between gap-3 px-3 py-2.5 sm:px-4 sm:py-3 text-gray-700 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 transition-all duration-200 font-medium rounded-lg group text-sm sm:text-base"
                               >
                                 <span>{item.label}</span>
-                                <item.icon className="text-[#2E3E88] group-hover:text-[#32B9CC]" />
+                                <item.icon className="text-[#2E3E88] group-hover:text-[#32B9CC] text-sm md:text-base" />
                               </motion.button>
                             ))}
 
@@ -622,21 +632,21 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                                 onClick={() =>
                                   navigateTo("/order-shifts", "shifts")
                                 }
-                                className="w-full text-right flex items-center justify-between gap-3 px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 transition-all duration-200 font-medium rounded-lg group"
+                                className="w-full text-right flex items-center justify-between gap-3 px-3 py-2.5 sm:px-4 sm:py-3 text-gray-700 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 transition-all duration-200 font-medium rounded-lg group text-sm sm:text-base"
                               >
                                 <span>الورديات</span>
-                                <FaTruck className="text-[#2E3E88] group-hover:text-[#32B9CC]" />
+                                <FaTruck className="text-[#2E3E88] group-hover:text-[#32B9CC] text-sm md:text-base" />
                               </motion.button>
                             )}
                           </div>
 
                           {/* Admin Section */}
                           {hasAdminAccess && (
-                            <div className="mt-4 pt-4 border-t border-gray-100">
-                              <div className="px-4 py-2 mb-2">
+                            <div className="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-gray-200">
+                              <div className="px-3 py-1.5 md:px-4 md:py-2 mb-2">
                                 <div className="flex items-center gap-2">
-                                  <FaUserShield className="text-[#2E3E88]" />
-                                  <span className="text-sm font-semibold text-gray-700">
+                                  <FaUserShield className="text-[#2E3E88] text-sm" />
+                                  <span className="text-xs sm:text-sm font-semibold text-gray-700">
                                     {hasRole("Admin")
                                       ? "لوحة الإدارة"
                                       : "إدارة المطعم"}
@@ -645,7 +655,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                               </div>
                               <div className="space-y-1">
                                 {adminMenuItems
-                                  .slice(0, 8) // عرض 8 عناصر في القائمة المنسدلة
+                                  .slice(0, 6) // عرض 6 عناصر في القائمة المنسدلة للشاشات الصغيرة
                                   .map((item, index) => (
                                     <motion.button
                                       key={index}
@@ -653,10 +663,12 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                                       onClick={() =>
                                         navigateTo(item.path, "admin")
                                       }
-                                      className="w-full text-right flex items-center justify-between gap-3 px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 transition-all duration-200 font-medium rounded-lg group"
+                                      className="w-full text-right flex items-center justify-between gap-3 px-3 py-2.5 sm:px-4 sm:py-3 text-gray-700 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 transition-all duration-200 font-medium rounded-lg group text-sm sm:text-base"
                                     >
-                                      <span>{item.label}</span>
-                                      <item.icon className="text-[#2E3E88] group-hover:text-[#32B9CC]" />
+                                      <span className="truncate">
+                                        {item.label}
+                                      </span>
+                                      <item.icon className="text-[#2E3E88] group-hover:text-[#32B9CC] text-sm md:text-base flex-shrink-0" />
                                     </motion.button>
                                   ))}
                               </div>
@@ -665,11 +677,11 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
 
                           {/* Branch Section */}
                           {hasBranchAccess && !hasAdminAccess && (
-                            <div className="mt-4 pt-4 border-t border-gray-100">
-                              <div className="px-4 py-2 mb-2">
+                            <div className="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-gray-200">
+                              <div className="px-3 py-1.5 md:px-4 md:py-2 mb-2">
                                 <div className="flex items-center gap-2">
-                                  <FaCodeBranch className="text-[#4CAF50]" />
-                                  <span className="text-sm font-semibold text-gray-700">
+                                  <FaCodeBranch className="text-[#4CAF50] text-sm" />
+                                  <span className="text-xs sm:text-sm font-semibold text-gray-700">
                                     إدارة الفرع
                                   </span>
                                 </div>
@@ -689,10 +701,12 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                                       onClick={() =>
                                         navigateTo(item.path, "branch")
                                       }
-                                      className="w-full text-right flex items-center justify-between gap-3 px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 transition-all duration-200 font-medium rounded-lg group"
+                                      className="w-full text-right flex items-center justify-between gap-3 px-3 py-2.5 sm:px-4 sm:py-3 text-gray-700 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 transition-all duration-200 font-medium rounded-lg group text-sm sm:text-base"
                                     >
-                                      <span>{item.label}</span>
-                                      <item.icon className="text-[#2E3E88] group-hover:text-[#32B9CC]" />
+                                      <span className="truncate">
+                                        {item.label}
+                                      </span>
+                                      <item.icon className="text-[#2E3E88] group-hover:text-[#32B9CC] text-sm md:text-base flex-shrink-0" />
                                     </motion.button>
                                   ))}
                               </div>
@@ -700,14 +714,14 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                           )}
 
                           {/* Logout */}
-                          <div className="mt-4 pt-4 border-t border-gray-100">
+                          <div className="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-gray-200">
                             <motion.button
                               whileHover={{ x: -4 }}
                               onClick={handleLogout}
-                              className="w-full text-right flex items-center justify-between gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition-all duration-200 font-medium rounded-lg"
+                              className="w-full text-right flex items-center justify-between gap-3 px-3 py-2.5 sm:px-4 sm:py-3 text-red-600 hover:bg-red-50 transition-all duration-200 font-medium rounded-lg text-sm sm:text-base"
                             >
                               <span>تسجيل الخروج</span>
-                              <FaSignOutAlt />
+                              <FaSignOutAlt className="text-sm md:text-base" />
                             </motion.button>
                           </div>
                         </div>
@@ -717,12 +731,12 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                 </div>
               ) : (
                 // Auth Buttons
-                <div className="flex items-center space-x-3 rtl:space-x-reverse">
+                <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-3 rtl:space-x-reverse">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => navigate("/login")}
-                    className="px-6 py-3 rounded-xl font-semibold border-2 transition-all duration-300 hover:shadow-lg"
+                    className="px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3 rounded-xl font-semibold border-2 transition-all duration-300 hover:shadow-lg text-xs sm:text-sm md:text-base"
                     style={{
                       borderColor: "#2E3E88",
                       color: "#2E3E88",
@@ -735,7 +749,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => navigate("/register")}
-                    className="px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
+                    className="px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl text-xs sm:text-sm md:text-base"
                     style={{
                       background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
                       color: "white",
@@ -745,22 +759,12 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                   </motion.button>
                 </div>
               )}
-
-              {/* Mobile Menu Button */}
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => setIsSidebarOpen(true)}
-                className="lg:hidden p-3 rounded-xl bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white shadow-lg"
-              >
-                <FaBars className="text-xl" />
-              </motion.button>
             </div>
           </div>
         </div>
       </nav>
 
-      {/* Mobile Sidebar */}
+      {/* Mobile Sidebar - تظهر عند النقر على صورة المستخدم في الجوال */}
       <AnimatePresence>
         {isSidebarOpen && (
           <>
@@ -779,66 +783,68 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed top-0 right-0 h-full w-full max-w-sm z-[70]"
+              className="fixed top-0 right-0 h-full w-full max-w-xs sm:max-w-sm md:max-w-sm z-[70]"
               style={{
                 background: "linear-gradient(135deg, #ffffff, #f8f9ff)",
               }}
             >
               {/* Sidebar Header */}
-              <div className="p-6 border-b border-gray-100">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center space-x-3 rtl:space-x-reverse">
+              <div className="p-4 sm:p-6 border-b border-gray-100">
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                  <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-3 rtl:space-x-reverse">
                     <div className="relative">
-                      <div className="absolute -inset-2 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] rounded-2xl blur opacity-20"></div>
+                      <div className="absolute -inset-1.5 sm:-inset-2 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] rounded-xl sm:rounded-2xl blur opacity-20"></div>
                       <img
                         src={logo}
                         alt="Logo"
-                        className="relative h-10 w-auto"
+                        className="relative h-8 sm:h-10 md:h-10 w-auto"
                       />
                     </div>
                     <div>
-                      <h2 className="font-bold text-xl text-gray-800">
+                      <h2 className="font-bold text-lg sm:text-xl text-gray-800">
                         Triple S
                       </h2>
-                      <p className="text-sm text-gray-500">القائمة</p>
+                      <p className="text-xs sm:text-sm text-gray-500">
+                        القائمة
+                      </p>
                     </div>
                   </div>
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => setIsSidebarOpen(false)}
-                    className="p-2 rounded-lg hover:bg-gray-100"
+                    className="p-1.5 sm:p-2 rounded-lg hover:bg-gray-100"
                   >
-                    <FaTimes className="text-gray-600 text-xl" />
+                    <FaTimes className="text-gray-600 text-lg sm:text-xl" />
                   </motion.button>
                 </div>
 
                 {/* User Info in Mobile */}
                 {isLoggedIn ? (
-                  <div className="flex items-center space-x-3 rtl:space-x-reverse mb-6 p-4 rounded-2xl bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5">
+                  <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-3 rtl:space-x-reverse mb-4 sm:mb-6 p-3 sm:p-4 rounded-2xl bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5">
                     {userData.avatar ? (
                       <img
                         src={userData.avatar}
                         alt="صورة المستخدم"
-                        className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-lg"
+                        className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full object-cover border-2 border-white shadow-lg"
                       />
                     ) : (
-                      <div className="w-14 h-14 rounded-full bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white flex items-center justify-center font-semibold text-xl shadow-lg">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white flex items-center justify-center font-semibold text-base sm:text-lg md:text-xl shadow-lg">
                         {getInitial(userData.firstName)}
                       </div>
                     )}
-                    <div className="flex-1">
-                      <h3 className="font-bold text-gray-800">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-gray-800 text-sm sm:text-base truncate">
                         {userData.firstName} {userData.lastName}
                       </h3>
-                      <p className="text-sm text-gray-500 truncate">
+                      <p className="text-xs text-gray-500 truncate">
                         {userData.email}
                       </p>
 
                       {/* User Roles in Mobile */}
                       <div className="flex flex-wrap gap-1 mt-1">
                         {hasRole("Admin") && (
-                          <div className="flex items-center gap-1 bg-[#2E3E88]/10 px-2 py-1 rounded-full">
+                          <div className="flex items-center gap-1 bg-[#2E3E88]/10 px-1.5 py-0.5 rounded-full">
                             <FaUserShield className="text-[#2E3E88] text-xs" />
                             <span className="text-xs font-semibold text-[#2E3E88]">
                               مدير
@@ -846,7 +852,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                           </div>
                         )}
                         {hasRole("Restaurant") && (
-                          <div className="flex items-center gap-1 bg-[#32B9CC]/10 px-2 py-1 rounded-full">
+                          <div className="flex items-center gap-1 bg-[#32B9CC]/10 px-1.5 py-0.5 rounded-full">
                             <FaStore className="text-[#32B9CC] text-xs" />
                             <span className="text-xs font-semibold text-[#32B9CC]">
                               مطعم
@@ -854,7 +860,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                           </div>
                         )}
                         {hasRole("Branch") && (
-                          <div className="flex items-center gap-1 bg-[#4CAF50]/10 px-2 py-1 rounded-full">
+                          <div className="flex items-center gap-1 bg-[#4CAF50]/10 px-1.5 py-0.5 rounded-full">
                             <FaCodeBranch className="text-[#4CAF50] text-xs" />
                             <span className="text-xs font-semibold text-[#4CAF50]">
                               فرع
@@ -862,7 +868,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                           </div>
                         )}
                         {hasRole("User") && (
-                          <div className="flex items-center gap-1 bg-[#9C27B0]/10 px-2 py-1 rounded-full">
+                          <div className="flex items-center gap-1 bg-[#9C27B0]/10 px-1.5 py-0.5 rounded-full">
                             <FaUserCircle className="text-[#9C27B0] text-xs" />
                             <span className="text-xs font-semibold text-[#9C27B0]">
                               مستخدم
@@ -873,14 +879,14 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                     </div>
                   </div>
                 ) : (
-                  <div className="mb-6">
-                    <p className="text-gray-600 mb-4 text-center">
+                  <div className="mb-4 sm:mb-6">
+                    <p className="text-gray-600 mb-3 text-center text-sm sm:text-base">
                       مرحباً بك في مطعمنا
                     </p>
-                    <div className="flex space-x-3 rtl:space-x-reverse">
+                    <div className="flex space-x-2 sm:space-x-3 rtl:space-x-reverse">
                       <button
                         onClick={() => navigateTo("/login", "login")}
-                        className="flex-1 py-3 text-center rounded-xl font-semibold border-2"
+                        className="flex-1 py-2.5 sm:py-3 text-center rounded-xl font-semibold border-2 text-xs sm:text-sm"
                         style={{
                           borderColor: "#2E3E88",
                           color: "#2E3E88",
@@ -890,7 +896,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                       </button>
                       <button
                         onClick={() => navigateTo("/register", "register")}
-                        className="flex-1 py-3 text-center rounded-xl font-semibold text-white"
+                        className="flex-1 py-2.5 sm:py-3 text-center rounded-xl font-semibold text-white text-xs sm:text-sm"
                         style={{
                           background:
                             "linear-gradient(135deg, #2E3E88, #32B9CC)",
@@ -904,11 +910,11 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
               </div>
 
               {/* Sidebar Menu */}
-              <div className="p-4 overflow-y-auto h-[calc(100vh-250px)]">
-                <div className="space-y-2">
+              <div className="p-3 sm:p-4 overflow-y-auto h-[calc(100vh-200px)] sm:h-[calc(100vh-250px)]">
+                <div className="space-y-1 sm:space-y-2">
                   {/* Main Navigation */}
-                  <div className="mb-4">
-                    <p className="text-sm font-semibold text-gray-500 mb-3 px-2">
+                  <div className="mb-3 sm:mb-4">
+                    <p className="text-xs sm:text-sm font-semibold text-gray-500 mb-2 sm:mb-3 px-2">
                       الرئيسية
                     </p>
                     {mainNavItems.map((item) => (
@@ -916,13 +922,13 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                         key={item.path}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => navigateTo(item.path, item.tabName)}
-                        className={`w-full text-right flex items-center justify-between gap-3 px-4 py-4 mb-2 rounded-xl transition-all duration-200 font-medium ${
+                        className={`w-full text-right flex items-center justify-between gap-3 px-3 py-3 sm:px-4 sm:py-4 mb-1 sm:mb-2 rounded-xl transition-all duration-200 font-medium text-sm sm:text-base ${
                           activeTab === item.tabName
                             ? "bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white shadow-lg"
                             : "text-gray-700 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5"
                         }`}
                       >
-                        <span className="text-lg">{item.label}</span>
+                        <span>{item.label}</span>
                         <item.icon
                           className={
                             activeTab === item.tabName
@@ -934,108 +940,107 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                     ))}
                   </div>
 
-                  {/* User Menu */}
+                  {/* User Menu في القائمة الجانبية للجوال */}
                   {isLoggedIn && (
-                    <>
-                      <div className="mb-4">
-                        <p className="text-sm font-semibold text-gray-500 mb-3 px-2">
-                          حسابي
-                        </p>
-                        {userNavItems.map((item) => (
-                          <motion.button
-                            key={item.path}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={() => navigateTo(item.path, item.tabName)}
-                            className={`w-full text-right flex items-center justify-between gap-3 px-4 py-4 mb-2 rounded-xl transition-all duration-200 font-medium ${
+                    <div className="mb-3 sm:mb-4">
+                      <p className="text-xs sm:text-sm font-semibold text-gray-500 mb-2 sm:mb-3 px-2">
+                        حسابي
+                      </p>
+                      {userNavItems.map((item) => (
+                        <motion.button
+                          key={item.path}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => navigateTo(item.path, item.tabName)}
+                          className={`w-full text-right flex items-center justify-between gap-3 px-3 py-3 sm:px-4 sm:py-4 mb-1 sm:mb-2 rounded-xl transition-all duration-200 font-medium text-sm sm:text-base ${
+                            activeTab === item.tabName
+                              ? "bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white shadow-lg"
+                              : "text-gray-700 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5"
+                          }`}
+                        >
+                          <span>{item.label}</span>
+                          <item.icon
+                            className={
                               activeTab === item.tabName
-                                ? "bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white shadow-lg"
-                                : "text-gray-700 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5"
-                            }`}
-                          >
-                            <span className="text-lg">{item.label}</span>
-                            <item.icon
-                              className={
-                                activeTab === item.tabName
-                                  ? "text-white"
-                                  : "text-[#2E3E88]"
-                              }
-                            />
-                          </motion.button>
-                        ))}
-
-                        {/* الورديات */}
-                        {hasOrderShiftsAccess && (
-                          <motion.button
-                            whileTap={{ scale: 0.98 }}
-                            onClick={() =>
-                              navigateTo("/order-shifts", "shifts")
+                                ? "text-white"
+                                : "text-[#2E3E88]"
                             }
-                            className={`w-full text-right flex items-center justify-between gap-3 px-4 py-4 mb-2 rounded-xl transition-all duration-200 font-medium text-gray-700 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5`}
-                          >
-                            <span className="text-lg">الورديات</span>
-                            <FaTruck className="text-[#2E3E88]" />
-                          </motion.button>
-                        )}
-                      </div>
+                          />
+                        </motion.button>
+                      ))}
 
-                      {/* Admin Section */}
-                      {hasAdminAccess && (
-                        <div className="mb-4">
-                          <p className="text-sm font-semibold text-gray-500 mb-3 px-2">
-                            لوحة التحكم
-                          </p>
-                          {adminMenuItems.map((item, index) => (
-                            <motion.button
-                              key={index}
-                              whileTap={{ scale: 0.98 }}
-                              onClick={() => navigateTo(item.path, "admin")}
-                              className="w-full text-right flex items-center justify-between gap-3 px-4 py-4 mb-2 rounded-xl text-gray-700 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 transition-all duration-200 font-medium"
-                            >
-                              <span className="text-lg">{item.label}</span>
-                              <item.icon className="text-[#2E3E88]" />
-                            </motion.button>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Branch Section */}
-                      {hasBranchAccess && !hasAdminAccess && (
-                        <div className="mb-4">
-                          <p className="text-sm font-semibold text-gray-500 mb-3 px-2">
-                            إدارة الفرع
-                          </p>
-                          {adminMenuItems
-                            .filter(
-                              (item) =>
-                                item.path.includes("/branch") ||
-                                item.label.includes("الفرع"),
-                            )
-                            .map((item, index) => (
-                              <motion.button
-                                key={index}
-                                whileTap={{ scale: 0.98 }}
-                                onClick={() => navigateTo(item.path, "branch")}
-                                className="w-full text-right flex items-center justify-between gap-3 px-4 py-4 mb-2 rounded-xl text-gray-700 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 transition-all duration-200 font-medium"
-                              >
-                                <span className="text-lg">{item.label}</span>
-                                <item.icon className="text-[#2E3E88]" />
-                              </motion.button>
-                            ))}
-                        </div>
-                      )}
-
-                      {/* Logout */}
-                      <div className="mt-6 pt-6 border-t border-gray-100">
+                      {/* الورديات */}
+                      {hasOrderShiftsAccess && (
                         <motion.button
                           whileTap={{ scale: 0.98 }}
-                          onClick={handleLogout}
-                          className="w-full text-right flex items-center justify-between gap-3 px-4 py-4 text-red-600 hover:bg-red-50 transition-all duration-200 font-medium rounded-xl"
+                          onClick={() => navigateTo("/order-shifts", "shifts")}
+                          className={`w-full text-right flex items-center justify-between gap-3 px-3 py-3 sm:px-4 sm:py-4 mb-1 sm:mb-2 rounded-xl transition-all duration-200 font-medium text-sm sm:text-base text-gray-700 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5`}
                         >
-                          <span className="text-lg">تسجيل الخروج</span>
-                          <FaSignOutAlt />
+                          <span>الورديات</span>
+                          <FaTruck className="text-[#2E3E88]" />
                         </motion.button>
-                      </div>
-                    </>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Admin Section في القائمة الجانبية */}
+                  {hasAdminAccess && (
+                    <div className="mb-3 sm:mb-4">
+                      <p className="text-xs sm:text-sm font-semibold text-gray-500 mb-2 sm:mb-3 px-2">
+                        لوحة التحكم
+                      </p>
+                      {adminMenuItems.slice(0, 8).map((item, index) => (
+                        <motion.button
+                          key={index}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => navigateTo(item.path, "admin")}
+                          className="w-full text-right flex items-center justify-between gap-3 px-3 py-3 sm:px-4 sm:py-4 mb-1 sm:mb-2 rounded-xl text-gray-700 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 transition-all duration-200 font-medium text-sm sm:text-base"
+                        >
+                          <span className="truncate">{item.label}</span>
+                          <item.icon className="text-[#2E3E88] flex-shrink-0" />
+                        </motion.button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Branch Section في القائمة الجانبية */}
+                  {hasBranchAccess && !hasAdminAccess && (
+                    <div className="mb-3 sm:mb-4">
+                      <p className="text-xs sm:text-sm font-semibold text-gray-500 mb-2 sm:mb-3 px-2">
+                        إدارة الفرع
+                      </p>
+                      {adminMenuItems
+                        .filter(
+                          (item) =>
+                            item.path.includes("/branch") ||
+                            item.label.includes("الفرع"),
+                        )
+                        .slice(0, 5)
+                        .map((item, index) => (
+                          <motion.button
+                            key={index}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => navigateTo(item.path, "branch")}
+                            className="w-full text-right flex items-center justify-between gap-3 px-3 py-3 sm:px-4 sm:py-4 mb-1 sm:mb-2 rounded-xl text-gray-700 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 transition-all duration-200 font-medium text-sm sm:text-base"
+                          >
+                            <span className="truncate">{item.label}</span>
+                            <item.icon className="text-[#2E3E88] flex-shrink-0" />
+                          </motion.button>
+                        ))}
+                    </div>
+                  )}
+
+                  {/* تسجيل الخروج */}
+                  {isLoggedIn && (
+                    <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-100">
+                      <motion.button
+                        whileTap={{ scale: 0.98 }}
+                        onClick={handleLogout}
+                        className="w-full text-right flex items-center justify-between gap-3 px-3 py-3 sm:px-4 sm:py-4 text-red-600 hover:bg-red-50 transition-all duration-200 font-medium rounded-xl text-sm sm:text-base"
+                      >
+                        <span>تسجيل الخروج</span>
+                        <FaSignOutAlt />
+                      </motion.button>
+                    </div>
                   )}
                 </div>
               </div>
@@ -1045,7 +1050,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
       </AnimatePresence>
 
       {/* Spacer for fixed navbar */}
-      <div className="h-20"></div>
+      <div className="h-16 sm:h-18 md:h-20"></div>
     </>
   );
 };

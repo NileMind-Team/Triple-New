@@ -240,8 +240,7 @@ const showMobileMessage = (type, title, text) => {
       toast.warning(message, {
         position: "top-right",
         autoClose: 2500,
-        hideProgressBar: false,
-        closeOnClick: true,
+        showConfirmButton: false,
         style: {
           width: "70%",
           margin: "10px",
@@ -715,10 +714,10 @@ export default function AdminBranches() {
               <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
                 <FaBuilding className="text-white text-4xl" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 px-4">
                 إدارة الفروع
               </h1>
-              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+              <p className="text-white/80 text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-4">
                 إدارة وإضافة وتعديل فروع المطعم بسهولة وأمان
               </p>
             </motion.div>
@@ -727,7 +726,7 @@ export default function AdminBranches() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-8 -mt-8 sm:-mt-10 relative z-10">
         {/* Floating Action Button */}
         <motion.button
           initial={{ opacity: 0, scale: 0 }}
@@ -735,13 +734,13 @@ export default function AdminBranches() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleAddNewBranch}
-          className="fixed bottom-6 right-6 z-40 text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-2 group"
+          className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-40 text-white p-3 sm:p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-2 group"
           style={{
             background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
           }}
         >
-          <FaPlus className="text-xl group-hover:rotate-90 transition-transform" />
-          <span className="hidden md:inline font-semibold">إضافة فرع جديد</span>
+          <FaPlus className="text-lg sm:text-xl group-hover:rotate-90 transition-transform" />
+          <span className="hidden sm:inline font-semibold">إضافة فرع جديد</span>
         </motion.button>
 
         {/* Content Container */}
@@ -750,7 +749,7 @@ export default function AdminBranches() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="mb-8"
+            className="mb-6 sm:mb-8 px-2 sm:px-0"
           >
             <SearchBar
               searchTerm={searchTerm}
@@ -759,8 +758,8 @@ export default function AdminBranches() {
             />
           </motion.div>
 
-          {/* Branches Grid - 2 branches per row on large screens */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Branches Grid - Responsive grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 sm:gap-6 px-2 sm:px-0">
             {filteredBranches.map((branch, index) => (
               <BranchCard
                 key={branch.id}
@@ -773,26 +772,26 @@ export default function AdminBranches() {
             ))}
 
             {filteredBranches.length === 0 && (
-              <div className="lg:col-span-2">
+              <div className="col-span-1 sm:col-span-2 lg:col-span-2 xl:col-span-2">
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="bg-white rounded-2xl p-8 text-center shadow-xl"
+                  className="bg-white rounded-xl sm:rounded-2xl p-6 sm:p-8 text-center shadow-xl mx-2 sm:mx-0"
                 >
                   <div
-                    className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center"
+                    className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full mx-auto mb-4 sm:mb-6 flex items-center justify-center"
                     style={{
                       background:
                         "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
                     }}
                   >
                     <FaBuilding
-                      className="text-4xl"
+                      className="text-2xl sm:text-3xl md:text-4xl"
                       style={{ color: "#2E3E88" }}
                     />
                   </div>
                   <h3
-                    className="text-2xl font-bold mb-3"
+                    className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3"
                     style={{ color: "#2E3E88" }}
                   >
                     {searchTerm
@@ -800,7 +799,7 @@ export default function AdminBranches() {
                       : "لا توجد فروع حتى الآن"}
                   </h3>
                   <p
-                    className="mb-6 max-w-md mx-auto"
+                    className="mb-4 sm:mb-6 max-w-md mx-auto text-sm sm:text-base"
                     style={{ color: "#32B9CC" }}
                   >
                     {searchTerm
@@ -810,7 +809,7 @@ export default function AdminBranches() {
                   {!searchTerm && (
                     <button
                       onClick={handleAddNewBranch}
-                      className="px-8 py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                      className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl text-sm sm:text-base"
                       style={{
                         background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
                         color: "white",
@@ -830,7 +829,7 @@ export default function AdminBranches() {
       {/* Branch Form Modal */}
       <AnimatePresence>
         {isAdding && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm">
             <BranchForm
               formData={formData}
               setFormData={setFormData}

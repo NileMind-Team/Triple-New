@@ -94,20 +94,20 @@ const PhoneNumbersSection = ({ phoneNumbers, setPhoneNumbers }) => {
   return (
     <div className="pt-3">
       <label
-        className="block text-sm font-semibold mb-3"
+        className="block text-xs sm:text-sm font-semibold mb-2 sm:mb-3"
         style={{ color: "#2E3E88" }}
       >
         أرقام الهاتف *
       </label>
 
       <div
-        className="rounded-xl p-4 mb-4"
+        className="rounded-xl p-3 sm:p-4 mb-3 sm:mb-4"
         style={{
           background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
           border: "1px solid #2E3E8820",
         }}
       >
-        <div className="grid grid-cols-1 gap-3">
+        <div className="grid grid-cols-1 gap-2 sm:gap-3">
           <div>
             <label
               className="block text-xs font-semibold mb-1"
@@ -117,7 +117,7 @@ const PhoneNumbersSection = ({ phoneNumbers, setPhoneNumbers }) => {
             </label>
             <div className="relative group">
               <FaPhone
-                className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-xs sm:text-sm"
                 style={{ color: "#2E3E88" }}
               />
               <input
@@ -125,7 +125,7 @@ const PhoneNumbersSection = ({ phoneNumbers, setPhoneNumbers }) => {
                 name="phone"
                 value={phoneNumber.phone}
                 onChange={handlePhoneInputChange}
-                className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                className="w-full border border-gray-200 rounded-xl pr-10 sm:pr-12 pl-3 sm:pl-4 py-2 sm:py-3 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm sm:text-base"
                 style={{
                   background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
                 }}
@@ -150,13 +150,16 @@ const PhoneNumbersSection = ({ phoneNumbers, setPhoneNumbers }) => {
                     openDropdown === "phoneType" ? null : "phoneType",
                   )
                 }
-                className="w-full flex items-center justify-between border border-gray-200 rounded-xl px-4 py-3 transition-all hover:border-[#2E3E88] group text-right"
+                className="w-full flex items-center justify-between border border-gray-200 rounded-xl px-3 sm:px-4 py-2 sm:py-3 transition-all hover:border-[#2E3E88] group text-right text-sm sm:text-base"
                 style={{
                   background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
                 }}
               >
-                <span className="flex items-center gap-3">
-                  <FaPhone style={{ color: "#2E3E88" }} />
+                <span className="flex items-center gap-2 sm:gap-3">
+                  <FaPhone
+                    style={{ color: "#2E3E88" }}
+                    className="text-xs sm:text-sm"
+                  />
                   <span className="font-medium">
                     {getPhoneTypeArabic(phoneNumber.type)}
                   </span>
@@ -167,7 +170,10 @@ const PhoneNumbersSection = ({ phoneNumbers, setPhoneNumbers }) => {
                   }}
                   transition={{ duration: 0.3 }}
                 >
-                  <FaChevronDown style={{ color: "#2E3E88" }} />
+                  <FaChevronDown
+                    style={{ color: "#2E3E88" }}
+                    className="text-xs sm:text-sm"
+                  />
                 </motion.div>
               </button>
 
@@ -187,7 +193,7 @@ const PhoneNumbersSection = ({ phoneNumbers, setPhoneNumbers }) => {
                       <li
                         key={type.value}
                         onClick={() => handlePhoneTypeSelect(type.value)}
-                        className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b last:border-b-0"
+                        className="px-3 sm:px-4 py-2 sm:py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b last:border-b-0 text-sm sm:text-base"
                       >
                         {type.label}
                       </li>
@@ -198,7 +204,7 @@ const PhoneNumbersSection = ({ phoneNumbers, setPhoneNumbers }) => {
             </div>
           </div>
 
-          <div className="flex items-center justify-center gap-2 py-2">
+          <div className="flex items-center justify-center gap-2 py-1 sm:py-2">
             <label
               className={`flex items-center gap-2 text-xs font-semibold cursor-pointer ${
                 phoneNumber.type !== "Mobile"
@@ -221,14 +227,18 @@ const PhoneNumbersSection = ({ phoneNumbers, setPhoneNumbers }) => {
                 style={{ color: "#2E3E88" }}
               />
               <FaWhatsapp
-                className={`${
+                className={`text-xs sm:text-sm ${
                   phoneNumber.type !== "Mobile"
                     ? "text-gray-400"
                     : "text-[#25D366]"
                 }`}
               />
               <span
-                className={phoneNumber.type !== "Mobile" ? "opacity-70" : ""}
+                className={
+                  phoneNumber.type !== "Mobile"
+                    ? "opacity-70 text-xs"
+                    : "text-xs sm:text-sm"
+                }
               >
                 واتساب {phoneNumber.type !== "Mobile" ? "(غير متاح)" : ""}
               </span>
@@ -241,7 +251,7 @@ const PhoneNumbersSection = ({ phoneNumbers, setPhoneNumbers }) => {
             whileTap={{ scale: 0.98 }}
             onClick={addPhoneNumber}
             disabled={!phoneNumber.phone.trim()}
-            className={`py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+            className={`py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base ${
               phoneNumber.phone.trim()
                 ? "shadow-lg hover:shadow-xl cursor-pointer"
                 : "opacity-50 cursor-not-allowed"
@@ -258,54 +268,60 @@ const PhoneNumbersSection = ({ phoneNumbers, setPhoneNumbers }) => {
                   }
             }
           >
-            <FaPlus />
+            <FaPlus className="text-xs sm:text-sm" />
             إضافة رقم
           </motion.button>
         </div>
       </div>
 
       {phoneNumbers.length > 0 && (
-        <div className="space-y-3">
-          <h4 className="text-sm font-semibold" style={{ color: "#2E3E88" }}>
+        <div className="space-y-2 sm:space-y-3">
+          <h4
+            className="text-xs sm:text-sm font-semibold"
+            style={{ color: "#2E3E88" }}
+          >
             الأرقام المضافة ({phoneNumbers.length})
           </h4>
           {phoneNumbers.map((phone, index) => (
             <div
               key={index}
-              className="flex items-center justify-between rounded-xl p-3"
+              className="flex items-center justify-between rounded-lg sm:rounded-xl p-2.5 sm:p-3"
               style={{
                 background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
                 border: "1px solid #2E3E8820",
               }}
             >
-              <div className="flex items-center gap-3 flex-1 min-w-0">
-                <FaPhone style={{ color: "#2E3E88" }} />
+              <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                <FaPhone
+                  style={{ color: "#2E3E88" }}
+                  className="text-xs sm:text-sm"
+                />
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 sm:gap-2">
                     <span
-                      className="text-sm font-medium"
+                      className="text-xs sm:text-sm font-medium truncate"
                       style={{ color: "#2E3E88" }}
                     >
                       {phone.phone}
                     </span>
                     {phone.isWhatsapp && (
-                      <FaWhatsapp className="text-[#25D366]" />
+                      <FaWhatsapp className="text-[#25D366] text-xs sm:text-sm" />
                     )}
                   </div>
                   <span className="text-xs" style={{ color: "#32B9CC" }}>
                     ({getPhoneTypeArabic(phone.type)})
                     {phone.type !== "Mobile" &&
                       phone.isWhatsapp &&
-                      " - الواتساب غير متاح لهذا النوع"}
+                      " - الواتساب غير متاح"}
                   </span>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => removePhoneNumber(index)}
-                className="text-red-500 hover:text-red-700 transition-colors duration-200 flex-shrink-0 ml-2"
+                className="text-red-500 hover:text-red-700 transition-colors duration-200 flex-shrink-0 ml-1 sm:ml-2"
               >
-                <FaTimes size={16} />
+                <FaTimes size={14} className="sm:w-4 sm:h-4" />
               </button>
             </div>
           ))}

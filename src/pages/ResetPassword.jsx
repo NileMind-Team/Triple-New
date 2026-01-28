@@ -109,11 +109,14 @@ export default function ResetPassword() {
   const isFormValid = allFieldsFilled && allPasswordValid;
 
   const getValidationItem = (condition, label) => (
-    <div className="flex items-center gap-2 text-sm">
+    <div className="flex items-center gap-2 text-xs md:text-sm">
       {condition ? (
-        <FaCheckCircle style={{ color: "#4CAF50" }} />
+        <FaCheckCircle
+          className="w-3 h-3 md:w-4 md:h-4"
+          style={{ color: "#4CAF50" }}
+        />
       ) : (
-        <FaTimesCircle className="text-gray-400" />
+        <FaTimesCircle className="w-3 h-3 md:w-4 md:h-4 text-gray-400" />
       )}
       <span style={condition ? { color: "#4CAF50" } : { color: "#9E9E9E" }}>
         {label}
@@ -215,7 +218,7 @@ export default function ResetPassword() {
 
         {/* Hero Header */}
         <div
-          className="relative py-16 px-4"
+          className="relative py-8 md:py-16 px-4"
           style={{
             background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
           }}
@@ -226,29 +229,29 @@ export default function ResetPassword() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               onClick={() => navigate("/login")}
-              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              className="absolute top-4 md:top-6 left-4 md:left-6 bg-white/20 backdrop-blur-sm rounded-full p-2 md:p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
               style={{
                 boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
               }}
             >
               <FaArrowLeft
-                size={20}
-                className="group-hover:-translate-x-1 transition-transform"
+                size={16}
+                className="md:w-5 md:h-5 group-hover:-translate-x-1 transition-transform"
               />
             </motion.button>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center pt-8"
+              className="text-center pt-6 md:pt-8"
             >
-              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
-                <FaLock className="text-white text-4xl" />
+              <div className="inline-flex items-center justify-center p-3 md:p-4 rounded-xl md:rounded-2xl bg-white/20 backdrop-blur-sm mb-4 md:mb-6">
+                <FaLock className="text-white text-2xl md:text-4xl" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-2 md:mb-4">
                 إعادة تعيين كلمة المرور
               </h1>
-              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+              <p className="text-white/80 text-sm md:text-lg lg:text-xl max-w-2xl mx-auto px-2">
                 أدخل كلمة المرور الجديدة أدناه
               </p>
             </motion.div>
@@ -257,19 +260,19 @@ export default function ResetPassword() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10">
-        <div className="w-full max-w-md mx-auto">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6 md:py-8 -mt-8 md:-mt-10 relative z-10">
+        <div className="w-full max-w-md mx-auto px-2 sm:px-0">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="w-full bg-white rounded-3xl shadow-xl overflow-hidden"
+            className="w-full bg-white rounded-2xl md:rounded-3xl shadow-xl overflow-hidden"
           >
-            <div className="p-8">
+            <div className="p-4 md:p-6 lg:p-8">
               {!loading && message ? (
-                <div className="flex flex-col items-center justify-center py-8 space-y-6">
+                <div className="flex flex-col items-center justify-center py-4 md:py-6 lg:py-8 space-y-4 md:space-y-6">
                   <div
-                    className="rounded-full p-4"
+                    className="rounded-full p-3 md:p-4"
                     style={{
                       background: success
                         ? "linear-gradient(135deg, #4CAF50/20, #2E3E88/20)"
@@ -278,7 +281,7 @@ export default function ResetPassword() {
                   >
                     {success ? (
                       <svg
-                        className="w-16 h-16"
+                        className="w-12 h-12 md:w-16 md:h-16"
                         style={{ color: "#4CAF50" }}
                         fill="none"
                         stroke="currentColor"
@@ -293,7 +296,7 @@ export default function ResetPassword() {
                       </svg>
                     ) : (
                       <svg
-                        className="w-16 h-16"
+                        className="w-12 h-12 md:w-16 md:h-16"
                         style={{ color: "#FF6B6B" }}
                         fill="none"
                         stroke="currentColor"
@@ -310,7 +313,7 @@ export default function ResetPassword() {
                   </div>
 
                   <h2
-                    className="text-2xl font-bold text-center"
+                    className="text-xl md:text-2xl font-bold text-center"
                     style={{
                       background: success
                         ? "linear-gradient(135deg, #2E3E88, #32B9CC)"
@@ -325,7 +328,7 @@ export default function ResetPassword() {
                   </h2>
 
                   <p
-                    className="text-center text-lg leading-relaxed"
+                    className="text-center text-sm md:text-lg leading-relaxed px-2"
                     style={{ color: "#32B9CC" }}
                   >
                     {message}
@@ -336,7 +339,7 @@ export default function ResetPassword() {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => navigate("/login")}
-                      className="mt-4 px-8 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                      className="mt-2 md:mt-4 px-6 py-2.5 md:px-8 md:py-3 rounded-lg md:rounded-xl font-semibold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl text-sm md:text-base"
                       style={{
                         background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
                         color: "white",
@@ -349,17 +352,20 @@ export default function ResetPassword() {
                 </div>
               ) : (
                 <>
-                  <form onSubmit={handleResetPassword} className="space-y-6">
+                  <form
+                    onSubmit={handleResetPassword}
+                    className="space-y-4 md:space-y-6"
+                  >
                     <div>
                       <label
-                        className="block text-sm font-semibold mb-2"
+                        className="block text-xs md:text-sm font-semibold mb-1 md:mb-2"
                         style={{ color: "#2E3E88" }}
                       >
                         كلمة المرور الجديدة
                       </label>
                       <div className="relative group">
                         <FaLock
-                          className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 md:w-5 md:h-5"
                           style={{ color: "#2E3E88" }}
                         />
                         <input
@@ -367,7 +373,7 @@ export default function ResetPassword() {
                           value={newPassword}
                           onChange={(e) => setNewPassword(e.target.value)}
                           placeholder="أدخل كلمة المرور الجديدة"
-                          className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                          className="w-full border border-gray-200 rounded-lg md:rounded-xl pr-10 md:pr-12 pl-4 py-2.5 md:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm md:text-base"
                           style={{
                             background:
                               "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -380,9 +386,9 @@ export default function ResetPassword() {
                           style={{ color: "#32B9CC" }}
                         >
                           {showPassword ? (
-                            <FaEyeSlash size={18} />
+                            <FaEyeSlash className="w-4 h-4 md:w-5 md:h-5" />
                           ) : (
-                            <FaEye size={18} />
+                            <FaEye className="w-4 h-4 md:w-5 md:h-5" />
                           )}
                         </div>
                       </div>
@@ -390,14 +396,14 @@ export default function ResetPassword() {
 
                     <div>
                       <label
-                        className="block text-sm font-semibold mb-2"
+                        className="block text-xs md:text-sm font-semibold mb-1 md:mb-2"
                         style={{ color: "#2E3E88" }}
                       >
                         تأكيد كلمة المرور
                       </label>
                       <div className="relative group">
                         <FaLock
-                          className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 md:w-5 md:h-5"
                           style={{ color: "#2E3E88" }}
                         />
                         <input
@@ -405,7 +411,7 @@ export default function ResetPassword() {
                           value={confirmPassword}
                           onChange={(e) => setConfirmPassword(e.target.value)}
                           placeholder="تأكيد كلمة المرور الجديدة"
-                          className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                          className="w-full border border-gray-200 rounded-lg md:rounded-xl pr-10 md:pr-12 pl-4 py-2.5 md:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm md:text-base"
                           style={{
                             background:
                               "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -420,16 +426,16 @@ export default function ResetPassword() {
                           style={{ color: "#32B9CC" }}
                         >
                           {showConfirmPassword ? (
-                            <FaEyeSlash size={18} />
+                            <FaEyeSlash className="w-4 h-4 md:w-5 md:h-5" />
                           ) : (
-                            <FaEye size={18} />
+                            <FaEye className="w-4 h-4 md:w-5 md:h-5" />
                           )}
                         </div>
                       </div>
                     </div>
 
                     <div
-                      className="p-4 rounded-xl space-y-2"
+                      className="p-3 md:p-4 rounded-lg md:rounded-xl space-y-1 md:space-y-2"
                       style={{
                         background:
                           "linear-gradient(135deg, #2E3E8810, #32B9CC10)",
@@ -437,12 +443,12 @@ export default function ResetPassword() {
                       }}
                     >
                       <p
-                        className="text-sm font-semibold mb-3"
+                        className="text-xs md:text-sm font-semibold mb-2 md:mb-3"
                         style={{ color: "#2E3E88" }}
                       >
                         متطلبات كلمة المرور:
                       </p>
-                      <div className="grid grid-cols-1 gap-2">
+                      <div className="grid grid-cols-1 gap-1 md:gap-2">
                         {getValidationItem(
                           passwordValidations.length,
                           "8 أحرف على الأقل",
@@ -471,7 +477,7 @@ export default function ResetPassword() {
                       whileTap={{ scale: 0.98 }}
                       type="submit"
                       disabled={!isFormValid || loading}
-                      className={`w-full py-3.5 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                      className={`w-full py-2.5 md:py-3.5 rounded-lg md:rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 text-sm md:text-base ${
                         isFormValid
                           ? "shadow-lg hover:shadow-xl cursor-pointer"
                           : "opacity-50 cursor-not-allowed"
@@ -492,34 +498,36 @@ export default function ResetPassword() {
                       {loading ? (
                         <>
                           <div
-                            className="animate-spin rounded-full h-5 w-5 border-b-2 mr-2"
+                            className="animate-spin rounded-full h-4 w-4 md:h-5 md:w-5 border-b-2 mr-1 md:mr-2"
                             style={{ borderColor: "white" }}
                           ></div>
-                          جاري إعادة تعيين كلمة المرور...
+                          <span className="text-xs md:text-sm">
+                            جاري إعادة تعيين كلمة المرور...
+                          </span>
                         </>
                       ) : (
                         <>
-                          <FaLock />
+                          <FaLock className="w-4 h-4 md:w-5 md:h-5" />
                           إعادة تعيين كلمة المرور
                         </>
                       )}
                     </motion.button>
                   </form>
 
-                  <div className="flex space-x-2 justify-center mt-8">
+                  <div className="flex space-x-2 justify-center mt-6 md:mt-8">
                     <div
-                      className="w-3 h-3 rounded-full animate-bounce"
+                      className="w-2 h-2 md:w-3 md:h-3 rounded-full animate-bounce"
                       style={{ backgroundColor: "#2E3E88" }}
                     ></div>
                     <div
-                      className="w-3 h-3 rounded-full animate-bounce"
+                      className="w-2 h-2 md:w-3 md:h-3 rounded-full animate-bounce"
                       style={{
                         backgroundColor: "#32B9CC",
                         animationDelay: "0.2s",
                       }}
                     ></div>
                     <div
-                      className="w-3 h-3 rounded-full animate-bounce"
+                      className="w-2 h-2 md:w-3 md:h-3 rounded-full animate-bounce"
                       style={{
                         backgroundColor: "#2E3E88",
                         animationDelay: "0.4s",

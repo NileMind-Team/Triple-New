@@ -30,8 +30,9 @@ const showMessage = (type, title, text, options = {}) => {
       draggable: true,
       progress: undefined,
       style: {
-        width: "70%",
-        margin: "10px",
+        width: "90%",
+        maxWidth: "350px",
+        margin: "10px auto",
         borderRadius: "12px",
         textAlign: "right",
         fontSize: "14px",
@@ -502,7 +503,7 @@ export default function OrderShiftsManagement() {
       >
         <div className="text-center">
           <div
-            className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+            className="animate-spin rounded-full h-16 w-16 md:h-20 md:w-20 border-4 mx-auto mb-4"
             style={{
               borderTopColor: "#2E3E88",
               borderRightColor: "#32B9CC",
@@ -510,7 +511,10 @@ export default function OrderShiftsManagement() {
               borderLeftColor: "transparent",
             }}
           ></div>
-          <p className="text-lg font-semibold" style={{ color: "#2E3E88" }}>
+          <p
+            className="text-base md:text-lg font-semibold"
+            style={{ color: "#2E3E88" }}
+          >
             جارٍ التحميل...
           </p>
         </div>
@@ -532,40 +536,40 @@ export default function OrderShiftsManagement() {
 
         {/* Hero Header */}
         <div
-          className="relative py-16 px-4"
+          className="relative py-8 md:py-16 px-4"
           style={{
             background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
           }}
         >
-          <div className="max-w-7xl mx-auto">
+          <div className="container mx-auto px-4">
             {/* زر الرجوع */}
             <motion.button
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               onClick={() => navigate(-1)}
-              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              className="absolute top-4 md:top-6 left-4 md:left-6 bg-white/20 backdrop-blur-sm rounded-full p-2 md:p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
               style={{
                 boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
               }}
             >
               <FaArrowLeft
-                size={20}
-                className="group-hover:-translate-x-1 transition-transform"
+                size={18}
+                className="md:text-xl group-hover:-translate-x-1 transition-transform"
               />
             </motion.button>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center pt-8"
+              className="text-center pt-6 md:pt-8"
             >
-              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
-                <FaBusinessTime className="text-white text-4xl" />
+              <div className="inline-flex items-center justify-center p-3 md:p-4 rounded-xl md:rounded-2xl bg-white/20 backdrop-blur-sm mb-4 md:mb-6">
+                <FaBusinessTime className="text-white text-3xl md:text-4xl" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-3 md:mb-4">
                 إدارة الورديات
               </h1>
-              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+              <p className="text-white/80 text-sm md:text-lg lg:text-xl max-w-2xl mx-auto px-2">
                 إدارة ورديات الطلبات بشكل فعال ومنظم
               </p>
             </motion.div>
@@ -574,33 +578,39 @@ export default function OrderShiftsManagement() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 py-8 -mt-10 relative z-10">
+      <div className="container mx-auto px-4 py-6 md:py-8 -mt-6 md:-mt-10 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-2xl overflow-hidden shadow-xl"
+          className="bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-lg md:shadow-xl"
         >
           {/* Card Header */}
           <div
-            className="px-6 py-4 border-b border-gray-100 flex items-center justify-between"
+            className="px-4 md:px-6 py-3 md:py-4 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-2"
             style={{
               background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
             }}
           >
             <div className="flex items-center gap-3">
               <div
-                className="p-3 rounded-xl"
+                className="p-2 md:p-3 rounded-lg md:rounded-xl"
                 style={{
                   background: "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
                 }}
               >
-                <FaClock className="text-xl" style={{ color: "#2E3E88" }} />
+                <FaClock
+                  className="text-lg md:text-xl"
+                  style={{ color: "#2E3E88" }}
+                />
               </div>
               <div>
-                <h3 className="text-lg font-bold" style={{ color: "#2E3E88" }}>
+                <h3
+                  className="text-base md:text-lg font-bold"
+                  style={{ color: "#2E3E88" }}
+                >
                   {activeShift ? "تفاصيل الوردية الحالية" : "بدء وردية جديدة"}
                 </h3>
-                <p className="text-sm" style={{ color: "#32B9CC" }}>
+                <p className="text-xs md:text-sm" style={{ color: "#32B9CC" }}>
                   {activeShift
                     ? "الوردية قيد التشغيل"
                     : "ابدأ وردية جديدة للطلبات"}
@@ -608,9 +618,9 @@ export default function OrderShiftsManagement() {
               </div>
             </div>
             {activeShift && (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 mt-1 md:mt-0">
                 <span
-                  className="px-3 py-1 rounded-full text-xs font-semibold"
+                  className="px-2 md:px-3 py-1 rounded-full text-xs font-semibold"
                   style={
                     activeShift.isActive
                       ? {
@@ -629,7 +639,7 @@ export default function OrderShiftsManagement() {
                 </span>
                 {!activeShift.isActive && (
                   <span
-                    className="px-3 py-1 rounded-full text-xs font-semibold"
+                    className="px-2 md:px-3 py-1 rounded-full text-xs font-semibold"
                     style={{
                       background:
                         "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
@@ -644,45 +654,54 @@ export default function OrderShiftsManagement() {
           </div>
 
           {/* Card Content */}
-          <div className="p-6">
+          <div className="p-4 md:p-6">
             {activeShift ? (
-              <div className="space-y-6">
+              <div className="space-y-4 md:space-y-6">
                 <div
-                  className="p-6 rounded-xl"
+                  className="p-4 md:p-6 rounded-lg md:rounded-xl"
                   style={{
                     background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
                     border: "1px solid #2E3E8820",
                   }}
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div>
-                      <p className="text-sm mb-2" style={{ color: "#32B9CC" }}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    <div className="text-center md:text-right">
+                      <p
+                        className="text-xs md:text-sm mb-1 md:mb-2"
+                        style={{ color: "#32B9CC" }}
+                      >
                         اسم الوردية
                       </p>
                       <p
-                        className="text-xl font-bold"
+                        className="text-lg md:text-xl font-bold break-words"
                         style={{ color: "#2E3E88" }}
                       >
                         {activeShift.name}
                       </p>
                     </div>
-                    <div>
-                      <p className="text-sm mb-2" style={{ color: "#32B9CC" }}>
+                    <div className="text-center md:text-right">
+                      <p
+                        className="text-xs md:text-sm mb-1 md:mb-2"
+                        style={{ color: "#32B9CC" }}
+                      >
                         بدأت منذ
                       </p>
                       <p
-                        className="text-xl font-bold"
+                        className="text-lg md:text-xl font-bold break-words"
                         style={{ color: "#2E3E88" }}
                       >
                         {addTwoHoursAndFormatTo12Hour(activeShift.start)}
                       </p>
                     </div>
-                    <div>
-                      <p className="text-sm mb-2" style={{ color: "#32B9CC" }}>
+                    <div className="text-center md:text-right">
+                      <p
+                        className="text-xs md:text-sm mb-1 md:mb-2"
+                        style={{ color: "#32B9CC" }}
+                      >
                         حالة الوردية
                       </p>
                       <p
-                        className="text-xl font-bold"
+                        className="text-lg md:text-xl font-bold"
                         style={{ color: "#2E3E88" }}
                       >
                         {activeShift.isActive ? "مفعلة" : "معطلة"}
@@ -691,12 +710,12 @@ export default function OrderShiftsManagement() {
                   </div>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3 md:space-y-4">
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={handleToggleShiftStatus}
-                    className={`w-full py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-3 ${
+                    className={`w-full py-3 md:py-4 rounded-lg md:rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 md:gap-3 ${
                       activeShift.isActive
                         ? "shadow-lg hover:shadow-xl cursor-pointer"
                         : "shadow-lg hover:shadow-xl cursor-pointer"
@@ -717,13 +736,17 @@ export default function OrderShiftsManagement() {
                   >
                     {activeShift.isActive ? (
                       <>
-                        <FaPause />
-                        تعطيل الوردية
+                        <FaPause className="text-sm md:text-base" />
+                        <span className="text-sm md:text-base">
+                          تعطيل الوردية
+                        </span>
                       </>
                     ) : (
                       <>
-                        <FaPlayCircle />
-                        تفعيل الوردية
+                        <FaPlayCircle className="text-sm md:text-base" />
+                        <span className="text-sm md:text-base">
+                          تفعيل الوردية
+                        </span>
                       </>
                     )}
                   </motion.button>
@@ -732,28 +755,30 @@ export default function OrderShiftsManagement() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={handleEndShift}
-                    className="w-full py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl cursor-pointer"
+                    className="w-full py-3 md:py-4 rounded-lg md:rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 md:gap-3 shadow-lg hover:shadow-xl cursor-pointer"
                     style={{
                       background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
                       color: "white",
                     }}
                   >
-                    <FaStop />
-                    إنهاء الوردية الحالية
+                    <FaStop className="text-sm md:text-base" />
+                    <span className="text-sm md:text-base">
+                      إنهاء الوردية الحالية
+                    </span>
                   </motion.button>
                 </div>
               </div>
             ) : (
-              <div className="space-y-6">
+              <div className="space-y-4 md:space-y-6">
                 <div>
                   <label
-                    className="block text-sm font-semibold mb-4"
+                    className="block text-sm md:text-base font-semibold mb-3 md:mb-4"
                     style={{ color: "#2E3E88" }}
                   >
                     نوع الوردية
                   </label>
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-3 md:space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
                       {shiftTypes.map((type) => (
                         <button
                           key={type.value}
@@ -765,7 +790,7 @@ export default function OrderShiftsManagement() {
                               customName: "",
                             })
                           }
-                          className={`p-4 rounded-xl border transition-all duration-200 ${
+                          className={`p-3 md:p-4 rounded-lg md:rounded-xl border transition-all duration-200 ${
                             formData.name === type.value
                               ? "shadow-lg"
                               : "hover:shadow-md"
@@ -786,7 +811,9 @@ export default function OrderShiftsManagement() {
                                 }
                           }
                         >
-                          {type.label}
+                          <span className="text-sm md:text-base">
+                            {type.label}
+                          </span>
                         </button>
                       ))}
                     </div>
@@ -801,7 +828,7 @@ export default function OrderShiftsManagement() {
                             customName: formData.customName || "",
                           })
                         }
-                        className={`w-full p-4 rounded-xl border transition-all duration-200 ${
+                        className={`w-full p-3 md:p-4 rounded-lg md:rounded-xl border transition-all duration-200 ${
                           formData.name === "custom"
                             ? "shadow-lg"
                             : "hover:shadow-md"
@@ -822,7 +849,7 @@ export default function OrderShiftsManagement() {
                               }
                         }
                       >
-                        اسم مخصص
+                        <span className="text-sm md:text-base">اسم مخصص</span>
                       </button>
 
                       {formData.name === "custom" && (
@@ -830,7 +857,7 @@ export default function OrderShiftsManagement() {
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: "auto" }}
                           transition={{ duration: 0.3 }}
-                          className="mt-4"
+                          className="mt-3 md:mt-4"
                         >
                           <div className="relative group">
                             <input
@@ -839,7 +866,7 @@ export default function OrderShiftsManagement() {
                               value={formData.customName}
                               onChange={handleInputChange}
                               required
-                              className="w-full rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 border"
+                              className="w-full rounded-lg md:rounded-xl px-3 md:px-4 py-2.5 md:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 border text-sm md:text-base"
                               style={{
                                 background:
                                   "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -856,13 +883,13 @@ export default function OrderShiftsManagement() {
                   </div>
                 </div>
 
-                <div className="flex gap-4 pt-2">
+                <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-2">
                   <motion.button
                     type="button"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={resetForm}
-                    className="flex-1 py-3.5 rounded-xl font-semibold transition-all duration-300 border-2"
+                    className="py-2.5 md:py-3.5 rounded-lg md:rounded-xl font-semibold transition-all duration-300 border-2 text-sm md:text-base"
                     style={{
                       borderColor: "#2E3E88",
                       color: "#2E3E88",
@@ -877,7 +904,7 @@ export default function OrderShiftsManagement() {
                     whileTap={{ scale: 0.98 }}
                     onClick={handleStartShift}
                     disabled={!isFormValid() || !canUserStartShift}
-                    className={`flex-1 py-3.5 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                    className={`py-2.5 md:py-3.5 rounded-lg md:rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 text-sm md:text-base ${
                       isFormValid() && canUserStartShift
                         ? "shadow-lg hover:shadow-xl cursor-pointer"
                         : "opacity-50 cursor-not-allowed"
@@ -895,10 +922,12 @@ export default function OrderShiftsManagement() {
                           }
                     }
                   >
-                    <FaPlay />
-                    {!canUserStartShift
-                      ? "غير مسموح ببدء الوردية"
-                      : "بدء الوردية"}
+                    <FaPlay className="text-sm md:text-base" />
+                    <span>
+                      {!canUserStartShift
+                        ? "غير مسموح ببدء الوردية"
+                        : "بدء الوردية"}
+                    </span>
                   </motion.button>
                 </div>
               </div>

@@ -816,7 +816,7 @@ export default function ItemOffersManagement() {
       >
         <div className="text-center">
           <div
-            className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+            className="animate-spin rounded-full h-16 w-16 md:h-20 md:w-20 border-4 mx-auto mb-4"
             style={{
               borderTopColor: "#2E3E88",
               borderRightColor: "#32B9CC",
@@ -824,7 +824,10 @@ export default function ItemOffersManagement() {
               borderLeftColor: "transparent",
             }}
           ></div>
-          <p className="text-lg font-semibold" style={{ color: "#2E3E88" }}>
+          <p
+            className="text-base md:text-lg font-semibold"
+            style={{ color: "#2E3E88" }}
+          >
             جارٍ تحميل العروض...
           </p>
         </div>
@@ -850,24 +853,23 @@ export default function ItemOffersManagement() {
 
         {/* Hero Header */}
         <div
-          className="relative py-16 px-4"
+          className="relative py-12 md:py-16 px-4"
           style={{
             background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
           }}
         >
           <div className="max-w-7xl mx-auto">
-            {/* زر الرجوع */}
             <motion.button
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               onClick={() => navigate(-1)}
-              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              className="absolute top-4 left-4 md:top-6 md:left-6 bg-white/20 backdrop-blur-sm rounded-full p-2 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
               style={{
                 boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
               }}
             >
               <FaArrowLeft
-                size={20}
+                size={18}
                 className="group-hover:-translate-x-1 transition-transform"
               />
             </motion.button>
@@ -875,15 +877,15 @@ export default function ItemOffersManagement() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center pt-8"
+              className="text-center pt-8 md:pt-10"
             >
-              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
-                <FaTag className="text-white text-4xl" />
+              <div className="inline-flex items-center justify-center p-3 md:p-4 rounded-xl md:rounded-2xl bg-white/20 backdrop-blur-sm mb-4 md:mb-6">
+                <FaTag className="text-white text-2xl md:text-4xl" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-3 md:mb-4 px-2">
                 عروض العناصر
               </h1>
-              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+              <p className="text-white/80 text-sm md:text-lg lg:text-xl max-w-2xl mx-auto px-2">
                 إدارة وتنظيم العروض والخصومات على المنتجات
               </p>
             </motion.div>
@@ -892,7 +894,7 @@ export default function ItemOffersManagement() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6 md:py-8 -mt-8 md:-mt-10 relative z-10">
         {/* Floating Action Button */}
         <motion.button
           initial={{ opacity: 0, scale: 0 }}
@@ -900,10 +902,13 @@ export default function ItemOffersManagement() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleAddNewOffer}
-          className="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-2 group"
+          className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-40 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white p-3 md:p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-2 group"
+          style={{
+            fontSize: "14px",
+          }}
         >
-          <FaPlus className="text-xl group-hover:rotate-90 transition-transform" />
-          <span className="hidden md:inline font-semibold">إنشاء عرض جديد</span>
+          <FaPlus className="text-lg md:text-xl group-hover:rotate-90 transition-transform" />
+          <span className="hidden sm:inline font-semibold">إنشاء عرض جديد</span>
         </motion.button>
 
         {/* Content Container */}
@@ -912,31 +917,34 @@ export default function ItemOffersManagement() {
           <div>
             {offers.length === 0 ? (
               <div className="w-full">
-                <div className="bg-white rounded-2xl p-8 text-center shadow-xl">
+                <div className="bg-white rounded-xl md:rounded-2xl p-6 md:p-8 text-center shadow-xl">
                   <div
-                    className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center"
+                    className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full mx-auto mb-4 md:mb-6 flex items-center justify-center"
                     style={{
                       background:
                         "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
                     }}
                   >
-                    <FaTag className="text-4xl" style={{ color: "#2E3E88" }} />
+                    <FaTag
+                      className="text-2xl md:text-3xl lg:text-4xl"
+                      style={{ color: "#2E3E88" }}
+                    />
                   </div>
                   <h3
-                    className="text-2xl font-bold mb-3"
+                    className="text-xl md:text-2xl font-bold mb-2 md:mb-3"
                     style={{ color: "#2E3E88" }}
                   >
                     لا توجد عروض حتى الآن
                   </h3>
                   <p
-                    className="mb-6 max-w-md mx-auto"
+                    className="mb-4 md:mb-6 max-w-md mx-auto text-sm md:text-base"
                     style={{ color: "#32B9CC" }}
                   >
                     قم بإنشاء أول عرض للبدء في إدارة الخصومات
                   </p>
                   <button
                     onClick={handleAddNewOffer}
-                    className="px-8 py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                    className="px-6 py-2.5 md:px-8 md:py-3 rounded-lg md:rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl text-sm md:text-base"
                     style={{
                       background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
                       color: "white",
@@ -948,46 +956,46 @@ export default function ItemOffersManagement() {
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 md:gap-6">
                 {offers.map((offer, index) => (
                   <motion.div
                     key={offer.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col"
+                    className="bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1 md:hover:-translate-y-2 flex flex-col"
                     style={{
                       borderTop: "4px solid #2E3E88",
                     }}
                   >
-                    <div className="p-6 flex-grow">
+                    <div className="p-4 md:p-6 flex-grow">
                       {/* Header */}
-                      <div className="flex justify-between items-start mb-6">
-                        <div className="flex items-center gap-3">
-                          <div className="p-3 rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                      <div className="flex justify-between items-start mb-4 md:mb-6">
+                        <div className="flex items-center gap-2 md:gap-3">
+                          <div className="p-2 md:p-3 rounded-lg md:rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
                             {offer.isPercentage ? (
                               <FaPercent
-                                className="text-2xl"
+                                className="text-lg md:text-xl lg:text-2xl"
                                 style={{ color: "#2E3E88" }}
                               />
                             ) : (
                               <FaMoneyBillWave
-                                className="text-2xl"
+                                className="text-lg md:text-xl lg:text-2xl"
                                 style={{ color: "#2E3E88" }}
                               />
                             )}
                           </div>
-                          <div>
+                          <div className="flex-1 min-w-0">
                             <h4
-                              className="font-bold text-xl mb-1"
+                              className="font-bold text-base md:text-lg lg:text-xl mb-1 truncate"
                               style={{ color: "#2E3E88" }}
                             >
                               {offer.menuItem?.name ||
                                 `عنصر #${offer.menuItemId}`}
                             </h4>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1 md:gap-2 flex-wrap">
                               <span
-                                className="px-3 py-1 rounded-full text-sm font-semibold"
+                                className="px-2 py-1 rounded-full text-xs font-semibold whitespace-nowrap"
                                 style={{
                                   background: getStatusColor(offer) + "20",
                                   color: getStatusColor(offer),
@@ -997,7 +1005,7 @@ export default function ItemOffersManagement() {
                               </span>
                               {offer.menuItem?.basePrice === 0 && (
                                 <span
-                                  className="px-3 py-1 rounded-full text-sm font-semibold"
+                                  className="px-2 py-1 rounded-full text-xs font-semibold whitespace-nowrap"
                                   style={{
                                     background: "#FF8E5320",
                                     color: "#FF8E53",
@@ -1012,10 +1020,10 @@ export default function ItemOffersManagement() {
                       </div>
 
                       {/* Offer Details */}
-                      <div className="space-y-4 mb-6">
-                        <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-3 md:space-y-4 mb-4 md:mb-6">
+                        <div className="grid grid-cols-2 gap-3 md:gap-4">
                           <div
-                            className="flex items-center gap-3 p-3 rounded-xl"
+                            className="flex items-center gap-2 md:gap-3 p-2 md:p-3 rounded-lg md:rounded-xl"
                             style={{
                               background:
                                 "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -1023,7 +1031,7 @@ export default function ItemOffersManagement() {
                             }}
                           >
                             <div
-                              className="p-2 rounded-lg"
+                              className="p-1.5 md:p-2 rounded-md md:rounded-lg"
                               style={{
                                 background:
                                   "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
@@ -1031,25 +1039,25 @@ export default function ItemOffersManagement() {
                             >
                               {offer.isPercentage ? (
                                 <FaPercent
-                                  className="text-lg"
+                                  className="text-base md:text-lg"
                                   style={{ color: "#2E3E88" }}
                                 />
                               ) : (
                                 <FaMoneyBillWave
-                                  className="text-lg"
+                                  className="text-base md:text-lg"
                                   style={{ color: "#2E3E88" }}
                                 />
                               )}
                             </div>
-                            <div>
+                            <div className="min-w-0">
                               <p
-                                className="text-xs mb-1"
+                                className="text-xs mb-1 truncate"
                                 style={{ color: "#32B9CC" }}
                               >
                                 قيمة الخصم
                               </p>
                               <p
-                                className="font-bold"
+                                className="font-bold text-sm md:text-base truncate"
                                 style={{ color: "#2E3E88" }}
                               >
                                 {offer.isPercentage
@@ -1060,7 +1068,7 @@ export default function ItemOffersManagement() {
                           </div>
 
                           <div
-                            className="flex items-center gap-3 p-3 rounded-xl"
+                            className="flex items-center gap-2 md:gap-3 p-2 md:p-3 rounded-lg md:rounded-xl"
                             style={{
                               background:
                                 "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -1068,26 +1076,26 @@ export default function ItemOffersManagement() {
                             }}
                           >
                             <div
-                              className="p-2 rounded-lg"
+                              className="p-1.5 md:p-2 rounded-md md:rounded-lg"
                               style={{
                                 background:
                                   "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
                               }}
                             >
                               <FaHamburger
-                                className="text-lg"
+                                className="text-base md:text-lg"
                                 style={{ color: "#2E3E88" }}
                               />
                             </div>
-                            <div>
+                            <div className="min-w-0">
                               <p
-                                className="text-xs mb-1"
+                                className="text-xs mb-1 truncate"
                                 style={{ color: "#32B9CC" }}
                               >
                                 السعر الأصلي
                               </p>
                               <p
-                                className="font-bold"
+                                className="font-bold text-sm md:text-base truncate"
                                 style={{ color: "#2E3E88" }}
                               >
                                 {offer.menuItem?.basePrice === 0 ? (
@@ -1102,26 +1110,29 @@ export default function ItemOffersManagement() {
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-3 md:gap-4">
                           <div
-                            className="p-3 rounded-xl"
+                            className="p-2 md:p-3 rounded-lg md:rounded-xl"
                             style={{
                               background:
                                 "linear-gradient(135deg, #f8f9ff, #ffffff)",
                               border: "1px solid #2E3E8820",
                             }}
                           >
-                            <div className="flex items-center gap-2 mb-2">
-                              <FaCalendarAlt style={{ color: "#2E3E88" }} />
+                            <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2">
+                              <FaCalendarAlt
+                                className="text-sm md:text-base"
+                                style={{ color: "#2E3E88" }}
+                              />
                               <p
-                                className="text-xs font-semibold"
+                                className="text-xs font-semibold truncate"
                                 style={{ color: "#2E3E88" }}
                               >
                                 من
                               </p>
                             </div>
                             <p
-                              className="text-sm font-bold"
+                              className="text-xs md:text-sm font-bold truncate"
                               style={{ color: "#32B9CC" }}
                             >
                               {formatDateTime(offer.startDate)}
@@ -1129,24 +1140,27 @@ export default function ItemOffersManagement() {
                           </div>
 
                           <div
-                            className="p-3 rounded-xl"
+                            className="p-2 md:p-3 rounded-lg md:rounded-xl"
                             style={{
                               background:
                                 "linear-gradient(135deg, #f8f9ff, #ffffff)",
                               border: "1px solid #2E3E8820",
                             }}
                           >
-                            <div className="flex items-center gap-2 mb-2">
-                              <FaCalendarAlt style={{ color: "#2E3E88" }} />
+                            <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2">
+                              <FaCalendarAlt
+                                className="text-sm md:text-base"
+                                style={{ color: "#2E3E88" }}
+                              />
                               <p
-                                className="text-xs font-semibold"
+                                className="text-xs font-semibold truncate"
                                 style={{ color: "#2E3E88" }}
                               >
                                 إلى
                               </p>
                             </div>
                             <p
-                              className="text-sm font-bold"
+                              className="text-xs md:text-sm font-bold truncate"
                               style={{ color: "#32B9CC" }}
                             >
                               {formatDateTime(offer.endDate)}
@@ -1156,24 +1170,27 @@ export default function ItemOffersManagement() {
                       </div>
 
                       {/* Branches */}
-                      <div className="mb-6">
-                        <div className="flex items-center gap-2 mb-3">
-                          <FaStore style={{ color: "#2E3E88" }} />
+                      <div className="mb-4 md:mb-6">
+                        <div className="flex items-center gap-1 md:gap-2 mb-2 md:mb-3">
+                          <FaStore
+                            className="text-sm md:text-base"
+                            style={{ color: "#2E3E88" }}
+                          />
                           <p
-                            className="text-sm font-semibold"
+                            className="text-xs md:text-sm font-semibold truncate"
                             style={{ color: "#2E3E88" }}
                           >
                             الفروع المطبق عليها
                           </p>
                         </div>
                         {offer.branchNames && offer.branchNames.length > 0 ? (
-                          <div className="flex flex-wrap gap-2">
+                          <div className="flex flex-wrap gap-1.5 md:gap-2">
                             {offer.branchNames
                               .slice(0, 3)
                               .map((branchName, index) => (
                                 <span
                                   key={index}
-                                  className="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1"
+                                  className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 truncate max-w-[120px] md:max-w-none"
                                   style={{
                                     background:
                                       "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
@@ -1185,12 +1202,12 @@ export default function ItemOffersManagement() {
                                     className="text-xs"
                                     style={{ color: "#32B9CC" }}
                                   />
-                                  {branchName}
+                                  <span className="truncate">{branchName}</span>
                                 </span>
                               ))}
                             {offer.branchNames.length > 3 && (
                               <span
-                                className="px-3 py-1.5 rounded-lg text-xs font-medium"
+                                className="px-2 py-1 md:px-3 md:py-1.5 rounded-lg text-xs font-medium whitespace-nowrap"
                                 style={{
                                   background:
                                     "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
@@ -1203,17 +1220,20 @@ export default function ItemOffersManagement() {
                             )}
                           </div>
                         ) : (
-                          <p className="text-sm" style={{ color: "#32B9CC" }}>
+                          <p
+                            className="text-xs md:text-sm truncate"
+                            style={{ color: "#32B9CC" }}
+                          >
                             جميع الفروع
                           </p>
                         )}
                       </div>
 
                       {/* Actions */}
-                      <div className="flex gap-3 pt-6 border-t border-gray-100">
+                      <div className="flex gap-2 md:gap-3 pt-4 md:pt-6 border-t border-gray-100">
                         <button
                           onClick={(e) => handleToggleActive(offer.id, e)}
-                          className="flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 text-sm"
+                          className="flex-1 py-2 md:py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-1 md:gap-2 text-xs md:text-sm"
                           style={{
                             background: offer.isEnabled
                               ? "#FF6B6B10"
@@ -1222,33 +1242,33 @@ export default function ItemOffersManagement() {
                           }}
                         >
                           {offer.isEnabled ? (
-                            <FaTimesCircle />
+                            <FaTimesCircle className="text-sm md:text-base" />
                           ) : (
-                            <FaCheckCircle />
+                            <FaCheckCircle className="text-sm md:text-base" />
                           )}
-                          {offer.isEnabled ? "تعطيل" : "تفعيل"}
+                          <span>{offer.isEnabled ? "تعطيل" : "تفعيل"}</span>
                         </button>
                         <button
                           onClick={() => handleEdit(offer)}
-                          className="flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 text-sm"
+                          className="flex-1 py-2 md:py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-1 md:gap-2 text-xs md:text-sm"
                           style={{
                             background: "#32B9CC10",
                             color: "#32B9CC",
                           }}
                         >
-                          <FaEdit />
-                          تعديل
+                          <FaEdit className="text-sm md:text-base" />
+                          <span>تعديل</span>
                         </button>
                         <button
                           onClick={() => handleDelete(offer.id)}
-                          className="flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 text-sm"
+                          className="flex-1 py-2 md:py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-1 md:gap-2 text-xs md:text-sm"
                           style={{
                             background: "#FF6B6B10",
                             color: "#FF6B6B",
                           }}
                         >
-                          <FaTrash />
-                          حذف
+                          <FaTrash className="text-sm md:text-base" />
+                          <span>حذف</span>
                         </button>
                       </div>
                     </div>
@@ -1267,42 +1287,49 @@ export default function ItemOffersManagement() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col"
+              className="bg-white rounded-2xl md:rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col mx-2"
             >
               {/* Modal Header */}
               <div
-                className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+                className="px-4 md:px-6 py-3 md:py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
                 style={{
                   background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
                 }}
               >
-                <div className="flex items-center gap-3">
-                  {editingId ? <FaEdit /> : <FaPlus />}
-                  <h3 className="text-lg font-bold text-white">
+                <div className="flex items-center gap-2 md:gap-3">
+                  {editingId ? (
+                    <FaEdit className="text-sm md:text-base" />
+                  ) : (
+                    <FaPlus className="text-sm md:text-base" />
+                  )}
+                  <h3 className="text-base md:text-lg font-bold text-white">
                     {editingId ? "تعديل العرض" : "إنشاء عرض جديد"}
                   </h3>
                 </div>
                 <button
                   onClick={resetForm}
-                  className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
+                  className="p-1.5 md:p-2 rounded-full hover:bg-white/20 text-white transition-colors"
                 >
-                  <FaTimes size={16} />
+                  <FaTimes size={14} className="md:size-4" />
                 </button>
               </div>
 
               {/* Form Content */}
-              <div className="flex-1 overflow-y-auto p-6">
-                <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="flex-1 overflow-y-auto p-4 md:p-6">
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-3 md:space-y-4"
+                >
                   {/* Menu Item Dropdown */}
                   <div>
                     <label
-                      className="block text-sm font-semibold mb-2"
+                      className="block text-sm font-semibold mb-1.5 md:mb-2"
                       style={{ color: "#2E3E88" }}
                     >
                       العنصر
@@ -1323,18 +1350,18 @@ export default function ItemOffersManagement() {
                           }
                         }}
                         disabled={editingId !== null}
-                        className="w-full flex items-center justify-between border border-gray-200 rounded-xl px-4 py-3.5 transition-all hover:border-[#2E3E88] group text-right disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full flex items-center justify-between border border-gray-200 rounded-lg md:rounded-xl px-3 md:px-4 py-2.5 md:py-3.5 transition-all hover:border-[#2E3E88] group text-right disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
                         style={{
                           background:
                             "linear-gradient(135deg, #f8f9ff, #ffffff)",
                         }}
                       >
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 md:gap-3">
                           <FaHamburger
-                            className="group-hover:scale-110 transition-transform"
+                            className="group-hover:scale-110 transition-transform text-sm md:text-base"
                             style={{ color: "#2E3E88" }}
                           />
-                          <span className="font-medium">
+                          <span className="font-medium truncate text-right">
                             {formData.menuItemId
                               ? (() => {
                                   const selectedItem = menuItems.find(
@@ -1365,11 +1392,14 @@ export default function ItemOffersManagement() {
                         >
                           {loadingItems ? (
                             <FaSpinner
-                              className="animate-spin"
+                              className="animate-spin text-sm md:text-base"
                               style={{ color: "#2E3E88" }}
                             />
                           ) : (
-                            <FaChevronDown style={{ color: "#2E3E88" }} />
+                            <FaChevronDown
+                              className="text-sm md:text-base"
+                              style={{ color: "#2E3E88" }}
+                            />
                           )}
                         </motion.div>
                       </button>
@@ -1380,25 +1410,25 @@ export default function ItemOffersManagement() {
                             initial={{ opacity: 0, y: -5 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -5 }}
-                            className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-xl overflow-hidden max-h-64 overflow-y-auto"
+                            className="absolute z-10 mt-1 md:mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-lg md:rounded-xl overflow-hidden max-h-48 md:max-h-64 overflow-y-auto"
                           >
                             {loadingItems ? (
-                              <div className="flex items-center justify-center py-4">
+                              <div className="flex items-center justify-center py-3 md:py-4">
                                 <FaSpinner
-                                  className="animate-spin text-lg"
+                                  className="animate-spin text-base md:text-lg mr-1 md:mr-2"
                                   style={{ color: "#2E3E88" }}
                                 />
                                 <span
-                                  className="mr-2"
+                                  className="text-sm md:text-base"
                                   style={{ color: "#2E3E88" }}
                                 >
                                   جاري تحميل العناصر...
                                 </span>
                               </div>
                             ) : menuItems.length === 0 ? (
-                              <div className="px-4 py-3 text-center">
+                              <div className="px-3 md:px-4 py-2 md:py-3 text-center">
                                 <p
-                                  className="text-sm"
+                                  className="text-xs md:text-sm"
                                   style={{ color: "#32B9CC" }}
                                 >
                                   {editingId
@@ -1418,16 +1448,16 @@ export default function ItemOffersManagement() {
                                       );
                                       setOpenDropdown(null);
                                     }}
-                                    className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 cursor-pointer transition-all border-b last:border-b-0 text-right"
+                                    className="px-3 md:px-4 py-2 md:py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 cursor-pointer transition-all border-b last:border-b-0 text-right text-sm md:text-base"
                                   >
                                     <div
-                                      className="font-medium"
+                                      className="font-medium truncate"
                                       style={{ color: "#2E3E88" }}
                                     >
                                       {item.name}
                                     </div>
                                     <div
-                                      className="text-xs mt-1"
+                                      className="text-xs mt-0.5 md:mt-1 truncate"
                                       style={{ color: "#32B9CC" }}
                                     >
                                       {item.basePrice === 0
@@ -1455,16 +1485,16 @@ export default function ItemOffersManagement() {
                   </div>
 
                   {/* Discount Type and Value */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                     <div>
                       <label
-                        className="block text-sm font-semibold mb-2"
+                        className="block text-sm font-semibold mb-1.5 md:mb-2"
                         style={{ color: "#2E3E88" }}
                       >
                         نوع الخصم
                       </label>
-                      <div className="space-y-2">
-                        <label className="flex items-center gap-2 cursor-pointer">
+                      <div className="space-y-1.5 md:space-y-2">
+                        <label className="flex items-center gap-2 cursor-pointer text-sm md:text-base">
                           <input
                             type="radio"
                             name="isPercentage"
@@ -1478,7 +1508,7 @@ export default function ItemOffersManagement() {
                             نسبة مئوية (%)
                           </span>
                         </label>
-                        <label className="flex items-center gap-2 cursor-pointer">
+                        <label className="flex items-center gap-2 cursor-pointer text-sm md:text-base">
                           <input
                             type="radio"
                             name="isPercentage"
@@ -1500,7 +1530,7 @@ export default function ItemOffersManagement() {
 
                     <div>
                       <label
-                        className="block text-sm font-semibold mb-2"
+                        className="block text-sm font-semibold mb-1.5 md:mb-2"
                         style={{ color: "#2E3E88" }}
                       >
                         قيمة الخصم
@@ -1508,12 +1538,12 @@ export default function ItemOffersManagement() {
                       <div className="relative group">
                         {formData.isPercentage ? (
                           <FaPercent
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm md:text-base"
                             style={{ color: "#2E3E88" }}
                           />
                         ) : (
                           <FaMoneyBillWave
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm md:text-base"
                             style={{ color: "#2E3E88" }}
                           />
                         )}
@@ -1526,7 +1556,7 @@ export default function ItemOffersManagement() {
                           min="0"
                           max={formData.isPercentage ? "100" : ""}
                           step={formData.isPercentage ? "1" : "0.01"}
-                          className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                          className="w-full border border-gray-200 rounded-lg md:rounded-xl pr-10 md:pr-12 pl-3 md:pl-4 py-2.5 md:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm md:text-base"
                           style={{
                             background:
                               "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -1539,17 +1569,17 @@ export default function ItemOffersManagement() {
                   </div>
 
                   {/* Start Date and Time */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                     <div>
                       <label
-                        className="block text-sm font-semibold mb-2"
+                        className="block text-sm font-semibold mb-1.5 md:mb-2"
                         style={{ color: "#2E3E88" }}
                       >
                         تاريخ البداية
                       </label>
                       <div className="relative group">
                         <FaCalendarAlt
-                          className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm md:text-base"
                           style={{ color: "#2E3E88" }}
                         />
                         <input
@@ -1558,7 +1588,7 @@ export default function ItemOffersManagement() {
                           value={formData.startDate}
                           onChange={handleInputChange}
                           required
-                          className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                          className="w-full border border-gray-200 rounded-lg md:rounded-xl pr-10 md:pr-12 pl-3 md:pl-4 py-2.5 md:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm md:text-base"
                           style={{
                             background:
                               "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -1569,14 +1599,14 @@ export default function ItemOffersManagement() {
                     </div>
                     <div>
                       <label
-                        className="block text-sm font-semibold mb-2"
+                        className="block text-sm font-semibold mb-1.5 md:mb-2"
                         style={{ color: "#2E3E88" }}
                       >
                         وقت البداية
                       </label>
                       <div className="relative group">
                         <FaClock
-                          className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm md:text-base"
                           style={{ color: "#2E3E88" }}
                         />
                         <input
@@ -1584,7 +1614,7 @@ export default function ItemOffersManagement() {
                           name="startTime"
                           value={formData.startTime}
                           onChange={handleInputChange}
-                          className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                          className="w-full border border-gray-200 rounded-lg md:rounded-xl pr-10 md:pr-12 pl-3 md:pl-4 py-2.5 md:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm md:text-base"
                           style={{
                             background:
                               "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -1596,17 +1626,17 @@ export default function ItemOffersManagement() {
                   </div>
 
                   {/* End Date and Time */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                     <div>
                       <label
-                        className="block text-sm font-semibold mb-2"
+                        className="block text-sm font-semibold mb-1.5 md:mb-2"
                         style={{ color: "#2E3E88" }}
                       >
                         تاريخ النهاية
                       </label>
                       <div className="relative group">
                         <FaCalendarAlt
-                          className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm md:text-base"
                           style={{ color: "#2E3E88" }}
                         />
                         <input
@@ -1616,7 +1646,7 @@ export default function ItemOffersManagement() {
                           onChange={handleInputChange}
                           required
                           min={formData.startDate}
-                          className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                          className="w-full border border-gray-200 rounded-lg md:rounded-xl pr-10 md:pr-12 pl-3 md:pl-4 py-2.5 md:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm md:text-base"
                           style={{
                             background:
                               "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -1627,14 +1657,14 @@ export default function ItemOffersManagement() {
                     </div>
                     <div>
                       <label
-                        className="block text-sm font-semibold mb-2"
+                        className="block text-sm font-semibold mb-1.5 md:mb-2"
                         style={{ color: "#2E3E88" }}
                       >
                         وقت النهاية
                       </label>
                       <div className="relative group">
                         <FaClock
-                          className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm md:text-base"
                           style={{ color: "#2E3E88" }}
                         />
                         <input
@@ -1642,7 +1672,7 @@ export default function ItemOffersManagement() {
                           name="endTime"
                           value={formData.endTime}
                           onChange={handleInputChange}
-                          className="w-full border border-gray-200 rounded-xl pr-12 pl-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                          className="w-full border border-gray-200 rounded-lg md:rounded-xl pr-10 md:pr-12 pl-3 md:pl-4 py-2.5 md:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm md:text-base"
                           style={{
                             background:
                               "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -1656,31 +1686,36 @@ export default function ItemOffersManagement() {
                   {/* Branches */}
                   <div>
                     <label
-                      className="block text-sm font-semibold mb-2"
+                      className="block text-sm font-semibold mb-1.5 md:mb-2"
                       style={{ color: "#2E3E88" }}
                     >
                       الفروع المطبق عليها
                     </label>
                     <div
-                      className="border border-gray-200 rounded-xl p-4 max-h-48 overflow-y-auto"
+                      className="border border-gray-200 rounded-lg md:rounded-xl p-3 md:p-4 max-h-40 md:max-h-48 overflow-y-auto"
                       style={{
                         background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
                       }}
                     >
                       {branches.length === 0 ? (
-                        <div className="text-center py-4">
+                        <div className="text-center py-3 md:py-4">
                           <FaStore
-                            className="mx-auto text-2xl mb-2"
+                            className="mx-auto text-lg md:text-xl lg:text-2xl mb-1 md:mb-2"
                             style={{ color: "#2E3E88" }}
                           />
-                          <p style={{ color: "#32B9CC" }}>لا توجد فروع متاحة</p>
+                          <p
+                            className="text-sm md:text-base"
+                            style={{ color: "#32B9CC" }}
+                          >
+                            لا توجد فروع متاحة
+                          </p>
                         </div>
                       ) : (
-                        <div className="space-y-2">
+                        <div className="space-y-1.5 md:space-y-2">
                           {branches.map((branch) => (
                             <label
                               key={branch.id}
-                              className="flex items-center gap-3 cursor-pointer p-2 hover:bg-gray-50 rounded-lg transition-colors duration-200"
+                              className="flex items-center gap-2 md:gap-3 cursor-pointer p-1.5 md:p-2 hover:bg-gray-50 rounded-md md:rounded-lg transition-colors duration-200 text-sm md:text-base"
                             >
                               <input
                                 type="checkbox"
@@ -1690,11 +1725,17 @@ export default function ItemOffersManagement() {
                                 onChange={() => handleBranchesChange(branch.id)}
                                 style={{ accentColor: "#2E3E88" }}
                               />
-                              <div className="flex items-center gap-2 flex-1 justify-between">
-                                <span style={{ color: "#2E3E88" }}>
+                              <div className="flex items-center gap-1.5 md:gap-2 flex-1 justify-between">
+                                <span
+                                  className="truncate"
+                                  style={{ color: "#2E3E88" }}
+                                >
                                   {branch.name}
                                 </span>
-                                <FaStore style={{ color: "#32B9CC" }} />
+                                <FaStore
+                                  className="text-sm md:text-base"
+                                  style={{ color: "#32B9CC" }}
+                                />
                               </div>
                             </label>
                           ))}
@@ -1711,7 +1752,7 @@ export default function ItemOffersManagement() {
 
                   {/* Active Status */}
                   <div
-                    className="flex items-center gap-3 p-3 rounded-xl"
+                    className="flex items-center gap-2 md:gap-3 p-2.5 md:p-3 rounded-lg md:rounded-xl"
                     style={{
                       background:
                         "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
@@ -1725,19 +1766,22 @@ export default function ItemOffersManagement() {
                       onChange={handleInputChange}
                       style={{ accentColor: "#2E3E88" }}
                     />
-                    <label style={{ color: "#2E3E88" }}>
+                    <label
+                      className="text-sm md:text-base"
+                      style={{ color: "#2E3E88" }}
+                    >
                       نشط (متاح للاستخدام)
                     </label>
                   </div>
 
                   {/* Form Actions */}
-                  <div className="flex gap-3 pt-4">
+                  <div className="flex gap-2 md:gap-3 pt-3 md:pt-4">
                     <motion.button
                       type="button"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={resetForm}
-                      className="flex-1 py-3.5 border-2 rounded-xl font-semibold transition-all duration-300"
+                      className="flex-1 py-2.5 md:py-3.5 border-2 rounded-lg md:rounded-xl font-semibold transition-all duration-300 text-sm md:text-base"
                       style={{
                         borderColor: "#2E3E88",
                         color: "#2E3E88",
@@ -1755,7 +1799,7 @@ export default function ItemOffersManagement() {
                         formData.branchesIds.length === 0 ||
                         isSubmitting
                       }
-                      className={`flex-1 py-3.5 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                      className={`flex-1 py-2.5 md:py-3.5 rounded-lg md:rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-1.5 md:gap-2 text-sm md:text-base ${
                         isFormValid() &&
                         formData.branchesIds.length > 0 &&
                         !isSubmitting
@@ -1779,12 +1823,12 @@ export default function ItemOffersManagement() {
                     >
                       {isSubmitting ? (
                         <>
-                          <FaSpinner className="animate-spin" />
+                          <FaSpinner className="animate-spin text-sm md:text-base" />
                           جاري الحفظ...
                         </>
                       ) : (
                         <>
-                          <FaSave />
+                          <FaSave className="text-sm md:text-base" />
                           {editingId ? "تحديث" : "إنشاء"}
                         </>
                       )}

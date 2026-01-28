@@ -278,7 +278,7 @@ export default function Reviews() {
     size = "sm",
   ) => {
     return (
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-0.5 sm:gap-1">
         {[1, 2, 3, 4, 5].map((star) => (
           <button
             key={star}
@@ -292,7 +292,9 @@ export default function Reviews() {
           >
             <FaStar
               className={`${
-                size === "lg" ? "text-base sm:text-lg" : "text-xs sm:text-sm"
+                size === "lg"
+                  ? "text-sm sm:text-base md:text-lg"
+                  : "text-xs sm:text-sm"
               } transition-colors duration-200`}
             />
           </button>
@@ -321,7 +323,7 @@ export default function Reviews() {
       >
         <div className="text-center">
           <div
-            className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+            className="animate-spin rounded-full h-16 w-16 sm:h-20 sm:w-20 border-4 mx-auto mb-4"
             style={{
               borderTopColor: "#2E3E88",
               borderRightColor: "#32B9CC",
@@ -329,7 +331,10 @@ export default function Reviews() {
               borderLeftColor: "transparent",
             }}
           ></div>
-          <p className="text-lg font-semibold" style={{ color: "#2E3E88" }}>
+          <p
+            className="text-base sm:text-lg font-semibold"
+            style={{ color: "#2E3E88" }}
+          >
             جارٍ تحميل التقييمات...
           </p>
         </div>
@@ -351,36 +356,36 @@ export default function Reviews() {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/80 to-white"></div>
 
         {/* Hero Header */}
-        <div className="relative bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] py-16 px-4">
+        <div className="relative bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] py-8 md:py-16 px-4">
           <div className="max-w-7xl mx-auto">
             {/* زر الرجوع */}
             <motion.button
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               onClick={() => navigate(-1)}
-              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              className="absolute top-4 md:top-6 left-4 md:left-6 bg-white/20 backdrop-blur-sm rounded-full p-2 md:p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
               style={{
                 boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
               }}
             >
               <FaArrowLeft
-                size={20}
-                className="group-hover:-translate-x-1 transition-transform"
+                size={16}
+                className="md:w-5 md:h-5 group-hover:-translate-x-1 transition-transform"
               />
             </motion.button>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center pt-8"
+              className="text-center pt-6 md:pt-8"
             >
-              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
-                <FaStar className="text-white text-4xl" />
+              <div className="inline-flex items-center justify-center p-3 md:p-4 rounded-xl md:rounded-2xl bg-white/20 backdrop-blur-sm mb-4 md:mb-6">
+                <FaStar className="text-white text-2xl md:text-4xl" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-2 md:mb-4">
                 تقييماتي
               </h1>
-              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+              <p className="text-white/80 text-sm md:text-lg lg:text-xl max-w-2xl mx-auto px-2">
                 شارك تجربتك مع فروعنا وساعد الآخرين في اختيار الأفضل
               </p>
             </motion.div>
@@ -389,7 +394,7 @@ export default function Reviews() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6 md:py-8 -mt-8 md:-mt-10 relative z-10">
         {/* Floating Action Button */}
         <motion.button
           initial={{ opacity: 0, scale: 0 }}
@@ -397,10 +402,10 @@ export default function Reviews() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleAddNewReview}
-          className="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-2 group"
+          className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white p-3 sm:p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center gap-2 group"
         >
-          <FaPlus className="text-xl group-hover:rotate-90 transition-transform" />
-          <span className="hidden md:inline font-semibold">
+          <FaPlus className="text-lg sm:text-xl group-hover:rotate-90 transition-transform" />
+          <span className="hidden sm:inline font-semibold text-sm md:text-base">
             إضافة تقييم جديد
           </span>
         </motion.button>
@@ -411,25 +416,28 @@ export default function Reviews() {
           <div>
             {reviews.length === 0 ? (
               <div className="w-full">
-                <div className="bg-white rounded-2xl p-8 text-center shadow-xl">
-                  <div className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
-                    <FaStar className="text-4xl" style={{ color: "#2E3E88" }} />
+                <div className="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 lg:p-8 text-center shadow-xl">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full mx-auto mb-4 md:mb-6 flex items-center justify-center bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                    <FaStar
+                      className="text-2xl sm:text-3xl md:text-4xl"
+                      style={{ color: "#2E3E88" }}
+                    />
                   </div>
                   <h3
-                    className="text-2xl font-bold mb-3"
+                    className="text-lg sm:text-xl md:text-2xl font-bold mb-2 md:mb-3"
                     style={{ color: "#2E3E88" }}
                   >
                     لا توجد تقييمات حتى الآن
                   </h3>
                   <p
-                    className="mb-6 max-w-md mx-auto"
+                    className="mb-4 md:mb-6 max-w-md mx-auto text-sm md:text-base"
                     style={{ color: "#32B9CC" }}
                   >
                     شارك تجربتك مع فروعنا من خلال إضافة أول تقييم لك
                   </p>
                   <button
                     onClick={handleAddNewReview}
-                    className="px-8 py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                    className="px-6 py-2.5 md:px-8 md:py-3 rounded-lg md:rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl text-sm md:text-base"
                     style={{
                       background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                       color: "white",
@@ -441,7 +449,7 @@ export default function Reviews() {
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 {reviews.map((review, index) => (
                   <motion.div
                     key={review.id}
@@ -449,33 +457,33 @@ export default function Reviews() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
                     onClick={() => handleReviewClick(review)}
-                    className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col cursor-pointer"
+                    className="bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col cursor-pointer"
                     style={{
                       borderTop: "4px solid #2E3E88",
-                      minHeight: "200px",
+                      minHeight: "180px",
                     }}
                   >
-                    <div className="p-6 flex-grow">
+                    <div className="p-4 md:p-6 flex-grow">
                       {/* Header */}
-                      <div className="flex justify-between items-start mb-4">
-                        <div className="flex items-center gap-3">
-                          <div className="p-3 rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                      <div className="flex justify-between items-start mb-3 md:mb-4">
+                        <div className="flex items-center gap-2 md:gap-3">
+                          <div className="p-2 md:p-3 rounded-lg md:rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
                             <FaStore
-                              className="text-xl"
+                              className="text-lg md:text-xl"
                               style={{ color: "#2E3E88" }}
                             />
                           </div>
-                          <div>
+                          <div className="max-w-[150px] sm:max-w-[180px]">
                             <h4
-                              className="font-bold text-lg"
+                              className="font-bold text-base md:text-lg truncate"
                               style={{ color: "#2E3E88" }}
                             >
                               {review.branchName}
                             </h4>
-                            <div className="flex items-center gap-2 mt-1">
+                            <div className="flex items-center gap-1 md:gap-2 mt-1">
                               <div className="flex items-center gap-1">
                                 {renderStars(review.rating)}
-                                <span className="text-sm text-gray-600">
+                                <span className="text-xs md:text-sm text-gray-600">
                                   ({review.rating}/5)
                                 </span>
                               </div>
@@ -485,24 +493,24 @@ export default function Reviews() {
                       </div>
 
                       {/* Review Preview */}
-                      <div className="space-y-3 mb-6">
-                        <div className="flex items-start gap-3">
+                      <div className="space-y-2 md:space-y-3 mb-4 md:mb-6">
+                        <div className="flex items-start gap-2 md:gap-3">
                           <FaCommentAlt
-                            className="mt-1 flex-shrink-0"
+                            className="mt-0.5 md:mt-1 flex-shrink-0 text-sm md:text-base"
                             style={{ color: "#2E3E88" }}
                           />
-                          <p className="text-gray-700 line-clamp-3">
+                          <p className="text-gray-700 text-xs md:text-sm line-clamp-3 flex-1">
                             {review.comment}
                           </p>
                         </div>
 
                         {review.createdAt && (
-                          <div className="flex items-start gap-3">
+                          <div className="flex items-start gap-2 md:gap-3">
                             <FaCalendarAlt
-                              className="mt-1 flex-shrink-0"
+                              className="mt-0.5 md:mt-1 flex-shrink-0 text-sm md:text-base"
                               style={{ color: "#2E3E88" }}
                             />
-                            <span className="text-sm text-gray-500">
+                            <span className="text-xs md:text-sm text-gray-500">
                               {formatDate(review.createdAt)}
                             </span>
                           </div>
@@ -510,19 +518,19 @@ export default function Reviews() {
                       </div>
 
                       {/* Action Buttons */}
-                      <div className="flex gap-3 pt-4 border-t border-gray-100">
+                      <div className="flex gap-2 md:gap-3 pt-3 md:pt-4 border-t border-gray-100">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             handleEdit(review);
                           }}
-                          className="flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
+                          className="flex-1 py-2 md:py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-1 md:gap-2 text-xs md:text-sm"
                           style={{
                             background: "#32B9CC10",
                             color: "#32B9CC",
                           }}
                         >
-                          <FaEdit />
+                          <FaEdit className="w-3 h-3 md:w-4 md:h-4" />
                           تعديل
                         </button>
                         <button
@@ -530,13 +538,13 @@ export default function Reviews() {
                             e.stopPropagation();
                             handleDelete(review.id);
                           }}
-                          className="flex-1 py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
+                          className="flex-1 py-2 md:py-2.5 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-1 md:gap-2 text-xs md:text-sm"
                           style={{
                             background: "#FF6B6B10",
                             color: "#FF6B6B",
                           }}
                         >
-                          <FaTrash />
+                          <FaTrash className="w-3 h-3 md:w-4 md:h-4" />
                           حذف
                         </button>
                       </div>
@@ -556,42 +564,49 @@ export default function Reviews() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-white rounded-3xl w-full max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
+              className="bg-white rounded-xl md:rounded-2xl lg:rounded-3xl w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col mx-2"
             >
               {/* Modal Header */}
               <div
-                className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+                className="px-4 md:px-6 py-3 md:py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
                 style={{
                   background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                 }}
               >
-                <div className="flex items-center gap-3">
-                  {editingId ? <FaEdit /> : <FaPlus />}
-                  <h3 className="text-lg font-bold text-white">
+                <div className="flex items-center gap-2 md:gap-3">
+                  {editingId ? (
+                    <FaEdit className="text-sm md:text-base" />
+                  ) : (
+                    <FaPlus className="text-sm md:text-base" />
+                  )}
+                  <h3 className="text-sm md:text-lg font-bold text-white">
                     {editingId ? "تعديل التقييم" : "إضافة تقييم جديد"}
                   </h3>
                 </div>
                 <button
                   onClick={resetForm}
-                  className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
+                  className="p-1.5 md:p-2 rounded-full hover:bg-white/20 text-white transition-colors"
                 >
-                  <FaTimes size={16} />
+                  <FaTimes size={14} className="md:w-4 md:h-4" />
                 </button>
               </div>
 
               {/* Form Content */}
-              <div className="flex-1 overflow-y-auto p-6">
-                <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="flex-1 overflow-y-auto p-4 md:p-6">
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-3 md:space-y-4"
+                >
                   {/* Branch Dropdown */}
                   <div>
                     <label
-                      className="block text-sm font-semibold mb-2"
+                      className="block text-xs md:text-sm font-semibold mb-1 md:mb-2"
                       style={{ color: "#2E3E88" }}
                     >
                       الفرع
@@ -600,14 +615,14 @@ export default function Reviews() {
                       <button
                         type="button"
                         onClick={() => toggleDropdown("branch")}
-                        className="w-full flex items-center justify-between border border-gray-200 rounded-xl px-4 py-3.5 transition-all hover:border-[#2E3E88] group text-right"
+                        className="w-full flex items-center justify-between border border-gray-200 rounded-lg md:rounded-xl px-3 md:px-4 py-2.5 md:py-3.5 transition-all hover:border-[#2E3E88] group text-right text-sm md:text-base"
                         style={{
                           background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
                         }}
                       >
-                        <div className="flex items-center gap-3">
-                          <FaStore className="text-[#2E3E88] group-hover:scale-110 transition-transform" />
-                          <span className="font-medium">
+                        <div className="flex items-center gap-2 md:gap-3">
+                          <FaStore className="text-[#2E3E88] group-hover:scale-110 transition-transform w-4 h-4 md:w-5 md:h-5" />
+                          <span className="font-medium truncate max-w-[150px] sm:max-w-full">
                             {formData.branchId
                               ? branches.find(
                                   (b) => b.id === parseInt(formData.branchId),
@@ -621,7 +636,7 @@ export default function Reviews() {
                           }}
                           transition={{ duration: 0.3 }}
                         >
-                          <FaChevronDown className="text-[#2E3E88]" />
+                          <FaChevronDown className="text-[#2E3E88] w-3 h-3 md:w-4 md:h-4" />
                         </motion.div>
                       </button>
                       <AnimatePresence>
@@ -630,7 +645,7 @@ export default function Reviews() {
                             initial={{ opacity: 0, y: -5 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -5 }}
-                            className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto"
+                            className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-lg md:rounded-xl overflow-hidden max-h-32 sm:max-h-48 overflow-y-auto"
                           >
                             {branches.map((branch) => (
                               <li
@@ -642,7 +657,7 @@ export default function Reviews() {
                                   });
                                   setOpenDropdown(null);
                                 }}
-                                className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b last:border-b-0"
+                                className="px-3 md:px-4 py-2 md:py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b last:border-b-0 text-sm md:text-base"
                               >
                                 {branch.name}
                               </li>
@@ -656,19 +671,19 @@ export default function Reviews() {
                   {/* Rating */}
                   <div>
                     <label
-                      className="block text-sm font-semibold mb-2"
+                      className="block text-xs md:text-sm font-semibold mb-1 md:mb-2"
                       style={{ color: "#2E3E88" }}
                     >
                       التقييم
                     </label>
-                    <div className="flex items-center justify-between gap-4 bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 p-4 rounded-xl border border-[#2E3E88]/20">
-                      <div className="flex items-center gap-2">
-                        <FaStar className="text-yellow-500" />
-                        <span className="font-medium text-gray-700">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 md:gap-4 bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 p-3 md:p-4 rounded-lg md:rounded-xl border border-[#2E3E88]/20">
+                      <div className="flex items-center gap-1 md:gap-2">
+                        <FaStar className="text-yellow-500 w-4 h-4 md:w-5 md:h-5" />
+                        <span className="font-medium text-gray-700 text-sm md:text-base">
                           التقييم العام:
                         </span>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 md:gap-2">
                         {renderStars(
                           formData.rating,
                           true,
@@ -676,7 +691,7 @@ export default function Reviews() {
                           "lg",
                         )}
                         <span
-                          className="font-semibold"
+                          className="font-semibold text-sm md:text-base"
                           style={{ color: "#2E3E88" }}
                         >
                           ({formData.rating}/5)
@@ -688,7 +703,7 @@ export default function Reviews() {
                   {/* Comment */}
                   <div>
                     <label
-                      className="block text-sm font-semibold mb-2"
+                      className="block text-xs md:text-sm font-semibold mb-1 md:mb-2"
                       style={{ color: "#2E3E88" }}
                     >
                       تقييمك
@@ -698,8 +713,8 @@ export default function Reviews() {
                       value={formData.comment}
                       onChange={handleInputChange}
                       required
-                      rows="5"
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 resize-none"
+                      rows="4"
+                      className="w-full border border-gray-200 rounded-lg md:rounded-xl px-3 md:px-4 py-2.5 md:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 resize-none text-sm md:text-base"
                       style={{
                         background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
                       }}
@@ -709,13 +724,13 @@ export default function Reviews() {
                   </div>
 
                   {/* Form Actions */}
-                  <div className="flex gap-3 pt-4">
+                  <div className="flex gap-2 md:gap-3 pt-3 md:pt-4">
                     <motion.button
                       type="button"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={resetForm}
-                      className="flex-1 py-3.5 border-2 rounded-xl font-semibold transition-all duration-300"
+                      className="flex-1 py-2.5 md:py-3.5 border-2 rounded-lg md:rounded-xl font-semibold transition-all duration-300 text-sm md:text-base"
                       style={{
                         borderColor: "#2E3E88",
                         color: "#2E3E88",
@@ -729,7 +744,7 @@ export default function Reviews() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       disabled={!isFormValid()}
-                      className={`flex-1 py-3.5 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                      className={`flex-1 py-2.5 md:py-3.5 rounded-lg md:rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-1 md:gap-2 text-sm md:text-base ${
                         isFormValid()
                           ? "shadow-lg hover:shadow-xl cursor-pointer"
                           : "opacity-50 cursor-not-allowed"
@@ -746,7 +761,7 @@ export default function Reviews() {
                             }
                       }
                     >
-                      <FaCheck />
+                      <FaCheck className="w-4 h-4 md:w-5 md:h-5" />
                       {editingId ? "تحديث التقييم" : "حفظ التقييم"}
                     </motion.button>
                   </div>
@@ -764,60 +779,60 @@ export default function Reviews() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-white rounded-3xl w-full max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
+              className="bg-white rounded-xl md:rounded-2xl lg:rounded-3xl w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col mx-2"
             >
               {/* Modal Header */}
               <div
-                className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+                className="px-4 md:px-6 py-3 md:py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
                 style={{
                   background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                 }}
               >
-                <div className="flex items-center gap-3">
-                  <FaStar className="text-white text-xl" />
-                  <h3 className="text-lg font-bold text-white">
+                <div className="flex items-center gap-2 md:gap-3">
+                  <FaStar className="text-white text-lg md:text-xl" />
+                  <h3 className="text-sm md:text-lg font-bold text-white">
                     تفاصيل التقييم
                   </h3>
                 </div>
                 <button
                   onClick={closeDetailsModal}
-                  className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
+                  className="p-1.5 md:p-2 rounded-full hover:bg-white/20 text-white transition-colors"
                 >
-                  <FaTimes size={16} />
+                  <FaTimes size={14} className="md:w-4 md:h-4" />
                 </button>
               </div>
 
               {/* Modal Content */}
-              <div className="flex-1 overflow-y-auto p-6">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="flex-1 overflow-y-auto p-4 md:p-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
                   {/* Left Column - Review Details */}
-                  <div className="lg:col-span-2 space-y-6">
+                  <div className="lg:col-span-2 space-y-4 md:space-y-6">
                     {/* Branch Info */}
-                    <div className="flex items-start gap-4">
-                      <div className="p-4 rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                    <div className="flex items-start gap-3 md:gap-4">
+                      <div className="p-3 md:p-4 rounded-lg md:rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
                         <FaStore
-                          className="text-2xl"
+                          className="text-xl md:text-2xl"
                           style={{ color: "#2E3E88" }}
                         />
                       </div>
                       <div className="flex-1">
                         <h4
-                          className="text-xl font-bold"
+                          className="text-lg md:text-xl font-bold"
                           style={{ color: "#2E3E88" }}
                         >
                           {selectedReview.branchName}
                         </h4>
-                        <div className="flex items-center gap-2 mt-2">
+                        <div className="flex items-center gap-1 md:gap-2 mt-2">
                           <div className="flex items-center gap-1">
                             {renderStars(selectedReview.rating)}
                           </div>
-                          <span className="font-semibold text-gray-700">
+                          <span className="font-semibold text-gray-700 text-sm md:text-base">
                             ({selectedReview.rating}/5)
                           </span>
                         </div>
@@ -825,16 +840,16 @@ export default function Reviews() {
                     </div>
 
                     {/* Comment */}
-                    <div className="space-y-3">
+                    <div className="space-y-2 md:space-y-3">
                       <h4
-                        className="text-lg font-bold flex items-center gap-2"
+                        className="text-base md:text-lg font-bold flex items-center gap-1 md:gap-2"
                         style={{ color: "#2E3E88" }}
                       >
-                        <FaCommentAlt />
+                        <FaCommentAlt className="w-4 h-4 md:w-5 md:h-5" />
                         التقييم
                       </h4>
-                      <div className="bg-gray-50 rounded-xl p-4">
-                        <p className="text-gray-700 leading-relaxed">
+                      <div className="bg-gray-50 rounded-lg md:rounded-xl p-3 md:p-4">
+                        <p className="text-gray-700 leading-relaxed text-sm md:text-base">
                           {selectedReview.comment}
                         </p>
                       </div>
@@ -842,13 +857,16 @@ export default function Reviews() {
 
                     {/* Date */}
                     {selectedReview.createdAt && (
-                      <div className="flex items-center gap-3">
-                        <FaCalendarAlt style={{ color: "#2E3E88" }} />
+                      <div className="flex items-center gap-2 md:gap-3">
+                        <FaCalendarAlt
+                          className="w-4 h-4 md:w-5 md:h-5"
+                          style={{ color: "#2E3E88" }}
+                        />
                         <div>
-                          <p className="text-sm text-gray-500 mb-1">
+                          <p className="text-xs md:text-sm text-gray-500 mb-1">
                             تاريخ التقييم
                           </p>
-                          <p className="font-medium text-gray-700">
+                          <p className="font-medium text-gray-700 text-sm md:text-base">
                             {formatDate(selectedReview.createdAt)}
                           </p>
                         </div>
@@ -857,25 +875,25 @@ export default function Reviews() {
                   </div>
 
                   {/* Right Column - Actions */}
-                  <div className="space-y-6">
+                  <div className="space-y-4 md:space-y-6">
                     {/* Rating Summary */}
-                    <div className="bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-xl p-4 text-center">
+                    <div className="bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-lg md:rounded-xl p-3 md:p-4 text-center">
                       <h4
-                        className="text-lg font-bold mb-3"
+                        className="text-base md:text-lg font-bold mb-2 md:mb-3"
                         style={{ color: "#2E3E88" }}
                       >
                         التقييم العام
                       </h4>
-                      <div className="flex items-center justify-center gap-1 mb-2">
+                      <div className="flex items-center justify-center gap-1 mb-1 md:mb-2">
                         {renderStars(selectedReview.rating)}
                       </div>
-                      <p className="text-2xl font-bold text-gray-800">
+                      <p className="text-xl md:text-2xl font-bold text-gray-800">
                         {selectedReview.rating} / 5
                       </p>
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="space-y-3">
+                    <div className="space-y-2 md:space-y-3">
                       <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
@@ -883,9 +901,9 @@ export default function Reviews() {
                           closeDetailsModal();
                           handleEdit(selectedReview);
                         }}
-                        className="w-full py-3.5 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+                        className="w-full py-2.5 md:py-3.5 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white rounded-lg md:rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-1 md:gap-2 text-sm md:text-base"
                       >
-                        <FaEdit />
+                        <FaEdit className="w-4 h-4 md:w-5 md:h-5" />
                         تعديل التقييم
                       </motion.button>
 
@@ -896,9 +914,9 @@ export default function Reviews() {
                           closeDetailsModal();
                           handleDelete(selectedReview.id);
                         }}
-                        className="w-full py-3.5 bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] text-white rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+                        className="w-full py-2.5 md:py-3.5 bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] text-white rounded-lg md:rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-1 md:gap-2 text-sm md:text-base"
                       >
-                        <FaTrash />
+                        <FaTrash className="w-4 h-4 md:w-5 md:h-5" />
                         حذف التقييم
                       </motion.button>
                     </div>

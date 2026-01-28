@@ -270,7 +270,7 @@ const Branches = () => {
       >
         <div className="text-center">
           <div
-            className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+            className="animate-spin rounded-full h-16 w-16 sm:h-20 sm:w-20 border-4 mx-auto mb-4"
             style={{
               borderTopColor: "#2E3E88",
               borderRightColor: "#32B9CC",
@@ -278,7 +278,10 @@ const Branches = () => {
               borderLeftColor: "transparent",
             }}
           ></div>
-          <p className="text-lg font-semibold" style={{ color: "#2E3E88" }}>
+          <p
+            className="text-base sm:text-lg font-semibold"
+            style={{ color: "#2E3E88" }}
+          >
             جارٍ تحميل الفروع...
           </p>
         </div>
@@ -300,36 +303,36 @@ const Branches = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/80 to-white"></div>
 
         {/* Hero Header */}
-        <div className="relative bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] py-16 px-4">
+        <div className="relative bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] py-12 sm:py-16 px-4 sm:px-6">
           <div className="max-w-7xl mx-auto">
-            {/* زر الرجوع */}
+            {/* زر الرجوع - في الشمال (اليسار) */}
             <motion.button
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               onClick={() => navigate(-1)}
-              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              className="absolute top-4 left-4 sm:top-6 sm:left-6 lg:left-8 bg-white/20 backdrop-blur-sm rounded-full p-2 sm:p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
               style={{
                 boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
               }}
             >
               <FaArrowLeft
-                size={20}
-                className="group-hover:-translate-x-1 transition-transform"
+                size={16}
+                className="sm:w-5 sm:h-5 group-hover:-translate-x-1 transition-transform"
               />
             </motion.button>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center pt-8"
+              className="text-center pt-6 sm:pt-8"
             >
-              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
-                <FaBuilding className="text-white text-4xl" />
+              <div className="inline-flex items-center justify-center p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-sm mb-4 sm:mb-6">
+                <FaBuilding className="text-white text-2xl sm:text-3xl md:text-4xl" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4">
                 فروعنا
               </h1>
-              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+              <p className="text-white/80 text-sm sm:text-base md:text-lg lg:text-xl max-w-2xl mx-auto px-2">
                 اكتشف فروعنا القريبة منك وتعرّف على تفاصيل كل فرع وتقييمات
                 العملاء
               </p>
@@ -339,27 +342,27 @@ const Branches = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8 -mt-6 sm:-mt-8 md:-mt-10 relative z-10">
         {/* Content Container */}
         <div className="w-full">
           {/* Branches List */}
           {branches.length === 0 ? (
             <div className="w-full">
-              <div className="bg-white rounded-2xl p-8 text-center shadow-xl">
-                <div className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+              <div className="bg-white rounded-xl sm:rounded-2xl p-6 sm:p-8 text-center shadow-xl">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full mx-auto mb-4 sm:mb-6 flex items-center justify-center bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
                   <FaBuilding
-                    className="text-4xl"
+                    className="text-2xl sm:text-3xl md:text-4xl"
                     style={{ color: "#2E3E88" }}
                   />
                 </div>
                 <h3
-                  className="text-2xl font-bold mb-3"
+                  className="text-xl sm:text-2xl md:text-2xl font-bold mb-2 sm:mb-3"
                   style={{ color: "#2E3E88" }}
                 >
                   لا توجد فروع حتى الآن
                 </h3>
                 <p
-                  className="mb-6 max-w-md mx-auto"
+                  className="text-sm sm:text-base mb-4 sm:mb-6 max-w-md mx-auto"
                   style={{ color: "#32B9CC" }}
                 >
                   لا توجد فروع متاحة حالياً
@@ -367,7 +370,7 @@ const Branches = () => {
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
               {branches.map((branch, index) => (
                 <motion.div
                   key={branch.id}
@@ -376,33 +379,33 @@ const Branches = () => {
                   transition={{ delay: index * 0.1 }}
                   whileHover={{ y: -5 }}
                   onClick={() => handleBranchClick(branch)}
-                  className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col h-full"
+                  className="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col h-full"
                   style={{
                     borderTop: branch.isActive
                       ? "4px solid #2E3E88"
                       : "4px solid #FF6B6B",
                   }}
                 >
-                  <div className="p-6 flex-grow">
+                  <div className="p-4 sm:p-5 md:p-6 flex-grow">
                     {/* Header */}
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="p-3 rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                    <div className="flex justify-between items-start mb-3 sm:mb-4">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
                           <FaBuilding
-                            className="text-xl"
+                            className="text-base sm:text-lg md:text-xl"
                             style={{ color: "#2E3E88" }}
                           />
                         </div>
-                        <div>
+                        <div className="flex-1 min-w-0">
                           <h4
-                            className="font-bold text-lg"
+                            className="font-bold text-sm sm:text-base md:text-lg truncate"
                             style={{ color: "#2E3E88" }}
                           >
                             {branch.name}
                           </h4>
-                          <div className="flex items-center gap-2 mt-1">
+                          <div className="flex flex-wrap items-center gap-1 sm:gap-2 mt-1">
                             <div
-                              className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(branch.status, branch.isActive)}`}
+                              className={`px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs font-semibold ${getStatusColor(branch.status, branch.isActive)}`}
                             >
                               {getStatusText(branch.status)}
                             </div>
@@ -415,49 +418,55 @@ const Branches = () => {
                         </div>
                       </div>
                       <div
-                        className="p-2 rounded-full"
+                        className="p-1 sm:p-2 rounded-full flex-shrink-0"
                         style={{ color: "#2E3E88" }}
                       >
-                        <FaEye />
+                        <FaEye className="text-sm sm:text-base" />
                       </div>
                     </div>
 
                     {/* Branch Details */}
-                    <div className="space-y-3">
-                      <div className="flex items-start gap-3">
+                    <div className="space-y-2 sm:space-y-3">
+                      <div className="flex items-start gap-2 sm:gap-3">
                         <FaCity
-                          className="mt-1 flex-shrink-0"
+                          className="mt-0.5 sm:mt-1 flex-shrink-0 text-sm sm:text-base"
                           style={{ color: "#2E3E88" }}
                         />
-                        <div>
-                          <span className="text-sm text-gray-500">المدينة</span>
-                          <p className="font-medium">{branch.city?.name}</p>
+                        <div className="flex-1 min-w-0">
+                          <span className="text-xs sm:text-sm text-gray-500">
+                            المدينة
+                          </span>
+                          <p className="font-medium text-sm sm:text-base truncate">
+                            {branch.city?.name}
+                          </p>
                         </div>
                       </div>
 
-                      <div className="flex items-start gap-3">
+                      <div className="flex items-start gap-2 sm:gap-3">
                         <FaMapMarkerAlt
-                          className="mt-1 flex-shrink-0"
+                          className="mt-0.5 sm:mt-1 flex-shrink-0 text-sm sm:text-base"
                           style={{ color: "#2E3E88" }}
                         />
-                        <div className="flex-1">
-                          <span className="text-sm text-gray-500">العنوان</span>
-                          <p className="font-medium text-gray-700 line-clamp-2">
+                        <div className="flex-1 min-w-0">
+                          <span className="text-xs sm:text-sm text-gray-500">
+                            العنوان
+                          </span>
+                          <p className="font-medium text-gray-700 text-sm sm:text-base line-clamp-2">
                             {branch.address}
                           </p>
                         </div>
                       </div>
 
-                      <div className="flex items-start gap-3">
+                      <div className="flex items-start gap-2 sm:gap-3">
                         <FaClock
-                          className="mt-1 flex-shrink-0"
+                          className="mt-0.5 sm:mt-1 flex-shrink-0 text-sm sm:text-base"
                           style={{ color: "#2E3E88" }}
                         />
-                        <div>
-                          <span className="text-sm text-gray-500">
+                        <div className="flex-1 min-w-0">
+                          <span className="text-xs sm:text-sm text-gray-500">
                             ساعات العمل
                           </span>
-                          <p className="font-medium">
+                          <p className="font-medium text-sm sm:text-base">
                             {formatTime(branch.openingTime)} -{" "}
                             {formatTime(branch.closingTime)}
                           </p>
@@ -465,11 +474,11 @@ const Branches = () => {
                       </div>
 
                       {branch.rating_Avgarage > 0 && (
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 pt-1">
                           <div className="flex items-center gap-1">
                             {renderStars(branch.rating_Avgarage)}
                           </div>
-                          <span className="text-sm text-gray-600">
+                          <span className="text-xs sm:text-sm text-gray-600">
                             ({branch.rating_Avgarage.toFixed(1)})
                           </span>
                         </div>
@@ -478,15 +487,15 @@ const Branches = () => {
                   </div>
 
                   {/* View Details Button */}
-                  <div className="px-6 pb-6">
+                  <div className="px-4 sm:px-5 md:px-6 pb-4 sm:pb-5 md:pb-6">
                     <button
-                      className="w-full py-3 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg flex items-center justify-center gap-2"
+                      className="w-full py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-sm sm:text-base transition-all duration-300 hover:shadow-lg flex items-center justify-center gap-2"
                       style={{
                         background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                         color: "white",
                       }}
                     >
-                      <FaEye />
+                      <FaEye className="text-xs sm:text-sm" />
                       عرض التفاصيل
                     </button>
                   </div>
@@ -504,64 +513,64 @@ const Branches = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-3 md:p-4 bg-black/60 backdrop-blur-sm"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-white rounded-3xl w-full max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
+              className="bg-white rounded-2xl sm:rounded-3xl w-full max-w-4xl max-h-[90vh] sm:max-h-[85vh] overflow-hidden shadow-2xl flex flex-col mx-2"
             >
               {/* Modal Header */}
               <div
-                className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+                className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
                 style={{
                   background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                 }}
               >
-                <div className="flex items-center gap-3">
-                  <FaBuilding className="text-white text-xl" />
-                  <h3 className="text-lg font-bold text-white">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <FaBuilding className="text-white text-base sm:text-lg md:text-xl" />
+                  <h3 className="text-sm sm:text-base md:text-lg font-bold text-white truncate max-w-[70vw] sm:max-w-none">
                     تفاصيل فرع {selectedBranch.name}
                   </h3>
                 </div>
                 <button
                   onClick={closeDetailsModal}
-                  className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
+                  className="p-1 sm:p-2 rounded-full hover:bg-white/20 text-white transition-colors flex-shrink-0"
                 >
-                  <FaTimes size={16} />
+                  <FaTimes size={14} className="sm:w-4 sm:h-4" />
                 </button>
               </div>
 
               {/* Modal Content */}
-              <div className="flex-1 overflow-y-auto p-6">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="flex-1 overflow-y-auto p-4 sm:p-5 md:p-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
                   {/* Left Column - Main Info */}
-                  <div className="lg:col-span-2 space-y-6">
+                  <div className="lg:col-span-2 space-y-4 sm:space-y-5 md:space-y-6">
                     {/* Branch Status */}
-                    <div className="bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-xl p-4">
-                      <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-lg sm:rounded-xl p-3 sm:p-4">
+                      <div className="grid grid-cols-2 gap-3 sm:gap-4">
                         <div className="text-center">
-                          <p className="text-gray-600 text-sm mb-2">
+                          <p className="text-gray-600 text-xs sm:text-sm mb-1 sm:mb-2">
                             حالة الفرع
                           </p>
-                          <div className="flex items-center justify-center gap-2">
+                          <div className="flex items-center justify-center gap-1 sm:gap-2">
                             {getStatusIcon(
                               selectedBranch.status,
                               selectedBranch.isActive,
                             )}
                             <div
-                              className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusColor(selectedBranch.status, selectedBranch.isActive)}`}
+                              className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-semibold ${getStatusColor(selectedBranch.status, selectedBranch.isActive)}`}
                             >
                               {selectedBranch.isActive ? "نشط" : "غير نشط"}
                             </div>
                           </div>
                         </div>
                         <div className="text-center">
-                          <p className="text-gray-600 text-sm mb-2">
+                          <p className="text-gray-600 text-xs sm:text-sm mb-1 sm:mb-2">
                             ساعات العمل
                           </p>
-                          <p className="font-bold text-gray-800 text-lg">
+                          <p className="font-bold text-gray-800 text-sm sm:text-base md:text-lg">
                             {formatTime(selectedBranch.openingTime)} -{" "}
                             {formatTime(selectedBranch.closingTime)}
                           </p>
@@ -570,21 +579,24 @@ const Branches = () => {
                     </div>
 
                     {/* Address */}
-                    <div className="space-y-3">
+                    <div className="space-y-2 sm:space-y-3">
                       <h4
-                        className="text-lg font-bold flex items-center gap-2"
+                        className="text-base sm:text-lg font-bold flex items-center gap-1 sm:gap-2"
                         style={{ color: "#2E3E88" }}
                       >
-                        <FaMapMarkerAlt />
+                        <FaMapMarkerAlt className="text-sm sm:text-base" />
                         العنوان
                       </h4>
-                      <div className="bg-gray-50 rounded-xl p-4">
-                        <p className="text-gray-700">
+                      <div className="bg-gray-50 rounded-lg sm:rounded-xl p-3 sm:p-4">
+                        <p className="text-gray-700 text-sm sm:text-base">
                           {selectedBranch.address}
                         </p>
-                        <div className="flex items-center gap-2 mt-2">
-                          <FaCity style={{ color: "#2E3E88" }} />
-                          <span className="text-gray-600">
+                        <div className="flex items-center gap-1 sm:gap-2 mt-1 sm:mt-2">
+                          <FaCity
+                            className="text-sm sm:text-base"
+                            style={{ color: "#2E3E88" }}
+                          />
+                          <span className="text-gray-600 text-sm sm:text-base">
                             {selectedBranch.city?.name}
                           </span>
                         </div>
@@ -592,9 +604,9 @@ const Branches = () => {
                     </div>
 
                     {/* Contact Information */}
-                    <div className="space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
                       <h4
-                        className="text-lg font-bold"
+                        className="text-base sm:text-lg font-bold"
                         style={{ color: "#2E3E88" }}
                       >
                         معلومات التواصل
@@ -602,18 +614,18 @@ const Branches = () => {
 
                       {/* Email */}
                       {selectedBranch.email && (
-                        <div className="flex items-start gap-3">
-                          <div className="p-3 rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                        <div className="flex items-start gap-2 sm:gap-3">
+                          <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10 flex-shrink-0">
                             <FaEnvelope
-                              className="text-xl"
+                              className="text-base sm:text-lg md:text-xl"
                               style={{ color: "#2E3E88" }}
                             />
                           </div>
-                          <div className="flex-1">
-                            <p className="text-sm text-gray-500 mb-1">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs sm:text-sm text-gray-500 mb-1">
                               البريد الإلكتروني
                             </p>
-                            <p className="font-medium text-gray-700">
+                            <p className="font-medium text-gray-700 text-sm sm:text-base truncate">
                               {selectedBranch.email}
                             </p>
                           </div>
@@ -623,35 +635,35 @@ const Branches = () => {
                       {/* Phone Numbers */}
                       {selectedBranch.phoneNumbers &&
                         selectedBranch.phoneNumbers.length > 0 && (
-                          <div className="space-y-3">
-                            <div className="flex items-start gap-3">
-                              <div className="p-3 rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                          <div className="space-y-2 sm:space-y-3">
+                            <div className="flex items-start gap-2 sm:gap-3">
+                              <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10 flex-shrink-0">
                                 <FaPhone
-                                  className="text-xl"
+                                  className="text-base sm:text-lg md:text-xl"
                                   style={{ color: "#2E3E88" }}
                                 />
                               </div>
-                              <div className="flex-1">
-                                <p className="text-sm text-gray-500 mb-2">
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs sm:text-sm text-gray-500 mb-1 sm:mb-2">
                                   أرقام الهاتف
                                 </p>
-                                <div className="space-y-2">
+                                <div className="space-y-1 sm:space-y-2">
                                   {selectedBranch.phoneNumbers.map(
                                     (phone, idx) => (
                                       <div
                                         key={idx}
-                                        className="flex items-center justify-between bg-gray-50 rounded-xl p-3"
+                                        className="flex items-center justify-between bg-gray-50 rounded-lg sm:rounded-xl p-2 sm:p-3"
                                       >
-                                        <div className="flex items-center gap-3">
-                                          <span className="font-medium text-gray-700">
+                                        <div className="flex items-center gap-2 sm:gap-3 overflow-hidden">
+                                          <span className="font-medium text-gray-700 text-sm sm:text-base truncate">
                                             {phone.phone}
                                           </span>
-                                          <span className="text-xs bg-gray-200 px-2 py-1 rounded">
+                                          <span className="text-xs bg-gray-200 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded flex-shrink-0">
                                             {getPhoneTypeArabic(phone.type)}
                                           </span>
                                         </div>
                                         {phone.isWhatsapp && (
-                                          <FaWhatsapp className="text-green-500 text-xl" />
+                                          <FaWhatsapp className="text-green-500 text-base sm:text-lg md:text-xl flex-shrink-0" />
                                         )}
                                       </div>
                                     ),
@@ -665,20 +677,20 @@ const Branches = () => {
                   </div>
 
                   {/* Right Column - Map & Rating */}
-                  <div className="space-y-6">
+                  <div className="space-y-4 sm:space-y-5 md:space-y-6">
                     {/* Rating */}
                     {selectedBranch.rating_Avgarage > 0 && (
-                      <div className="bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-xl p-4 text-center">
+                      <div className="bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center">
                         <h4
-                          className="text-lg font-bold mb-3"
+                          className="text-base sm:text-lg font-bold mb-2 sm:mb-3"
                           style={{ color: "#2E3E88" }}
                         >
                           التقييم العام
                         </h4>
-                        <div className="flex items-center justify-center gap-1 mb-2">
+                        <div className="flex items-center justify-center gap-0.5 sm:gap-1 mb-1 sm:mb-2">
                           {renderStars(selectedBranch.rating_Avgarage)}
                         </div>
-                        <p className="text-2xl font-bold text-gray-800">
+                        <p className="text-xl sm:text-2xl font-bold text-gray-800">
                           {selectedBranch.rating_Avgarage.toFixed(1)} / 5
                         </p>
                       </div>
@@ -693,37 +705,43 @@ const Branches = () => {
                           closeDetailsModal();
                           handleViewOnMap(selectedBranch);
                         }}
-                        className="w-full py-4 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 text-lg"
+                        className="w-full py-2.5 sm:py-3 md:py-4 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white rounded-lg sm:rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base"
                       >
-                        <FaMap />
+                        <FaMap className="text-xs sm:text-sm" />
                         <span>عرض الموقع على الخريطة</span>
-                        <FaExternalLinkAlt />
+                        <FaExternalLinkAlt className="text-xs sm:text-sm" />
                       </motion.button>
                     )}
 
                     {/* Reviews Section */}
                     {selectedBranch.reviews &&
                       selectedBranch.reviews.length > 0 && (
-                        <div className="space-y-4">
+                        <div className="space-y-3 sm:space-y-4">
                           <div
-                            className="flex items-center justify-between cursor-pointer p-3 rounded-xl hover:bg-gray-50 transition-colors"
+                            className="flex items-center justify-between cursor-pointer p-2 sm:p-3 rounded-lg sm:rounded-xl hover:bg-gray-50 transition-colors"
                             onClick={() => toggleReviews(selectedBranch.id)}
                           >
                             <h4
-                              className="text-lg font-bold flex items-center gap-2"
+                              className="text-base sm:text-lg font-bold flex items-center gap-1 sm:gap-2"
                               style={{ color: "#2E3E88" }}
                             >
-                              <FaCommentAlt />
-                              تقييمات العملاء
-                              <span className="text-sm font-normal text-gray-600">
+                              <FaCommentAlt className="text-sm sm:text-base" />
+                              <span className="truncate">تقييمات العملاء</span>
+                              <span className="text-xs sm:text-sm font-normal text-gray-600 flex-shrink-0">
                                 ({selectedBranch.reviews.length})
                               </span>
                             </h4>
                             <div>
                               {showReviews[selectedBranch.id] ? (
-                                <FaChevronUp style={{ color: "#2E3E88" }} />
+                                <FaChevronUp
+                                  className="text-sm sm:text-base"
+                                  style={{ color: "#2E3E88" }}
+                                />
                               ) : (
-                                <FaChevronDown style={{ color: "#2E3E88" }} />
+                                <FaChevronDown
+                                  className="text-sm sm:text-base"
+                                  style={{ color: "#2E3E88" }}
+                                />
                               )}
                             </div>
                           </div>
@@ -734,7 +752,7 @@ const Branches = () => {
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: "auto" }}
                                 exit={{ opacity: 0, height: 0 }}
-                                className="space-y-4"
+                                className="space-y-2 sm:space-y-3"
                               >
                                 {selectedBranch.reviews.map((review, index) => (
                                   <motion.div
@@ -742,11 +760,11 @@ const Branches = () => {
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: index * 0.1 }}
-                                    className="bg-gray-50 rounded-xl p-4"
+                                    className="bg-gray-50 rounded-lg sm:rounded-xl p-3"
                                   >
                                     {/* User Info */}
-                                    <div className="flex items-start justify-between gap-3 mb-3">
-                                      <div className="flex items-center gap-3">
+                                    <div className="flex items-start justify-between gap-2 sm:gap-3 mb-2">
+                                      <div className="flex items-center gap-2 sm:gap-3 overflow-hidden">
                                         {/* User Avatar */}
                                         <div className="flex-shrink-0">
                                           {review.user?.imageUrl ? (
@@ -755,7 +773,7 @@ const Branches = () => {
                                                 review.user.imageUrl,
                                               )}
                                               alt={`${review.user?.firstName || ""} ${review.user?.lastName || ""}`}
-                                              className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
+                                              className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full object-cover border-2 border-gray-200"
                                               onError={(e) => {
                                                 e.target.onerror = null;
                                                 e.target.src = "";
@@ -763,19 +781,19 @@ const Branches = () => {
                                               }}
                                             />
                                           ) : (
-                                            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] flex items-center justify-center">
-                                              <FaUserCircle className="text-white text-xl" />
+                                            <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] flex items-center justify-center">
+                                              <FaUserCircle className="text-white text-sm sm:text-base" />
                                             </div>
                                           )}
                                         </div>
 
                                         {/* User Details */}
                                         <div className="flex-1 min-w-0">
-                                          <p className="font-bold text-gray-800">
+                                          <p className="font-bold text-gray-800 text-sm sm:text-base truncate">
                                             {review.user?.firstName}{" "}
                                             {review.user?.lastName}
                                           </p>
-                                          <p className="text-sm text-gray-600 truncate">
+                                          <p className="text-xs sm:text-sm text-gray-600 truncate">
                                             {review.user?.email}
                                           </p>
                                         </div>
@@ -793,13 +811,13 @@ const Branches = () => {
 
                                     {/* Comment */}
                                     {review.comment && (
-                                      <div className="bg-white rounded-lg p-3">
-                                        <div className="flex items-start gap-2">
+                                      <div className="bg-white rounded-md sm:rounded-lg p-2 sm:p-3">
+                                        <div className="flex items-start gap-1 sm:gap-2">
                                           <FaCommentAlt
-                                            className="mt-0.5 flex-shrink-0"
+                                            className="mt-0.5 flex-shrink-0 text-xs sm:text-sm"
                                             style={{ color: "#2E3E88" }}
                                           />
-                                          <p className="text-sm text-gray-700">
+                                          <p className="text-xs sm:text-sm text-gray-700">
                                             {review.comment}
                                           </p>
                                         </div>
@@ -827,48 +845,50 @@ const Branches = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-3 md:p-4 bg-black/60 backdrop-blur-sm"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-white rounded-3xl w-full max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
+              className="bg-white rounded-2xl sm:rounded-3xl w-full max-w-4xl max-h-[90vh] sm:max-h-[85vh] overflow-hidden shadow-2xl flex flex-col mx-2"
             >
               {/* Modal Header */}
               <div
-                className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+                className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
                 style={{
                   background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                 }}
               >
-                <div className="flex items-center gap-3">
-                  <FaGlobeAmericas className="text-white text-xl" />
-                  <h3 className="text-lg font-bold text-white">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <FaGlobeAmericas className="text-white text-base sm:text-lg md:text-xl" />
+                  <h3 className="text-sm sm:text-base md:text-lg font-bold text-white truncate max-w-[70vw] sm:max-w-none">
                     موقع فرع {selectedBranch.name}
                   </h3>
                 </div>
                 <button
                   onClick={closeMapModal}
-                  className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
+                  className="p-1 sm:p-2 rounded-full hover:bg-white/20 text-white transition-colors flex-shrink-0"
                 >
-                  <FaTimes size={16} />
+                  <FaTimes size={14} className="sm:w-4 sm:h-4" />
                 </button>
               </div>
 
               {/* Modal Content */}
-              <div className="flex-1 overflow-y-auto p-6">
-                <div className="mb-6">
-                  <p className="text-gray-600">{selectedBranch.address}</p>
+              <div className="flex-1 overflow-y-auto p-4 sm:p-5 md:p-6">
+                <div className="mb-3 sm:mb-4 md:mb-6">
+                  <p className="text-gray-600 text-sm sm:text-base">
+                    {selectedBranch.address}
+                  </p>
                 </div>
 
                 {selectedBranch.locationUrl ? (
-                  <div className="rounded-2xl overflow-hidden border border-gray-200">
+                  <div className="rounded-lg sm:rounded-xl md:rounded-2xl overflow-hidden border border-gray-200">
                     <iframe
                       src={selectedBranch.locationUrl}
                       width="100%"
-                      height="400"
-                      className="w-full rounded-lg"
+                      height="300"
+                      className="w-full"
                       style={{ border: 0 }}
                       allowFullScreen=""
                       loading="lazy"
@@ -877,10 +897,10 @@ const Branches = () => {
                     />
                   </div>
                 ) : (
-                  <div className="flex items-center justify-center h-64 bg-gradient-to-r from-[#f0f8ff] to-[#e0f7fa] rounded-2xl">
+                  <div className="flex items-center justify-center h-48 sm:h-56 md:h-64 bg-gradient-to-r from-[#f0f8ff] to-[#e0f7fa] rounded-lg sm:rounded-xl md:rounded-2xl">
                     <div className="text-center">
-                      <FaMap className="text-gray-400 text-4xl mx-auto mb-4" />
-                      <p className="text-gray-500">
+                      <FaMap className="text-gray-400 text-3xl sm:text-4xl mx-auto mb-3 sm:mb-4" />
+                      <p className="text-gray-500 text-sm sm:text-base">
                         رابط الخريطة غير متوفر لهذا الفرع
                       </p>
                     </div>

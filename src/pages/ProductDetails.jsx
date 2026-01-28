@@ -442,7 +442,7 @@ const ProductDetails = () => {
     if (product.isPriceBasedOnRequest) {
       return (
         <div
-          className="font-bold text-2xl md:text-3xl"
+          className="font-bold text-xl sm:text-2xl md:text-3xl"
           style={{
             background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
             WebkitBackgroundClip: "text",
@@ -457,11 +457,11 @@ const ProductDetails = () => {
     if (product.itemOffer && product.itemOffer.isEnabled) {
       return (
         <>
-          <div className="text-gray-400 line-through">
+          <div className="text-gray-400 line-through text-base sm:text-lg">
             {toArabicNumbers(product.price)} ج.م
           </div>
           <div
-            className="font-bold text-2xl md:text-3xl"
+            className="font-bold text-xl sm:text-2xl md:text-3xl"
             style={{
               background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
               WebkitBackgroundClip: "text",
@@ -476,7 +476,7 @@ const ProductDetails = () => {
 
     return (
       <div
-        className="font-bold text-2xl md:text-3xl"
+        className="font-bold text-xl sm:text-2xl md:text-3xl"
         style={{
           background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
           WebkitBackgroundClip: "text",
@@ -1107,7 +1107,7 @@ const ProductDetails = () => {
       >
         <div className="text-center">
           <div
-            className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+            className="animate-spin rounded-full h-16 w-16 sm:h-20 sm:w-20 border-4 mx-auto mb-4"
             style={{
               borderTopColor: "#2E3E88",
               borderRightColor: "#32B9CC",
@@ -1115,7 +1115,10 @@ const ProductDetails = () => {
               borderLeftColor: "transparent",
             }}
           ></div>
-          <p className="text-lg font-semibold" style={{ color: "#2E3E88" }}>
+          <p
+            className="text-base sm:text-lg font-semibold"
+            style={{ color: "#2E3E88" }}
+          >
             جارٍ تحميل المنتج...
           </p>
         </div>
@@ -1133,22 +1136,31 @@ const ProductDetails = () => {
       >
         <div className="text-center">
           <div
-            className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center"
+            className="w-16 h-16 sm:w-24 sm:h-24 rounded-full mx-auto mb-4 sm:mb-6 flex items-center justify-center"
             style={{
               background: "linear-gradient(135deg, #2E3E88/10, #32B9CC/10)",
             }}
           >
-            <FaTimes className="text-4xl" style={{ color: "#FF6B6B" }} />
+            <FaTimes
+              className="text-2xl sm:text-4xl"
+              style={{ color: "#FF6B6B" }}
+            />
           </div>
-          <h3 className="text-2xl font-bold mb-3" style={{ color: "#2E3E88" }}>
+          <h3
+            className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3"
+            style={{ color: "#2E3E88" }}
+          >
             المنتج غير موجود
           </h3>
-          <p className="mb-6 max-w-md mx-auto" style={{ color: "#32B9CC" }}>
+          <p
+            className="mb-4 sm:mb-6 max-w-md mx-auto text-sm sm:text-base"
+            style={{ color: "#32B9CC" }}
+          >
             المنتج الذي تبحث عنه غير متوفر أو تم حذفه
           </p>
           <button
             onClick={() => navigate("/")}
-            className="px-8 py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+            className="px-6 py-2 sm:px-8 sm:py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl text-sm sm:text-base"
             style={{
               background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
               color: "white",
@@ -1178,34 +1190,34 @@ const ProductDetails = () => {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl"
+            className="bg-white rounded-2xl sm:rounded-3xl w-full max-w-md overflow-hidden shadow-2xl"
             dir="rtl"
             onClick={(e) => e.stopPropagation()}
           >
             <div
-              className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+              className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
               style={{
                 background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
               }}
             >
-              <div className="flex items-center gap-3">
-                <FaEdit className="text-white" />
-                <h3 className="text-lg font-bold text-white">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <FaEdit className="text-white text-sm sm:text-base" />
+                <h3 className="text-base sm:text-lg font-bold text-white">
                   {editingOption ? "تعديل الخيار" : "إضافة خيار جديد"}
                 </h3>
               </div>
               <button
                 onClick={handleCloseOptionModal}
-                className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
+                className="p-1 sm:p-2 rounded-full hover:bg-white/20 text-white transition-colors"
               >
-                <FaTimes size={16} />
+                <FaTimes size={14} />
               </button>
             </div>
 
-            <div className="p-6 space-y-4">
+            <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
               <div>
                 <label
-                  className="block text-sm font-semibold mb-2"
+                  className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2"
                   style={{ color: "#2E3E88" }}
                 >
                   اسم الخيار *
@@ -1215,7 +1227,7 @@ const ProductDetails = () => {
                   name="name"
                   value={optionForm.name}
                   onChange={handleOptionFormChange}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                  className="w-full border border-gray-200 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm sm:text-base"
                   style={{
                     background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
                   }}
@@ -1227,7 +1239,7 @@ const ProductDetails = () => {
 
               <div>
                 <label
-                  className="block text-sm font-semibold mb-2"
+                  className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2"
                   style={{ color: "#2E3E88" }}
                 >
                   السعر (ج.م)
@@ -1239,7 +1251,7 @@ const ProductDetails = () => {
                   onChange={handleOptionFormChange}
                   min="0"
                   step="0.01"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                  className="w-full border border-gray-200 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm sm:text-base"
                   style={{
                     background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
                   }}
@@ -1249,13 +1261,13 @@ const ProductDetails = () => {
               </div>
             </div>
 
-            <div className="flex gap-3 p-6 border-t border-gray-100">
+            <div className="flex gap-2 sm:gap-3 p-4 sm:p-6 border-t border-gray-100">
               <motion.button
                 type="button"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleCloseOptionModal}
-                className="flex-1 py-3.5 border-2 rounded-xl font-semibold transition-all duration-300"
+                className="flex-1 py-2.5 sm:py-3.5 border-2 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base"
                 style={{
                   borderColor: "#2E3E88",
                   color: "#2E3E88",
@@ -1269,13 +1281,13 @@ const ProductDetails = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleSaveOption}
-                className="flex-1 py-3.5 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl cursor-pointer"
+                className="flex-1 py-2.5 sm:py-3.5 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-1 sm:gap-2 shadow-lg hover:shadow-xl cursor-pointer text-sm sm:text-base"
                 style={{
                   background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
                   color: "white",
                 }}
               >
-                <FaSave />
+                <FaSave className="text-sm" />
                 {editingOption ? "تحديث" : "حفظ"}
               </motion.button>
             </div>
@@ -1291,36 +1303,36 @@ const ProductDetails = () => {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="bg-white rounded-3xl w-full max-w-md max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
+            className="bg-white rounded-2xl sm:rounded-3xl w-full max-w-md max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
             dir="rtl"
             onClick={(e) => e.stopPropagation()}
           >
             <div
-              className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+              className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
               style={{
                 background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
               }}
             >
-              <div className="flex items-center gap-3">
-                <FaLayerGroup className="text-white" />
-                <h3 className="text-lg font-bold text-white">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <FaLayerGroup className="text-white text-sm sm:text-base" />
+                <h3 className="text-base sm:text-lg font-bold text-white">
                   إضافة نوع إضافة جديد
                 </h3>
               </div>
               <button
                 onClick={handleCloseAddonTypeModal}
-                className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
+                className="p-1 sm:p-2 rounded-full hover:bg-white/20 text-white transition-colors"
               >
-                <FaTimes size={16} />
+                <FaTimes size={14} />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6">
-              <div className="space-y-6">
-                <div className="space-y-4">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+              <div className="space-y-4 sm:space-y-6">
+                <div className="space-y-3 sm:space-y-4">
                   <div ref={dropdownRef} className="relative">
                     <label
-                      className="block text-sm font-semibold mb-2"
+                      className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2"
                       style={{ color: "#2E3E88" }}
                     >
                       اختيار نوع الإضافة *
@@ -1330,14 +1342,14 @@ const ProductDetails = () => {
                       onClick={() =>
                         setShowAddonTypeDropdown(!showAddonTypeDropdown)
                       }
-                      className="w-full flex items-center justify-between border border-gray-200 rounded-xl px-4 py-3.5 transition-all hover:border-[#2E3E88] group text-right"
+                      className="w-full flex items-center justify-between border border-gray-200 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3.5 transition-all hover:border-[#2E3E88] group text-right text-sm sm:text-base"
                       style={{
                         background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
                       }}
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2 sm:gap-3">
                         <FaLayerGroup
-                          className="group-hover:scale-110 transition-transform"
+                          className="group-hover:scale-110 transition-transform text-sm sm:text-base"
                           style={{ color: "#2E3E88" }}
                         />
                         <span className="font-medium">
@@ -1361,11 +1373,11 @@ const ProductDetails = () => {
                         initial={{ opacity: 0, y: -5 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -5 }}
-                        className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto"
+                        className="absolute z-10 mt-1 sm:mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-lg sm:rounded-xl overflow-hidden max-h-48 overflow-y-auto"
                       >
                         <li
                           onClick={handleAddNewAddonType}
-                          className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 cursor-pointer transition-all border-b last:border-b-0"
+                          className="px-3 sm:px-4 py-2 sm:py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 cursor-pointer transition-all border-b last:border-b-0 text-sm sm:text-base"
                           style={{ color: "#4CAF50" }}
                         >
                           <span className="font-medium">+ إضافة نوع جديد</span>
@@ -1376,16 +1388,16 @@ const ProductDetails = () => {
                             onClick={() =>
                               handleSelectExistingAddonType(addonType)
                             }
-                            className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 cursor-pointer transition-all border-b last:border-b-0"
+                            className="px-3 sm:px-4 py-2 sm:py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 cursor-pointer transition-all border-b last:border-b-0 text-sm sm:text-base"
                           >
                             <div className="flex items-center justify-between">
                               <span className="text-gray-700">
                                 {addonType.name}
                               </span>
-                              <div className="flex gap-2">
+                              <div className="flex gap-1 sm:gap-2">
                                 {addonType.canSelectMultipleOptions && (
                                   <span
-                                    className="text-xs px-2 py-1 rounded-full"
+                                    className="text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full"
                                     style={{
                                       background:
                                         "linear-gradient(135deg, #2E3E8810, #32B9CC10)",
@@ -1397,7 +1409,7 @@ const ProductDetails = () => {
                                 )}
                                 {addonType.isSelectionRequired && (
                                   <span
-                                    className="text-xs px-2 py-1 rounded-full"
+                                    className="text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full"
                                     style={{
                                       background:
                                         "linear-gradient(135deg, #FF6B6B10, #FF8E5310)",
@@ -1419,7 +1431,7 @@ const ProductDetails = () => {
                     <>
                       <div>
                         <label
-                          className="block text-sm font-semibold mb-2"
+                          className="block text-xs sm:text-sm font-semibold mb-1 sm:mb-2"
                           style={{ color: "#2E3E88" }}
                         >
                           اسم نوع الإضافة الجديد *
@@ -1429,7 +1441,7 @@ const ProductDetails = () => {
                           name="name"
                           value={addonTypeForm.name}
                           onChange={handleAddonTypeFormChange}
-                          className="w-full border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                          className="w-full border border-gray-200 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm sm:text-base"
                           style={{
                             background:
                               "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -1439,39 +1451,39 @@ const ProductDetails = () => {
                         />
                       </div>
 
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-3">
+                      <div className="space-y-2 sm:space-y-3">
+                        <div className="flex items-center gap-2 sm:gap-3">
                           <input
                             type="checkbox"
                             id="canSelectMultipleOptions"
                             name="canSelectMultipleOptions"
                             checked={addonTypeForm.canSelectMultipleOptions}
                             onChange={handleAddonTypeFormChange}
-                            className="w-5 h-5 rounded focus:ring-2 focus:ring-[#2E3E88]"
+                            className="w-4 h-4 sm:w-5 sm:h-5 rounded focus:ring-2 focus:ring-[#2E3E88]"
                             style={{ color: "#2E3E88" }}
                           />
                           <label
                             htmlFor="canSelectMultipleOptions"
-                            className="text-sm font-medium"
+                            className="text-xs sm:text-sm font-medium"
                             style={{ color: "#2E3E88" }}
                           >
                             يمكن اختيار أكثر من خيار
                           </label>
                         </div>
 
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 sm:gap-3">
                           <input
                             type="checkbox"
                             id="isSelectionRequired"
                             name="isSelectionRequired"
                             checked={addonTypeForm.isSelectionRequired}
                             onChange={handleAddonTypeFormChange}
-                            className="w-5 h-5 rounded focus:ring-2 focus:ring-[#2E3E88]"
+                            className="w-4 h-4 sm:w-5 sm:h-5 rounded focus:ring-2 focus:ring-[#2E3E88]"
                             style={{ color: "#2E3E88" }}
                           />
                           <label
                             htmlFor="isSelectionRequired"
-                            className="text-sm font-medium"
+                            className="text-xs sm:text-sm font-medium"
                             style={{ color: "#2E3E88" }}
                           >
                             اختيار إجباري
@@ -1483,24 +1495,24 @@ const ProductDetails = () => {
 
                   {selectedAddonType && !isAddingNewAddonType && (
                     <div
-                      className="rounded-xl p-4"
+                      className="rounded-lg sm:rounded-xl p-3 sm:p-4 text-sm sm:text-base"
                       style={{
                         background:
                           "linear-gradient(135deg, #2E3E8810, #32B9CC10)",
                         border: "1px solid #2E3E8820",
                       }}
                     >
-                      <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center justify-between mb-1 sm:mb-2">
                         <h4
                           className="font-semibold"
                           style={{ color: "#2E3E88" }}
                         >
                           {selectedAddonType.name}
                         </h4>
-                        <div className="flex gap-2">
+                        <div className="flex gap-1 sm:gap-2">
                           {selectedAddonType.canSelectMultipleOptions && (
                             <span
-                              className="text-xs px-2 py-1 rounded-full"
+                              className="text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full"
                               style={{
                                 background:
                                   "linear-gradient(135deg, #2E3E8810, #32B9CC10)",
@@ -1512,7 +1524,7 @@ const ProductDetails = () => {
                           )}
                           {selectedAddonType.isSelectionRequired && (
                             <span
-                              className="text-xs px-2 py-1 rounded-full"
+                              className="text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full"
                               style={{
                                 background:
                                   "linear-gradient(135deg, #FF6B6B10, #FF8E5310)",
@@ -1524,10 +1536,16 @@ const ProductDetails = () => {
                           )}
                         </div>
                       </div>
-                      <p className="text-sm" style={{ color: "#32B9CC" }}>
+                      <p
+                        className="text-xs sm:text-sm"
+                        style={{ color: "#32B9CC" }}
+                      >
                         سيتم إضافة خيارات جديدة لهذا النوع
                       </p>
-                      <p className="text-xs mt-1" style={{ color: "#FF8E53" }}>
+                      <p
+                        className="text-xs mt-0.5 sm:mt-1"
+                        style={{ color: "#FF8E53" }}
+                      >
                         * يجب إضافة خيار واحد على الأقل
                       </p>
                     </div>
@@ -1535,9 +1553,12 @@ const ProductDetails = () => {
                 </div>
 
                 {/* Add Options Section */}
-                <div className="border-t border-gray-100 pt-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <h4 className="font-semibold" style={{ color: "#2E3E88" }}>
+                <div className="border-t border-gray-100 pt-3 sm:pt-4">
+                  <div className="flex items-center justify-between mb-3 sm:mb-4">
+                    <h4
+                      className="font-semibold text-sm sm:text-base"
+                      style={{ color: "#2E3E88" }}
+                    >
                       إضافة خيارات{" "}
                       {selectedAddonType && !isAddingNewAddonType && "(مطلوب)*"}
                     </h4>
@@ -1545,7 +1566,7 @@ const ProductDetails = () => {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={addNewOptionField}
-                      className="px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 hover:shadow-lg transition-all"
+                      className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1 sm:gap-2 hover:shadow-lg transition-all"
                       style={{
                         background: "linear-gradient(135deg, #4CAF50, #2E3E88)",
                         color: "white",
@@ -1560,23 +1581,23 @@ const ProductDetails = () => {
                     !isAddingNewAddonType &&
                     newAddonOptions.length === 0 && (
                       <div
-                        className="rounded-lg p-3 mb-3"
+                        className="rounded-lg p-2 sm:p-3 mb-2 sm:mb-3 text-xs sm:text-sm"
                         style={{
                           background:
                             "linear-gradient(135deg, #FF8E5310, #FF6B6B10)",
                           border: "1px solid #FF8E5320",
                         }}
                       >
-                        <p className="text-sm" style={{ color: "#FF8E53" }}>
+                        <p style={{ color: "#FF8E53" }}>
                           يجب إضافة خيار واحد على الأقل لنوع الإضافة المحدد
                         </p>
                       </div>
                     )}
 
-                  <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
+                  <div className="space-y-2 sm:space-y-3 max-h-60 overflow-y-auto pr-2">
                     {newAddonOptions.length === 0 ? (
                       <p
-                        className="text-sm text-center py-2"
+                        className="text-xs sm:text-sm text-center py-2"
                         style={{ color: "#32B9CC" }}
                       >
                         لم يتم إضافة أي خيارات بعد
@@ -1585,16 +1606,16 @@ const ProductDetails = () => {
                       newAddonOptions.map((option, index) => (
                         <div
                           key={option.id}
-                          className="rounded-lg p-3 border"
+                          className="rounded-lg p-2 sm:p-3 border text-sm"
                           style={{
                             background:
                               "linear-gradient(135deg, #f8f9ff, #ffffff)",
                             border: "1px solid #2E3E8820",
                           }}
                         >
-                          <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center justify-between mb-1 sm:mb-2">
                             <span
-                              className="text-sm font-medium"
+                              className="text-xs sm:text-sm font-medium"
                               style={{ color: "#2E3E88" }}
                             >
                               خيار #{index + 1}
@@ -1608,7 +1629,7 @@ const ProductDetails = () => {
                               <FaTrash className="text-xs" />
                             </button>
                           </div>
-                          <div className="space-y-2">
+                          <div className="space-y-1.5 sm:space-y-2">
                             <div>
                               <input
                                 type="text"
@@ -1620,7 +1641,7 @@ const ProductDetails = () => {
                                     e.target.value,
                                   )
                                 }
-                                className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded outline-none focus:ring-1 focus:ring-[#2E3E88] focus:border-[#2E3E88] transition-all duration-200"
+                                className="w-full px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-gray-200 rounded outline-none focus:ring-1 focus:ring-[#2E3E88] focus:border-[#2E3E88] transition-all duration-200"
                                 style={{
                                   background:
                                     "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -1643,7 +1664,7 @@ const ProductDetails = () => {
                                 }
                                 min="0"
                                 step="0.01"
-                                className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded outline-none focus:ring-1 focus:ring-[#2E3E88] focus:border-[#2E3E88] transition-all duration-200"
+                                className="w-full px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-gray-200 rounded outline-none focus:ring-1 focus:ring-[#2E3E88] focus:border-[#2E3E88] transition-all duration-200"
                                 style={{
                                   background:
                                     "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -1661,13 +1682,13 @@ const ProductDetails = () => {
               </div>
             </div>
 
-            <div className="flex gap-3 p-6 border-t border-gray-100">
+            <div className="flex gap-2 sm:gap-3 p-4 sm:p-6 border-t border-gray-100">
               <motion.button
                 type="button"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleCloseAddonTypeModal}
-                className="flex-1 py-3.5 border-2 rounded-xl font-semibold transition-all duration-300"
+                className="flex-1 py-2.5 sm:py-3.5 border-2 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base"
                 style={{
                   borderColor: "#2E3E88",
                   color: "#2E3E88",
@@ -1687,7 +1708,7 @@ const ProductDetails = () => {
                     !isAddingNewAddonType &&
                     newAddonOptions.length === 0)
                 }
-                className={`flex-1 py-3.5 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                className={`flex-1 py-2.5 sm:py-3.5 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base ${
                   (selectedAddonType &&
                     !isAddingNewAddonType &&
                     newAddonOptions.length > 0) ||
@@ -1710,7 +1731,7 @@ const ProductDetails = () => {
                       }
                 }
               >
-                <FaSave />
+                <FaSave className="text-sm" />
                 حفظ
               </motion.button>
             </div>
@@ -1726,30 +1747,35 @@ const ProductDetails = () => {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl"
+            className="bg-white rounded-2xl sm:rounded-3xl w-full max-w-md overflow-hidden shadow-2xl"
             dir="rtl"
             onClick={(e) => e.stopPropagation()}
           >
             <div
-              className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+              className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
               style={{
                 background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
               }}
             >
-              <div className="flex items-center gap-3">
-                <FaStickyNote className="text-white" />
-                <h3 className="text-lg font-bold text-white">تعليمات إضافية</h3>
+              <div className="flex items-center gap-2 sm:gap-3">
+                <FaStickyNote className="text-white text-sm sm:text-base" />
+                <h3 className="text-base sm:text-lg font-bold text-white">
+                  تعليمات إضافية
+                </h3>
               </div>
               <button
                 onClick={handleCloseNotesModal}
-                className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
+                className="p-1 sm:p-2 rounded-full hover:bg-white/20 text-white transition-colors"
               >
-                <FaTimes size={16} />
+                <FaTimes size={14} />
               </button>
             </div>
 
-            <div className="p-6">
-              <p className="text-sm mb-4" style={{ color: "#32B9CC" }}>
+            <div className="p-4 sm:p-6">
+              <p
+                className="text-xs sm:text-sm mb-3 sm:mb-4"
+                style={{ color: "#32B9CC" }}
+              >
                 اكتب أي ملاحظات
               </p>
 
@@ -1757,7 +1783,7 @@ const ProductDetails = () => {
                 value={additionalNotes}
                 onChange={(e) => setAdditionalNotes(e.target.value)}
                 placeholder="اكتب تعليماتك هنا..."
-                className="w-full h-40 border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 resize-none"
+                className="w-full h-32 sm:h-40 border border-gray-200 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 resize-none text-sm sm:text-base"
                 style={{
                   background: "linear-gradient(135deg, #f8f9ff, #ffffff)",
                 }}
@@ -1766,7 +1792,7 @@ const ProductDetails = () => {
                 autoFocus
               />
 
-              <div className="flex justify-between items-center mt-2">
+              <div className="flex justify-between items-center mt-1 sm:mt-2">
                 <span className="text-xs" style={{ color: "#32B9CC" }}>
                   اختياري
                 </span>
@@ -1782,16 +1808,16 @@ const ProductDetails = () => {
               </div>
             </div>
 
-            <div className="flex gap-3 p-6 border-t border-gray-100">
+            <div className="flex gap-2 sm:gap-3 p-4 sm:p-6 border-t border-gray-100">
               <button
                 onClick={handleClearNotes}
-                className="flex-1 py-3.5 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2"
+                className="flex-1 py-2.5 sm:py-3.5 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base"
                 style={{
                   background: "linear-gradient(135deg, #FF6B6B10, #FF8E5310)",
                   color: "#FF6B6B",
                 }}
               >
-                <FaTrash />
+                <FaTrash className="text-xs sm:text-sm" />
                 مسح
               </button>
               <motion.button
@@ -1799,7 +1825,7 @@ const ProductDetails = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleCloseNotesModal}
-                className="flex-1 py-3.5 border-2 rounded-xl font-semibold transition-all duration-300"
+                className="flex-1 py-2.5 sm:py-3.5 border-2 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 text-sm sm:text-base"
                 style={{
                   borderColor: "#2E3E88",
                   color: "#2E3E88",
@@ -1813,13 +1839,13 @@ const ProductDetails = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleSaveNotes}
-                className="flex-1 py-3.5 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl cursor-pointer"
+                className="flex-1 py-2.5 sm:py-3.5 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-1 sm:gap-2 shadow-lg hover:shadow-xl cursor-pointer text-sm sm:text-base"
                 style={{
                   background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
                   color: "white",
                 }}
               >
-                <FaCheck />
+                <FaCheck className="text-xs sm:text-sm" />
                 حفظ
               </motion.button>
             </div>
@@ -1830,16 +1856,16 @@ const ProductDetails = () => {
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
-        className={`fixed bottom-6 right-6 z-40 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white rounded-full p-4 shadow-2xl cursor-pointer hover:scale-110 transition-all duration-300 ${
+        className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white rounded-full p-3 sm:p-4 shadow-2xl cursor-pointer hover:scale-110 transition-all duration-300 ${
           cartItemsCount === 0 ? "opacity-70" : ""
         }`}
         onClick={navigateToCart}
       >
         <div className="relative">
-          <FaShoppingCart className="text-xl" />
+          <FaShoppingCart className="text-lg sm:text-xl" />
           {cartItemsCount > 0 && (
             <span
-              className="absolute -top-2 -right-2 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold"
+              className="absolute -top-1.5 -right-1.5 sm:-top-2 sm:-right-2 rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center text-xs font-bold"
               style={{
                 background: "linear-gradient(135deg, #FF6B6B, #FF8E53)",
                 color: "white",
@@ -1851,22 +1877,22 @@ const ProductDetails = () => {
         </div>
       </motion.div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="relative"
           >
-            <div className="bg-white rounded-2xl overflow-hidden shadow-xl">
+            <div className="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-lg sm:shadow-xl">
               <img
                 src={product.image}
                 alt={product.name}
-                className="w-full h-[400px] lg:h-[500px] object-contain"
+                className="w-full h-[280px] xs:h-[320px] sm:h-[400px] md:h-[500px] object-contain"
               />
 
               <div
-                className={`absolute top-4 right-4 px-4 py-2 rounded-full text-sm font-semibold ${
+                className={`absolute top-2 sm:top-3 md:top-4 right-2 sm:right-3 md:right-4 px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-full text-xs sm:text-sm font-semibold ${
                   isProductActive() ? "text-white" : "text-white"
                 }`}
                 style={{
@@ -1882,16 +1908,16 @@ const ProductDetails = () => {
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="absolute top-4 left-4 z-10"
+                  className="absolute top-2 sm:top-3 md:top-4 left-2 sm:left-3 md:left-4 z-10"
                 >
                   <div
-                    className="text-white px-4 py-2 rounded-xl shadow-2xl flex items-center gap-2"
+                    className="text-white px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-lg sm:rounded-xl shadow-2xl flex items-center gap-1 sm:gap-1.5 md:gap-2 text-xs sm:text-sm"
                     style={{
                       background: "linear-gradient(135deg, #FF6B6B, #FF8E53)",
                     }}
                   >
-                    <FaFire className="animate-pulse" size={14} />
-                    <span className="text-sm font-bold whitespace-nowrap">
+                    <FaFire className="animate-pulse" size={12} />
+                    <span className="font-bold whitespace-nowrap">
                       {formatOfferText(product.itemOffer)}
                     </span>
                   </div>
@@ -1899,14 +1925,14 @@ const ProductDetails = () => {
               )}
 
               {(canShowAdminButtons || canShowToggleButton) && (
-                <div className="absolute top-16 left-4 flex flex-col gap-2 z-10">
+                <div className="absolute top-10 sm:top-12 md:top-16 left-2 sm:left-3 md:left-4 flex flex-col gap-1 sm:gap-2 z-10">
                   {canShowToggleButton && (
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={handleToggleActive}
                       disabled={!canToggleProductActive()}
-                      className={`p-3 rounded-xl shadow-lg transition-colors flex items-center justify-center gap-2 text-sm ${
+                      className={`p-1.5 sm:p-2 md:p-3 rounded-lg sm:rounded-xl shadow-lg transition-colors flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2 text-xs sm:text-sm ${
                         isProductActive() ? "text-white" : "text-white"
                       } ${
                         !canToggleProductActive()
@@ -1926,9 +1952,9 @@ const ProductDetails = () => {
                       }
                     >
                       {isProductActive() ? (
-                        <FaTimesCircle />
+                        <FaTimesCircle className="text-xs sm:text-sm md:text-base" />
                       ) : (
-                        <FaCheckCircle />
+                        <FaCheckCircle className="text-xs sm:text-sm md:text-base" />
                       )}
                       <span>{isProductActive() ? "تعطيل" : "تفعيل"}</span>
                     </motion.button>
@@ -1940,39 +1966,39 @@ const ProductDetails = () => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={handleEditProduct}
-                        className="p-3 rounded-xl shadow-lg flex items-center justify-center gap-2 text-sm text-white"
+                        className="p-1.5 sm:p-2 md:p-3 rounded-lg sm:rounded-xl shadow-lg flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2 text-xs sm:text-sm text-white"
                         style={{
                           background:
                             "linear-gradient(135deg, #2E3E88, #32B9CC)",
                         }}
                       >
-                        <FaEdit />
+                        <FaEdit className="text-xs sm:text-sm md:text-base" />
                         <span>تعديل</span>
                       </motion.button>
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={handleManageOffers}
-                        className="p-3 rounded-xl shadow-lg flex items-center justify-center gap-2 text-sm text-white"
+                        className="p-1.5 sm:p-2 md:p-3 rounded-lg sm:rounded-xl shadow-lg flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2 text-xs sm:text-sm text-white"
                         style={{
                           background:
                             "linear-gradient(135deg, #9C27B0, #2E3E88)",
                         }}
                       >
-                        <FaPercent />
+                        <FaPercent className="text-xs sm:text-sm md:text-base" />
                         <span>خصومات</span>
                       </motion.button>
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={handleDeleteProduct}
-                        className="p-3 rounded-xl shadow-lg flex items-center justify-center gap-2 text-sm text-white"
+                        className="p-1.5 sm:p-2 md:p-3 rounded-lg sm:rounded-xl shadow-lg flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2 text-xs sm:text-sm text-white"
                         style={{
                           background:
                             "linear-gradient(135deg, #FF6B6B, #FF8E53)",
                         }}
                       >
-                        <FaTrash />
+                        <FaTrash className="text-xs sm:text-sm md:text-base" />
                         <span>حذف</span>
                       </motion.button>
                     </>
@@ -1987,12 +2013,12 @@ const ProductDetails = () => {
             animate={{ opacity: 1, x: 0 }}
             className="flex flex-col"
           >
-            <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 h-auto lg:max-h-[500px] flex flex-col">
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl p-3 sm:p-4 md:p-6 mb-3 sm:mb-4 md:mb-6 h-auto flex flex-col">
               <div className="flex-1 overflow-hidden">
-                <div className="h-full overflow-y-auto custom-scrollbar pr-2 pb-4">
-                  <div className="mb-6">
+                <div className="h-full overflow-y-auto custom-scrollbar pr-2 pb-3 sm:pb-4">
+                  <div className="mb-3 sm:mb-4 md:mb-6">
                     <h2
-                      className="text-3xl font-bold mb-4"
+                      className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 sm:mb-3 md:mb-4"
                       style={{ color: "#2E3E88" }}
                       dir={isArabic(product.name) ? "rtl" : "ltr"}
                     >
@@ -2000,22 +2026,22 @@ const ProductDetails = () => {
                     </h2>
 
                     <p
-                      className="text-gray-600 text-lg leading-relaxed mb-6"
+                      className="text-gray-600 text-sm sm:text-base md:text-lg leading-relaxed mb-3 sm:mb-4 md:mb-6"
                       style={{ color: "#32B9CC" }}
                       dir={isArabic(product.description) ? "rtl" : "ltr"}
                     >
                       {product.description}
                     </p>
 
-                    <div className="flex items-center gap-4 mb-4">
+                    <div className="flex items-center gap-2 sm:gap-3 md:gap-4 mb-2 sm:mb-3 md:mb-4">
                       {formatPriceDisplay(product)}
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 md:gap-4 mb-3 sm:mb-4 md:mb-6">
                     {product.calories && (
                       <div
-                        className="rounded-xl p-4 text-center"
+                        className="rounded-lg sm:rounded-xl p-2 sm:p-3 md:p-4 text-center"
                         style={{
                           background:
                             "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -2023,10 +2049,10 @@ const ProductDetails = () => {
                         }}
                         dir="rtl"
                       >
-                        <div className="flex items-center justify-center gap-2 mb-2">
+                        <div className="flex items-center justify-center gap-1 sm:gap-2 mb-1 sm:mb-2">
                           <FaFire style={{ color: "#FF8E53" }} />
                           <span
-                            className="font-semibold text-sm"
+                            className="font-semibold text-xs sm:text-sm md:text-base"
                             style={{ color: "#2E3E88" }}
                           >
                             السعرات الحرارية
@@ -2034,7 +2060,7 @@ const ProductDetails = () => {
                         </div>
 
                         <div
-                          className="font-bold text-lg"
+                          className="font-bold text-base sm:text-lg md:text-xl"
                           style={{ color: "#FF8E53" }}
                         >
                           {toArabicNumbers(product.calories)} كالوري
@@ -2045,7 +2071,7 @@ const ProductDetails = () => {
                     {(product.preparationTimeStart ||
                       product.preparationTimeEnd) && (
                       <div
-                        className="rounded-xl p-4 text-center"
+                        className="rounded-lg sm:rounded-xl p-2 sm:p-3 md:p-4 text-center"
                         style={{
                           background:
                             "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -2053,10 +2079,10 @@ const ProductDetails = () => {
                         }}
                         dir="rtl"
                       >
-                        <div className="flex items-center justify-center gap-2 mb-2">
+                        <div className="flex items-center justify-center gap-1 sm:gap-2 mb-1 sm:mb-2">
                           <FaClock style={{ color: "#32B9CC" }} />
                           <span
-                            className="font-semibold text-sm"
+                            className="font-semibold text-xs sm:text-sm md:text-base"
                             style={{ color: "#2E3E88" }}
                           >
                             وقت التحضير
@@ -2064,7 +2090,7 @@ const ProductDetails = () => {
                         </div>
 
                         <div
-                          className="font-bold text-base"
+                          className="font-bold text-sm sm:text-base md:text-lg"
                           style={{ color: "#32B9CC" }}
                         >
                           {product.preparationTimeStart &&
@@ -2086,14 +2112,14 @@ const ProductDetails = () => {
                     )}
                   </div>
 
-                  <div className="space-y-6">
+                  <div className="space-y-4 sm:space-y-6">
                     {canShowAdminButtons && (
                       <div className="flex justify-end">
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={handleOpenAddAddonTypeModal}
-                          className="px-6 py-3 rounded-lg font-semibold flex items-center gap-2 hover:shadow-lg transition-all"
+                          className="px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 rounded-lg font-semibold flex items-center gap-1 sm:gap-2 hover:shadow-lg transition-all text-sm sm:text-base"
                           style={{
                             background:
                               "linear-gradient(135deg, #9C27B0, #2E3E88)",
@@ -2101,7 +2127,7 @@ const ProductDetails = () => {
                           }}
                           dir="rtl"
                         >
-                          <FaLayerGroup />
+                          <FaLayerGroup className="text-sm" />
                           إضافة نوع إضافة جديد
                         </motion.button>
                       </div>
@@ -2111,7 +2137,7 @@ const ProductDetails = () => {
                       addonsData.map((addon) => (
                         <div
                           key={addon.id}
-                          className="rounded-xl p-4 border relative group"
+                          className="rounded-lg sm:rounded-xl p-2 sm:p-3 md:p-4 border relative group"
                           style={{
                             background:
                               "linear-gradient(135deg, #f8f9ff, #ffffff)",
@@ -2119,17 +2145,17 @@ const ProductDetails = () => {
                           }}
                           dir="rtl"
                         >
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="flex items-center gap-2">
+                          <div className="flex items-center justify-between mb-2 sm:mb-3">
+                            <div className="flex items-center gap-1 sm:gap-2">
                               <h3
-                                className="font-semibold text-lg"
+                                className="font-semibold text-sm sm:text-base md:text-lg"
                                 style={{ color: "#2E3E88" }}
                               >
                                 {addon.title}
                               </h3>
                               {addon.isSelectionRequired && (
                                 <span
-                                  className="text-xs px-2 py-1 rounded-full"
+                                  className="text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full"
                                   style={{
                                     background:
                                       "linear-gradient(135deg, #FF6B6B10, #FF8E5310)",
@@ -2141,7 +2167,7 @@ const ProductDetails = () => {
                               )}
                               {addon.canSelectMultipleOptions && (
                                 <span
-                                  className="text-xs px-2 py-1 rounded-full"
+                                  className="text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full"
                                   style={{
                                     background:
                                       "linear-gradient(135deg, #2E3E8810, #32B9CC10)",
@@ -2160,20 +2186,20 @@ const ProductDetails = () => {
                                 onClick={() =>
                                   handleOpenAddOptionModal(addon.id)
                                 }
-                                className="px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 hover:shadow-lg transition-all"
+                                className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1 sm:gap-2 hover:shadow-lg transition-all"
                                 style={{
                                   background:
                                     "linear-gradient(135deg, #4CAF50, #2E3E88)",
                                   color: "white",
                                 }}
                               >
-                                <FaPlusCircle />
+                                <FaPlusCircle className="text-xs" />
                                 إضافة خيار
                               </motion.button>
                             )}
                           </div>
 
-                          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
+                          <div className="grid grid-cols-2 lg:grid-cols-3 gap-1.5 sm:gap-2">
                             {addon.options.map((option) => {
                               const isSelected = selectedAddons[
                                 addon.id
@@ -2190,7 +2216,7 @@ const ProductDetails = () => {
                                         addon.type,
                                       )
                                     }
-                                    className={`w-full p-3 rounded-xl border-2 transition-all duration-200 flex items-center justify-between ${
+                                    className={`w-full p-1.5 sm:p-2 md:p-3 rounded-lg sm:rounded-xl border-2 transition-all duration-200 flex items-center justify-between ${
                                       isSelected
                                         ? "bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10"
                                         : "bg-white hover:border-[#2E3E88]"
@@ -2202,9 +2228,9 @@ const ProductDetails = () => {
                                     }}
                                     dir="rtl"
                                   >
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-1 sm:gap-2">
                                       <span
-                                        className={`font-medium text-sm ${
+                                        className={`font-medium text-xs sm:text-sm md:text-base ${
                                           isSelected
                                             ? "text-[#2E3E88]"
                                             : "text-gray-700"
@@ -2213,19 +2239,19 @@ const ProductDetails = () => {
                                         {option.name}
                                       </span>
                                       {isSelected && (
-                                        <FaCheck className="text-[#2E3E88] text-sm" />
+                                        <FaCheck className="text-[#2E3E88] text-xs sm:text-sm" />
                                       )}
                                     </div>
 
                                     {option.price > 0 && (
-                                      <span className="text-xs text-green-600 font-semibold">
+                                      <span className="text-xs sm:text-sm text-green-600 font-semibold">
                                         +{toArabicNumbers(option.price)} ج.م
                                       </span>
                                     )}
                                   </motion.button>
 
                                   {canShowAdminButtons && (
-                                    <div className="absolute -top-2 -right-2 flex gap-1 z-10">
+                                    <div className="absolute -top-1.5 -right-1.5 sm:-top-2 sm:-right-2 flex gap-0.5 sm:gap-1 z-10">
                                       <motion.button
                                         whileHover={{ scale: 1.1 }}
                                         whileTap={{ scale: 0.9 }}
@@ -2236,7 +2262,7 @@ const ProductDetails = () => {
                                             option,
                                           );
                                         }}
-                                        className="p-1.5 rounded-lg hover:scale-110 transition-all shadow-md"
+                                        className="p-1 sm:p-1.5 rounded-lg hover:scale-110 transition-all shadow-md"
                                         style={{
                                           background:
                                             "linear-gradient(135deg, #2E3E88, #32B9CC)",
@@ -2253,7 +2279,7 @@ const ProductDetails = () => {
                                           e.stopPropagation();
                                           handleDeleteOption(option.id);
                                         }}
-                                        className="p-1.5 rounded-lg hover:scale-110 transition-all shadow-md"
+                                        className="p-1 sm:p-1.5 rounded-lg hover:scale-110 transition-all shadow-md"
                                         style={{
                                           background:
                                             "linear-gradient(135deg, #FF6B6B, #FF8E53)",
@@ -2274,7 +2300,7 @@ const ProductDetails = () => {
 
                     <div
                       onClick={handleOpenNotesModal}
-                      className={`w-full rounded-xl p-4 text-center transition-all duration-300 cursor-pointer ${
+                      className={`w-full rounded-lg sm:rounded-xl p-3 sm:p-4 text-center transition-all duration-300 cursor-pointer ${
                         additionalNotes
                           ? "border-2 border-solid hover:border-[#2E3E88]"
                           : "border-2 border-dashed hover:border-solid hover:border-[#2E3E88]"
@@ -2287,9 +2313,9 @@ const ProductDetails = () => {
                       }}
                       dir="rtl"
                     >
-                      <div className="flex flex-col items-center justify-center gap-2">
+                      <div className="flex flex-col items-center justify-center gap-1.5 sm:gap-2">
                         <div
-                          className="p-2 rounded-full"
+                          className="p-1.5 sm:p-2 rounded-full"
                           style={{
                             background: additionalNotes
                               ? "linear-gradient(135deg, #4CAF5020, #2E3E8820)"
@@ -2297,7 +2323,7 @@ const ProductDetails = () => {
                           }}
                         >
                           <FaStickyNote
-                            className="text-xl"
+                            className="text-lg sm:text-xl"
                             style={{
                               color: additionalNotes ? "#4CAF50" : "#2E3E88",
                             }}
@@ -2305,7 +2331,7 @@ const ProductDetails = () => {
                         </div>
                         <div>
                           <h4
-                            className="font-semibold text-lg"
+                            className="font-semibold text-sm sm:text-base md:text-lg"
                             style={{
                               color: additionalNotes ? "#4CAF50" : "#2E3E88",
                             }}
@@ -2315,7 +2341,7 @@ const ProductDetails = () => {
                               : "إضافة تعليمات إضافية"}
                           </h4>
                           <p
-                            className="text-sm mt-1"
+                            className="text-xs sm:text-sm mt-0.5 sm:mt-1"
                             style={{
                               color: additionalNotes ? "#4CAF50" : "#32B9CC",
                             }}
@@ -2337,18 +2363,18 @@ const ProductDetails = () => {
 
             <div
               id="cart-section"
-              className={`bg-white rounded-2xl shadow-xl p-6 transition-all duration-300 ${
+              className={`bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl p-3 sm:p-4 md:p-6 transition-all duration-300 ${
                 isSticky
                   ? "sticky bottom-4 z-10 lg:relative lg:bottom-0"
                   : "relative"
               }`}
             >
               <div
-                className="flex flex-row items-center justify-between gap-4 mb-6"
+                className="flex flex-row items-center justify-between gap-3 sm:gap-4 mb-3 sm:mb-4 md:mb-6"
                 dir="rtl"
               >
                 <div
-                  className="w-[95px] sm:w-auto flex items-center justify-between sm:justify-start gap-1 rounded-lg p-3 flex-shrink-0 order-2 sm:order-1"
+                  className="w-[85px] xs:w-[95px] sm:w-auto flex items-center justify-between xs:justify-start gap-0.5 xs:gap-1 rounded-lg p-1.5 sm:p-2 md:p-3 flex-shrink-0 order-2 sm:order-1"
                   style={{
                     background: "linear-gradient(135deg, #2E3E8810, #32B9CC10)",
                   }}
@@ -2356,14 +2382,14 @@ const ProductDetails = () => {
                 >
                   <button
                     onClick={decrementQuantity}
-                    className="p-1 rounded-md hover:scale-110 transition-transform"
+                    className="p-0.5 sm:p-1 rounded-md hover:scale-110 transition-transform"
                     style={{ color: "#2E3E88" }}
                   >
-                    <FaMinus />
+                    <FaMinus className="text-xs sm:text-sm" />
                   </button>
 
                   <span
-                    className="font-semibold text-base min-w-6 text-center"
+                    className="font-semibold text-sm sm:text-base min-w-4 xs:min-w-6 text-center"
                     style={{ color: "#2E3E88" }}
                   >
                     {toArabicNumbers(quantity)}
@@ -2371,15 +2397,15 @@ const ProductDetails = () => {
 
                   <button
                     onClick={incrementQuantity}
-                    className="p-1 rounded-md hover:scale-110 transition-transform"
+                    className="p-0.5 sm:p-1 rounded-md hover:scale-110 transition-transform"
                     style={{ color: "#2E3E88" }}
                   >
-                    <FaPlus />
+                    <FaPlus className="text-xs sm:text-sm" />
                   </button>
                 </div>
 
                 <div
-                  className="text-2xl font-bold whitespace-nowrap text-center sm:text-right order-1 sm:order-2"
+                  className="text-lg sm:text-xl md:text-2xl font-bold whitespace-nowrap text-center sm:text-right order-1 sm:order-2"
                   style={{
                     background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
                     WebkitBackgroundClip: "text",
@@ -2396,7 +2422,7 @@ const ProductDetails = () => {
                 whileTap={{ scale: 0.98 }}
                 onClick={handleAddToCart}
                 disabled={!isProductAvailableForCart() || addingToCart}
-                className={`w-full py-4 rounded-xl font-semibold text-xl hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-4 ${
+                className={`w-full py-2.5 sm:py-3 md:py-4 rounded-lg sm:rounded-xl md:rounded-2xl font-semibold text-base sm:text-lg md:text-xl hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 md:gap-4 ${
                   addingToCart
                     ? "opacity-50 cursor-wait"
                     : isProductAvailableForCart()
@@ -2419,14 +2445,14 @@ const ProductDetails = () => {
                 {addingToCart ? (
                   <>
                     <div
-                      className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2"
+                      className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-t-2 border-b-2"
                       style={{ borderColor: "white" }}
                     ></div>
-                    <span>يتم الإضافة...</span>
+                    <span className="text-sm sm:text-base">يتم الإضافة...</span>
                   </>
                 ) : (
                   <>
-                    <FaShoppingCart className="text-xl" />
+                    <FaShoppingCart className="text-base sm:text-lg md:text-xl" />
                     {isProductAvailableForCart()
                       ? `أضف إلى السلة - ${toArabicNumbers(
                           calculateTotalPrice().toFixed(2),

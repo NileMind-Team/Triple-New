@@ -54,6 +54,7 @@ export default function MyOrders() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
+  // eslint-disable-next-line no-unused-vars
   const [totalItems, setTotalItems] = useState(0);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [selectedOrderForStatus, setSelectedOrderForStatus] = useState(null);
@@ -1221,36 +1222,36 @@ export default function MyOrders() {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/80 to-white"></div>
 
         {/* Hero Header */}
-        <div className="relative bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] py-16 px-4">
+        <div className="relative bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] py-8 md:py-16 px-4">
           <div className="max-w-7xl mx-auto">
             {/* زر الرجوع */}
             <motion.button
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               onClick={() => navigate(-1)}
-              className="absolute top-6 left-6 bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
+              className="absolute top-4 md:top-6 left-4 md:left-6 bg-white/20 backdrop-blur-sm rounded-full p-2 md:p-3 text-white hover:bg-white/30 transition-all duration-300 hover:scale-110 shadow-lg group"
               style={{
                 boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
               }}
             >
               <FaArrowLeft
-                size={20}
-                className="group-hover:-translate-x-1 transition-transform"
+                size={16}
+                className="md:w-5 md:h-5 group-hover:-translate-x-1 transition-transform"
               />
             </motion.button>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center pt-8"
+              className="text-center pt-8 md:pt-8"
             >
-              <div className="inline-flex items-center justify-center p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
-                <FaShoppingBag className="text-white text-4xl" />
+              <div className="inline-flex items-center justify-center p-3 md:p-4 rounded-2xl bg-white/20 backdrop-blur-sm mb-4 md:mb-6">
+                <FaShoppingBag className="text-white text-2xl md:text-4xl" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-3 md:mb-4">
                 {isAdminOrRestaurantOrBranch ? "جميع الطلبات" : "طلباتي"}
               </h1>
-              <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
+              <p className="text-white/80 text-sm md:text-lg lg:text-xl max-w-2xl mx-auto px-2">
                 {isAdminOrRestaurantOrBranch
                   ? "إدارة جميع الطلبات وتتبع حالاتها"
                   : "تتبع وإدارة طلباتك وتفاصيل كل طلب"}
@@ -1261,18 +1262,18 @@ export default function MyOrders() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8 -mt-10 relative z-10">
+      <div className="max-w-7xl mx-auto px-3 md:px-4 py-6 md:py-8 -mt-8 md:-mt-10 relative z-10">
         {/* Content Container */}
         <div className="w-full">
           {/* Filter Section - تصميم على سطرين */}
-          <div className="bg-white rounded-2xl p-6 shadow-xl mb-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-4">
+          <div className="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 shadow-xl mb-4 md:mb-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-3 md:mb-4">
               {/* الصف الأول */}
-              <div className="space-y-4">
+              <div className="space-y-3 md:space-y-4">
                 {/* Status Filter */}
                 <div>
                   <label
-                    className="block text-sm font-semibold mb-2"
+                    className="block text-xs md:text-sm font-semibold mb-1 md:mb-2"
                     style={{ color: "#2E3E88" }}
                   >
                     حالة الطلب
@@ -1285,14 +1286,14 @@ export default function MyOrders() {
                           openDropdown === "status" ? null : "status",
                         )
                       }
-                      className="w-full flex items-center justify-between border border-gray-200 rounded-xl px-4 py-3.5 transition-all hover:border-[#2E3E88] group text-right"
+                      className="w-full flex items-center justify-between border border-gray-200 rounded-lg md:rounded-xl px-3 md:px-4 py-2.5 md:py-3.5 transition-all hover:border-[#2E3E88] group text-right text-sm md:text-base"
                       style={{
                         background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
                       }}
                     >
-                      <div className="flex items-center gap-3">
-                        <FaFilter className="text-[#2E3E88] group-hover:scale-110 transition-transform" />
-                        <span className="font-medium">
+                      <div className="flex items-center gap-2 md:gap-3">
+                        <FaFilter className="text-[#2E3E88] group-hover:scale-110 transition-transform w-3 h-3 md:w-4 md:h-4" />
+                        <span className="font-medium truncate">
                           {filter === "all"
                             ? "جميع الحالات"
                             : getStatusText(filter)}
@@ -1304,7 +1305,7 @@ export default function MyOrders() {
                         }}
                         transition={{ duration: 0.3 }}
                       >
-                        <FaChevronDown className="text-[#2E3E88]" />
+                        <FaChevronDown className="text-[#2E3E88] w-3 h-3 md:w-4 md:h-4" />
                       </motion.div>
                     </button>
                     <AnimatePresence>
@@ -1313,7 +1314,7 @@ export default function MyOrders() {
                           initial={{ opacity: 0, y: -5 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -5 }}
-                          className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto"
+                          className="absolute z-10 mt-1 md:mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-lg md:rounded-xl overflow-hidden max-h-40 md:max-h-48 overflow-y-auto text-sm md:text-base"
                         >
                           {[
                             { value: "all", label: "جميع الحالات" },
@@ -1334,7 +1335,7 @@ export default function MyOrders() {
                                 setCurrentPage(1);
                                 setOpenDropdown(null);
                               }}
-                              className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b last:border-b-0"
+                              className="px-3 md:px-4 py-2 md:py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b last:border-b-0 text-right"
                             >
                               {item.label}
                             </li>
@@ -1349,7 +1350,7 @@ export default function MyOrders() {
                 {isAdminOrRestaurantOrBranch && (
                   <div>
                     <label
-                      className="block text-sm font-semibold mb-2"
+                      className="block text-xs md:text-sm font-semibold mb-1 md:mb-2"
                       style={{ color: "#2E3E88" }}
                     >
                       المستخدم
@@ -1362,14 +1363,14 @@ export default function MyOrders() {
                             openDropdown === "user" ? null : "user",
                           )
                         }
-                        className="w-full flex items-center justify-between border border-gray-200 rounded-xl px-4 py-3.5 transition-all hover:border-[#2E3E88] group text-right"
+                        className="w-full flex items-center justify-between border border-gray-200 rounded-lg md:rounded-xl px-3 md:px-4 py-2.5 md:py-3.5 transition-all hover:border-[#2E3E88] group text-right text-sm md:text-base"
                         style={{
                           background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
                         }}
                       >
-                        <div className="flex items-center gap-3">
-                          <FaUser className="text-[#2E3E88] group-hover:scale-110 transition-transform" />
-                          <span className="font-medium">
+                        <div className="flex items-center gap-2 md:gap-3">
+                          <FaUser className="text-[#2E3E88] group-hover:scale-110 transition-transform w-3 h-3 md:w-4 md:h-4" />
+                          <span className="font-medium truncate">
                             {selectedUserId
                               ? users.find((u) => u.id === selectedUserId)
                                   ?.firstName +
@@ -1385,7 +1386,7 @@ export default function MyOrders() {
                           }}
                           transition={{ duration: 0.3 }}
                         >
-                          <FaChevronDown className="text-[#2E3E88]" />
+                          <FaChevronDown className="text-[#2E3E88] w-3 h-3 md:w-4 md:h-4" />
                         </motion.div>
                       </button>
                       <AnimatePresence>
@@ -1394,7 +1395,7 @@ export default function MyOrders() {
                             initial={{ opacity: 0, y: -5 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -5 }}
-                            className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-xl overflow-hidden max-h-64 overflow-y-auto"
+                            className="absolute z-10 mt-1 md:mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-lg md:rounded-xl overflow-hidden max-h-48 md:max-h-64 overflow-y-auto text-sm md:text-base"
                           >
                             <li
                               onClick={() => {
@@ -1402,12 +1403,12 @@ export default function MyOrders() {
                                 setCurrentPage(1);
                                 setOpenDropdown(null);
                               }}
-                              className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b"
+                              className="px-3 md:px-4 py-2 md:py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b text-right"
                             >
                               جميع المستخدمين
                             </li>
                             {loadingUsers ? (
-                              <li className="px-4 py-3 text-center text-gray-500">
+                              <li className="px-3 md:px-4 py-2 md:py-3 text-center text-gray-500 text-sm md:text-base">
                                 جاري تحميل المستخدمين...
                               </li>
                             ) : (
@@ -1419,10 +1420,10 @@ export default function MyOrders() {
                                     setCurrentPage(1);
                                     setOpenDropdown(null);
                                   }}
-                                  className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b last:border-b-0"
+                                  className="px-3 md:px-4 py-2 md:py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b last:border-b-0 text-right"
                                 >
-                                  <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
+                                  <div className="flex items-center gap-2 md:gap-3">
+                                    <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
                                       {user.imageUrl &&
                                       user.imageUrl !==
                                         "Profiles/Default-Image.jpg" ? (
@@ -1438,11 +1439,11 @@ export default function MyOrders() {
                                         </div>
                                       )}
                                     </div>
-                                    <div>
-                                      <div className="font-medium">
+                                    <div className="min-w-0 flex-1">
+                                      <div className="font-medium truncate">
                                         {user.firstName} {user.lastName}
                                       </div>
-                                      <div className="text-xs text-gray-500">
+                                      <div className="text-xs text-gray-500 truncate">
                                         {user.email}
                                       </div>
                                     </div>
@@ -1459,12 +1460,12 @@ export default function MyOrders() {
               </div>
 
               {/* الصف الثاني */}
-              <div className="space-y-4">
+              <div className="space-y-3 md:space-y-4">
                 {/* Branch Filter - Only for Admin and Restaurant roles */}
                 {isAdminOrRestaurant && (
                   <div>
                     <label
-                      className="block text-sm font-semibold mb-2"
+                      className="block text-xs md:text-sm font-semibold mb-1 md:mb-2"
                       style={{ color: "#2E3E88" }}
                     >
                       الفرع
@@ -1477,14 +1478,14 @@ export default function MyOrders() {
                             openDropdown === "branch" ? null : "branch",
                           )
                         }
-                        className="w-full flex items-center justify-between border border-gray-200 rounded-xl px-4 py-3.5 transition-all hover:border-[#2E3E88] group text-right"
+                        className="w-full flex items-center justify-between border border-gray-200 rounded-lg md:rounded-xl px-3 md:px-4 py-2.5 md:py-3.5 transition-all hover:border-[#2E3E88] group text-right text-sm md:text-base"
                         style={{
                           background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
                         }}
                       >
-                        <div className="flex items-center gap-3">
-                          <FaStore className="text-[#2E3E88] group-hover:scale-110 transition-transform" />
-                          <span className="font-medium">
+                        <div className="flex items-center gap-2 md:gap-3">
+                          <FaStore className="text-[#2E3E88] group-hover:scale-110 transition-transform w-3 h-3 md:w-4 md:h-4" />
+                          <span className="font-medium truncate">
                             {selectedBranchId
                               ? branches.find(
                                   (b) => b.id.toString() === selectedBranchId,
@@ -1498,7 +1499,7 @@ export default function MyOrders() {
                           }}
                           transition={{ duration: 0.3 }}
                         >
-                          <FaChevronDown className="text-[#2E3E88]" />
+                          <FaChevronDown className="text-[#2E3E88] w-3 h-3 md:w-4 md:h-4" />
                         </motion.div>
                       </button>
                       <AnimatePresence>
@@ -1507,7 +1508,7 @@ export default function MyOrders() {
                             initial={{ opacity: 0, y: -5 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -5 }}
-                            className="absolute z-10 mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-xl overflow-hidden max-h-48 overflow-y-auto"
+                            className="absolute z-10 mt-1 md:mt-2 w-full bg-white border border-gray-200 shadow-2xl rounded-lg md:rounded-xl overflow-hidden max-h-40 md:max-h-48 overflow-y-auto text-sm md:text-base"
                           >
                             <li
                               onClick={() => {
@@ -1515,12 +1516,12 @@ export default function MyOrders() {
                                 setCurrentPage(1);
                                 setOpenDropdown(null);
                               }}
-                              className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b"
+                              className="px-3 md:px-4 py-2 md:py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b text-right"
                             >
                               جميع الفروع
                             </li>
                             {loadingBranches ? (
-                              <li className="px-4 py-3 text-center text-gray-500">
+                              <li className="px-3 md:px-4 py-2 md:py-3 text-center text-gray-500 text-sm md:text-base">
                                 جاري تحميل الفروع...
                               </li>
                             ) : (
@@ -1532,13 +1533,13 @@ export default function MyOrders() {
                                     setCurrentPage(1);
                                     setOpenDropdown(null);
                                   }}
-                                  className="px-4 py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b last:border-b-0"
+                                  className="px-3 md:px-4 py-2 md:py-3 hover:bg-gradient-to-r hover:from-[#2E3E88]/5 hover:to-[#32B9CC]/5 text-gray-700 cursor-pointer transition-all border-b last:border-b-0 text-right"
                                 >
-                                  <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] flex items-center justify-center text-white text-xs font-bold">
+                                  <div className="flex items-center gap-2 md:gap-3">
+                                    <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] flex items-center justify-center text-white text-xs font-bold">
                                       {branch.name.charAt(0)}
                                     </div>
-                                    <div className="font-medium">
+                                    <div className="font-medium truncate">
                                       {branch.name}
                                     </div>
                                   </div>
@@ -1555,7 +1556,7 @@ export default function MyOrders() {
                 {/* Date Range Filter */}
                 <div>
                   <label
-                    className="block text-sm font-semibold mb-2"
+                    className="block text-xs md:text-sm font-semibold mb-1 md:mb-2"
                     style={{ color: "#2E3E88" }}
                   >
                     التاريخ
@@ -1568,12 +1569,12 @@ export default function MyOrders() {
                         onChange={(e) => {
                           handleDateRangeChange("start", e.target.value);
                         }}
-                        className="w-full border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                        className="w-full border border-gray-200 rounded-lg md:rounded-xl px-3 md:px-4 py-2.5 md:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm md:text-base"
                         style={{
                           background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
                         }}
                       />
-                      <FaCalendarAlt className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                      <FaCalendarAlt className="absolute left-2 md:left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3 h-3 md:w-4 md:h-4" />
                     </div>
                     <div className="relative">
                       <input
@@ -1582,12 +1583,12 @@ export default function MyOrders() {
                         onChange={(e) => {
                           handleDateRangeChange("end", e.target.value);
                         }}
-                        className="w-full border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200"
+                        className="w-full border border-gray-200 rounded-lg md:rounded-xl px-3 md:px-4 py-2.5 md:py-3.5 outline-none focus:ring-2 focus:ring-[#2E3E88]/30 focus:border-[#2E3E88] transition-all duration-200 text-sm md:text-base"
                         style={{
                           background: `linear-gradient(135deg, #f8f9ff, #ffffff)`,
                         }}
                       />
-                      <FaCalendarAlt className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                      <FaCalendarAlt className="absolute left-2 md:left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3 h-3 md:w-4 md:h-4" />
                     </div>
                   </div>
                 </div>
@@ -1600,16 +1601,16 @@ export default function MyOrders() {
               dateRange.end ||
               selectedUserId ||
               selectedBranchId) && (
-              <div className="flex justify-end mt-4">
+              <div className="flex justify-end mt-3 md:mt-4">
                 <button
                   onClick={clearAllFilters}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-300 hover:scale-105"
+                  className="flex items-center gap-1 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl font-medium transition-all duration-300 hover:scale-105 text-xs md:text-sm"
                   style={{
                     background: `linear-gradient(135deg, #FF6B6B, #FF8E53)`,
                     color: "white",
                   }}
                 >
-                  <FaTrash />
+                  <FaTrash className="w-3 h-3 md:w-4 md:h-4" />
                   مسح جميع الفلاتر
                 </button>
               </div>
@@ -1618,10 +1619,10 @@ export default function MyOrders() {
 
           {/* Loading State when fetching orders */}
           {fetchingOrders && (
-            <div className="bg-white rounded-2xl p-8 text-center shadow-xl mb-6">
+            <div className="bg-white rounded-xl md:rounded-2xl p-6 md:p-8 text-center shadow-xl mb-4 md:mb-6">
               <div className="text-center">
                 <div
-                  className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+                  className="animate-spin rounded-full h-16 md:h-20 w-16 md:w-20 border-4 mx-auto mb-3 md:mb-4"
                   style={{
                     borderTopColor: "#2E3E88",
                     borderRightColor: "#32B9CC",
@@ -1630,7 +1631,7 @@ export default function MyOrders() {
                   }}
                 ></div>
                 <p
-                  className="text-lg font-semibold"
+                  className="text-base md:text-lg font-semibold"
                   style={{ color: "#2E3E88" }}
                 >
                   جارٍ تحميل الطلبات...
@@ -1643,21 +1644,21 @@ export default function MyOrders() {
           <div>
             {!fetchingOrders && orders.length === 0 ? (
               <div className="w-full">
-                <div className="bg-white rounded-2xl p-8 text-center shadow-xl">
-                  <div className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                <div className="bg-white rounded-xl md:rounded-2xl p-6 md:p-8 text-center shadow-xl">
+                  <div className="w-16 h-16 md:w-24 md:h-24 rounded-full mx-auto mb-4 md:mb-6 flex items-center justify-center bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
                     <FaShoppingBag
-                      className="text-4xl"
+                      className="text-2xl md:text-4xl"
                       style={{ color: "#2E3E88" }}
                     />
                   </div>
                   <h3
-                    className="text-2xl font-bold mb-3"
+                    className="text-xl md:text-2xl font-bold mb-2 md:mb-3"
                     style={{ color: "#2E3E88" }}
                   >
                     لا توجد طلبات
                   </h3>
                   <p
-                    className="mb-6 max-w-md mx-auto"
+                    className="mb-4 md:mb-6 max-w-md mx-auto text-sm md:text-base"
                     style={{ color: "#32B9CC" }}
                   >
                     {filter !== "all" ||
@@ -1670,7 +1671,7 @@ export default function MyOrders() {
                   </p>
                   <button
                     onClick={() => navigate("/")}
-                    className="px-8 py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                    className="px-6 md:px-8 py-2.5 md:py-3 rounded-lg md:rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl text-sm md:text-base"
                     style={{
                       background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                       color: "white",
@@ -1682,7 +1683,7 @@ export default function MyOrders() {
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 {orders.map((order, index) => {
                   const finalTotal = getFinalTotal(order);
 
@@ -1692,36 +1693,36 @@ export default function MyOrders() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col"
+                      className="bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col"
                       style={{
                         borderTop: "4px solid #2E3E88",
-                        minHeight: "320px",
+                        minHeight: "280px",
                       }}
                     >
                       {/* Header Section - Fixed Height */}
-                      <div className="p-6 pb-4 flex-grow-0">
+                      <div className="p-4 md:p-6 pb-2 md:pb-4 flex-grow-0">
                         <div className="flex justify-between items-start">
-                          <div className="flex items-center gap-3">
-                            <div className="p-3 rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
+                          <div className="flex items-center gap-2 md:gap-3">
+                            <div className="p-2 md:p-3 rounded-lg md:rounded-xl bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10">
                               <FaReceipt
-                                className="text-xl"
+                                className="text-lg md:text-xl"
                                 style={{ color: "#2E3E88" }}
                               />
                             </div>
-                            <div>
+                            <div className="min-w-0 flex-1">
                               <h4
-                                className="font-bold text-lg"
+                                className="font-bold text-base md:text-lg truncate"
                                 style={{ color: "#2E3E88" }}
                               >
                                 طلب #{order.orderNumber}
                               </h4>
-                              <div className="flex items-center gap-2 mt-1">
+                              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mt-1">
                                 <div
-                                  className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(order.status)}`}
+                                  className={`px-2 md:px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(order.status)} self-start`}
                                 >
                                   {getStatusText(order.status)}
                                 </div>
-                                <span className="text-sm text-gray-500">
+                                <span className="text-xs text-gray-500">
                                   {formatShortArabicDate(order.createdAt)}
                                 </span>
                               </div>
@@ -1730,19 +1731,19 @@ export default function MyOrders() {
                         </div>
                       </div>
 
-                      {/* Order Details Section - بدون اسكرول */}
-                      <div className="px-6 pb-4 flex-grow">
-                        <div className="space-y-3">
-                          <div className="flex items-start gap-3">
+                      {/* Order Details Section */}
+                      <div className="px-4 md:px-6 pb-3 md:pb-4 flex-grow">
+                        <div className="space-y-2 md:space-y-3">
+                          <div className="flex items-start gap-2 md:gap-3">
                             <FaMapMarkerAlt
-                              className="mt-1 flex-shrink-0"
+                              className="mt-0.5 md:mt-1 flex-shrink-0 w-3 h-3 md:w-4 md:h-4"
                               style={{ color: "#2E3E88" }}
                             />
-                            <div className="flex-1">
-                              <span className="text-sm text-gray-500">
+                            <div className="flex-1 min-w-0">
+                              <span className="text-xs text-gray-500">
                                 العنوان
                               </span>
-                              <p className="font-medium text-gray-700 line-clamp-1">
+                              <p className="font-medium text-gray-700 line-clamp-1 text-sm md:text-base">
                                 {order.location
                                   ? order.location.streetName ||
                                     "لم يتم تحديد العنوان"
@@ -1752,33 +1753,33 @@ export default function MyOrders() {
                           </div>
 
                           {order.location?.phoneNumber && (
-                            <div className="flex items-start gap-3">
+                            <div className="flex items-start gap-2 md:gap-3">
                               <FaPhone
-                                className="mt-1 flex-shrink-0"
+                                className="mt-0.5 md:mt-1 flex-shrink-0 w-3 h-3 md:w-4 md:h-4"
                                 style={{ color: "#2E3E88" }}
                               />
-                              <div>
-                                <span className="text-sm text-gray-500">
+                              <div className="min-w-0 flex-1">
+                                <span className="text-xs text-gray-500">
                                   الهاتف
                                 </span>
-                                <p className="font-medium line-clamp-1">
+                                <p className="font-medium line-clamp-1 text-sm md:text-base">
                                   {order.location.phoneNumber}
                                 </p>
                               </div>
                             </div>
                           )}
 
-                          <div className="flex items-start gap-3">
+                          <div className="flex items-start gap-2 md:gap-3">
                             <FaBox
-                              className="mt-1 flex-shrink-0"
+                              className="mt-0.5 md:mt-1 flex-shrink-0 w-3 h-3 md:w-4 md:h-4"
                               style={{ color: "#2E3E88" }}
                             />
-                            <div>
-                              <span className="text-sm text-gray-500">
+                            <div className="min-w-0 flex-1">
+                              <span className="text-xs text-gray-500">
                                 الإجمالي
                               </span>
                               <p
-                                className="font-bold text-lg"
+                                className="font-bold text-base md:text-lg"
                                 style={{ color: "#2E3E88" }}
                               >
                                 ج.م {finalTotal.toFixed(2)}
@@ -1787,16 +1788,16 @@ export default function MyOrders() {
                           </div>
 
                           {order.totalDiscount > 0 && (
-                            <div className="flex items-start gap-3">
+                            <div className="flex items-start gap-2 md:gap-3">
                               <FaTag
-                                className="mt-1 flex-shrink-0"
+                                className="mt-0.5 md:mt-1 flex-shrink-0 w-3 h-3 md:w-4 md:h-4"
                                 style={{ color: "#2E3E88" }}
                               />
-                              <div>
-                                <span className="text-sm text-gray-500">
+                              <div className="min-w-0 flex-1">
+                                <span className="text-xs text-gray-500">
                                   الخصم
                                 </span>
-                                <p className="font-medium text-green-600 line-clamp-1">
+                                <p className="font-medium text-green-600 line-clamp-1 text-sm md:text-base">
                                   -ج.م {order.totalDiscount.toFixed(2)}
                                 </p>
                               </div>
@@ -1806,18 +1807,18 @@ export default function MyOrders() {
                       </div>
 
                       {/* Action Buttons Section - Fixed at Bottom */}
-                      <div className="px-6 pb-6 pt-4 border-t border-gray-100 flex-shrink-0">
-                        <div className="flex gap-3">
+                      <div className="px-4 md:px-6 pb-4 md:pb-6 pt-3 md:pt-4 border-t border-gray-100 flex-shrink-0">
+                        <div className="flex gap-2 md:gap-3">
                           <button
                             onClick={() => handleOrderClick(order)}
-                            className="flex-1 py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
+                            className="flex-1 py-2 md:py-3 rounded-lg md:rounded-xl font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-1 md:gap-2 text-sm md:text-base"
                             style={{
                               background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                               color: "white",
                             }}
                           >
-                            <FaEye />
-                            التفاصيل
+                            <FaEye className="w-3 h-3 md:w-4 md:h-4" />
+                            <span>التفاصيل</span>
                           </button>
 
                           {isAdminOrRestaurantOrBranch && (
@@ -1826,14 +1827,14 @@ export default function MyOrders() {
                                 e.stopPropagation();
                                 handleUpdateStatus(order.id, order.status);
                               }}
-                              className="flex-1 py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
+                              className="flex-1 py-2 md:py-3 rounded-lg md:rounded-xl font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-1 md:gap-2 text-sm md:text-base"
                               style={{
                                 background: "#32B9CC10",
                                 color: "#32B9CC",
                               }}
                             >
-                              <FaSyncAlt />
-                              تغيير الحالة
+                              <FaSyncAlt className="w-3 h-3 md:w-4 md:h-4" />
+                              <span>تغيير الحالة</span>
                             </button>
                           )}
                         </div>
@@ -1845,42 +1846,45 @@ export default function MyOrders() {
             )}
           </div>
 
-          {/* Pagination */}
+          {/* Pagination - محسن للشاشات الصغيرة */}
           {isAdminOrRestaurantOrBranch && totalPages > 1 && (
-            <div className="mt-8">
-              <div className="bg-white rounded-2xl p-6 shadow-xl">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div className="text-gray-600">
-                    عرض {orders.length} من أصل {totalItems} طلب
-                  </div>
-                  <div className="flex items-center gap-2">
+            <div className="mt-6 md:mt-8">
+              <div className="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 shadow-xl">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-4">
+
+                  {/* أزرار التنقل */}
+                  <div className="flex items-center justify-center gap-3 md:gap-2">
+                    {/* زر الصفحة السابقة */}
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={handlePrevPage}
                       disabled={currentPage === 1}
-                      className={`p-2 rounded-full transition-all ${
+                      className={`flex items-center justify-center w-12 h-12 md:w-10 md:h-10 rounded-full transition-all ${
                         currentPage === 1
                           ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                           : "bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10 text-[#2E3E88] hover:bg-gradient-to-r hover:from-[#2E3E88]/20 hover:to-[#32B9CC]/20"
                       }`}
                     >
-                      <FaChevronRight />
+                      <FaChevronRight className="w-5 h-5 md:w-4 md:h-4" />
                     </motion.button>
 
-                    <div className="flex items-center gap-1">
+                    {/* أرقام الصفحات */}
+                    <div className="flex items-center gap-1.5 md:gap-1">
                       {getPaginationNumbers().map((pageNum, index) => (
                         <React.Fragment key={index}>
                           {pageNum === "..." ? (
-                            <span className="px-2 text-gray-400">...</span>
+                            <div className="w-10 h-10 md:w-8 md:h-8 flex items-center justify-center">
+                              <span className="text-gray-400 text-lg">...</span>
+                            </div>
                           ) : (
                             <motion.button
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
                               onClick={() => handlePageChange(pageNum)}
-                              className={`px-3 py-1 rounded-lg font-medium transition-all ${
+                              className={`w-10 h-10 md:w-8 md:h-8 flex items-center justify-center rounded-lg font-medium transition-all text-base md:text-sm ${
                                 currentPage === pageNum
-                                  ? "bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white"
+                                  ? "bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white shadow-lg"
                                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                               }`}
                             >
@@ -1891,18 +1895,19 @@ export default function MyOrders() {
                       ))}
                     </div>
 
+                    {/* زر الصفحة التالية */}
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={handleNextPage}
                       disabled={currentPage === totalPages}
-                      className={`p-2 rounded-full transition-all ${
+                      className={`flex items-center justify-center w-12 h-12 md:w-10 md:h-10 rounded-full transition-all ${
                         currentPage === totalPages
                           ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                           : "bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10 text-[#2E3E88] hover:bg-gradient-to-r hover:from-[#2E3E88]/20 hover:to-[#32B9CC]/20"
                       }`}
                     >
-                      <FaChevronLeft />
+                      <FaChevronLeft className="w-5 h-5 md:w-4 md:h-4" />
                     </motion.button>
                   </div>
                 </div>
@@ -1919,41 +1924,41 @@ export default function MyOrders() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4 bg-black/60 backdrop-blur-sm"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-white rounded-3xl w-full max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col"
+              className="bg-white rounded-xl md:rounded-3xl w-full max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col mx-2 md:mx-0"
             >
               {/* Modal Header */}
               <div
-                className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+                className="px-4 md:px-6 py-3 md:py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
                 style={{
                   background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                 }}
               >
-                <div className="flex items-center gap-3">
-                  <FaReceipt className="text-white text-xl" />
-                  <h3 className="text-lg font-bold text-white">
+                <div className="flex items-center gap-2 md:gap-3">
+                  <FaReceipt className="text-white text-lg md:text-xl" />
+                  <h3 className="text-base md:text-lg font-bold text-white truncate">
                     تفاصيل الطلب #{selectedOrder.orderNumber}
                   </h3>
                 </div>
                 <button
                   onClick={closeOrderDetails}
-                  className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
+                  className="p-1.5 md:p-2 rounded-full hover:bg-white/20 text-white transition-colors flex-shrink-0"
                 >
-                  <FaTimes size={16} />
+                  <FaTimes size={14} className="md:w-4 md:h-4" />
                 </button>
               </div>
 
               {/* Modal Content */}
-              <div className="flex-1 overflow-y-auto p-6">
+              <div className="flex-1 overflow-y-auto p-4 md:p-6">
                 {loadingOrderDetails ? (
-                  <div className="text-center py-12">
+                  <div className="text-center py-8 md:py-12">
                     <div
-                      className="animate-spin rounded-full h-20 w-20 border-4 mx-auto mb-4"
+                      className="animate-spin rounded-full h-16 md:h-20 w-16 md:w-20 border-4 mx-auto mb-3 md:mb-4"
                       style={{
                         borderTopColor: "#2E3E88",
                         borderRightColor: "#32B9CC",
@@ -1962,34 +1967,34 @@ export default function MyOrders() {
                       }}
                     ></div>
                     <p
-                      className="text-lg font-semibold"
+                      className="text-base md:text-lg font-semibold"
                       style={{ color: "#2E3E88" }}
                     >
                       جارٍ تحميل التفاصيل...
                     </p>
                   </div>
                 ) : orderDetails ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3 md:space-y-4">
                     {/* Order Status and Info */}
-                    <div className="bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-xl p-4">
-                      <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-gradient-to-r from-[#2E3E88]/5 to-[#32B9CC]/5 rounded-lg md:rounded-xl p-3 md:p-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
                         <div>
-                          <p className="text-sm text-gray-500 mb-1">
+                          <p className="text-xs md:text-sm text-gray-500 mb-1">
                             حالة الطلب
                           </p>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1 md:gap-2">
                             <div
-                              className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusColor(orderDetails.status)}`}
+                              className={`px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-semibold ${getStatusColor(orderDetails.status)}`}
                             >
                               {getStatusText(orderDetails.status)}
                             </div>
                           </div>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-500 mb-1">
+                          <p className="text-xs md:text-sm text-gray-500 mb-1">
                             تاريخ الطلب
                           </p>
-                          <p className="font-medium text-gray-700 line-clamp-1">
+                          <p className="font-medium text-gray-700 line-clamp-1 text-sm md:text-base">
                             {formatShortArabicDate(orderDetails.createdAt)}
                           </p>
                         </div>
@@ -1997,15 +2002,18 @@ export default function MyOrders() {
                     </div>
 
                     {/* Customer Information - Accordion Style */}
-                    <div className="border border-gray-200 rounded-xl overflow-hidden">
+                    <div className="border border-gray-200 rounded-lg md:rounded-xl overflow-hidden">
                       <button
                         onClick={() => toggleSection("customerInfo")}
-                        className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors"
+                        className="w-full flex items-center justify-between p-3 md:p-4 bg-gray-50 hover:bg-gray-100 transition-colors"
                       >
-                        <div className="flex items-center gap-3">
-                          <FaUser style={{ color: "#2E3E88" }} />
+                        <div className="flex items-center gap-2 md:gap-3">
+                          <FaUser
+                            style={{ color: "#2E3E88" }}
+                            className="w-4 h-4 md:w-5 md:h-5"
+                          />
                           <h4
-                            className="font-bold"
+                            className="font-bold text-sm md:text-base"
                             style={{ color: "#2E3E88" }}
                           >
                             معلومات العميل
@@ -2017,7 +2025,10 @@ export default function MyOrders() {
                           }}
                           transition={{ duration: 0.3 }}
                         >
-                          <FaChevronDown style={{ color: "#2E3E88" }} />
+                          <FaChevronDown
+                            style={{ color: "#2E3E88" }}
+                            className="w-3 h-3 md:w-4 md:h-4"
+                          />
                         </motion.div>
                       </button>
                       <AnimatePresence>
@@ -2028,15 +2039,15 @@ export default function MyOrders() {
                             exit={{ opacity: 0, height: 0 }}
                             className="overflow-hidden"
                           >
-                            <div className="p-4 space-y-3">
+                            <div className="p-3 md:p-4 space-y-2 md:space-y-3">
                               {orderDetails.user?.firstName && (
-                                <div className="flex items-center gap-3">
-                                  <FaUser className="text-gray-400" />
-                                  <div>
-                                    <p className="text-sm text-gray-500">
+                                <div className="flex items-center gap-2 md:gap-3">
+                                  <FaUser className="text-gray-400 w-3 h-3 md:w-4 md:h-4" />
+                                  <div className="min-w-0 flex-1">
+                                    <p className="text-xs md:text-sm text-gray-500">
                                       الاسم
                                     </p>
-                                    <p className="font-medium text-gray-700">
+                                    <p className="font-medium text-gray-700 text-sm md:text-base truncate">
                                       {orderDetails.user.firstName}{" "}
                                       {orderDetails.user.lastName || ""}
                                     </p>
@@ -2044,26 +2055,26 @@ export default function MyOrders() {
                                 </div>
                               )}
                               {orderDetails.user?.email && (
-                                <div className="flex items-center gap-3">
-                                  <FaEnvelope className="text-gray-400" />
-                                  <div>
-                                    <p className="text-sm text-gray-500">
+                                <div className="flex items-center gap-2 md:gap-3">
+                                  <FaEnvelope className="text-gray-400 w-3 h-3 md:w-4 md:h-4" />
+                                  <div className="min-w-0 flex-1">
+                                    <p className="text-xs md:text-sm text-gray-500">
                                       البريد الإلكتروني
                                     </p>
-                                    <p className="font-medium text-gray-700 line-clamp-1">
+                                    <p className="font-medium text-gray-700 line-clamp-1 text-sm md:text-base">
                                       {orderDetails.user.email}
                                     </p>
                                   </div>
                                 </div>
                               )}
                               {orderDetails.user?.phoneNumber && (
-                                <div className="flex items-center gap-3">
-                                  <FaPhone className="text-gray-400" />
-                                  <div>
-                                    <p className="text-sm text-gray-500">
+                                <div className="flex items-center gap-2 md:gap-3">
+                                  <FaPhone className="text-gray-400 w-3 h-3 md:w-4 md:h-4" />
+                                  <div className="min-w-0 flex-1">
+                                    <p className="text-xs md:text-sm text-gray-500">
                                       رقم الهاتف
                                     </p>
-                                    <p className="font-medium text-gray-700">
+                                    <p className="font-medium text-gray-700 text-sm md:text-base">
                                       {orderDetails.user.phoneNumber}
                                     </p>
                                   </div>
@@ -2076,15 +2087,18 @@ export default function MyOrders() {
                     </div>
 
                     {/* Delivery Information - Accordion Style */}
-                    <div className="border border-gray-200 rounded-xl overflow-hidden">
+                    <div className="border border-gray-200 rounded-lg md:rounded-xl overflow-hidden">
                       <button
                         onClick={() => toggleSection("deliveryInfo")}
-                        className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors"
+                        className="w-full flex items-center justify-between p-3 md:p-4 bg-gray-50 hover:bg-gray-100 transition-colors"
                       >
-                        <div className="flex items-center gap-3">
-                          <FaMapMarkerAlt style={{ color: "#2E3E88" }} />
+                        <div className="flex items-center gap-2 md:gap-3">
+                          <FaMapMarkerAlt
+                            style={{ color: "#2E3E88" }}
+                            className="w-4 h-4 md:w-5 md:h-5"
+                          />
                           <h4
-                            className="font-bold"
+                            className="font-bold text-sm md:text-base"
                             style={{ color: "#2E3E88" }}
                           >
                             معلومات التوصيل
@@ -2096,7 +2110,10 @@ export default function MyOrders() {
                           }}
                           transition={{ duration: 0.3 }}
                         >
-                          <FaChevronDown style={{ color: "#2E3E88" }} />
+                          <FaChevronDown
+                            style={{ color: "#2E3E88" }}
+                            className="w-3 h-3 md:w-4 md:h-4"
+                          />
                         </motion.div>
                       </button>
                       <AnimatePresence>
@@ -2107,21 +2124,21 @@ export default function MyOrders() {
                             exit={{ opacity: 0, height: 0 }}
                             className="overflow-hidden"
                           >
-                            <div className="p-4">
+                            <div className="p-3 md:p-4">
                               {orderDetails.location ? (
-                                <div className="space-y-2">
-                                  <p className="font-medium text-gray-700">
+                                <div className="space-y-1 md:space-y-2">
+                                  <p className="font-medium text-gray-700 text-sm md:text-base">
                                     {orderDetails.location.streetName}، مبنى{" "}
                                     {orderDetails.location.buildingNumber}
                                   </p>
-                                  <p className="text-sm text-gray-600">
+                                  <p className="text-xs md:text-sm text-gray-600">
                                     {orderDetails.location.city?.name || ""} -
                                     الطابق {orderDetails.location.floorNumber}،
                                     شقة {orderDetails.location.flatNumber}
                                   </p>
                                   {orderDetails.location
                                     .detailedDescription && (
-                                    <p className="text-sm text-gray-500 mt-2 line-clamp-2">
+                                    <p className="text-xs md:text-sm text-gray-500 mt-1 md:mt-2 line-clamp-2">
                                       {
                                         orderDetails.location
                                           .detailedDescription
@@ -2130,7 +2147,7 @@ export default function MyOrders() {
                                   )}
                                 </div>
                               ) : (
-                                <p className="font-medium text-gray-700">
+                                <p className="font-medium text-gray-700 text-sm md:text-base">
                                   الاستلام من المطعم
                                 </p>
                               )}
@@ -2142,15 +2159,18 @@ export default function MyOrders() {
 
                     {/* Order Items - Accordion Style */}
                     {orderDetails.items && orderDetails.items.length > 0 && (
-                      <div className="border border-gray-200 rounded-xl overflow-hidden">
+                      <div className="border border-gray-200 rounded-lg md:rounded-xl overflow-hidden">
                         <button
                           onClick={() => toggleSection("orderItems")}
-                          className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors"
+                          className="w-full flex items-center justify-between p-3 md:p-4 bg-gray-50 hover:bg-gray-100 transition-colors"
                         >
-                          <div className="flex items-center gap-3">
-                            <FaBox style={{ color: "#2E3E88" }} />
+                          <div className="flex items-center gap-2 md:gap-3">
+                            <FaBox
+                              style={{ color: "#2E3E88" }}
+                              className="w-4 h-4 md:w-5 md:h-5"
+                            />
                             <h4
-                              className="font-bold"
+                              className="font-bold text-sm md:text-base"
                               style={{ color: "#2E3E88" }}
                             >
                               العناصر المطلوبة ({orderDetails.items.length})
@@ -2162,7 +2182,10 @@ export default function MyOrders() {
                             }}
                             transition={{ duration: 0.3 }}
                           >
-                            <FaChevronDown style={{ color: "#2E3E88" }} />
+                            <FaChevronDown
+                              style={{ color: "#2E3E88" }}
+                              className="w-3 h-3 md:w-4 md:h-4"
+                            />
                           </motion.div>
                         </button>
                         <AnimatePresence>
@@ -2173,7 +2196,7 @@ export default function MyOrders() {
                               exit={{ opacity: 0, height: 0 }}
                               className="overflow-hidden"
                             >
-                              <div className="p-4 space-y-3">
+                              <div className="p-3 md:p-4 space-y-2 md:space-y-3">
                                 {orderDetails.items.map((item, index) => {
                                   const itemFinalPrice =
                                     calculateItemFinalPrice(item);
@@ -2186,39 +2209,39 @@ export default function MyOrders() {
                                   return (
                                     <div
                                       key={index}
-                                      className="border border-gray-200 rounded-xl p-4"
+                                      className="border border-gray-200 rounded-lg md:rounded-xl p-3 md:p-4"
                                     >
-                                      <div className="flex items-start gap-4">
+                                      <div className="flex items-start gap-3 md:gap-4">
                                         {imageUrl ? (
                                           <img
                                             src={`${BASE_URL}${imageUrl}`}
                                             alt={itemName}
-                                            className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                                            className="w-12 h-12 md:w-16 md:h-16 rounded-lg object-cover flex-shrink-0"
                                             onError={(e) => {
                                               e.target.onerror = null;
                                               e.target.src = "";
                                             }}
                                           />
                                         ) : (
-                                          <div className="w-16 h-16 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
-                                            <FaBox className="text-gray-400 text-xl" />
+                                          <div className="w-12 h-12 md:w-16 md:h-16 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+                                            <FaBox className="text-gray-400 text-lg md:text-xl" />
                                           </div>
                                         )}
                                         <div className="flex-1 min-w-0">
-                                          <h5 className="font-medium text-gray-800 line-clamp-1">
+                                          <h5 className="font-medium text-gray-800 line-clamp-1 text-sm md:text-base">
                                             {itemName}
                                           </h5>
-                                          <p className="text-sm text-gray-600 mt-1">
+                                          <p className="text-xs md:text-sm text-gray-600 mt-0.5 md:mt-1">
                                             الكمية: {item.quantity}
                                           </p>
                                           {item.note && (
-                                            <p className="text-sm text-gray-500 mt-2 line-clamp-1">
+                                            <p className="text-xs md:text-sm text-gray-500 mt-1 md:mt-2 line-clamp-1">
                                               {item.note}
                                             </p>
                                           )}
                                         </div>
                                         <div className="text-right flex-shrink-0">
-                                          <p className="font-bold text-gray-800">
+                                          <p className="font-bold text-gray-800 text-sm md:text-base">
                                             ج.م {itemFinalPrice.toFixed(2)}
                                           </p>
                                         </div>
@@ -2234,15 +2257,18 @@ export default function MyOrders() {
                     )}
 
                     {/* Order Summary - Accordion Style */}
-                    <div className="border border-gray-200 rounded-xl overflow-hidden">
+                    <div className="border border-gray-200 rounded-lg md:rounded-xl overflow-hidden">
                       <button
                         onClick={() => toggleSection("orderSummary")}
-                        className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors"
+                        className="w-full flex items-center justify-between p-3 md:p-4 bg-gray-50 hover:bg-gray-100 transition-colors"
                       >
-                        <div className="flex items-center gap-3">
-                          <FaReceipt style={{ color: "#2E3E88" }} />
+                        <div className="flex items-center gap-2 md:gap-3">
+                          <FaReceipt
+                            style={{ color: "#2E3E88" }}
+                            className="w-4 h-4 md:w-5 md:h-5"
+                          />
                           <h4
-                            className="font-bold"
+                            className="font-bold text-sm md:text-base"
                             style={{ color: "#2E3E88" }}
                           >
                             ملخص الطلب
@@ -2254,7 +2280,10 @@ export default function MyOrders() {
                           }}
                           transition={{ duration: 0.3 }}
                         >
-                          <FaChevronDown style={{ color: "#2E3E88" }} />
+                          <FaChevronDown
+                            style={{ color: "#2E3E88" }}
+                            className="w-3 h-3 md:w-4 md:h-4"
+                          />
                         </motion.div>
                       </button>
                       <AnimatePresence>
@@ -2265,12 +2294,12 @@ export default function MyOrders() {
                             exit={{ opacity: 0, height: 0 }}
                             className="overflow-hidden"
                           >
-                            <div className="p-4 space-y-3">
+                            <div className="p-3 md:p-4 space-y-2 md:space-y-3">
                               <div className="flex justify-between items-center">
-                                <span className="text-gray-600">
+                                <span className="text-gray-600 text-sm md:text-base">
                                   المجموع الجزئي
                                 </span>
-                                <span className="font-medium">
+                                <span className="font-medium text-sm md:text-base">
                                   ج.م{" "}
                                   {orderDetails.totalWithoutFee?.toFixed(2) ||
                                     "0.00"}
@@ -2278,27 +2307,27 @@ export default function MyOrders() {
                               </div>
                               {orderDetails.totalDiscount > 0 && (
                                 <div className="flex justify-between items-center text-green-600">
-                                  <span className="flex items-center gap-1">
-                                    <FaTag />
+                                  <span className="flex items-center gap-1 text-sm md:text-base">
+                                    <FaTag className="w-3 h-3 md:w-4 md:h-4" />
                                     الخصم
                                   </span>
-                                  <span className="font-medium">
+                                  <span className="font-medium text-sm md:text-base">
                                     -ج.م {orderDetails.totalDiscount.toFixed(2)}
                                   </span>
                                 </div>
                               )}
                               <div className="flex justify-between items-center">
-                                <span className="text-gray-600">
+                                <span className="text-gray-600 text-sm md:text-base">
                                   رسوم التوصيل
                                 </span>
-                                <span className="font-medium">
+                                <span className="font-medium text-sm md:text-base">
                                   ج.م{" "}
                                   {orderDetails.deliveryCost?.toFixed(2) ||
                                     "0.00"}
                                 </span>
                               </div>
-                              <div className="border-t pt-3 mt-3">
-                                <div className="flex justify-between items-center font-bold text-lg">
+                              <div className="border-t pt-2 md:pt-3 mt-2 md:mt-3">
+                                <div className="flex justify-between items-center font-bold text-base md:text-lg">
                                   <span>الإجمالي النهائي</span>
                                   <span style={{ color: "#2E3E88" }}>
                                     ج.م{" "}
@@ -2315,7 +2344,7 @@ export default function MyOrders() {
 
                     {/* Admin Actions */}
                     {isAdminOrRestaurantOrBranch && (
-                      <div className="flex gap-3 pt-4">
+                      <div className="flex flex-wrap gap-2 md:gap-3 pt-3 md:pt-4">
                         <motion.button
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
@@ -2325,9 +2354,9 @@ export default function MyOrders() {
                               orderDetails.status,
                             );
                           }}
-                          className="flex-1 py-3 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+                          className="flex-1 min-w-[calc(50%-0.5rem)] md:min-w-0 py-2 md:py-3 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white rounded-lg md:rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-1 md:gap-2 text-sm md:text-base"
                         >
-                          <FaSyncAlt />
+                          <FaSyncAlt className="w-3 h-3 md:w-4 md:h-4" />
                           تغيير الحالة
                         </motion.button>
                         {orderDetails.status !== "Cancelled" &&
@@ -2338,9 +2367,9 @@ export default function MyOrders() {
                               onClick={(e) =>
                                 handleCancelOrder(orderDetails.id, e)
                               }
-                              className="flex-1 py-3 bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] text-white rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+                              className="flex-1 min-w-[calc(50%-0.5rem)] md:min-w-0 py-2 md:py-3 bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] text-white rounded-lg md:rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-1 md:gap-2 text-sm md:text-base"
                             >
-                              <FaTrash />
+                              <FaTrash className="w-3 h-3 md:w-4 md:h-4" />
                               إلغاء الطلب
                             </motion.button>
                           )}
@@ -2351,9 +2380,9 @@ export default function MyOrders() {
                             onClick={(e) =>
                               handleReprintOrder(orderDetails.id, e)
                             }
-                            className="flex-1 py-3 bg-gradient-to-r from-[#32B9CC] to-[#2E3E88] text-white rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+                            className="flex-1 min-w-[calc(50%-0.5rem)] md:min-w-0 py-2 md:py-3 bg-gradient-to-r from-[#32B9CC] to-[#2E3E88] text-white rounded-lg md:rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-1 md:gap-2 text-sm md:text-base"
                           >
-                            <FaPrint />
+                            <FaPrint className="w-3 h-3 md:w-4 md:h-4" />
                             إعادة طباعة
                           </motion.button>
                         )}
@@ -2361,12 +2390,14 @@ export default function MyOrders() {
                     )}
                   </div>
                 ) : (
-                  <div className="text-center py-12">
-                    <FaTimesCircle className="text-red-500 text-4xl mx-auto mb-4" />
-                    <h3 className="text-lg font-bold text-gray-800 mb-2">
+                  <div className="text-center py-8 md:py-12">
+                    <FaTimesCircle className="text-red-500 text-3xl md:text-4xl mx-auto mb-3 md:mb-4" />
+                    <h3 className="text-base md:text-lg font-bold text-gray-800 mb-1 md:mb-2">
                       فشل تحميل التفاصيل
                     </h3>
-                    <p className="text-gray-600">يرجى المحاولة مرة أخرى</p>
+                    <p className="text-gray-600 text-sm md:text-base">
+                      يرجى المحاولة مرة أخرى
+                    </p>
                   </div>
                 )}
               </div>
@@ -2375,56 +2406,56 @@ export default function MyOrders() {
         )}
       </AnimatePresence>
 
-      {/* Status Update Modal - بدون اسكرول */}
+      {/* Status Update Modal */}
       <AnimatePresence>
         {showStatusModal && selectedOrderForStatus && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4 bg-black/60 backdrop-blur-sm"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-white rounded-3xl w-full max-w-md shadow-2xl flex flex-col"
+              className="bg-white rounded-xl md:rounded-3xl w-full max-w-md shadow-2xl flex flex-col mx-2 md:mx-0"
               style={{ maxHeight: "90vh" }}
             >
               {/* Modal Header */}
               <div
-                className="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
+                className="px-4 md:px-6 py-3 md:py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0"
                 style={{
                   background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                 }}
               >
-                <div className="flex items-center gap-3">
-                  <FaSyncAlt className="text-white text-xl" />
-                  <h3 className="text-lg font-bold text-white">
+                <div className="flex items-center gap-2 md:gap-3">
+                  <FaSyncAlt className="text-white text-lg md:text-xl" />
+                  <h3 className="text-base md:text-lg font-bold text-white truncate">
                     تغيير حالة الطلب
                   </h3>
                 </div>
                 <button
                   onClick={closeStatusModal}
-                  className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
+                  className="p-1.5 md:p-2 rounded-full hover:bg-white/20 text-white transition-colors flex-shrink-0"
                 >
-                  <FaTimes size={16} />
+                  <FaTimes size={14} className="md:w-4 md:h-4" />
                 </button>
               </div>
 
-              {/* Modal Content - بدون overflow-y-auto */}
-              <div className="p-6">
-                <div className="space-y-4">
+              {/* Modal Content */}
+              <div className="p-4 md:p-6">
+                <div className="space-y-3 md:space-y-4">
                   <div className="text-center">
-                    <p className="text-gray-600 mb-2">
+                    <p className="text-gray-600 mb-1 md:mb-2 text-sm md:text-base">
                       طلب #{selectedOrderForStatus.orderNumber}
                     </p>
-                    <div className="flex items-center justify-center gap-2">
-                      <span className="text-sm text-gray-500">
+                    <div className="flex items-center justify-center gap-1 md:gap-2">
+                      <span className="text-xs md:text-sm text-gray-500">
                         الحالة الحالية:
                       </span>
                       <div
-                        className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusColor(selectedOrderForStatus.status)}`}
+                        className={`px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-semibold ${getStatusColor(selectedOrderForStatus.status)}`}
                       >
                         {getStatusText(selectedOrderForStatus.status)}
                       </div>
@@ -2433,26 +2464,28 @@ export default function MyOrders() {
 
                   <div>
                     <label
-                      className="block text-sm font-semibold mb-2"
+                      className="block text-xs md:text-sm font-semibold mb-1 md:mb-2"
                       style={{ color: "#2E3E88" }}
                     >
                       اختر الحالة الجديدة
                     </label>
-                    <div className="space-y-2">
+                    <div className="space-y-1 md:space-y-2">
                       {statusOptions.map((option) => (
                         <div
                           key={option.value}
                           onClick={() => setNewStatus(option.value)}
-                          className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${
+                          className={`flex items-center gap-2 md:gap-3 p-2 md:p-3 rounded-lg md:rounded-xl cursor-pointer transition-all ${
                             newStatus === option.value
                               ? "bg-gradient-to-r from-[#2E3E88]/10 to-[#32B9CC]/10 border border-[#2E3E88]/20"
                               : "bg-gray-50 hover:bg-gray-100 border border-transparent"
                           }`}
                         >
                           {getStatusIconForOption(option.value)}
-                          <span className="font-medium">{option.label}</span>
+                          <span className="font-medium text-sm md:text-base">
+                            {option.label}
+                          </span>
                           {newStatus === option.value && (
-                            <FaCheck className="text-[#2E3E88] ml-auto" />
+                            <FaCheck className="text-[#2E3E88] ml-auto w-3 h-3 md:w-4 md:h-4" />
                           )}
                         </div>
                       ))}
@@ -2460,13 +2493,13 @@ export default function MyOrders() {
                   </div>
 
                   {/* Form Actions */}
-                  <div className="flex gap-3 pt-4">
+                  <div className="flex gap-2 md:gap-3 pt-3 md:pt-4">
                     <motion.button
                       type="button"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={closeStatusModal}
-                      className="flex-1 py-3 border-2 rounded-xl font-semibold transition-all duration-300"
+                      className="flex-1 py-2 md:py-3 border-2 rounded-lg md:rounded-xl font-semibold transition-all duration-300 text-sm md:text-base"
                       style={{
                         borderColor: "#2E3E88",
                         color: "#2E3E88",
@@ -2481,7 +2514,7 @@ export default function MyOrders() {
                       whileTap={{ scale: 0.98 }}
                       onClick={submitStatusUpdate}
                       disabled={updatingStatus || !newStatus}
-                      className={`flex-1 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                      className={`flex-1 py-2 md:py-3 rounded-lg md:rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-1 md:gap-2 text-sm md:text-base ${
                         updatingStatus || !newStatus
                           ? "opacity-50 cursor-not-allowed"
                           : "shadow-lg hover:shadow-xl cursor-pointer"
@@ -2500,13 +2533,13 @@ export default function MyOrders() {
                     >
                       {updatingStatus ? (
                         <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                          جاري التحديث...
+                          <div className="animate-spin rounded-full h-3 w-3 md:h-4 md:w-4 border-2 border-white border-t-transparent"></div>
+                          <span>جاري التحديث...</span>
                         </>
                       ) : (
                         <>
-                          <FaCheck />
-                          تحديث الحالة
+                          <FaCheck className="w-3 h-3 md:w-4 md:h-4" />
+                          <span>تحديث الحالة</span>
                         </>
                       )}
                     </motion.button>
