@@ -1426,7 +1426,7 @@ const Home = () => {
       {/* Categories Section - تابس أفقية مع أسهم */}
       <div
         ref={categoriesSectionRef}
-        className="relative max-w-7xl mx-auto mt-4 sm:mt-6 px-2 sm:px-4 z-20"
+        className="relative max-w-7xl mx-auto mt-2 sm:mt-3 px-2 sm:px-4 z-20"
       >
         <div
           className="bg-white rounded-2xl p-1 shadow-xl relative w-full"
@@ -1582,7 +1582,7 @@ const Home = () => {
       </div>
 
       {/* Products Grid */}
-      <div className="relative z-10 w-full mt-4 sm:mt-8">
+      <div className="relative z-10 w-full mt-2 sm:mt-4">
         {productsLoading || !imagesLoaded ? (
           <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-6 md:py-8">
             <ProductSkeleton count={pageSize} />
@@ -1643,9 +1643,9 @@ const Home = () => {
             </div>
           </div>
         ) : (
-          <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-6 md:py-8 relative">
+          <div className="max-w-7xl mx-auto px-2 sm:px-4 py-2 sm:py-4 md:py-6 relative">
             {/* Products Grid Header */}
-            <div className="flex items-center justify-between mb-4 sm:mb-6 md:mb-8 px-1 sm:px-2">
+            <div className="flex items-center justify-between mb-3 sm:mb-4 md:mb-6 px-1 sm:px-2">
               {/* العنوان وعدد المنتجات – ناحية الشمال */}
               <div>
                 <h2
@@ -2162,7 +2162,7 @@ const Home = () => {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="mt-8 sm:mt-12 flex flex-col items-center">
+              <div className="mt-6 sm:mt-8 flex flex-col items-center">
                 <div className="flex items-center justify-center gap-1 sm:gap-2">
                   <button
                     onClick={handlePrevPage}
