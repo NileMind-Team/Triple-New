@@ -123,7 +123,7 @@ const Favorites = () => {
               isPriceBasedOnRequest: productData.basePrice === 0,
               image: productData.imageUrl
                 ? `https://restaurant-template.runasp.net/${productData.imageUrl}`
-                : "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w-400&h-300&fit-crop",
+                : "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&h=300&fit=crop",
               ingredients: [],
               description: productData.description,
               isActive: productData.isActive,
@@ -410,10 +410,50 @@ const Favorites = () => {
     }
   };
 
+  const formatPriceDisplay = (product) => {
+    if (product.isPriceBasedOnRequest) {
+      return (
+        <div
+          className="font-bold text-base sm:text-lg"
+          style={{ color: "#2E3E88" }}
+        >
+          السعر حسب الطلب
+        </div>
+      );
+    }
+
+    if (product.itemOffer && product.itemOffer.isEnabled) {
+      return (
+        <>
+          <div className="text-gray-400 text-xs sm:text-sm line-through">
+            {product.price} ج.م
+          </div>
+          <div
+            className="font-bold text-base sm:text-lg"
+            style={{ color: "#2E3E88" }}
+          >
+            {product.finalPrice.toFixed(2)} ج.م
+          </div>
+        </>
+      );
+    }
+
+    return (
+      <div
+        className="font-bold text-base sm:text-lg"
+        style={{ color: "#2E3E88" }}
+      >
+        {product.price} ج.م
+      </div>
+    );
+  };
+
   const formatPriceDisplayMobile = (product) => {
     if (product.isPriceBasedOnRequest) {
       return (
-        <div className="text-[#2E3E88] font-bold text-sm">السعر حسب الطلب</div>
+        <div className="font-bold text-sm" style={{ color: "#2E3E88" }}>
+          السعر حسب الطلب
+        </div>
       );
     }
 
@@ -423,7 +463,7 @@ const Favorites = () => {
           <div className="text-gray-400 text-xs line-through">
             {product.price} ج.م
           </div>
-          <div className="text-[#2E3E88] font-bold text-sm">
+          <div className="font-bold text-sm" style={{ color: "#2E3E88" }}>
             {product.finalPrice.toFixed(2)} ج.م
           </div>
         </>
@@ -431,36 +471,7 @@ const Favorites = () => {
     }
 
     return (
-      <div className="text-[#2E3E88] font-bold text-sm">
-        {product.price} ج.م
-      </div>
-    );
-  };
-
-  const formatPriceDisplay = (product) => {
-    if (product.isPriceBasedOnRequest) {
-      return (
-        <div className="text-[#2E3E88] font-bold text-lg sm:text-xl">
-          السعر حسب الطلب
-        </div>
-      );
-    }
-
-    if (product.itemOffer && product.itemOffer.isEnabled) {
-      return (
-        <>
-          <div className="text-gray-400 text-sm line-through">
-            {product.price} ج.م
-          </div>
-          <div className="text-[#2E3E88] font-bold text-lg sm:text-xl">
-            {product.finalPrice.toFixed(2)} ج.م
-          </div>
-        </>
-      );
-    }
-
-    return (
-      <div className="text-[#2E3E88] font-bold text-lg sm:text-xl">
+      <div className="font-bold text-sm" style={{ color: "#2E3E88" }}>
         {product.price} ج.م
       </div>
     );
@@ -601,22 +612,11 @@ const Favorites = () => {
               <div className="sm:hidden">
                 <div className="space-y-3">
                   {favoriteProducts.map((product, index) => (
-                    <motion.div
+                    <div
                       key={product.favoriteId}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      whileHover={{ y: -2 }}
-                      className={`group relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 ${
+                      className={`bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 cursor-pointer ${
                         !isProductAvailableForCart(product) ? "opacity-70" : ""
                       }`}
-                      style={{
-                        background: `linear-gradient(145deg, #ffffff, #f0f8ff)`,
-                        boxShadow: "0 10px 25px rgba(46, 62, 136, 0.1)",
-                        height: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                      }}
                       onClick={(e) => {
                         const isButtonClick =
                           e.target.closest("button") ||
@@ -627,18 +627,17 @@ const Favorites = () => {
                         }
                       }}
                     >
-                      {/* Offer Badge */}
                       {product.itemOffer && product.itemOffer.isEnabled && (
                         <div className="absolute top-2 right-2 z-10">
                           <div
-                            className="px-3 py-1.5 rounded-xl shadow-2xl flex items-center gap-1.5 text-white font-bold text-xs"
+                            className="px-2 py-1 rounded-xl shadow-2xl flex items-center gap-1 text-white font-bold"
                             style={{
                               background: `linear-gradient(135deg, #FF6B6B, #FFA726)`,
                               boxShadow: "0 5px 15px rgba(255, 107, 107, 0.4)",
                             }}
                           >
                             <FaBolt className="text-xs" />
-                            <span className="whitespace-nowrap">
+                            <span className="text-xs whitespace-nowrap">
                               {formatOfferText(product.itemOffer)}
                             </span>
                           </div>
@@ -652,7 +651,8 @@ const Favorites = () => {
                               <img
                                 src={product.image}
                                 alt={product.name}
-                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                className="w-full h-full object-cover"
+                                loading="lazy"
                               />
                             </div>
                           </div>
@@ -671,14 +671,14 @@ const Favorites = () => {
                             </div>
 
                             <h3
-                              className="font-bold text-sm text-gray-800 group-hover:text-[#2E3E88] transition-colors line-clamp-1 mb-2"
+                              className="font-bold text-sm text-gray-800 hover:text-[#2E3E88] line-clamp-1 mb-2"
                               dir={isArabic(product.name) ? "rtl" : "ltr"}
                             >
                               {product.name}
                             </h3>
 
                             <p
-                              className="text-gray-600 text-xs mb-2 line-clamp-2 leading-relaxed"
+                              className="text-gray-600 text-xs mb-2 line-clamp-1 leading-relaxed"
                               dir={
                                 isArabic(product.description) ? "rtl" : "ltr"
                               }
@@ -694,31 +694,44 @@ const Favorites = () => {
                       </div>
 
                       <div className="px-3 pb-3">
-                        <div className="flex gap-2">
+                        <div className="flex gap-1.5">
                           <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            onClick={(e) => handleAddToCart(product, e)}
+                            onClick={(e) => {
+                              if (isProductAvailableForCart(product)) {
+                                handleAddToCart(product, e);
+                              }
+                            }}
                             disabled={
                               !isProductAvailableForCart(product) ||
                               addingToCart === product.id
                             }
-                            className={`flex-1 py-2.5 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 text-xs no-product-details ${
+                            className={`flex-1 py-2 rounded-xl font-semibold flex items-center justify-center gap-1.5 text-xs no-product-details ${
                               addingToCart === product.id
                                 ? "bg-gray-500 text-white cursor-wait"
                                 : isProductAvailableForCart(product)
-                                  ? "bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white"
+                                  ? "hover:scale-105"
                                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
                             }`}
+                            style={
+                              isProductAvailableForCart(product) &&
+                              addingToCart !== product.id
+                                ? {
+                                    background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                                    color: "white",
+                                  }
+                                : {}
+                            }
                           >
                             {addingToCart === product.id ? (
                               <>
-                                <div className="animate-spin rounded-full h-3 w-3 border-t-2 border-b-2 border-white"></div>
+                                <div className="animate-spin rounded-full h-2.5 w-2.5 border-t-2 border-b-2 border-white"></div>
                                 <span>يتم الإضافة...</span>
                               </>
                             ) : (
                               <>
-                                <FaShoppingCart className="w-3.5 h-3.5" />
+                                <FaShoppingCart className="w-3 h-3" />
                                 <span>
                                   {!isProductAvailableForCart(product)
                                     ? "غير متوفر"
@@ -735,19 +748,19 @@ const Favorites = () => {
                               e.stopPropagation();
                               handleProductDetails(product);
                             }}
-                            className="flex-1 py-2.5 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 text-xs no-product-details"
+                            className="flex-1 py-2 rounded-xl font-semibold flex items-center justify-center gap-1.5 text-xs no-product-details"
                             style={{
                               background: `#32B9CC15`,
                               color: "#32B9CC",
                             }}
                           >
-                            <FaEye className="w-3.5 h-3.5" />
+                            <FaEye className="w-3 h-3" />
                             <span>التفاصيل</span>
                           </motion.button>
 
                           <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                             onClick={(e) => {
                               e.stopPropagation();
                               handleRemoveFromFavorites(
@@ -755,209 +768,196 @@ const Favorites = () => {
                                 product.name,
                               );
                             }}
-                            className="p-2.5 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center text-xs no-product-details text-red-500 bg-red-50 hover:bg-red-100"
+                            className={`p-2.5 rounded-xl font-semibold flex items-center justify-center text-xs no-product-details ${"text-red-500 bg-red-50 hover:bg-red-100"}`}
                           >
-                            <FaHeart size={16} />
+                            <FaHeart size={14} />
                           </motion.button>
                         </div>
                       </div>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               </div>
 
               {/* Desktop View */}
-              <div className="hidden sm:grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+              <div className="hidden sm:grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
                 {favoriteProducts.map((product, index) => (
-                  <motion.div
-                    key={product.favoriteId}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    whileHover={{ y: -5 }}
-                    className={`group relative rounded-3xl overflow-hidden cursor-pointer transition-all duration-500 transform hover:-translate-y-2 ${
+                  <div
+                    key={`${product.favoriteId}-${index}`}
+                    className={`w-full relative ${
                       !isProductAvailableForCart(product) ? "opacity-70" : ""
                     }`}
-                    style={{
-                      background: `linear-gradient(145deg, #ffffff, #f0f8ff)`,
-                      boxShadow: "0 15px 35px rgba(46, 62, 136, 0.1)",
-                      height: "100%",
-                      display: "flex",
-                      flexDirection: "column",
-                    }}
-                    onClick={(e) => {
-                      const isButtonClick =
-                        e.target.closest("button") ||
-                        e.target.closest(".no-product-details");
-
-                      if (!isButtonClick) {
-                        handleProductDetails(product);
-                      }
-                    }}
                   >
-                    {/* Offer Badge */}
-                    {product.itemOffer && product.itemOffer.isEnabled && (
-                      <div className="absolute top-4 right-4 z-10">
-                        <div
-                          className="px-4 py-2 rounded-xl shadow-2xl flex items-center gap-2 text-white font-bold text-xs md:text-sm"
-                          style={{
-                            background: `linear-gradient(135deg, #FF6B6B, #FFA726)`,
-                            boxShadow: "0 5px 15px rgba(255, 107, 107, 0.4)",
-                          }}
-                        >
-                          <FaBolt className="text-xs md:text-sm" />
-                          <span className="whitespace-nowrap">
-                            {formatOfferText(product.itemOffer)}
+                    <div
+                      className={`group relative rounded-3xl overflow-hidden cursor-pointer transition-all duration-500 transform hover:-translate-y-2 h-full ${
+                        !isProductAvailableForCart(product) ? "opacity-70" : ""
+                      }`}
+                      style={{
+                        background: `linear-gradient(145deg, #ffffff, #f0f8ff)`,
+                        boxShadow: "0 15px 35px rgba(46, 62, 136, 0.1)",
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                      onClick={(e) => {
+                        const isButtonClick =
+                          e.target.closest("button") ||
+                          e.target.closest(".no-product-details");
+
+                        if (!isButtonClick) {
+                          handleProductDetails(product);
+                        }
+                      }}
+                    >
+                      {/* Offer Badge */}
+                      {product.itemOffer && product.itemOffer.isEnabled && (
+                        <div className="absolute top-4 right-4 z-10">
+                          <div
+                            className="px-4 py-2 rounded-xl shadow-2xl flex items-center gap-2 text-white font-bold"
+                            style={{
+                              background: `linear-gradient(135deg, #FF6B6B, #FFA726)`,
+                              boxShadow: "0 5px 15px rgba(255, 107, 107, 0.4)",
+                            }}
+                          >
+                            <FaBolt />
+                            <span className="text-xs whitespace-nowrap">
+                              {formatOfferText(product.itemOffer)}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Product Image */}
+                      <div className="relative h-48 w-full overflow-hidden">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          loading="lazy"
+                        />
+
+                        {/* Gradient Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      </div>
+
+                      {/* Product Content */}
+                      <div className="p-4 flex-1 flex flex-col">
+                        {/* Category Tag */}
+                        <div className="mb-2">
+                          <span
+                            className="inline-block px-2 py-1 rounded-full text-xs font-medium"
+                            style={{
+                              background: `#2E3E8815`,
+                              color: "#2E3E88",
+                            }}
+                          >
+                            {product.category}
                           </span>
                         </div>
-                      </div>
-                    )}
 
-                    {/* Product Image */}
-                    <div className="relative h-48 md:h-56 w-full overflow-hidden">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        loading="lazy"
-                      />
-
-                      {/* Gradient Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                      {/* Remove from Favorites Button */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRemoveFromFavorites(
-                            product.favoriteId,
-                            product.name,
-                          );
-                        }}
-                        className="absolute top-3 left-3 z-10 bg-white/90 backdrop-blur-sm p-2 md:p-3 rounded-full shadow-lg hover:bg-red-50 hover:text-red-500 text-red-500 transition-all duration-300 no-product-details"
-                      >
-                        <FaHeart className="text-sm md:text-base" />
-                      </button>
-                    </div>
-
-                    {/* Product Content */}
-                    <div className="p-4 md:p-5 flex-1 flex flex-col">
-                      {/* Category Tag */}
-                      <div className="mb-3">
-                        <span
-                          className="inline-block px-2 py-1 md:px-3 md:py-1 rounded-full text-xs font-medium"
-                          style={{
-                            background: `#2E3E8815`,
-                            color: "#2E3E88",
-                          }}
+                        {/* Product Name */}
+                        <h3
+                          className="font-bold text-base mb-1 line-clamp-1 group-hover:text-opacity-80 transition-colors"
+                          dir={isArabic(product.name) ? "rtl" : "ltr"}
+                          style={{ color: "#2E3E88" }}
                         >
-                          {product.category}
-                        </span>
-                      </div>
+                          {product.name}
+                        </h3>
 
-                      {/* Product Name */}
-                      <h3
-                        className="font-bold text-base md:text-lg mb-2 line-clamp-1 group-hover:text-[#2E3E88] transition-colors"
-                        dir={isArabic(product.name) ? "rtl" : "ltr"}
-                      >
-                        {product.name}
-                      </h3>
+                        {/* Product Description */}
+                        <p
+                          className="text-gray-600 text-xs mb-3 line-clamp-2 leading-relaxed flex-1"
+                          dir={isArabic(product.description) ? "rtl" : "ltr"}
+                        >
+                          {product.description}
+                        </p>
 
-                      {/* Product Description */}
-                      <p
-                        className="text-gray-600 text-xs md:text-sm mb-3 md:mb-4 line-clamp-2 leading-relaxed flex-1"
-                        dir={isArabic(product.description) ? "rtl" : "ltr"}
-                      >
-                        {product.description}
-                      </p>
+                        {/* Price & Actions */}
+                        <div className="mt-auto pt-3 border-t border-gray-100">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                              {formatPriceDisplay(product)}
+                            </div>
 
-                      {/* Price & Actions */}
-                      <div className="mt-auto pt-3 md:pt-4 border-t border-gray-100">
-                        <div className="flex items-center justify-between mb-3 md:mb-4">
-                          <div className="flex items-center gap-2">
-                            {formatPriceDisplay(product)}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRemoveFromFavorites(
+                                  product.favoriteId,
+                                  product.name,
+                                );
+                              }}
+                              className={`p-2 rounded-full no-product-details transition-all hover:scale-110 text-red-500 bg-red-50`}
+                            >
+                              <FaHeart size={18} />
+                            </button>
                           </div>
 
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleRemoveFromFavorites(
-                                product.favoriteId,
-                                product.name,
-                              );
-                            }}
-                            className="p-2 rounded-full text-red-500 bg-red-50 hover:bg-red-100 no-product-details transition-all hover:scale-110"
-                          >
-                            <FaHeart className="text-base md:text-lg" />
-                          </button>
-                        </div>
-
-                        <div className="flex gap-2">
-                          <button
-                            onClick={(e) => {
-                              if (isProductAvailableForCart(product)) {
-                                handleAddToCart(product, e);
+                          <div className="flex gap-2">
+                            <button
+                              onClick={(e) => {
+                                if (isProductAvailableForCart(product)) {
+                                  handleAddToCart(product, e);
+                                }
+                              }}
+                              disabled={
+                                !isProductAvailableForCart(product) ||
+                                addingToCart === product.id
                               }
-                            }}
-                            disabled={
-                              !isProductAvailableForCart(product) ||
-                              addingToCart === product.id
-                            }
-                            className={`flex-1 py-2 md:py-3 rounded-xl font-bold flex items-center justify-center gap-2 text-xs md:text-sm no-product-details transition-all ${
-                              addingToCart === product.id
-                                ? "bg-gray-500 text-white cursor-wait"
-                                : isProductAvailableForCart(product)
-                                  ? "hover:scale-105 active:scale-95"
-                                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                            }`}
-                            style={
-                              isProductAvailableForCart(product) &&
-                              addingToCart !== product.id
-                                ? {
-                                    background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
-                                    color: "white",
-                                    boxShadow: `0 5px 15px #2E3E8830`,
-                                  }
-                                : {}
-                            }
-                          >
-                            {addingToCart === product.id ? (
-                              <>
-                                <div className="animate-spin rounded-full h-3 w-3 md:h-4 md:w-4 border-t-2 border-b-2 border-white"></div>
-                                <span className="hidden xs:inline">
-                                  يتم الإضافة...
-                                </span>
-                              </>
-                            ) : (
-                              <>
-                                <FaShoppingCart className="w-3 h-3 md:w-4 md:h-4" />
-                                <span className="hidden xs:inline">
-                                  {!isProductAvailableForCart(product)
-                                    ? "غير متوفر"
-                                    : "أضف إلى السلة"}
-                                </span>
-                              </>
-                            )}
-                          </button>
+                              className={`flex-1 py-3 rounded-xl font-bold flex items-center justify-center gap-2 text-xs no-product-details transition-all ${
+                                addingToCart === product.id
+                                  ? "bg-gray-500 text-white cursor-wait"
+                                  : isProductAvailableForCart(product)
+                                    ? "hover:scale-105 active:scale-95"
+                                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                              }`}
+                              style={
+                                isProductAvailableForCart(product) &&
+                                addingToCart !== product.id
+                                  ? {
+                                      background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                                      color: "white",
+                                      boxShadow: `0 5px 15px #2E3E8830`,
+                                    }
+                                  : {}
+                              }
+                            >
+                              {addingToCart === product.id ? (
+                                <>
+                                  <div className="animate-spin rounded-full h-3 w-3 border-t-2 border-b-2 border-white"></div>
+                                  <span>يتم الإضافة...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <FaShoppingCart className="w-4 h-4" />
+                                  <span>
+                                    {!isProductAvailableForCart(product)
+                                      ? "غير متوفر"
+                                      : "أضف إلى السلة"}
+                                  </span>
+                                </>
+                              )}
+                            </button>
 
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleProductDetails(product);
-                            }}
-                            className="w-10 md:w-12 flex items-center justify-center rounded-xl font-bold no-product-details transition-all hover:scale-105 active:scale-95"
-                            style={{
-                              background: `#32B9CC15`,
-                              color: "#32B9CC",
-                            }}
-                            title="عرض التفاصيل"
-                          >
-                            <FaEye className="w-4 h-4 md:w-5 md:h-5" />
-                          </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleProductDetails(product);
+                              }}
+                              className="w-12 flex items-center justify-center rounded-xl font-bold no-product-details transition-all hover:scale-105 active:scale-95"
+                              style={{
+                                background: `#32B9CC15`,
+                                color: "#32B9CC",
+                              }}
+                              title="عرض التفاصيل"
+                            >
+                              <FaEye className="w-4 h-4" />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </>
