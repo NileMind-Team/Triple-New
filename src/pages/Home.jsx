@@ -165,47 +165,62 @@ const Home = () => {
     });
   };
 
-  // Skeleton Loading Component - تصميم جديد
+  // Skeleton Loading Component - تصميم جديد مع استجابة كاملة
   const ProductSkeleton = ({ count = 8 }) => {
     return (
       <div
-        className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"
+        className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6"
         style={{ direction: "rtl" }}
       >
         {Array.from({ length: count }).map((_, index) => (
           <div
             key={index}
-            className="bg-white dark:bg-gray-800 rounded-3xl shadow-lg overflow-hidden border-0 relative min-h-[200px] animate-pulse"
-            style={{
-              background: "linear-gradient(145deg, #ffffff, #f5f9ff)",
-              boxShadow: "0 10px 30px rgba(46, 62, 136, 0.1)",
-            }}
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 w-full relative min-h-[180px] animate-pulse"
           >
-            {/* Skeleton Image */}
-            <div className="relative h-40 w-full overflow-hidden bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+            {/* Mobile View Skeleton */}
+            <div className="sm:hidden">
+              <div className="p-3">
+                <div className="flex">
+                  <div className="w-28 flex-shrink-0 ml-3">
+                    <div className="relative h-32 w-full overflow-hidden rounded-xl bg-gray-200 dark:bg-gray-700"></div>
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded mb-3 w-3/4"></div>
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="px-3 pb-3">
+                <div className="flex gap-2">
+                  <div className="flex-1 py-2.5 rounded-xl bg-gray-200 dark:bg-gray-700"></div>
+                  <div className="flex-1 py-2.5 rounded-xl bg-gray-200 dark:bg-gray-700"></div>
+                  <div className="p-2.5 rounded-xl bg-gray-200 dark:bg-gray-700"></div>
+                </div>
+              </div>
             </div>
 
-            {/* Skeleton Content */}
-            <div className="p-4">
-              <div className="flex justify-between items-start mb-3">
-                <div className="space-y-2 flex-1">
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded-full w-3/4"></div>
-                  <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full w-1/2"></div>
+            {/* Desktop View Skeleton */}
+            <div className="hidden sm:block">
+              <div className="relative h-48 w-full overflow-hidden bg-gray-200 dark:bg-gray-700"></div>
+
+              <div className="p-3 sm:p-4">
+                <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-3 w-3/4"></div>
+
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
+                  </div>
+                  <div className="p-2 rounded-full bg-gray-200 dark:bg-gray-700"></div>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 ml-2"></div>
-              </div>
 
-              <div className="space-y-3">
-                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
-                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full w-5/6"></div>
-              </div>
-
-              <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded-lg w-20"></div>
-                <div className="flex gap-2">
-                  <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-xl w-24"></div>
-                  <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-xl w-8"></div>
+                <div className="flex gap-2 mt-3 sm:mt-4">
+                  <div className="flex-1 py-2 sm:py-2.5 rounded-xl bg-gray-200 dark:bg-gray-700"></div>
+                  <div className="flex-1 py-2 sm:py-2.5 rounded-xl bg-gray-200 dark:bg-gray-700"></div>
                 </div>
               </div>
             </div>
@@ -366,7 +381,7 @@ const Home = () => {
         isPriceBasedOnRequest: product.basePrice === 0,
         image: product.imageUrl
           ? `https://restaurant-template.runasp.net/${product.imageUrl}`
-          : "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w-400&h-300&fit-crop",
+          : "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&h=300&fit=crop",
         ingredients: [],
         description: product.description,
         isActive: product.isActive,
@@ -1102,7 +1117,7 @@ const Home = () => {
     if (product.isPriceBasedOnRequest) {
       return (
         <div
-          className="font-bold text-lg sm:text-xl"
+          className="font-bold text-base sm:text-lg"
           style={{ color: "#2E3E88" }}
         >
           السعر حسب الطلب
@@ -1113,11 +1128,11 @@ const Home = () => {
     if (product.itemOffer && product.itemOffer.isEnabled) {
       return (
         <>
-          <div className="text-gray-400 dark:text-gray-500 text-sm line-through">
+          <div className="text-gray-400 dark:text-gray-500 text-xs sm:text-sm line-through">
             {product.price} ج.م
           </div>
           <div
-            className="font-bold text-lg sm:text-xl"
+            className="font-bold text-base sm:text-lg"
             style={{ color: "#2E3E88" }}
           >
             {product.finalPrice.toFixed(2)} ج.م
@@ -1128,9 +1143,38 @@ const Home = () => {
 
     return (
       <div
-        className="font-bold text-lg sm:text-xl"
+        className="font-bold text-base sm:text-lg"
         style={{ color: "#2E3E88" }}
       >
+        {product.price} ج.م
+      </div>
+    );
+  };
+
+  const formatPriceDisplayMobile = (product) => {
+    if (product.isPriceBasedOnRequest) {
+      return (
+        <div className="font-bold text-sm" style={{ color: "#2E3E88" }}>
+          السعر حسب الطلب
+        </div>
+      );
+    }
+
+    if (product.itemOffer && product.itemOffer.isEnabled) {
+      return (
+        <>
+          <div className="text-gray-400 dark:text-gray-500 text-xs line-through">
+            {product.price} ج.م
+          </div>
+          <div className="font-bold text-sm" style={{ color: "#2E3E88" }}>
+            {product.finalPrice.toFixed(2)} ج.م
+          </div>
+        </>
+      );
+    }
+
+    return (
+      <div className="font-bold text-sm" style={{ color: "#2E3E88" }}>
         {product.price} ج.م
       </div>
     );
@@ -1271,6 +1315,25 @@ const Home = () => {
     return range;
   };
 
+  // دوال للتحكم في الأسهم
+  const scrollCategoriesLeft = () => {
+    if (categoriesContainerRef.current) {
+      categoriesContainerRef.current.scrollBy({
+        left: -200,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const scrollCategoriesRight = () => {
+    if (categoriesContainerRef.current) {
+      categoriesContainerRef.current.scrollBy({
+        left: 200,
+        behavior: "smooth",
+      });
+    }
+  };
+
   useEffect(() => {
     const handleCategorySelectedFromFooter = (event) => {
       const { categoryId, fromHomePage } = event.detail;
@@ -1360,26 +1423,53 @@ const Home = () => {
         <HeroSwipper />
       </div>
 
-      {/* Categories Section - متوسطة في المنتصف */}
+      {/* Categories Section - تابس أفقية مع أسهم */}
       <div
         ref={categoriesSectionRef}
-        className="relative max-w-7xl mx-auto mt-6 px-4 z-20"
+        className="relative max-w-7xl mx-auto mt-4 sm:mt-6 px-2 sm:px-4 z-20"
       >
         <div
-          className="bg-white rounded-2xl p-2 shadow-xl relative"
+          className="bg-white rounded-2xl p-1 shadow-xl relative w-full"
           style={{
             boxShadow: "0 10px 30px rgba(46, 62, 136, 0.1)",
             background: `linear-gradient(135deg, #ffffff, #f0f8ff)`,
           }}
         >
+          {/* السهم الأيسر - يشير لليسار */}
+          <button
+            onClick={scrollCategoriesLeft}
+            className="absolute left-1 md:left-2 top-1/2 transform -translate-y-1/2 rounded-full p-1.5 sm:p-2 z-10 shadow-lg transition-all duration-300 hover:scale-110 hidden sm:block"
+            style={{
+              background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+              color: "white",
+              boxShadow: "0 4px 12px rgba(46, 62, 136, 0.2)",
+            }}
+            aria-label="التقدم يساراً"
+          >
+            <FaChevronLeft size={12} className="sm:w-3 sm:h-3" />
+          </button>
+
+          {/* السهم الأيمن - يشير لليمين */}
+          <button
+            onClick={scrollCategoriesRight}
+            className="absolute right-1 md:right-2 top-1/2 transform -translate-y-1/2 rounded-full p-1.5 sm:p-2 z-10 shadow-lg transition-all duration-300 hover:scale-110 hidden sm:block"
+            style={{
+              background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+              color: "white",
+              boxShadow: "0 4px 12px rgba(46, 62, 136, 0.2)",
+            }}
+            aria-label="التقدم يميناً"
+          >
+            <FaChevronRight size={12} className="sm:w-3 sm:h-3" />
+          </button>
+
           <div
             ref={categoriesContainerRef}
-            className="flex overflow-x-auto scrollbar-hide gap-2 px-2 py-3 cursor-grab active:cursor-grabbing select-none justify-center"
+            className="flex overflow-x-auto scrollbar-hide px-6 sm:px-8 md:px-10 py-2 sm:py-3 cursor-grab active:cursor-grabbing select-none"
             style={{
               scrollbarWidth: "none",
               msOverflowStyle: "none",
               direction: "rtl",
-              margin: "0 auto",
             }}
             onMouseDown={handleMouseDown}
             onMouseLeave={handleMouseLeave}
@@ -1399,11 +1489,11 @@ const Home = () => {
                     scrollToCategories();
                   }, 50);
                 }}
-                className="flex-shrink-0 relative group"
+                className="flex-shrink-0 relative group mx-1 sm:mx-2"
                 style={{ direction: "rtl" }}
               >
                 <div
-                  className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-300 w-24 h-24 ${
+                  className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2.5 rounded-xl transition-all duration-300 ${
                     selectedCategory === category.id
                       ? "scale-105"
                       : "hover:scale-105"
@@ -1424,7 +1514,7 @@ const Home = () => {
                   }}
                 >
                   <div
-                    className={`w-10 h-10 rounded-lg flex items-center justify-center mb-2 ${
+                    className={`w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center ${
                       selectedCategory === category.id
                         ? "bg-white/20"
                         : "bg-gradient-to-br from-white to-gray-50"
@@ -1432,7 +1522,7 @@ const Home = () => {
                   >
                     {category.id === "offers" ? (
                       <FaFire
-                        className={`text-base ${
+                        className={`text-xs ${
                           selectedCategory === category.id ? "text-white" : ""
                         }`}
                         style={
@@ -1443,7 +1533,7 @@ const Home = () => {
                       />
                     ) : category.id === "all" ? (
                       <FaHome
-                        className={`text-base ${
+                        className={`text-xs ${
                           selectedCategory === category.id ? "text-white" : ""
                         }`}
                         style={
@@ -1454,7 +1544,7 @@ const Home = () => {
                       />
                     ) : (
                       <FaTag
-                        className={`text-base ${
+                        className={`text-xs ${
                           selectedCategory === category.id ? "text-white" : ""
                         }`}
                         style={
@@ -1467,7 +1557,7 @@ const Home = () => {
                   </div>
 
                   <span
-                    className={`font-medium text-xs text-center leading-tight ${
+                    className={`font-medium text-xs sm:text-sm whitespace-nowrap ${
                       selectedCategory === category.id ? "text-white" : ""
                     }`}
                     style={
@@ -1482,7 +1572,7 @@ const Home = () => {
                   {category.id !== "all" &&
                     category.id !== "offers" &&
                     !category.isActive && (
-                      <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-red-500"></div>
+                      <div className="absolute -top-1 -right-1 w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500"></div>
                     )}
                 </div>
               </button>
@@ -1492,37 +1582,43 @@ const Home = () => {
       </div>
 
       {/* Products Grid */}
-      <div className="relative z-10 w-full mt-8">
+      <div className="relative z-10 w-full mt-4 sm:mt-8">
         {productsLoading || !imagesLoaded ? (
-          <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-6 md:py-8">
             <ProductSkeleton count={pageSize} />
           </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-6 md:py-8">
             <div
-              className="text-center py-16 rounded-3xl mx-4 shadow-xl"
+              className="text-center py-8 sm:py-12 md:py-16 rounded-3xl mx-2 sm:mx-4 shadow-xl"
               style={{
                 background: `linear-gradient(135deg, #ffffff, #f0f8ff)`,
                 boxShadow: "0 20px 40px rgba(46, 62, 136, 0.1)",
               }}
             >
               <div
-                className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center"
+                className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full mx-auto mb-4 sm:mb-6 flex items-center justify-center"
                 style={{
                   background: `linear-gradient(135deg, #2E3E8820, #32B9CC20)`,
                 }}
               >
-                <FaBoxOpen className="text-4xl" style={{ color: "#2E3E88" }} />
+                <FaBoxOpen
+                  className="text-2xl sm:text-3xl md:text-4xl"
+                  style={{ color: "#2E3E88" }}
+                />
               </div>
               <h3
-                className="text-2xl font-bold mb-3"
+                className="text-lg sm:text-xl md:text-2xl font-bold mb-2 sm:mb-3"
                 style={{ color: "#2E3E88" }}
               >
                 {selectedCategory === "offers"
                   ? "لا توجد عروض حالياً"
                   : "لم يتم العثور على منتجات"}
               </h3>
-              <p className="mb-6 max-w-md mx-auto" style={{ color: "#32B9CC" }}>
+              <p
+                className="mb-4 sm:mb-6 max-w-md mx-auto text-xs sm:text-sm"
+                style={{ color: "#32B9CC" }}
+              >
                 {selectedCategory === "offers"
                   ? "لا توجد منتجات تحتوي على عروض حالياً"
                   : "حاول تعديل معايير البحث أو تصفح فئات أخرى"}
@@ -1535,7 +1631,7 @@ const Home = () => {
                     scrollToCategories();
                   }, 50);
                 }}
-                className="px-8 py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                className="px-4 sm:px-6 md:px-8 py-2 sm:py-3 rounded-xl font-bold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl text-xs sm:text-sm md:text-base"
                 style={{
                   background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                   color: "white",
@@ -1547,12 +1643,13 @@ const Home = () => {
             </div>
           </div>
         ) : (
-          <div className="max-w-7xl mx-auto px-4 py-8 relative">
+          <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-6 md:py-8 relative">
             {/* Products Grid Header */}
-            <div className="flex justify-between items-center mb-8 px-2">
+            <div className="flex items-center justify-between mb-4 sm:mb-6 md:mb-8 px-1 sm:px-2">
+              {/* العنوان وعدد المنتجات – ناحية الشمال */}
               <div>
                 <h2
-                  className="text-2xl md:text-3xl font-bold"
+                  className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold"
                   style={{ color: "#2E3E88" }}
                 >
                   {selectedCategory === "all"
@@ -1561,270 +1658,501 @@ const Home = () => {
                       ? "العروض الحصرية"
                       : categories.find((c) => c.id === selectedCategory)?.name}
                 </h2>
-                <p className="mt-2" style={{ color: "#32B9CC" }}>
+
+                <p
+                  className="mt-1 sm:mt-2 text-xs sm:text-sm"
+                  style={{ color: "#32B9CC" }}
+                >
                   {filteredProducts.length} منتج متاح
                 </p>
               </div>
 
+              {/* زر إضافة منتج – ناحية اليمين */}
               {canShowAdminButtons && (
-                <div className="flex gap-2">
-                  <button
-                    onClick={handleAddNewProduct}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl font-semibold transition-all duration-300 hover:scale-105"
-                    style={{
-                      background: `linear-gradient(135deg, #32B9CC, #2E3E88)`,
-                      color: "white",
-                    }}
-                  >
-                    <FaPlus />
-                    <span className="hidden sm:inline">إضافة منتج</span>
-                  </button>
-                </div>
+                <button
+                  onClick={handleAddNewProduct}
+                  className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-xl font-semibold transition-all duration-300 hover:scale-105 text-xs sm:text-sm whitespace-nowrap"
+                  style={{
+                    background: `linear-gradient(135deg, #32B9CC, #2E3E88)`,
+                    color: "white",
+                  }}
+                >
+                  <FaPlus className="text-xs sm:text-sm" />
+                  <span>إضافة منتج</span>
+                </button>
               )}
             </div>
 
             <div
-              className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+              className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6"
               style={{ direction: "rtl" }}
             >
               {filteredProducts.map((product) => (
                 <div
                   key={`${product.id}-${currentPage}`}
-                  className={`group relative rounded-3xl overflow-hidden cursor-pointer transition-all duration-500 transform hover:-translate-y-2 ${
+                  className={`w-full relative ${
                     !isProductAvailableForCart(product) ? "opacity-70" : ""
                   }`}
-                  style={{
-                    background: `linear-gradient(145deg, #ffffff, #f0f8ff)`,
-                    boxShadow: "0 15px 35px rgba(46, 62, 136, 0.1)",
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                  onClick={(e) => {
-                    const isButtonClick =
-                      e.target.closest("button") ||
-                      e.target.closest(".no-product-details");
-
-                    if (!isButtonClick) {
-                      handleProductDetails(product);
-                    }
-                  }}
                 >
-                  {/* Offer Badge */}
-                  {product.itemOffer && product.itemOffer.isEnabled && (
-                    <div className="absolute top-4 right-4 z-10">
-                      <div
-                        className="px-4 py-2 rounded-xl shadow-2xl flex items-center gap-2 text-white font-bold"
-                        style={{
-                          background: `linear-gradient(135deg, #FF6B6B, #FFA726)`,
-                          boxShadow: "0 5px 15px rgba(255, 107, 107, 0.4)",
-                        }}
-                      >
-                        <FaBolt />
-                        <span className="text-xs whitespace-nowrap">
-                          {formatOfferText(product.itemOffer)}
-                        </span>
+                  {/* Mobile View */}
+                  <div className="sm:hidden">
+                    <div
+                      className={`bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 cursor-pointer ${
+                        isProductCategoryDisabled(product) ? "opacity-80" : ""
+                      }`}
+                      onClick={(e) => {
+                        const isButtonClick =
+                          e.target.closest("button") ||
+                          e.target.closest(".no-product-details");
+
+                        if (!isButtonClick) {
+                          handleProductDetails(product);
+                        }
+                      }}
+                    >
+                      {product.itemOffer && product.itemOffer.isEnabled && (
+                        <div className="absolute top-2 right-2 z-10">
+                          <div
+                            className="px-2 py-1 rounded-xl shadow-2xl flex items-center gap-1 text-white font-bold"
+                            style={{
+                              background: `linear-gradient(135deg, #FF6B6B, #FFA726)`,
+                              boxShadow: "0 5px 15px rgba(255, 107, 107, 0.4)",
+                            }}
+                          >
+                            <FaBolt className="text-xs" />
+                            <span className="text-xs whitespace-nowrap">
+                              {formatOfferText(product.itemOffer)}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Admin/Restaurant/Branch Buttons */}
+                      {(canShowAdminButtons || canShowToggleButton) && (
+                        <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
+                          {/* Toggle Active Button */}
+                          {canShowToggleButton && (
+                            <button
+                              onClick={(e) => {
+                                if (!canToggleProductActive(product)) {
+                                  showNotification(
+                                    "error",
+                                    "لا يمكن التعديل",
+                                    "لا يمكن تعديل حالة المنتج لأن الفئة معطلة",
+                                    { timer: 2000 },
+                                  );
+                                  return;
+                                }
+                                handleToggleActive(product.id, e);
+                              }}
+                              disabled={!canToggleProductActive(product)}
+                              className={`p-1.5 rounded-lg shadow-lg text-xs no-product-details ${
+                                isProductActive(product)
+                                  ? "bg-yellow-500 text-white hover:bg-yellow-600"
+                                  : "bg-green-500 text-white hover:bg-green-600"
+                              } ${
+                                !canToggleProductActive(product)
+                                  ? "opacity-50 cursor-not-allowed"
+                                  : ""
+                              }`}
+                            >
+                              {isProductActive(product) ? (
+                                <FaTimesCircle size={10} />
+                              ) : (
+                                <FaCheckCircle size={10} />
+                              )}
+                            </button>
+                          )}
+
+                          {/* Admin/Restaurant Only Buttons */}
+                          {canShowAdminButtons && (
+                            <>
+                              <button
+                                onClick={(e) => handleEditProduct(product, e)}
+                                className="bg-blue-500 text-white p-1.5 rounded-lg shadow-lg hover:bg-blue-600 no-product-details"
+                              >
+                                <FaEdit size={10} />
+                              </button>
+                              <button
+                                onClick={(e) => handleManageOffers(product, e)}
+                                className="bg-purple-500 text-white p-1.5 rounded-lg shadow-lg hover:bg-purple-600 no-product-details"
+                              >
+                                <FaPercent size={10} />
+                              </button>
+                              <button
+                                onClick={(e) =>
+                                  handleDeleteProduct(product.id, e)
+                                }
+                                className="bg-red-500 text-white p-1.5 rounded-lg shadow-lg hover:bg-red-600 no-product-details"
+                              >
+                                <FaTrash size={10} />
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      )}
+
+                      <div className="p-3">
+                        <div className="flex">
+                          <div className="w-28 flex-shrink-0 ml-3">
+                            <div className="relative h-32 w-full overflow-hidden rounded-xl">
+                              <img
+                                src={product.image}
+                                alt={product.name}
+                                className="w-full h-full object-cover"
+                                loading="lazy"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="flex-1 min-w-0">
+                            <h3
+                              className="font-bold text-sm text-gray-800 dark:text-gray-200 hover:text-[#2E3E88] line-clamp-1 mb-2"
+                              dir={isArabic(product.name) ? "rtl" : "ltr"}
+                            >
+                              {product.name}
+                            </h3>
+
+                            <p
+                              className="text-gray-600 dark:text-gray-400 text-xs mb-2 line-clamp-1 leading-relaxed"
+                              dir={
+                                isArabic(product.description) ? "rtl" : "ltr"
+                              }
+                            >
+                              {product.description}
+                            </p>
+
+                            <div className="flex items-center gap-1 mb-3">
+                              {formatPriceDisplayMobile(product)}
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  )}
 
-                  {/* Product Image */}
-                  <div className="relative h-56 w-full overflow-hidden">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      loading="lazy"
-                    />
-
-                    {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                    {/* Admin Buttons Overlay */}
-                    {(canShowAdminButtons || canShowToggleButton) && (
-                      <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
-                        {/* Toggle Active Button */}
-                        {canShowToggleButton && (
+                      <div className="px-3 pb-3">
+                        <div className="flex gap-1.5">
                           <button
                             onClick={(e) => {
-                              if (!canToggleProductActive(product)) {
-                                showNotification(
-                                  "error",
-                                  "لا يمكن التعديل",
-                                  "لا يمكن تعديل حالة المنتج لأن الفئة معطلة",
-                                  { timer: 2000 },
-                                );
-                                return;
+                              if (isProductAvailableForCart(product)) {
+                                handleAddToCart(product, e);
                               }
-                              handleToggleActive(product.id, e);
                             }}
-                            disabled={!canToggleProductActive(product)}
-                            className={`p-2 rounded-full shadow-lg text-xs no-product-details transition-all ${
-                              isProductActive(product)
-                                ? "bg-yellow-500 hover:bg-yellow-600 text-white"
-                                : "bg-green-500 hover:bg-green-600 text-white"
-                            } ${
-                              !canToggleProductActive(product)
-                                ? "opacity-50 cursor-not-allowed"
-                                : ""
+                            disabled={
+                              !isProductAvailableForCart(product) ||
+                              addingToCart === product.id
+                            }
+                            className={`flex-1 py-2 rounded-xl font-semibold flex items-center justify-center gap-1.5 text-xs no-product-details ${
+                              addingToCart === product.id
+                                ? "bg-gray-500 text-white cursor-wait"
+                                : isProductAvailableForCart(product)
+                                  ? "hover:scale-105"
+                                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
                             }`}
-                            title={isProductActive(product) ? "تعطيل" : "تفعيل"}
+                            style={
+                              isProductAvailableForCart(product) &&
+                              addingToCart !== product.id
+                                ? {
+                                    background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                                    color: "white",
+                                  }
+                                : {}
+                            }
                           >
-                            {isProductActive(product) ? (
-                              <FaTimesCircle size={12} />
+                            {addingToCart === product.id ? (
+                              <>
+                                <div className="animate-spin rounded-full h-2.5 w-2.5 border-t-2 border-b-2 border-white"></div>
+                                <span>يتم الإضافة...</span>
+                              </>
                             ) : (
-                              <FaCheckCircle size={12} />
+                              <>
+                                <FaShoppingCart className="w-3 h-3" />
+                                <span>
+                                  {!isProductAvailableForCart(product)
+                                    ? "غير متوفر"
+                                    : "أضف إلى السلة"}
+                                </span>
+                              </>
                             )}
                           </button>
-                        )}
 
-                        {/* Admin/Restaurant Only Buttons */}
-                        {canShowAdminButtons && (
-                          <>
-                            <button
-                              onClick={(e) => handleEditProduct(product, e)}
-                              className="bg-blue-500 text-white p-2 rounded-full shadow-lg hover:bg-blue-600 no-product-details transition-all"
-                              title="تعديل"
-                            >
-                              <FaEdit size={12} />
-                            </button>
-                            <button
-                              onClick={(e) => handleManageOffers(product, e)}
-                              className="bg-purple-500 text-white p-2 rounded-full shadow-lg hover:bg-purple-600 no-product-details transition-all"
-                              title="العروض"
-                            >
-                              <FaPercent size={12} />
-                            </button>
-                            <button
-                              onClick={(e) =>
-                                handleDeleteProduct(product.id, e)
-                              }
-                              className="bg-red-500 text-white p-2 rounded-full shadow-lg hover:bg-red-600 no-product-details transition-all"
-                              title="حذف"
-                            >
-                              <FaTrash size={12} />
-                            </button>
-                          </>
-                        )}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleProductDetails(product);
+                            }}
+                            className="flex-1 py-2 rounded-xl font-semibold flex items-center justify-center gap-1.5 text-xs no-product-details"
+                            style={{
+                              background: `#32B9CC15`,
+                              color: "#32B9CC",
+                            }}
+                          >
+                            <FaEye className="w-3 h-3" />
+                            <span>التفاصيل</span>
+                          </button>
+
+                          <button
+                            onClick={(e) => handleToggleFavorite(product, e)}
+                            className={`p-2.5 rounded-xl font-semibold flex items-center justify-center text-xs no-product-details ${
+                              isProductInFavorites(product.id)
+                                ? "text-red-500 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30"
+                                : "text-gray-400 bg-gray-50 dark:bg-gray-700 hover:text-red-500 hover:bg-gray-100 dark:hover:bg-gray-600"
+                            }`}
+                          >
+                            {isProductInFavorites(product.id) ? (
+                              <FaHeart size={14} />
+                            ) : (
+                              <FaRegHeart size={14} />
+                            )}
+                          </button>
+                        </div>
                       </div>
-                    )}
+                    </div>
                   </div>
 
-                  {/* Product Content */}
-                  <div className="p-5 flex-1 flex flex-col">
-                    {/* Category Tag */}
-                    <div className="mb-3">
-                      <span
-                        className="inline-block px-3 py-1 rounded-full text-xs font-medium"
-                        style={{
-                          background: `#2E3E8815`,
-                          color: "#2E3E88",
-                        }}
-                      >
-                        {product.category}
-                      </span>
-                    </div>
+                  {/* Desktop View */}
+                  <div className="hidden sm:block">
+                    <div
+                      className={`group relative rounded-3xl overflow-hidden cursor-pointer transition-all duration-500 transform hover:-translate-y-2 h-full ${
+                        !isProductAvailableForCart(product) ? "opacity-70" : ""
+                      }`}
+                      style={{
+                        background: `linear-gradient(145deg, #ffffff, #f0f8ff)`,
+                        boxShadow: "0 15px 35px rgba(46, 62, 136, 0.1)",
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                      onClick={(e) => {
+                        const isButtonClick =
+                          e.target.closest("button") ||
+                          e.target.closest(".no-product-details");
 
-                    {/* Product Name */}
-                    <h3
-                      className="font-bold text-lg mb-2 line-clamp-1 group-hover:text-opacity-80 transition-colors"
-                      dir={isArabic(product.name) ? "rtl" : "ltr"}
-                      style={{ color: "#2E3E88" }}
+                        if (!isButtonClick) {
+                          handleProductDetails(product);
+                        }
+                      }}
                     >
-                      {product.name}
-                    </h3>
-
-                    {/* Product Description */}
-                    <p
-                      className="text-gray-600 text-sm mb-4 line-clamp-2 leading-relaxed flex-1"
-                      dir={isArabic(product.description) ? "rtl" : "ltr"}
-                    >
-                      {product.description}
-                    </p>
-
-                    {/* Price & Actions */}
-                    <div className="mt-auto pt-4 border-t border-gray-100">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2">
-                          {formatPriceDisplay(product)}
+                      {/* Offer Badge */}
+                      {product.itemOffer && product.itemOffer.isEnabled && (
+                        <div className="absolute top-4 right-4 z-10">
+                          <div
+                            className="px-4 py-2 rounded-xl shadow-2xl flex items-center gap-2 text-white font-bold"
+                            style={{
+                              background: `linear-gradient(135deg, #FF6B6B, #FFA726)`,
+                              boxShadow: "0 5px 15px rgba(255, 107, 107, 0.4)",
+                            }}
+                          >
+                            <FaBolt />
+                            <span className="text-xs whitespace-nowrap">
+                              {formatOfferText(product.itemOffer)}
+                            </span>
+                          </div>
                         </div>
+                      )}
 
-                        <button
-                          onClick={(e) => handleToggleFavorite(product, e)}
-                          className={`p-2 rounded-full no-product-details transition-all hover:scale-110 ${
-                            isProductInFavorites(product.id)
-                              ? "text-red-500 bg-red-50"
-                              : "text-gray-400 bg-gray-100 hover:text-red-500"
-                          }`}
-                        >
-                          {isProductInFavorites(product.id) ? (
-                            <FaHeart size={20} />
-                          ) : (
-                            <FaRegHeart size={20} />
-                          )}
-                        </button>
+                      {/* Product Image */}
+                      <div className="relative h-48 w-full overflow-hidden">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          loading="lazy"
+                        />
+
+                        {/* Gradient Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                        {/* Admin Buttons Overlay */}
+                        {(canShowAdminButtons || canShowToggleButton) && (
+                          <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
+                            {/* Toggle Active Button */}
+                            {canShowToggleButton && (
+                              <button
+                                onClick={(e) => {
+                                  if (!canToggleProductActive(product)) {
+                                    showNotification(
+                                      "error",
+                                      "لا يمكن التعديل",
+                                      "لا يمكن تعديل حالة المنتج لأن الفئة معطلة",
+                                      { timer: 2000 },
+                                    );
+                                    return;
+                                  }
+                                  handleToggleActive(product.id, e);
+                                }}
+                                disabled={!canToggleProductActive(product)}
+                                className={`p-2 rounded-full shadow-lg text-xs no-product-details transition-all ${
+                                  isProductActive(product)
+                                    ? "bg-yellow-500 hover:bg-yellow-600 text-white"
+                                    : "bg-green-500 hover:bg-green-600 text-white"
+                                } ${
+                                  !canToggleProductActive(product)
+                                    ? "opacity-50 cursor-not-allowed"
+                                    : ""
+                                }`}
+                                title={
+                                  isProductActive(product) ? "تعطيل" : "تفعيل"
+                                }
+                              >
+                                {isProductActive(product) ? (
+                                  <FaTimesCircle size={12} />
+                                ) : (
+                                  <FaCheckCircle size={12} />
+                                )}
+                              </button>
+                            )}
+
+                            {/* Admin/Restaurant Only Buttons */}
+                            {canShowAdminButtons && (
+                              <>
+                                <button
+                                  onClick={(e) => handleEditProduct(product, e)}
+                                  className="bg-blue-500 text-white p-2 rounded-full shadow-lg hover:bg-blue-600 no-product-details transition-all"
+                                  title="تعديل"
+                                >
+                                  <FaEdit size={12} />
+                                </button>
+                                <button
+                                  onClick={(e) =>
+                                    handleManageOffers(product, e)
+                                  }
+                                  className="bg-purple-500 text-white p-2 rounded-full shadow-lg hover:bg-purple-600 no-product-details transition-all"
+                                  title="العروض"
+                                >
+                                  <FaPercent size={12} />
+                                </button>
+                                <button
+                                  onClick={(e) =>
+                                    handleDeleteProduct(product.id, e)
+                                  }
+                                  className="bg-red-500 text-white p-2 rounded-full shadow-lg hover:bg-red-600 no-product-details transition-all"
+                                  title="حذف"
+                                >
+                                  <FaTrash size={12} />
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        )}
                       </div>
 
-                      <div className="flex gap-2">
-                        <button
-                          onClick={(e) => {
-                            if (isProductAvailableForCart(product)) {
-                              handleAddToCart(product, e);
-                            }
-                          }}
-                          disabled={
-                            !isProductAvailableForCart(product) ||
-                            addingToCart === product.id
-                          }
-                          className={`flex-1 py-3 rounded-xl font-bold flex items-center justify-center gap-2 text-sm no-product-details transition-all ${
-                            addingToCart === product.id
-                              ? "bg-gray-500 text-white cursor-wait"
-                              : isProductAvailableForCart(product)
-                                ? "hover:scale-105 active:scale-95"
-                                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                          }`}
-                          style={
-                            isProductAvailableForCart(product) &&
-                            addingToCart !== product.id
-                              ? {
-                                  background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
-                                  color: "white",
-                                  boxShadow: `0 5px 15px #2E3E8830`,
-                                }
-                              : {}
-                          }
-                        >
-                          {addingToCart === product.id ? (
-                            <>
-                              <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
-                              <span>يتم الإضافة...</span>
-                            </>
-                          ) : (
-                            <>
-                              <FaShoppingCart className="w-4 h-4" />
-                              <span>
-                                {!isProductAvailableForCart(product)
-                                  ? "غير متوفر"
-                                  : "أضف إلى السلة"}
-                              </span>
-                            </>
-                          )}
-                        </button>
+                      {/* Product Content */}
+                      <div className="p-4 flex-1 flex flex-col">
+                        {/* Category Tag */}
+                        <div className="mb-2">
+                          <span
+                            className="inline-block px-2 py-1 rounded-full text-xs font-medium"
+                            style={{
+                              background: `#2E3E8815`,
+                              color: "#2E3E88",
+                            }}
+                          >
+                            {product.category}
+                          </span>
+                        </div>
 
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleProductDetails(product);
-                          }}
-                          className="w-12 flex items-center justify-center rounded-xl font-bold no-product-details transition-all hover:scale-105 active:scale-95"
-                          style={{
-                            background: `#32B9CC15`,
-                            color: "#32B9CC",
-                          }}
-                          title="عرض التفاصيل"
+                        {/* Product Name */}
+                        <h3
+                          className="font-bold text-base mb-1 line-clamp-1 group-hover:text-opacity-80 transition-colors"
+                          dir={isArabic(product.name) ? "rtl" : "ltr"}
+                          style={{ color: "#2E3E88" }}
                         >
-                          <FaEye className="w-5 h-5" />
-                        </button>
+                          {product.name}
+                        </h3>
+
+                        {/* Product Description */}
+                        <p
+                          className="text-gray-600 text-xs mb-3 line-clamp-2 leading-relaxed flex-1"
+                          dir={isArabic(product.description) ? "rtl" : "ltr"}
+                        >
+                          {product.description}
+                        </p>
+
+                        {/* Price & Actions */}
+                        <div className="mt-auto pt-3 border-t border-gray-100">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                              {formatPriceDisplay(product)}
+                            </div>
+
+                            <button
+                              onClick={(e) => handleToggleFavorite(product, e)}
+                              className={`p-2 rounded-full no-product-details transition-all hover:scale-110 ${
+                                isProductInFavorites(product.id)
+                                  ? "text-red-500 bg-red-50"
+                                  : "text-gray-400 bg-gray-100 hover:text-red-500"
+                              }`}
+                            >
+                              {isProductInFavorites(product.id) ? (
+                                <FaHeart size={18} />
+                              ) : (
+                                <FaRegHeart size={18} />
+                              )}
+                            </button>
+                          </div>
+
+                          <div className="flex gap-2">
+                            <button
+                              onClick={(e) => {
+                                if (isProductAvailableForCart(product)) {
+                                  handleAddToCart(product, e);
+                                }
+                              }}
+                              disabled={
+                                !isProductAvailableForCart(product) ||
+                                addingToCart === product.id
+                              }
+                              className={`flex-1 py-3 rounded-xl font-bold flex items-center justify-center gap-2 text-xs no-product-details transition-all ${
+                                addingToCart === product.id
+                                  ? "bg-gray-500 text-white cursor-wait"
+                                  : isProductAvailableForCart(product)
+                                    ? "hover:scale-105 active:scale-95"
+                                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                              }`}
+                              style={
+                                isProductAvailableForCart(product) &&
+                                addingToCart !== product.id
+                                  ? {
+                                      background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
+                                      color: "white",
+                                      boxShadow: `0 5px 15px #2E3E8830`,
+                                    }
+                                  : {}
+                              }
+                            >
+                              {addingToCart === product.id ? (
+                                <>
+                                  <div className="animate-spin rounded-full h-3 w-3 border-t-2 border-b-2 border-white"></div>
+                                  <span>يتم الإضافة...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <FaShoppingCart className="w-4 h-4" />
+                                  <span>
+                                    {!isProductAvailableForCart(product)
+                                      ? "غير متوفر"
+                                      : "أضف إلى السلة"}
+                                  </span>
+                                </>
+                              )}
+                            </button>
+
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleProductDetails(product);
+                              }}
+                              className="w-12 flex items-center justify-center rounded-xl font-bold no-product-details transition-all hover:scale-105 active:scale-95"
+                              style={{
+                                background: `#32B9CC15`,
+                                color: "#32B9CC",
+                              }}
+                              title="عرض التفاصيل"
+                            >
+                              <FaEye className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1834,12 +2162,12 @@ const Home = () => {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="mt-12 flex flex-col items-center">
-                <div className="flex items-center justify-center gap-2">
+              <div className="mt-8 sm:mt-12 flex flex-col items-center">
+                <div className="flex items-center justify-center gap-1 sm:gap-2">
                   <button
                     onClick={handlePrevPage}
                     disabled={currentPage === 1}
-                    className={`p-3 rounded-xl transition-all ${
+                    className={`p-2 sm:p-3 rounded-xl transition-all ${
                       currentPage === 1
                         ? "opacity-50 cursor-not-allowed"
                         : "hover:scale-105 active:scale-95"
@@ -1854,15 +2182,15 @@ const Home = () => {
                         currentPage === 1 ? "none" : `0 5px 15px #2E3E8830`,
                     }}
                   >
-                    <FaChevronRight className="text-base" />
+                    <FaChevronRight className="text-sm sm:text-base" />
                   </button>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 sm:gap-2">
                     {getPaginationNumbers().map((pageNum, index) => (
                       <React.Fragment key={index}>
                         {pageNum === "..." ? (
                           <span
-                            className="px-4 py-2"
+                            className="px-2 sm:px-3 md:px-4 py-1 sm:py-2"
                             style={{ color: "#32B9CC" }}
                           >
                             ...
@@ -1870,7 +2198,7 @@ const Home = () => {
                         ) : (
                           <button
                             onClick={() => handlePageChange(pageNum)}
-                            className={`px-4 py-2 rounded-xl font-bold transition-all hover:scale-105 active:scale-95 ${
+                            className={`px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-xl font-bold transition-all hover:scale-105 active:scale-95 text-xs sm:text-sm ${
                               currentPage === pageNum
                                 ? "text-white shadow-lg"
                                 : "hover:shadow-md"
@@ -1897,7 +2225,7 @@ const Home = () => {
                   <button
                     onClick={handleNextPage}
                     disabled={currentPage === totalPages}
-                    className={`p-3 rounded-xl transition-all ${
+                    className={`p-2 sm:p-3 rounded-xl transition-all ${
                       currentPage === totalPages
                         ? "opacity-50 cursor-not-allowed"
                         : "hover:scale-105 active:scale-95"
@@ -1914,7 +2242,7 @@ const Home = () => {
                           : `0 5px 15px #2E3E8830`,
                     }}
                   >
-                    <FaChevronLeft className="text-base" />
+                    <FaChevronLeft className="text-sm sm:text-base" />
                   </button>
                 </div>
               </div>
@@ -1923,15 +2251,15 @@ const Home = () => {
         )}
       </div>
 
-      {/* Floating Action Buttons - على اليسار مع تلميحات احترافية */}
-      <div className="fixed bottom-6 left-6 flex flex-col gap-4 z-40">
+      {/* Floating Action Buttons - مع إستجابة للشاشات الصغيرة */}
+      <div className="fixed bottom-4 sm:bottom-6 left-4 sm:left-6 flex flex-col gap-3 sm:gap-4 z-40">
         {/* Cart Button */}
         <div className="relative">
           <button
             onClick={handleNavigateToCart}
             onMouseEnter={() => setHoveredButton("cart")}
             onMouseLeave={() => setHoveredButton(null)}
-            className={`relative rounded-full p-4 shadow-2xl transition-all duration-300 hover:scale-110 no-product-details ${
+            className={`relative rounded-full p-3 sm:p-4 shadow-2xl transition-all duration-300 hover:scale-110 no-product-details ${
               cartItemsCount === 0 ? "opacity-90" : ""
             }`}
             style={{
@@ -1940,10 +2268,10 @@ const Home = () => {
             }}
           >
             <div className="relative">
-              <FaShoppingCart className="w-6 h-6 text-white" />
+              <FaShoppingCart className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
               {cartItemsCount > 0 && (
                 <span
-                  className="absolute -top-2 -right-2 bg-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold"
+                  className="absolute -top-1.5 -right-1.5 sm:-top-2 sm:-right-2 bg-white rounded-full w-4 h-4 sm:w-6 sm:h-6 flex items-center justify-center text-xs font-bold"
                   style={{ color: "#2E3E88" }}
                 >
                   {cartItemsCount}
@@ -1954,10 +2282,10 @@ const Home = () => {
 
           {/* Tooltip for Cart */}
           {hoveredButton === "cart" && (
-            <div className="absolute left-full ml-3 top-1/2 transform -translate-y-1/2 z-50">
+            <div className="absolute left-full ml-3 top-1/2 transform -translate-y-1/2 z-50 hidden sm:block">
               <div className="relative">
                 <div
-                  className="bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl whitespace-nowrap text-sm font-semibold"
+                  className="bg-gray-900 text-white px-3 sm:px-4 py-2 sm:py-3 rounded-xl shadow-2xl whitespace-nowrap text-xs sm:text-sm font-semibold"
                   style={{
                     background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                     boxShadow: `0 10px 25px #2E3E8830`,
@@ -1966,7 +2294,7 @@ const Home = () => {
                   {getButtonLabel("cart")}
                   <div className="absolute right-full top-1/2 transform -translate-y-1/2">
                     <div
-                      className="w-3 h-3"
+                      className="w-2 h-2 sm:w-3 sm:h-3"
                       style={{
                         borderRight: `6px solid #2E3E88`,
                         borderTop: "6px solid transparent",
@@ -1986,18 +2314,18 @@ const Home = () => {
             onClick={handleNavigateToFavorites}
             onMouseEnter={() => setHoveredButton("favorites")}
             onMouseLeave={() => setHoveredButton(null)}
-            className="relative rounded-full p-4 shadow-2xl transition-all duration-300 hover:scale-110 no-product-details"
+            className="relative rounded-full p-3 sm:p-4 shadow-2xl transition-all duration-300 hover:scale-110 no-product-details"
             style={{
               background: "linear-gradient(135deg, #FF6B6B, #FF3366)",
               boxShadow: "0 10px 30px rgba(255, 107, 107, 0.4)",
             }}
           >
             <div className="relative flex items-center justify-center">
-              <FaHeart className="w-6 h-6 text-white" />
+              <FaHeart className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
 
               {favorites.length > 0 && (
                 <span
-                  className="absolute -top-2 -right-2 bg-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold"
+                  className="absolute -top-1.5 -right-1.5 sm:-top-2 sm:-right-2 bg-white rounded-full w-4 h-4 sm:w-6 sm:h-6 flex items-center justify-center text-xs font-bold"
                   style={{ color: "#FF3366" }}
                 >
                   {favorites.length}
@@ -2008,10 +2336,10 @@ const Home = () => {
 
           {/* Tooltip for Favorites */}
           {hoveredButton === "favorites" && (
-            <div className="absolute left-full ml-3 top-1/2 transform -translate-y-1/2 z-50">
+            <div className="absolute left-full ml-3 top-1/2 transform -translate-y-1/2 z-50 hidden sm:block">
               <div className="relative">
                 <div
-                  className="bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl whitespace-nowrap text-sm font-semibold"
+                  className="bg-gray-900 text-white px-3 sm:px-4 py-2 sm:py-3 rounded-xl shadow-2xl whitespace-nowrap text-xs sm:text-sm font-semibold"
                   style={{
                     background: "linear-gradient(135deg, #FF6B6B, #FF3366)",
                     boxShadow: "0 10px 25px rgba(255, 107, 107, 0.4)",
@@ -2020,7 +2348,7 @@ const Home = () => {
                   {getButtonLabel("favorites")}
                   <div className="absolute right-full top-1/2 transform -translate-y-1/2">
                     <div
-                      className="w-3 h-3"
+                      className="w-2 h-2 sm:w-3 sm:h-3"
                       style={{
                         borderRight: "6px solid #FF3366",
                         borderTop: "6px solid transparent",
@@ -2043,21 +2371,21 @@ const Home = () => {
                 onClick={handleAddNewProduct}
                 onMouseEnter={() => setHoveredButton("addProduct")}
                 onMouseLeave={() => setHoveredButton(null)}
-                className="relative rounded-full p-4 shadow-2xl transition-all duration-300 hover:scale-110 no-product-details"
+                className="relative rounded-full p-3 sm:p-4 shadow-2xl transition-all duration-300 hover:scale-110 no-product-details"
                 style={{
                   background: "linear-gradient(135deg, #4CAF50, #2E7D32)",
                   boxShadow: "0 10px 30px rgba(76, 175, 80, 0.4)",
                 }}
               >
-                <FaPlus className="w-6 h-6 text-white" />
+                <FaPlus className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
               </button>
 
               {/* Tooltip for Add Product */}
               {hoveredButton === "addProduct" && (
-                <div className="absolute left-full ml-3 top-1/2 transform -translate-y-1/2 z-50">
+                <div className="absolute left-full ml-3 top-1/2 transform -translate-y-1/2 z-50 hidden sm:block">
                   <div className="relative">
                     <div
-                      className="bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl whitespace-nowrap text-sm font-semibold"
+                      className="bg-gray-900 text-white px-3 sm:px-4 py-2 sm:py-3 rounded-xl shadow-2xl whitespace-nowrap text-xs sm:text-sm font-semibold"
                       style={{
                         background: "linear-gradient(135deg, #4CAF50, #2E7D32)",
                         boxShadow: "0 10px 25px rgba(76, 175, 80, 0.4)",
@@ -2066,7 +2394,7 @@ const Home = () => {
                       {getButtonLabel("addProduct")}
                       <div className="absolute right-full top-1/2 transform -translate-y-1/2">
                         <div
-                          className="w-3 h-3"
+                          className="w-2 h-2 sm:w-3 sm:h-3"
                           style={{
                             borderRight: "6px solid #2E7D32",
                             borderTop: "6px solid transparent",
@@ -2086,21 +2414,21 @@ const Home = () => {
                 onClick={handleOpenCategoriesManager}
                 onMouseEnter={() => setHoveredButton("categories")}
                 onMouseLeave={() => setHoveredButton(null)}
-                className="relative rounded-full p-4 shadow-2xl transition-all duration-300 hover:scale-110 no-product-details"
+                className="relative rounded-full p-3 sm:p-4 shadow-2xl transition-all duration-300 hover:scale-110 no-product-details"
                 style={{
                   background: "linear-gradient(135deg, #9C27B0, #7B1FA2)",
                   boxShadow: "0 10px 30px rgba(156, 39, 176, 0.4)",
                 }}
               >
-                <FaList className="w-6 h-6 text-white" />
+                <FaList className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
               </button>
 
               {/* Tooltip for Categories Manager */}
               {hoveredButton === "categories" && (
-                <div className="absolute left-full ml-3 top-1/2 transform -translate-y-1/2 z-50">
+                <div className="absolute left-full ml-3 top-1/2 transform -translate-y-1/2 z-50 hidden sm:block">
                   <div className="relative">
                     <div
-                      className="bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl whitespace-nowrap text-sm font-semibold"
+                      className="bg-gray-900 text-white px-3 sm:px-4 py-2 sm:py-3 rounded-xl shadow-2xl whitespace-nowrap text-xs sm:text-sm font-semibold"
                       style={{
                         background: "linear-gradient(135deg, #9C27B0, #7B1FA2)",
                         boxShadow: "0 10px 25px rgba(156, 39, 176, 0.4)",
@@ -2109,7 +2437,7 @@ const Home = () => {
                       {getButtonLabel("categories")}
                       <div className="absolute right-full top-1/2 transform -translate-y-1/2">
                         <div
-                          className="w-3 h-3"
+                          className="w-2 h-2 sm:w-3 sm:h-3"
                           style={{
                             borderRight: "6px solid #7B1FA2",
                             borderTop: "6px solid transparent",
@@ -2126,7 +2454,7 @@ const Home = () => {
         )}
       </div>
 
-      {/* Categories Manager Modal - تصميم جديد */}
+      {/* Categories Manager Modal - تصميم جديد مع إستجابة */}
       {showCategoriesManager && canShowAdminButtons && (
         <>
           <div
@@ -2135,7 +2463,7 @@ const Home = () => {
           />
 
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+            className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto"
             onClick={handleCloseCategoriesManager}
           >
             <div
@@ -2149,63 +2477,65 @@ const Home = () => {
             >
               {/* Modal Header */}
               <div
-                className="p-6 relative text-white"
+                className="p-4 sm:p-6 relative text-white"
                 style={{
                   background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                 }}
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="bg-white/20 p-3 rounded-2xl backdrop-blur-sm">
-                      <FaLayerGroup className="text-2xl" />
+                  <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
+                    <div className="bg-white/20 p-2 sm:p-3 rounded-2xl backdrop-blur-sm">
+                      <FaLayerGroup className="text-lg sm:text-xl md:text-2xl" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold">إدارة التصنيفات</h2>
-                      <p className="text-white/80 mt-1">
+                      <h2 className="text-lg sm:text-xl md:text-2xl font-bold">
+                        إدارة التصنيفات
+                      </h2>
+                      <p className="text-white/80 mt-1 text-xs sm:text-sm">
                         إضافة، تعديل وحذف التصنيفات
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={handleCloseCategoriesManager}
-                    className="bg-white/20 backdrop-blur-sm rounded-full p-3 text-white hover:bg-white/30 no-product-details transition-all"
+                    className="bg-white/20 backdrop-blur-sm rounded-full p-2 sm:p-3 text-white hover:bg-white/30 no-product-details transition-all"
                   >
-                    <FaTimes size={20} />
+                    <FaTimes size={16} className="sm:w-5" />
                   </button>
                 </div>
               </div>
 
               {/* Modal Content */}
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 {/* Add New Category */}
                 <div
-                  className="rounded-2xl p-6 mb-8"
+                  className="rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8"
                   style={{
                     background: `linear-gradient(135deg, #2E3E8805, #32B9CC05)`,
                     border: `2px dashed #2E3E8820`,
                   }}
                 >
-                  <div className="flex items-center gap-3 mb-6">
+                  <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
                     <div
-                      className="p-3 rounded-xl"
+                      className="p-2 sm:p-3 rounded-xl"
                       style={{
                         background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                       }}
                     >
-                      <FaPlus className="text-white text-lg" />
+                      <FaPlus className="text-white text-base sm:text-lg" />
                     </div>
                     <h3
-                      className="text-xl font-bold"
+                      className="text-base sm:text-lg md:text-xl font-bold"
                       style={{ color: "#2E3E88" }}
                     >
                       إضافة تصنيف جديد
                     </h3>
                   </div>
 
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
                     <div className="lg:col-span-2">
                       <label
-                        className="block text-sm font-semibold mb-3"
+                        className="block text-xs sm:text-sm font-semibold mb-2 sm:mb-3"
                         style={{ color: "#2E3E88" }}
                       >
                         اسم التصنيف
@@ -2221,7 +2551,7 @@ const Home = () => {
                             })
                           }
                           placeholder="أدخل اسم التصنيف الجديد..."
-                          className="w-full px-4 py-4 rounded-xl border-2 focus:ring-3 focus:outline-none text-right text-lg font-medium transition-all"
+                          className="w-full px-3 sm:px-4 py-3 sm:py-4 rounded-xl border-2 focus:ring-3 focus:outline-none text-right text-sm sm:text-base font-medium transition-all"
                           style={{
                             borderColor: `#32B9CC30`,
                             background: "white",
@@ -2235,12 +2565,12 @@ const Home = () => {
 
                     <div className="flex flex-col justify-center">
                       <label
-                        className="block text-sm font-semibold mb-3"
+                        className="block text-xs sm:text-sm font-semibold mb-2 sm:mb-3"
                         style={{ color: "#2E3E88" }}
                       >
                         حالة التصنيف
                       </label>
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-3 sm:gap-4">
                         <label className="flex items-center cursor-pointer">
                           <div className="relative">
                             <input
@@ -2255,23 +2585,23 @@ const Home = () => {
                               className="sr-only"
                             />
                             <div
-                              className={`block w-16 h-8 rounded-full transition-all duration-300 ${
+                              className={`block w-14 sm:w-16 h-7 sm:h-8 rounded-full transition-all duration-300 ${
                                 newCategory.isActive
                                   ? "bg-green-500"
                                   : "bg-gray-400"
                               }`}
                             ></div>
                             <div
-                              className={`absolute right-1 top-1 bg-white w-6 h-6 rounded-full shadow-lg transition-all duration-300 ${
+                              className={`absolute right-1 top-1 bg-white w-5 h-5 sm:w-6 sm:h-6 rounded-full shadow-lg transition-all duration-300 ${
                                 newCategory.isActive
-                                  ? "transform translate-x-[-1.75rem]"
+                                  ? "transform translate-x-[-1.5rem] sm:translate-x-[-1.75rem]"
                                   : ""
                               }`}
                             ></div>
                           </div>
                         </label>
                         <span
-                          className={`font-semibold text-lg ${
+                          className={`font-semibold text-sm sm:text-base md:text-lg ${
                             newCategory.isActive
                               ? "text-green-600"
                               : "text-gray-500"
@@ -2283,10 +2613,10 @@ const Home = () => {
                     </div>
                   </div>
 
-                  <div className="flex justify-start mt-6">
+                  <div className="flex justify-start mt-4 sm:mt-6">
                     <button
                       onClick={handleAddCategory}
-                      className="px-8 py-4 rounded-xl font-bold shadow-lg flex items-center gap-3 text-lg no-product-details transition-all hover:scale-105"
+                      className="px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 rounded-xl font-bold shadow-lg flex items-center gap-2 sm:gap-3 text-sm sm:text-base no-product-details transition-all hover:scale-105"
                       style={{
                         background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                         color: "white",
@@ -2301,28 +2631,28 @@ const Home = () => {
 
                 {/* Categories List */}
                 <div>
-                  <div className="flex items-center gap-3 mb-6">
+                  <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
                     <div
-                      className="p-3 rounded-xl"
+                      className="p-2 sm:p-3 rounded-xl"
                       style={{
                         background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                       }}
                     >
-                      <FaList className="text-white text-lg" />
+                      <FaList className="text-white text-base sm:text-lg" />
                     </div>
                     <h3
-                      className="text-xl font-bold"
+                      className="text-base sm:text-lg md:text-xl font-bold"
                       style={{ color: "#2E3E88" }}
                     >
                       التصنيفات الحالية ({categories.length - 2})
                     </h3>
                   </div>
 
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     {categories.map((category) => (
                       <div
                         key={category.id}
-                        className={`rounded-2xl p-6 transition-all ${
+                        className={`rounded-2xl p-4 sm:p-6 transition-all ${
                           category.id === "all" || category.id === "offers"
                             ? "opacity-80"
                             : "hover:shadow-xl"
@@ -2338,11 +2668,11 @@ const Home = () => {
                       >
                         {editingCategory &&
                         editingCategory.id === category.id ? (
-                          <div className="space-y-6">
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                          <div className="space-y-4 sm:space-y-6">
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
                               <div className="lg:col-span-2">
                                 <label
-                                  className="block text-sm font-semibold mb-3"
+                                  className="block text-xs sm:text-sm font-semibold mb-2 sm:mb-3"
                                   style={{ color: "#2E3E88" }}
                                 >
                                   اسم التصنيف
@@ -2356,7 +2686,7 @@ const Home = () => {
                                       name: e.target.value,
                                     })
                                   }
-                                  className="w-full px-4 py-4 rounded-xl border-2 focus:ring-3 focus:outline-none text-right text-lg font-medium transition-all"
+                                  className="w-full px-3 sm:px-4 py-3 sm:py-4 rounded-xl border-2 focus:ring-3 focus:outline-none text-right text-sm sm:text-base font-medium transition-all"
                                   style={{
                                     borderColor: `#32B9CC30`,
                                     background: "white",
@@ -2370,12 +2700,12 @@ const Home = () => {
 
                               <div className="flex flex-col justify-center">
                                 <label
-                                  className="block text-sm font-semibold mb-3"
+                                  className="block text-xs sm:text-sm font-semibold mb-2 sm:mb-3"
                                   style={{ color: "#2E3E88" }}
                                 >
                                   حالة التصنيف
                                 </label>
-                                <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-3 sm:gap-4">
                                   <label className="flex items-center cursor-pointer">
                                     <div className="relative">
                                       <input
@@ -2390,23 +2720,23 @@ const Home = () => {
                                         className="sr-only"
                                       />
                                       <div
-                                        className={`block w-16 h-8 rounded-full transition-all duration-300 ${
+                                        className={`block w-14 sm:w-16 h-7 sm:h-8 rounded-full transition-all duration-300 ${
                                           editingCategory.isActive
                                             ? "bg-green-500"
                                             : "bg-gray-400"
                                         }`}
                                       ></div>
                                       <div
-                                        className={`absolute right-1 top-1 bg-white w-6 h-6 rounded-full shadow-lg transition-all duration-300 ${
+                                        className={`absolute right-1 top-1 bg-white w-5 h-5 sm:w-6 sm:h-6 rounded-full shadow-lg transition-all duration-300 ${
                                           editingCategory.isActive
-                                            ? "transform translate-x-[-1.75rem]"
+                                            ? "transform translate-x-[-1.5rem] sm:translate-x-[-1.75rem]"
                                             : ""
                                         }`}
                                       ></div>
                                     </div>
                                   </label>
                                   <span
-                                    className={`font-semibold text-lg ${
+                                    className={`font-semibold text-sm sm:text-base md:text-lg ${
                                       editingCategory.isActive
                                         ? "text-green-600"
                                         : "text-gray-500"
@@ -2419,12 +2749,12 @@ const Home = () => {
                             </div>
 
                             <div
-                              className="flex gap-3 justify-start pt-4 border-t"
+                              className="flex gap-2 sm:gap-3 justify-start pt-3 sm:pt-4 border-t"
                               style={{ borderColor: `#2E3E8820` }}
                             >
                               <button
                                 onClick={() => setEditingCategory(null)}
-                                className="px-6 py-3 rounded-xl font-semibold no-product-details transition-all hover:scale-105"
+                                className="px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl font-semibold no-product-details transition-all hover:scale-105 text-xs sm:text-sm"
                                 style={{
                                   background: `#2E3E8810`,
                                   color: "#2E3E88",
@@ -2434,7 +2764,7 @@ const Home = () => {
                               </button>
                               <button
                                 onClick={handleSaveCategory}
-                                className="px-6 py-3 rounded-xl font-bold shadow-lg flex items-center gap-2 no-product-details transition-all hover:scale-105"
+                                className="px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-xl font-bold shadow-lg flex items-center gap-2 no-product-details transition-all hover:scale-105 text-xs sm:text-sm"
                                 style={{
                                   background: `linear-gradient(135deg, #2E3E88, #32B9CC)`,
                                   color: "white",
@@ -2447,10 +2777,10 @@ const Home = () => {
                             </div>
                           </div>
                         ) : (
-                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                            <div className="flex items-center gap-4">
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                            <div className="flex items-center gap-3 sm:gap-4">
                               <div
-                                className={`p-3 rounded-xl ${
+                                className={`p-2 sm:p-3 rounded-xl ${
                                   category.id === "all"
                                     ? `bg-gradient-to-br from-blue-50 to-blue-100`
                                     : category.id === "offers"
@@ -2462,12 +2792,12 @@ const Home = () => {
                               >
                                 {category.id === "offers" ? (
                                   <FaFire
-                                    className="text-lg"
+                                    className="text-sm sm:text-base"
                                     style={{ color: "#FF9800" }}
                                   />
                                 ) : (
                                   <FaTag
-                                    className="text-lg"
+                                    className="text-sm sm:text-base"
                                     style={
                                       category.id === "all"
                                         ? { color: "#32B9CC" }
@@ -2480,12 +2810,12 @@ const Home = () => {
                               </div>
                               <div>
                                 <h4
-                                  className="font-bold text-lg mb-1"
+                                  className="font-bold text-sm sm:text-base md:text-lg mb-1"
                                   style={{ color: "#2E3E88" }}
                                 >
                                   {category.name}
                                 </h4>
-                                <div className="flex items-center gap-3 text-sm">
+                                <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
                                   {category.id === "offers" ? (
                                     <span
                                       className="font-medium"
@@ -2504,7 +2834,7 @@ const Home = () => {
                                     category.id !== "all" && (
                                       <>
                                         <span
-                                          className={`px-3 py-1 rounded-full font-medium ${
+                                          className={`px-2 py-1 rounded-full font-medium ${
                                             category.isActive
                                               ? "bg-green-100 text-green-700"
                                               : "bg-red-100 text-red-700"
@@ -2532,7 +2862,7 @@ const Home = () => {
                               </div>
                             </div>
 
-                            <div className="flex gap-2 justify-end">
+                            <div className="flex gap-1 sm:gap-2 justify-end mt-2 sm:mt-0">
                               {category.id !== "all" &&
                                 category.id !== "offers" && (
                                   <>
@@ -2543,7 +2873,7 @@ const Home = () => {
                                           e,
                                         )
                                       }
-                                      className={`p-3 rounded-xl shadow-md no-product-details transition-all hover:scale-105 ${
+                                      className={`p-2 sm:p-3 rounded-xl shadow-md no-product-details transition-all hover:scale-105 ${
                                         category.isActive
                                           ? "bg-yellow-500 hover:bg-yellow-600 text-white"
                                           : "bg-green-500 hover:bg-green-600 text-white"
@@ -2555,28 +2885,40 @@ const Home = () => {
                                       }
                                     >
                                       {category.isActive ? (
-                                        <FaTimesCircle size={18} />
+                                        <FaTimesCircle
+                                          size={14}
+                                          className="sm:w-4 sm:h-4"
+                                        />
                                       ) : (
-                                        <FaCheckCircle size={18} />
+                                        <FaCheckCircle
+                                          size={14}
+                                          className="sm:w-4 sm:h-4"
+                                        />
                                       )}
                                     </button>
                                     <button
                                       onClick={() =>
                                         handleEditCategory(category)
                                       }
-                                      className="bg-blue-500 text-white p-3 rounded-xl hover:bg-blue-600 shadow-md no-product-details transition-all hover:scale-105"
+                                      className="bg-blue-500 text-white p-2 sm:p-3 rounded-xl hover:bg-blue-600 shadow-md no-product-details transition-all hover:scale-105"
                                       title="تعديل التصنيف"
                                     >
-                                      <FaEdit size={18} />
+                                      <FaEdit
+                                        size={14}
+                                        className="sm:w-4 sm:h-4"
+                                      />
                                     </button>
                                     <button
                                       onClick={() =>
                                         handleDeleteCategory(category.id)
                                       }
-                                      className="bg-red-500 text-white p-3 rounded-xl hover:bg-red-600 shadow-md no-product-details transition-all hover:scale-105"
+                                      className="bg-red-500 text-white p-2 sm:p-3 rounded-xl hover:bg-red-600 shadow-md no-product-details transition-all hover:scale-105"
                                       title="حذف التصنيف"
                                     >
-                                      <FaTrash size={18} />
+                                      <FaTrash
+                                        size={14}
+                                        className="sm:w-4 sm:h-4"
+                                      />
                                     </button>
                                   </>
                                 )}
