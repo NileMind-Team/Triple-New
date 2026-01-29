@@ -225,7 +225,7 @@ const HeroSwipper = () => {
   return (
     <div className="relative w-full pt-6 pr-4 pl-4" dir="rtl">
       {/* Main Hero Section */}
-      <div className="relative w-full h-[320px] overflow-hidden rounded-2xl shadow-xl">
+      <div className="relative w-full h-[250px] lg:h-[320px] overflow-hidden rounded-2xl shadow-xl">
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#2E3E88]/5 via-[#32B9CC]/3 to-transparent"></div>
 
@@ -238,7 +238,163 @@ const HeroSwipper = () => {
         {/* Main Content Container */}
         <div className="relative z-10 h-full flex items-center">
           <div className="max-w-7xl mx-auto px-3 sm:px-4 w-full">
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
+            {/* تصميم للشاشات الصغيرة فقط - تحت md */}
+            <div className="block md:hidden">
+              <div className="flex flex-row items-center justify-between gap-2">
+                {/* الصورة على اليسار للشاشات الصغيرة */}
+                <motion.div
+                  key={`image-${currentSlide}`}
+                  initial={{ opacity: 0, scale: 0.9, rotate: -5 }}
+                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                  transition={{ duration: 0.6, type: "spring" }}
+                  className="w-2/5 relative"
+                >
+                  <div className="relative">
+                    {/* Main Image Container */}
+                    <div className="relative rounded-lg overflow-hidden shadow-md">
+                      <div className="relative h-32">
+                        <img
+                          src={currentSlideData.image}
+                          alt={currentSlideData.title}
+                          className="w-full h-full object-cover"
+                        />
+                        {/* Gradient Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
+                      </div>
+                    </div>
+
+                    {/* Floating Elements */}
+                    {currentSlideData.hasOffer && (
+                      <motion.div
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.4 }}
+                        className="absolute -top-1 -right-1 bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] text-white px-1.5 py-0.5 rounded-md shadow-sm"
+                      >
+                        <div className="flex items-center gap-0.5">
+                          <FaFire className="text-[9px]" />
+                          <div className="text-center">
+                            <div className="font-bold text-[9px]">عرض خاص!</div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {/* Decorative Elements */}
+                    <div className="absolute -bottom-1 -left-1 w-5 h-5 bg-gradient-to-r from-[#2E3E88]/20 to-[#32B9CC]/20 rounded-md blur-sm"></div>
+                  </div>
+                </motion.div>
+
+                {/* النص على اليمين للشاشات الصغيرة */}
+                <motion.div
+                  key={currentSlide}
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 30 }}
+                  transition={{ duration: 0.5 }}
+                  className="w-3/5 text-right space-y-1.5 pr-1"
+                >
+                  {/* Badges */}
+                  <div className="flex flex-wrap gap-1">
+                    <div className="inline-flex items-center gap-0.5 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white px-1.5 py-0.5 rounded-full shadow-sm">
+                      <FaTag className="text-[9px]" />
+                      <span className="font-semibold text-[9px]">
+                        {currentSlideData.category}
+                      </span>
+                    </div>
+
+                    {currentSlideData.hasOffer && (
+                      <div className="inline-flex items-center gap-0.5 bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] text-white px-1.5 py-0.5 rounded-full shadow-sm animate-pulse">
+                        <FaBolt className="text-[9px]" />
+                        <span className="font-bold text-[9px]">عرض محدود!</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Title */}
+                  <h1
+                    className="text-base font-bold leading-snug"
+                    style={{ color: "#2E3E88" }}
+                  >
+                    {currentSlideData.title}
+                  </h1>
+
+                  {/* Description */}
+                  <p className="text-[10px] text-gray-600 leading-relaxed max-w-xl line-clamp-2">
+                    {currentSlideData.description}
+                  </p>
+
+                  {/* Features */}
+                  <div className="flex flex-wrap gap-1">
+                    {currentSlideData.preparationTime && (
+                      <div className="flex items-center gap-1 bg-white/80 backdrop-blur-sm px-1.5 py-0.5 rounded-md shadow-xs">
+                        <FaClock className="text-[#32B9CC] text-[9px]" />
+                        <span className="font-medium text-gray-700 text-[9px]">
+                          {currentSlideData.preparationTime}
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="flex items-center gap-1 bg-white/80 backdrop-blur-sm px-1.5 py-0.5 rounded-md shadow-xs">
+                      <FaStar className="text-yellow-500 text-[9px]" />
+                      <span className="font-medium text-gray-700 text-[9px]">
+                        {currentSlideData.rating} ({currentSlideData.reviews}{" "}
+                        تقييم)
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Price Section */}
+                  <div className="flex items-center gap-1 flex-wrap">
+                    {/* Discount Price */}
+                    <div className="flex items-center gap-0.5">
+                      <span
+                        className="text-sm font-bold"
+                        style={{ color: "#2E3E88" }}
+                      >
+                        {formatPrice(currentSlideData.discountPrice)} ج.م
+                      </span>
+
+                      {/* Original Price */}
+                      {currentSlideData.hasOffer && (
+                        <span className="text-xs text-gray-400 line-through font-semibold">
+                          {formatPrice(currentSlideData.originalPrice)} ج.م
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Discount Badge */}
+                    {currentSlideData.hasOffer &&
+                      currentSlideData.discountType !== "none" && (
+                        <div className="inline-flex items-center gap-0.5 bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] text-white px-1.5 py-0.5 rounded-md shadow-sm">
+                          <FaFire className="text-[9px]" />
+                          <span className="font-bold text-[9px]">
+                            خصم {currentSlideData.discountText}
+                          </span>
+                        </div>
+                      )}
+                  </div>
+
+                  {/* CTA Button */}
+                  <motion.button
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    onClick={() => handleOrderNow(currentSlideData)}
+                    className="group relative bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] text-white px-2.5 py-1.5 rounded-lg font-bold text-[10px] hover:shadow-lg hover:scale-105 transition-all duration-300 transform flex items-center gap-1 overflow-hidden mt-0.5 w-full justify-center"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <span className="relative z-10">
+                      {currentSlideData.ctaText}
+                    </span>
+                    <FaShoppingCart className="relative z-10 group-hover:translate-x-1 transition-transform duration-300 text-[10px]" />
+                  </motion.button>
+                </motion.div>
+              </div>
+            </div>
+
+            {/* تصميم للشاشات المتوسطة والكبيرة - نفس الكود الأصلي */}
+            <div className="hidden md:flex flex-col lg:flex-row items-center justify-between gap-4">
               {/* Left Side - Text Content */}
               <motion.div
                 key={currentSlide}
@@ -457,7 +613,52 @@ const HeroSwipper = () => {
       {slides.length > 1 && (
         <div className="mt-4">
           <div className="flex justify-center">
-            <div className="flex gap-2 overflow-x-auto p-2 scrollbar-hide max-w-full">
+            {/* تصميم الثمبنيلز للشاشات الصغيرة فقط */}
+            <div className="block md:hidden">
+              <div className="flex gap-1 overflow-x-auto p-1.5 scrollbar-hide max-w-full">
+                {slides.map((slide, index) => (
+                  <motion.button
+                    key={slide.id}
+                    onClick={() => goToSlide(index)}
+                    onMouseEnter={() => setAutoSlide(false)}
+                    onMouseLeave={() => setAutoSlide(true)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`flex-shrink-0 relative rounded-md overflow-hidden shadow-sm transition-all duration-300 ${
+                      currentSlide === index
+                        ? "ring-1 ring-[#2E3E88]"
+                        : "opacity-70 hover:opacity-100"
+                    }`}
+                    style={{
+                      width: "60px",
+                      height: "40px",
+                    }}
+                  >
+                    <img
+                      src={slide.image}
+                      alt={slide.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+
+                    {/* Active Indicator */}
+                    {currentSlide === index && (
+                      <div className="absolute top-0.5 right-0.5 w-1 h-1 bg-green-500 rounded-full"></div>
+                    )}
+
+                    {/* Offer Badge */}
+                    {slide.hasOffer && (
+                      <div className="absolute top-0 left-0 bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] text-white px-0.5 py-0.5 rounded text-[7px] font-bold">
+                        عرض
+                      </div>
+                    )}
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+
+            {/* تصميم الثمبنيلز للشاشات المتوسطة والكبيرة */}
+            <div className="hidden md:flex gap-2 overflow-x-auto p-2 scrollbar-hide max-w-full">
               {slides.map((slide, index) => (
                 <motion.button
                   key={slide.id}

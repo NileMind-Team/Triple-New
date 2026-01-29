@@ -12,8 +12,6 @@ import {
   FaUsers,
   FaUserShield,
   FaBuilding,
-  FaMoon,
-  FaSun,
   FaMoneyBillWave,
   FaCity,
   FaStore,
@@ -463,7 +461,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
               )}
 
               {/* Dark Mode Toggle */}
-              <motion.button
+              {/* <motion.button
                 whileHover={{ scale: 1.1, rotate: 15 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={toggleDarkMode}
@@ -475,7 +473,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                 ) : (
                   <FaMoon className="text-lg sm:text-xl md:text-2xl text-[#2E3E88]" />
                 )}
-              </motion.button>
+              </motion.button> */}
 
               {/* User Menu / Auth */}
               {isLoggedIn ? (
