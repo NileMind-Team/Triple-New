@@ -1426,7 +1426,7 @@ export default function MyOrders() {
                                     <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
                                       {user.imageUrl &&
                                       user.imageUrl !==
-                                        "Profiles/Default-Image.jpg" ? (
+                                        "profiles/Default-Image.jpg" ? (
                                         <img
                                           src={`${BASE_URL}${user.imageUrl}`}
                                           alt={user.firstName}

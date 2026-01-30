@@ -580,8 +580,20 @@ export default function Addresses() {
 
       if (location.state?.fromCart) {
         setTimeout(() => {
-          navigate("/cart", { state: { fromAddresses: true } });
-        }, 1500);
+          Swal.fire({
+            background: "transparent",
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          });
+
+          setTimeout(() => {
+            Swal.close();
+            navigate("/cart", { state: { fromAddresses: true } });
+          }, 500);
+        }, 100);
       }
     } catch (err) {
       showAddressErrorAlert(err.response?.data);
