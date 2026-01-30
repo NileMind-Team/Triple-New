@@ -32,8 +32,6 @@ export default function ConfirmEmail() {
             textAlign: "right",
             fontSize: "14px",
             direction: "rtl",
-            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-            color: "white",
           },
         });
       } else if (type === "error") {
@@ -51,8 +49,6 @@ export default function ConfirmEmail() {
             textAlign: "right",
             fontSize: "14px",
             direction: "rtl",
-            background: "linear-gradient(135deg, #FF6B6B, #FF8E53)",
-            color: "white",
           },
         });
       } else if (type === "info") {
@@ -70,8 +66,6 @@ export default function ConfirmEmail() {
             textAlign: "right",
             fontSize: "14px",
             direction: "rtl",
-            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-            color: "white",
           },
         });
       }
@@ -100,8 +94,6 @@ export default function ConfirmEmail() {
           confirmButtonText: "حاول مرة أخرى",
           timer: 2500,
           showConfirmButton: false,
-          background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-          color: "white",
         });
       }
 
@@ -136,8 +128,6 @@ export default function ConfirmEmail() {
             text: res.data.message || "تم تأكيد بريدك الإلكتروني بنجاح.",
             showConfirmButton: false,
             timer: 2000,
-            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-            color: "white",
           });
         }
 
@@ -161,8 +151,6 @@ export default function ConfirmEmail() {
               text: "تم تأكيد بريدك الإلكتروني مسبقاً.",
               showConfirmButton: false,
               timer: 2000,
-              background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-              color: "white",
             });
           }
         } else {
@@ -184,8 +172,6 @@ export default function ConfirmEmail() {
               title: "فشل تأكيد البريد الإلكتروني",
               text: errorDescription,
               confirmButtonText: "حاول مرة أخرى",
-              background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-              color: "white",
             });
           }
         }

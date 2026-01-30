@@ -276,10 +276,8 @@ const showOfferMessage = (type, title, text, options = {}) => {
       showCancelButton: showButtons,
       confirmButtonText: showButtons ? "نعم" : undefined,
       cancelButtonText: showButtons ? "لا" : undefined,
-      confirmButtonColor: "#2E3E88",
+      confirmButtonColor: "#E41E26",
       cancelButtonColor: "#6B7280",
-      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-      color: "white",
       ...otherOptions,
     });
   } else {
@@ -297,13 +295,6 @@ const showOfferMessage = (type, title, text, options = {}) => {
         textAlign: "right",
         fontSize: "14px",
         direction: "rtl",
-        background:
-          type === "error"
-            ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
-            : type === "warning"
-              ? "linear-gradient(135deg, #FFA726, #FF9800)"
-              : "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
       },
     };
 
@@ -686,12 +677,10 @@ export default function ItemOffersManagement() {
       text: "لن تتمكن من التراجع عن هذا الإجراء!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#2E3E88",
-      cancelButtonColor: "#6B7280",
       confirmButtonText: "نعم، احذفه!",
       cancelButtonText: "إلغاء",
-      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-      color: "white",
+      confirmButtonColor: "#E41E26",
+      cancelButtonColor: "#6B7280",
       reverseButtons: true,
     }).then(async (result) => {
       if (result.isConfirmed) {

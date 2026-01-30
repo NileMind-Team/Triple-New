@@ -39,10 +39,8 @@ const Favorites = () => {
         confirmButtonText: options.confirmButtonText,
         showCancelButton: options.showCancelButton,
         cancelButtonText: options.cancelButtonText,
-        confirmButtonColor: "#2E3E88",
+        confirmButtonColor: "#E41E26",
         cancelButtonColor: "#6B7280",
-        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
         ...options.swalOptions,
       });
       return;
@@ -63,13 +61,6 @@ const Favorites = () => {
           textAlign: "right",
           fontSize: "14px",
           direction: "rtl",
-          background:
-            type === "error"
-              ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
-              : type === "success"
-                ? "linear-gradient(135deg, #2E3E88, #32B9CC)"
-                : "linear-gradient(135deg, #2E3E88, #32B9CC)",
-          color: "white",
         },
         ...options.toastOptions,
       };
@@ -88,8 +79,6 @@ const Favorites = () => {
         text: text,
         timer: options.timer || 2000,
         showConfirmButton: false,
-        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
         ...options.swalOptions,
       });
     }
@@ -264,12 +253,10 @@ const Favorites = () => {
         text: "يجب تسجيل الدخول لإضافة المنتجات إلى السلة",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#2E3E88",
-        cancelButtonColor: "#6B7280",
         confirmButtonText: "تسجيل الدخول",
         cancelButtonText: "إنشاء حساب جديد",
-        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
+        confirmButtonColor: "#E41E26",
+        cancelButtonColor: "#6B7280",
       }).then((result) => {
         if (result.isConfirmed) {
           navigate("/login");
@@ -340,10 +327,8 @@ const Favorites = () => {
               confirmButtonText: "عرض التفاصيل",
               showCancelButton: true,
               cancelButtonText: "إلغاء",
-              confirmButtonColor: "#2E3E88",
+              confirmButtonColor: "#E41E26",
               cancelButtonColor: "#6B7280",
-              background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-              color: "white",
             }).then((result) => {
               if (result.isConfirmed) {
                 handleProductDetails(product);

@@ -93,13 +93,6 @@ export default function Cart() {
           textAlign: "right",
           fontSize: "14px",
           direction: "rtl",
-          background:
-            type === "error"
-              ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
-              : type === "success"
-                ? "linear-gradient(135deg, #2E3E88, #32B9CC)"
-                : "linear-gradient(135deg, #2E3E88, #32B9CC)",
-          color: "white",
         },
       };
 
@@ -127,8 +120,6 @@ export default function Cart() {
         confirmButtonText: "حسنًا",
         timer: 2500,
         showConfirmButton: false,
-        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
       });
     }
   };
@@ -931,12 +922,10 @@ export default function Cart() {
       text: "هل أنت متأكد من إزالة هذا المنتج من سلة التسوق؟",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#2E3E88",
+      confirmButtonColor: "#E41E26",
       cancelButtonColor: "#6B7280",
       confirmButtonText: "نعم، قم بإزالته!",
       cancelButtonText: "إلغاء",
-      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-      color: "white",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
@@ -1022,15 +1011,17 @@ export default function Cart() {
       if (response.status === 200 || response.status === 201) {
         Swal.fire({
           title:
-            '<h2 class="text-xl md:text-2xl font-bold text-white">تم تأكيد الطلب!</h2>',
+            '<h2 class="text-2xl font-bold text-gray-800 dark:text-white">تم تأكيد الطلب!</h2>',
           html: `
             <div class="text-center">
-              <div class="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-r from-[#2E3E88] to-[#32B9CC] rounded-full flex items-center justify-center mb-4 mx-auto">
-                <FaCheckCircle class="w-8 h-8 md:w-10 md:h-10 text-white" />
+              <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mb-4 mx-auto">
+                <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                </svg>
               </div>
-              <p class="text-base md:text-lg text-white/80 mb-4">تم تقديم طلبك بنجاح!</p>
-              <div class="bg-gradient-to-r from-[#2E3E88]/20 to-[#32B9CC]/20 rounded-xl p-4 border border-[#2E3E88]/30">
-                <p class="text-xs md:text-sm text-white/90 mt-1">
+              <p class="text-lg text-gray-600 dark:text-gray-400 mb-4">تم تقديم طلبك بنجاح!</p>
+              <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 rounded-xl p-4 border border-green-200 dark:border-green-800">
+                <p class="text-sm text-green-600 dark:text-green-400 mt-1">
                   سيتم تجهيز طلبك في فرع ${selectedBranch.name}
                   ${
                     deliveryType === "delivery"
@@ -1044,8 +1035,9 @@ export default function Cart() {
           icon: null,
           timer: 3000,
           showConfirmButton: false,
-          background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-          color: "white",
+          customClass: {
+            popup: "rounded-3xl shadow-2xl dark:bg-gray-800 dark:text-white",
+          },
         }).then(() => {
           navigate("/my-orders", { state: { orderData: response.data } });
         });

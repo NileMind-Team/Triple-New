@@ -187,8 +187,6 @@ const showAddressErrorAlert = (errorData) => {
         textAlign: "right",
         fontSize: "14px",
         direction: "rtl",
-        background: "linear-gradient(135deg, #FF6B6B, #FF8E53)",
-        color: "white",
       },
     });
   } else {
@@ -199,8 +197,6 @@ const showAddressErrorAlert = (errorData) => {
       confirmButtonText: "حاول مرة أخرى",
       timer: 2500,
       showConfirmButton: false,
-      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-      color: "white",
     });
   }
 };
@@ -221,8 +217,6 @@ const showAddressSuccessAlert = (message) => {
         textAlign: "right",
         fontSize: "14px",
         direction: "rtl",
-        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
       },
     });
   } else {
@@ -232,8 +226,6 @@ const showAddressSuccessAlert = (message) => {
       icon: "success",
       showConfirmButton: false,
       timer: 2500,
-      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-      color: "white",
     });
   }
 };
@@ -549,8 +541,6 @@ export default function Addresses() {
       cancelButtonColor: "#6B7280",
       confirmButtonText: "نعم، احذفه!",
       cancelButtonText: "إلغاء",
-      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-      color: "white",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
@@ -580,20 +570,8 @@ export default function Addresses() {
 
       if (location.state?.fromCart) {
         setTimeout(() => {
-          Swal.fire({
-            background: "transparent",
-            showConfirmButton: false,
-            allowOutsideClick: false,
-            didOpen: () => {
-              Swal.showLoading();
-            },
-          });
-
-          setTimeout(() => {
-            Swal.close();
-            navigate("/cart", { state: { fromAddresses: true } });
-          }, 500);
-        }, 100);
+          navigate("/cart", { state: { fromAddresses: true } });
+        }, 1500);
       }
     } catch (err) {
       showAddressErrorAlert(err.response?.data);
@@ -675,8 +653,6 @@ export default function Addresses() {
         text: "يرجى اختيار موقع من الخريطة أولاً",
         showConfirmButton: false,
         timer: 2000,
-        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
       });
     }
   };

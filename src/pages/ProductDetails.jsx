@@ -82,7 +82,6 @@ const ProductDetails = () => {
         icon: type,
         title: title,
         text: text,
-        confirmButtonColor: options.confirmButtonColor || "#2E3E88",
         timer: options.timer || 2500,
         showConfirmButton:
           options.showConfirmButton !== undefined
@@ -94,8 +93,8 @@ const ProductDetails = () => {
             : false,
         confirmButtonText: options.confirmButtonText || "موافق",
         cancelButtonText: options.cancelButtonText || "إلغاء",
-        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
+        confirmButtonColor: "#E41E26",
+        cancelButtonColor: "#6B7280",
         ...options,
       });
       return;
@@ -123,13 +122,6 @@ const ProductDetails = () => {
           wordBreak: "break-word",
           overflowWrap: "break-word",
           zIndex: 9999,
-          background:
-            type === "error"
-              ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
-              : type === "warning"
-                ? "linear-gradient(135deg, #FFA726, #FF9800)"
-                : "linear-gradient(135deg, #2E3E88, #32B9CC)",
-          color: "white",
           textAlign: "right",
           direction: "rtl",
         },
@@ -164,14 +156,11 @@ const ProductDetails = () => {
         icon: type,
         title: title,
         text: text,
-        confirmButtonColor: options.confirmButtonColor || "#2E3E88",
         timer: options.timer || 2500,
         showConfirmButton:
           options.showConfirmButton !== undefined
             ? options.showConfirmButton
             : false,
-        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
         ...options,
       });
     }
@@ -578,12 +567,10 @@ const ProductDetails = () => {
         text: "يجب تسجيل الدخول لإضافة المنتجات إلى السلة",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#2E3E88",
-        cancelButtonColor: "#32B9CC",
         confirmButtonText: "تسجيل الدخول",
         cancelButtonText: "إنشاء حساب جديد",
-        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
+        confirmButtonColor: "#E41E26",
+        cancelButtonColor: "#6B7280",
       }).then((result) => {
         if (result.isConfirmed) {
           navigate("/login");
@@ -674,12 +661,10 @@ const ProductDetails = () => {
       text: "لن تتمكن من التراجع عن هذا الإجراء!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#2E3E88",
-      cancelButtonColor: "#32B9CC",
       confirmButtonText: "نعم، احذفه!",
       cancelButtonText: "إلغاء",
-      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-      color: "white",
+      confirmButtonColor: "#E41E26",
+      cancelButtonColor: "#6B7280",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
@@ -847,12 +832,10 @@ const ProductDetails = () => {
       text: "لن تتمكن من التراجع عن هذا الإجراء!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#2E3E88",
-      cancelButtonColor: "#32B9CC",
       confirmButtonText: "نعم، احذفه!",
       cancelButtonText: "إلغاء",
-      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-      color: "white",
+      confirmButtonColor: "#E41E26",
+      cancelButtonColor: "#6B7280",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {

@@ -91,13 +91,6 @@ export default function MyOrders() {
           textAlign: "right",
           fontSize: "14px",
           direction: "rtl",
-          background:
-            type === "error"
-              ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
-              : type === "success"
-                ? "linear-gradient(135deg, #2E3E88, #32B9CC)"
-                : "linear-gradient(135deg, #2E3E88, #32B9CC)",
-          color: "white",
         },
       };
 
@@ -125,8 +118,6 @@ export default function MyOrders() {
         confirmButtonText: "حسنًا",
         timer: 2500,
         showConfirmButton: false,
-        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
       });
     }
   };
@@ -708,12 +699,10 @@ export default function MyOrders() {
       text: "هل تريد إلغاء هذا الطلب؟",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#2E3E88",
-      cancelButtonColor: "#6B7280",
       confirmButtonText: "نعم، إلغِه!",
       cancelButtonText: "لا",
-      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-      color: "white",
+      confirmButtonColor: "#E41E26",
+      cancelButtonColor: "#6B7280",
     });
 
     if (result.isConfirmed) {
@@ -1851,7 +1840,6 @@ export default function MyOrders() {
             <div className="mt-6 md:mt-8">
               <div className="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 shadow-xl">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-4">
-
                   {/* أزرار التنقل */}
                   <div className="flex items-center justify-center gap-3 md:gap-2">
                     {/* زر الصفحة السابقة */}

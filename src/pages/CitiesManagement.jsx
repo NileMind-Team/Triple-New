@@ -40,15 +40,6 @@ const showMessage = (type, title, text, options = {}) => {
         wordBreak: "break-word",
         overflowWrap: "break-word",
         zIndex: 9999,
-        background:
-          type === "error"
-            ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
-            : type === "warning"
-              ? "linear-gradient(135deg, #FFA726, #FF9800)"
-              : type === "success"
-                ? "linear-gradient(135deg, #2E3E88, #32B9CC)"
-                : "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
         textAlign: "right",
         direction: "rtl",
       },
@@ -83,14 +74,11 @@ const showMessage = (type, title, text, options = {}) => {
       icon: type,
       title: title,
       text: text,
-      confirmButtonColor: options.confirmButtonColor || "#2E3E88",
       timer: options.timer || 2500,
       showConfirmButton:
         options.showConfirmButton !== undefined
           ? options.showConfirmButton
           : false,
-      background: "linear-gradient(135deg, #f0f8ff, #e0f7fa)",
-      color: "#2E3E88",
       ...options,
     });
   }
@@ -239,8 +227,6 @@ const showErrorAlert = (errorData) => {
       html: translatedMessage,
       showConfirmButton: false,
       timer: 2500,
-      background: "linear-gradient(135deg, #f0f8ff, #e0f7fa)",
-      color: "#2E3E88",
     });
   }
 };

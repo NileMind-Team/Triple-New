@@ -139,7 +139,7 @@ export default function useDeliveryAreas() {
 
         // Fetch branches
         const branchesResponse = await axiosInstance.get(
-          "/api/Branches/GetAll"
+          "/api/Branches/GetAll",
         );
         setBranches(branchesResponse.data);
 
@@ -162,7 +162,7 @@ export default function useDeliveryAreas() {
     async (branchesData = branches) => {
       try {
         const areasResponse = await axiosInstance.get(
-          "/api/DeliveryFees/GetAll"
+          "/api/DeliveryFees/GetAll",
         );
 
         // Transform API response to match our frontend structure
@@ -188,7 +188,7 @@ export default function useDeliveryAreas() {
         showErrorAlert("خطأ", "فشل في تحميل مناطق التوصيل");
       }
     },
-    [branches]
+    [branches],
   );
 
   // Filter areas based on search term and filter
@@ -197,13 +197,13 @@ export default function useDeliveryAreas() {
 
     if (filter !== "all") {
       filtered = filtered.filter((area) =>
-        filter === "active" ? area.isActive : !area.isActive
+        filter === "active" ? area.isActive : !area.isActive,
       );
     }
 
     if (searchTerm) {
       filtered = filtered.filter((area) =>
-        area.areaName.toLowerCase().includes(searchTerm.toLowerCase())
+        area.areaName.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
@@ -239,7 +239,7 @@ export default function useDeliveryAreas() {
         // Update existing area
         const res = await axiosInstance.put(
           `/api/DeliveryFees/Update/${editingId}`,
-          requestData
+          requestData,
         );
         if (res.status === 200 || res.status === 204) {
           await fetchDeliveryAreas();
@@ -249,7 +249,7 @@ export default function useDeliveryAreas() {
         // Add new area
         const res = await axiosInstance.post(
           "/api/DeliveryFees/Add",
-          requestData
+          requestData,
         );
         if (res.status === 200 || res.status === 201) {
           await fetchDeliveryAreas();

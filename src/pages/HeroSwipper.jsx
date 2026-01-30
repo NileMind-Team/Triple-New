@@ -105,8 +105,6 @@ const HeroSwipper = () => {
           confirmButtonText: "حاول مرة أخرى",
           timer: 2000,
           showConfirmButton: false,
-          background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-          color: "white",
         });
       } finally {
         setLoading(false);

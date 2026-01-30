@@ -217,13 +217,6 @@ const showMessage = (type, title, text, options = {}) => {
         textAlign: "right",
         fontSize: "14px",
         direction: "rtl",
-        background:
-          type === "error"
-            ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
-            : type === "warning"
-              ? "linear-gradient(135deg, #FFA726, #FF9800)"
-              : "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
       },
     };
 
@@ -253,13 +246,6 @@ const showMessage = (type, title, text, options = {}) => {
         options.showConfirmButton !== undefined
           ? options.showConfirmButton
           : false,
-      background:
-        type === "error"
-          ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
-          : type === "warning"
-            ? "linear-gradient(135deg, #FFA726, #FF9800)"
-            : "linear-gradient(135deg, #2E3E88, #32B9CC)",
-      color: "white",
       ...options,
     });
   }

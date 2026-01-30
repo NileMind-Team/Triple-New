@@ -60,13 +60,6 @@ const Branches = () => {
           textAlign: "right",
           fontSize: "14px",
           direction: "rtl",
-          background:
-            type === "error"
-              ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
-              : type === "success"
-                ? "linear-gradient(135deg, #2E3E88, #32B9CC)"
-                : "linear-gradient(135deg, #2E3E88, #32B9CC)",
-          color: "white",
         },
       };
 
@@ -94,8 +87,6 @@ const Branches = () => {
         confirmButtonText: "حسنًا",
         timer: options.timer || 2500,
         showConfirmButton: options.showConfirmButton || false,
-        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
       });
     }
   };

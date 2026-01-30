@@ -68,8 +68,6 @@ export default function AdminUsers() {
           textAlign: "right",
           fontSize: "14px",
           direction: "rtl",
-          background: "linear-gradient(135deg, #FFA726, #FF9800)",
-          color: "white",
         },
       });
     } else {
@@ -79,8 +77,6 @@ export default function AdminUsers() {
         text: message,
         showConfirmButton: false,
         timer: 2500,
-        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
       });
     }
   };

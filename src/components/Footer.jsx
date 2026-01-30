@@ -284,7 +284,7 @@ const Footer = () => {
                   WebkitTextFillColor: "transparent",
                 }}
               >
-                مهند أشرف
+                شركه TripleS للبرمجيات
               </span>{" "}
               في مصر
             </p>

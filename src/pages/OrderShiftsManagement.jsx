@@ -37,13 +37,6 @@ const showMessage = (type, title, text, options = {}) => {
         textAlign: "right",
         fontSize: "14px",
         direction: "rtl",
-        background:
-          type === "error"
-            ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
-            : type === "warning"
-              ? "linear-gradient(135deg, #FFA726, #FF9800)"
-              : "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
       },
     };
 
@@ -73,13 +66,6 @@ const showMessage = (type, title, text, options = {}) => {
         options.showConfirmButton !== undefined
           ? options.showConfirmButton
           : false,
-      background:
-        type === "error"
-          ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
-          : type === "warning"
-            ? "linear-gradient(135deg, #FFA726, #FF9800)"
-            : "linear-gradient(135deg, #2E3E88, #32B9CC)",
-      color: "white",
       ...options,
     });
   }
@@ -411,12 +397,10 @@ export default function OrderShiftsManagement() {
       text: "هل أنت متأكد من إنهاء الوردية الحالية؟",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#2E3E88",
-      cancelButtonColor: "#6B7280",
       confirmButtonText: "نعم، أنهِ الوردية",
       cancelButtonText: "إلغاء",
-      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-      color: "white",
+      confirmButtonColor: "#E41E26",
+      cancelButtonColor: "#6B7280",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
@@ -451,12 +435,10 @@ export default function OrderShiftsManagement() {
       text: confirmText,
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#2E3E88",
-      cancelButtonColor: "#6B7280",
       confirmButtonText: `نعم، ${action}`,
       cancelButtonText: "إلغاء",
-      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-      color: "white",
+      confirmButtonColor: "#E41E26",
+      cancelButtonColor: "#6B7280",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {

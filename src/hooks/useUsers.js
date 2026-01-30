@@ -36,9 +36,6 @@ export const useUsers = () => {
         icon: "error",
         title: title || "حدث خطأ",
         text: message,
-        confirmButtonColor: "#E41E26",
-        background: "#ffffff",
-        color: "#000000",
       });
     }
   };
@@ -68,8 +65,6 @@ export const useUsers = () => {
         text: message,
         showConfirmButton: false,
         timer: 2500,
-        background: "#ffffff",
-        color: "#000000",
       });
     }
   };
@@ -84,9 +79,6 @@ export const useUsers = () => {
           icon: "error",
           title: "تم رفض الوصول",
           text: "ليس لديك الإذن للوصول إلى هذه الصفحة.",
-          confirmButtonColor: "#E41E26",
-          background: "#ffffff",
-          color: "#000000",
         });
         return false;
       }
@@ -102,9 +94,6 @@ export const useUsers = () => {
         icon: "error",
         title: "تم رفض الوصول",
         text: "فشل في التحقق من أذوناتك.",
-        confirmButtonColor: "#E41E26",
-        background: "#ffffff",
-        color: "#000000",
       });
       return false;
     } finally {
@@ -177,8 +166,6 @@ export const useUsers = () => {
       cancelButtonColor: "#6B7280",
       confirmButtonText: `نعم، ${action}!`,
       cancelButtonText: "إلغاء",
-      background: "#ffffff",
-      color: "#000000",
       reverseButtons: true,
     }).then(async (result) => {
       if (result.isConfirmed) {
@@ -257,8 +244,6 @@ export const useUsers = () => {
              </div>`
               )
               .join(""),
-            background: "#ffffff",
-            color: "#000000",
             showConfirmButton: false,
             timer: 2500,
           });

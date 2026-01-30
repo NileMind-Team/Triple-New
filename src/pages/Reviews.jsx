@@ -52,13 +52,6 @@ export default function Reviews() {
           textAlign: "right",
           fontSize: "14px",
           direction: "rtl",
-          background:
-            type === "error"
-              ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
-              : type === "success"
-                ? "linear-gradient(135deg, #2E3E88, #32B9CC)"
-                : "linear-gradient(135deg, #2E3E88, #32B9CC)",
-          color: "white",
         },
       };
 
@@ -94,8 +87,6 @@ export default function Reviews() {
         confirmButtonText: "حسنًا",
         timer: 2500,
         showConfirmButton: false,
-        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
       });
     }
   };
@@ -220,12 +211,10 @@ export default function Reviews() {
       text: "لن تتمكن من التراجع عن هذا!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#2E3E88",
-      cancelButtonColor: "#6B7280",
       confirmButtonText: "نعم، احذفه!",
       cancelButtonText: "إلغاء",
-      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-      color: "white",
+      confirmButtonColor: "#E41E26",
+      cancelButtonColor: "#6B7280",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {

@@ -140,8 +140,6 @@ const ProductForm = () => {
           textAlign: "right",
           fontSize: "14px",
           direction: "rtl",
-          background: "linear-gradient(135deg, #FF6B6B, #FF8E53)",
-          color: "white",
         },
       });
     } else {
@@ -152,8 +150,6 @@ const ProductForm = () => {
         confirmButtonText: "حاول مرة أخرى",
         timer: 2500,
         showConfirmButton: false,
-        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
       });
     }
   };
@@ -174,8 +170,6 @@ const ProductForm = () => {
           textAlign: "right",
           fontSize: "14px",
           direction: "rtl",
-          background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-          color: "white",
         },
       });
     } else {
@@ -185,8 +179,6 @@ const ProductForm = () => {
         icon: "success",
         showConfirmButton: false,
         timer: 2500,
-        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
       });
     }
   };
@@ -197,8 +189,6 @@ const ProductForm = () => {
         icon: "error",
         title: "رابط غير صالح",
         text: "الرجاء إدخال رابط صحيح للصورة",
-        confirmButtonColor: "#2E3E88",
-        background: "linear-gradient(135deg, #f0f8ff, #e0f7fa)",
       });
       return null;
     }
@@ -512,12 +502,10 @@ const ProductForm = () => {
       text: "لن تتمكن من التراجع عن هذا الإجراء!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#2E3E88",
-      cancelButtonColor: "#32B9CC",
       confirmButtonText: "نعم، احذفه!",
       cancelButtonText: "إلغاء",
-      background: "linear-gradient(135deg, #f0f8ff, #e0f7fa)",
-      color: "#2E3E88",
+      confirmButtonColor: "#E41E26",
+      cancelButtonColor: "#6B7280",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
@@ -742,8 +730,6 @@ const ProductForm = () => {
         icon: "error",
         title: "رابط فارغ",
         text: "الرجاء إدخال رابط الصورة أولاً",
-        confirmButtonColor: "#2E3E88",
-        background: "linear-gradient(135deg, #f0f8ff, #e0f7fa)",
       });
       return;
     }

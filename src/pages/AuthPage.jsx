@@ -32,8 +32,6 @@ const showAuthMobileSuccessToast = (message) => {
         textAlign: "right",
         fontSize: "14px",
         direction: "rtl",
-        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
       },
     });
   }
@@ -47,13 +45,6 @@ const showAuthMobileAlertToast = (message, type = "info") => {
         : type === "warning"
           ? toast.warning
           : toast.info;
-
-    const gradient =
-      type === "error"
-        ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
-        : type === "warning"
-          ? "linear-gradient(135deg, #FFA726, #FFCA28)"
-          : "linear-gradient(135deg, #2E3E88, #32B9CC)";
 
     toastFunc(message, {
       position: "top-right",
@@ -69,8 +60,6 @@ const showAuthMobileAlertToast = (message, type = "info") => {
         textAlign: "right",
         fontSize: "14px",
         direction: "rtl",
-        background: gradient,
-        color: "white",
       },
     });
   }
@@ -85,17 +74,8 @@ const showAuthMobileErrorHtml = (htmlContent) => {
   }
 };
 
-// تنسيق SweetAlert2 الموحد
 const showAuthSwal = (title, html, icon, timer = 2500) => {
   if (window.innerWidth >= 768) {
-    const backgroundGradient =
-      icon === "error"
-        ? "linear-gradient(135deg, #FF6B6B, #FF8E53)"
-        : icon === "warning"
-          ? "linear-gradient(135deg, #FFA726, #FFCA28)"
-          : icon === "info"
-            ? "linear-gradient(135deg, #2E3E88, #32B9CC)"
-            : "linear-gradient(135deg, #2E3E88, #32B9CC)";
 
     Swal.fire({
       title: title,
@@ -104,8 +84,6 @@ const showAuthSwal = (title, html, icon, timer = 2500) => {
       confirmButtonText: "حسنًا",
       timer: timer,
       showConfirmButton: false,
-      background: backgroundGradient,
-      color: "white",
       customClass: {
         popup: "rounded-2xl shadow-2xl",
       },
@@ -324,8 +302,6 @@ export default function AuthPage() {
         },
         allowOutsideClick: false,
         allowEscapeKey: false,
-        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
         customClass: {
           popup: "rounded-2xl shadow-2xl",
         },
@@ -484,8 +460,6 @@ export default function AuthPage() {
         },
         allowOutsideClick: false,
         allowEscapeKey: false,
-        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
         customClass: {
           popup: "rounded-2xl shadow-2xl",
         },

@@ -47,8 +47,6 @@ export default function ResetPassword() {
             textAlign: "right",
             fontSize: "14px",
             direction: "rtl",
-            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-            color: "white",
           },
         });
       } else if (type === "error") {
@@ -66,8 +64,6 @@ export default function ResetPassword() {
             textAlign: "right",
             fontSize: "14px",
             direction: "rtl",
-            background: "linear-gradient(135deg, #FF6B6B, #FF8E53)",
-            color: "white",
           },
         });
       } else if (type === "info") {
@@ -85,8 +81,6 @@ export default function ResetPassword() {
             textAlign: "right",
             fontSize: "14px",
             direction: "rtl",
-            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-            color: "white",
           },
         });
       }
@@ -139,8 +133,6 @@ export default function ResetPassword() {
           icon: "error",
           title: "كلمة المرور لا تلبي المتطلبات",
           text: "يرجى التأكد من استيفاء جميع شروط كلمة المرور",
-          background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-          color: "white",
           showConfirmButton: false,
           timer: 2500,
         });
@@ -172,8 +164,6 @@ export default function ResetPassword() {
           text: res.data.message || "تم إعادة تعيين كلمة المرور بنجاح.",
           showConfirmButton: false,
           timer: 2000,
-          background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-          color: "white",
         });
       }
     } catch (err) {
@@ -193,8 +183,6 @@ export default function ResetPassword() {
           icon: "error",
           title: "فشل إعادة تعيين كلمة المرور",
           text: errorMsg,
-          background: "linear-gradient(135deg, #FF6B6B, #FF8E53)",
-          color: "white",
           showConfirmButton: false,
           timer: 2500,
         });

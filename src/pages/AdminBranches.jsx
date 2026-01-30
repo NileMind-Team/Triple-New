@@ -194,8 +194,6 @@ const showMobileMessage = (type, title, text) => {
           textAlign: "right",
           fontSize: "14px",
           direction: "rtl",
-          background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-          color: "white",
         },
       });
     } else if (type === "error") {
@@ -213,8 +211,6 @@ const showMobileMessage = (type, title, text) => {
           textAlign: "right",
           fontSize: "14px",
           direction: "rtl",
-          background: "linear-gradient(135deg, #FF6B6B, #FF8E53)",
-          color: "white",
         },
       });
     } else if (type === "info") {
@@ -232,8 +228,6 @@ const showMobileMessage = (type, title, text) => {
           textAlign: "right",
           fontSize: "14px",
           direction: "rtl",
-          background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-          color: "white",
         },
       });
     } else if (type === "warning") {
@@ -248,8 +242,6 @@ const showMobileMessage = (type, title, text) => {
           textAlign: "right",
           fontSize: "14px",
           direction: "rtl",
-          background: "linear-gradient(135deg, #FFA726, #FF9800)",
-          color: "white",
         },
       });
     }
@@ -274,8 +266,6 @@ const showErrorAlert = (errorMessages) => {
               </div>`,
         timer: 2500,
         showConfirmButton: false,
-        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
       });
       return;
     }
@@ -301,8 +291,6 @@ const showErrorAlert = (errorMessages) => {
               </div>`,
         timer: 2500,
         showConfirmButton: false,
-        background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-        color: "white",
       });
       return;
     }
@@ -329,8 +317,6 @@ const showErrorAlert = (errorMessages) => {
       html: htmlMessages.join(""),
       timer: 2500,
       showConfirmButton: false,
-      background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-      color: "white",
     });
   }
 };
@@ -404,8 +390,6 @@ export default function AdminBranches() {
               text: "ليس لديك صلاحية للوصول إلى هذه الصفحة.",
               timer: 2500,
               showConfirmButton: false,
-              background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-              color: "white",
             });
           }
 
@@ -435,8 +419,6 @@ export default function AdminBranches() {
             text: errorText || "فشل في التحقق من صلاحياتك.",
             timer: 2500,
             showConfirmButton: false,
-            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-            color: "white",
           });
         }
 
@@ -540,8 +522,6 @@ export default function AdminBranches() {
           text: `تم ${currentStatus ? "تعطيل" : "تفعيل"} الفرع.`,
           timer: 2000,
           showConfirmButton: false,
-          background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-          color: "white",
         });
       }
     } catch (errorMessages) {
@@ -591,8 +571,6 @@ export default function AdminBranches() {
             text: "تم تحديث الفرع بنجاح.",
             timer: 2000,
             showConfirmButton: false,
-            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-            color: "white",
           });
         }
       } else {
@@ -611,8 +589,6 @@ export default function AdminBranches() {
             text: "تم إضافة الفرع الجديد بنجاح.",
             timer: 2000,
             showConfirmButton: false,
-            background: "linear-gradient(135deg, #2E3E88, #32B9CC)",
-            color: "white",
           });
         }
       }
